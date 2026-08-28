@@ -1,0 +1,65 @@
+# Backend API 与数据库
+
+## 数据库范围
+
+数据库实现《需求分析说明书》第 4.4 节定义的 15 张业务表：
+
+`user_info`、`hospital_info`、`department_info`、`exam_info`、`package_info`、`user_status_info`、`exam_plan`、`plan_execution_detail`、`anomaly_report`、`department_distance`、`user_mobility_profile`、`walk_speed_preset`、`queue_snapshot`、`department_waiting_stats`、`department_resource_calendar`。
+
+为实现管理端增加三张支撑表：
+
+- `hospital_admin`：管理员与医院的归属关系，是多医院隔离的服务端依据；
+- `user_session`：只保存随机登录令牌的 SHA-256 摘要、登录 IP 与有效期；
+- `hospital_gis`：按医院和楼层保存 GeoJSON、版本号、更新人和更新时间。
+
+密码使用带随机盐的 PBKDF2-SHA256，数据库不保存明文密码。客户端提交的 `hospitalID` 不参与授权判断。
+
+## 主要接口
+
+| 功能 | 接口 |
+| --- | --- |
+| 注册、登录、当前账号、退出 | `POST /api/auth/register`、`POST /api/auth/login`、`GET /api/auth/me`、`POST /api/auth/logout` |
+| 医院资料 | `GET/PATCH /api/hospital` |
+| 科室 | `GET/POST /api/departments`、`PATCH/DELETE /api/departments/{deptID}` |
+| 检查项目 | `GET/POST /api/exams`、`PATCH/DELETE /api/exams/{itemID}` |
+| GIS | `GET /api/gis`、`GET/PUT /api/gis/{floorKey}` |
+| 异常 | `GET/POST /api/anomalies`、`POST /api/anomalies/{reportID}/resolve` |
+| 排队快照 | `GET/POST /api/queues` |
+| 看板与人流地图 | `GET /api/dashboard/summary`、`GET /api/dashboard/map/{floorKey}` |
+
+OpenAPI 交互文档在服务启动后的 `/docs`。
+
+## GIS GeoJSON 约定
+
+每个楼层上传一个 `FeatureCollection`。支持 `Point`、`LineString`、`Polygon` 和 `MultiPolygon`。
+
+科室点位：
+
+```json
+{
+  "type": "Feature",
+  "properties": {
+    "featureType": "department",
+    "deptID": "数据库中的科室 ID",
+    "name": "超声科"
+  },
+  "geometry": {"type": "Point", "coordinates": [120.5, 80.2]}
+}
+```
+
+科室间路线可同步到 `department_distance`：
+
+```json
+{
+  "type": "Feature",
+  "properties": {
+    "featureType": "route",
+    "fromDeptID": "起点科室 ID",
+    "toDeptID": "终点科室 ID",
+    "distanceMeters": 72.5
+  },
+  "geometry": {"type": "LineString", "coordinates": [[10, 20], [30, 35]]}
+}
+```
+
+地图坐标既可使用真实投影坐标，也可使用院内平面图坐标；同一楼层必须保持同一坐标系。人流量由有效排队快照人数与当前检查中的人数相加得到。

@@ -13,10 +13,17 @@ python -m pip install -e .
 python -m pip install -e ".[optimization]"
 ```
 
+开发 Backend 和管理端时安装：
+
+```bash
+python -m pip install -e ".[backend,test]"
+DATABASE_URL=sqlite:///./checkup.db uvicorn apps.backend.checkup_backend.main:app --reload
+```
+
 ## 快速验证
 
 ```bash
-python -m compileall -q packages/scheduler simulation tests
+python -m compileall -q packages/scheduler apps/backend simulation tests
 python -m unittest discover -s tests -v
 python -m simulation.run --v10 --patients 20 --replications 2 --seed 20260824 --scenarios normal_day --output simulation/output/smoke
 ```

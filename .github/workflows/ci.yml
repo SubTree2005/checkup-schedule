@@ -15,8 +15,8 @@ jobs:
           python-version: "3.11"
           cache: pip
       - name: Install package
-        run: python -m pip install -e .
+        run: python -m pip install -e ".[backend,test]"
       - name: Compile
-        run: python -m compileall -q packages/scheduler simulation tests
+        run: python -m compileall -q packages/scheduler apps/backend simulation tests
       - name: Unit and regression tests
         run: python -m unittest discover -s tests -v

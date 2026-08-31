@@ -301,13 +301,13 @@ def _package_catalog_dict(package: PackageInfo, exam_rows: list[tuple[ExamInfo, 
         "packageID": package.package_id,
         "name": package.package_name,
         "packageName": package.package_name,
-        "type": "健康体检",
-        "price": 0,
-        "tag": f"{len(items)} 项检查",
+        "type": package.package_type,
+        "price": package.price,
+        "tag": package.tag or f"{len(items)} 项检查",
         "description": package.description,
         "position": package.description,
-        "suitable": [],
-        "notice": ["推荐路线会结合科室开放时间、排队情况和步行距离动态生成。"],
+        "suitable": package.suitable or [],
+        "notice": package.notice or ["推荐路线会结合科室开放时间、排队情况和步行距离动态生成。"],
         "checkIds": [item["id"] for item in items],
         "items": items,
         "groups": [
@@ -327,11 +327,17 @@ def patient_catalog(
     if hospital is None:
         raise HTTPException(status_code=404, detail="医院不存在")
     exam_rows = _hospital_exam_rows(db, hospital_id)
+    active_item_ids = {exam.item_id for exam, _department in exam_rows}
     packages = [
         _package_catalog_dict(package, exam_rows)
-        for package in db.scalars(select(PackageInfo).order_by(PackageInfo.package_name)).all()
+        for package in db.scalars(
+            select(PackageInfo)
+            .where(PackageInfo.hospital_id == hospital_id, PackageInfo.is_published.is_(True))
+            .order_by(PackageInfo.package_name)
+        ).all()
+        if set(package.included_item_ids or [])
+        and set(package.included_item_ids or []).issubset(active_item_ids)
     ]
-    packages = [package for package in packages if package["items"]]
     exams = [_exam_catalog_dict(exam, department) for exam, department in exam_rows]
     departments: dict[str, list[dict]] = {}
     for exam in exams:
@@ -530,7 +536,7 @@ def _serialize_plan(db: Session, plan: ExamPlan, *, replanned: bool = False) -> 
         "planID": plan.plan_id,
         "packageId": package.package_id if package else None,
         "packageName": package.package_name if package else "自选项目",
-        "packagePrice": 0,
+        "packagePrice": package.price if package else 0,
         "hospitalName": hospital.hospital_name if hospital else "",
         "date": plan.generate_time.strftime("%Y年%m月%d日"),
         "generatedAt": iso(plan.generate_time),
@@ -566,9 +572,15 @@ def create_patient_plan(
         )
     ):
         raise HTTPException(status_code=409, detail="已有进行中的体检计划")
-    package = db.get(PackageInfo, payload.packageID) if payload.packageID else None
+    package = db.scalar(
+        select(PackageInfo).where(
+            PackageInfo.package_id == payload.packageID,
+            PackageInfo.hospital_id == payload.hospitalID,
+            PackageInfo.is_published.is_(True),
+        )
+    ) if payload.packageID else None
     if payload.packageID and package is None:
-        raise HTTPException(status_code=404, detail="体检套餐不存在")
+        raise HTTPException(status_code=404, detail="体检套餐不存在或已下架")
     item_ids = list(dict.fromkeys(payload.selectedItemIDs or (package.included_item_ids if package else [])))
     rows = _hospital_exam_rows(db, hospital.hospital_id)
     owned = {exam.item_id: (exam, department) for exam, department in rows}

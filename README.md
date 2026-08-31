@@ -11,7 +11,7 @@ Checkup Schedule 是体检检查智能排序项目的 Monorepo。当前项目发
 ```text
 apps/
   miniprogram/       患者微信小程序（登录、选检、排程、执行、记录、导航）
-  admin-web/         医院 Web 管理端（看板、GIS、人流、基础信息与临时调整）
+  admin-web/         医院 Web 管理端（看板、套餐上下架、GIS、人流与临时调整）
   backend/           FastAPI、SQLAlchemy、认证与多医院数据隔离
 packages/
   scheduler/         唯一正式 Scheduler 实现
@@ -72,7 +72,7 @@ DATABASE_URL=sqlite:///./checkup.db uvicorn apps.backend.checkup_backend.main:ap
 
 打开 `http://127.0.0.1:8000` 即可注册医院账号并进入管理后台，API 文档位于 `/docs`。生产环境变量和微信云托管说明见 [`docs/deployment-cloudbase.md`](docs/deployment-cloudbase.md)，数据模型与 GIS 格式见 [`docs/backend-api.md`](docs/backend-api.md)。
 
-患者小程序位于 `apps/miniprogram`，使用微信开发者工具直接导入。开发环境默认请求 `http://127.0.0.1:8000`，配置方式和联调说明见 [`apps/miniprogram/README.md`](apps/miniprogram/README.md)。
+患者小程序位于 `apps/miniprogram`，使用微信开发者工具直接导入。体检套餐由医院在 Web 管理端上架，小程序按医院动态读取。开发环境默认请求 `http://127.0.0.1:8000`，配置方式和联调说明见 [`apps/miniprogram/README.md`](apps/miniprogram/README.md)。
 
 ## 三端结构
 

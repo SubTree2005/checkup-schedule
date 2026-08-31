@@ -18,6 +18,7 @@ from .models import (
     HospitalAdmin,
     HospitalGIS,
     HospitalInfo,
+    PackageInfo,
     PlanExecutionDetail,
     QueueSnapshot,
     UserInfo,
@@ -34,6 +35,8 @@ from .schemas import (
     HospitalRegister,
     HospitalUpdate,
     LoginRequest,
+    PackageCreate,
+    PackageUpdate,
     QueueUpdate,
 )
 from .security import (
@@ -47,7 +50,7 @@ from .security import (
     set_session_cookie,
     verify_password,
 )
-from .serializers import anomaly_dict, department_dict, exam_dict, hospital_dict, iso, queue_dict
+from .serializers import anomaly_dict, department_dict, exam_dict, hospital_dict, iso, package_dict, queue_dict
 
 router = APIRouter(prefix="/api")
 
@@ -80,6 +83,14 @@ def require_exam(db: Session, hospital_id: str, item_id: str) -> ExamInfo:
     if row is None:
         raise HTTPException(status_code=404, detail="检查项目不存在")
     return row
+
+
+def packages_using_item(db: Session, hospital_id: str, item_id: str) -> list[PackageInfo]:
+    return [
+        package
+        for package in db.scalars(select(PackageInfo).where(PackageInfo.hospital_id == hospital_id)).all()
+        if item_id in (package.included_item_ids or [])
+    ]
 
 
 def validate_conflicts(db: Session, hospital_id: str, conflicts: list[str]) -> None:
@@ -336,6 +347,12 @@ def update_exam(
         if item_id in data["conflicts"]:
             raise HTTPException(status_code=422, detail="项目不能与自身互斥")
         validate_conflicts(db, admin.hospital_id, data["conflicts"])
+    if data.get("isActive") is False:
+        published_packages = [
+            package for package in packages_using_item(db, admin.hospital_id, item_id) if package.is_published
+        ]
+        if published_packages:
+            raise HTTPException(status_code=409, detail="项目仍被已上架套餐使用，请先下架或调整套餐")
     fields = {
         "deptID": "dept_id",
         "itemName": "item_name",
@@ -362,6 +379,130 @@ def delete_exam(
     row = require_exam(db, admin.hospital_id, item_id)
     if db.scalar(select(func.count()).select_from(PlanExecutionDetail).where(PlanExecutionDetail.item_id == item_id)):
         raise HTTPException(status_code=409, detail="项目已有执行记录，请改为停用以保留历史数据")
+    if packages_using_item(db, admin.hospital_id, item_id):
+        raise HTTPException(status_code=409, detail="项目仍被体检套餐使用，请先调整套餐")
+    db.delete(row)
+    db.commit()
+    return Response(status_code=204)
+
+
+def require_package(db: Session, hospital_id: str, package_id: str) -> PackageInfo:
+    row = db.scalar(
+        select(PackageInfo).where(
+            PackageInfo.package_id == package_id,
+            PackageInfo.hospital_id == hospital_id,
+        )
+    )
+    if row is None:
+        raise HTTPException(status_code=404, detail="体检套餐不存在")
+    return row
+
+
+def validate_package_items(
+    db: Session,
+    hospital_id: str,
+    item_ids: list[str],
+    *,
+    require_active: bool = False,
+) -> None:
+    rows = db.execute(
+        select(ExamInfo.item_id, ExamInfo.is_active)
+        .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
+        .where(DepartmentInfo.hospital_id == hospital_id, ExamInfo.item_id.in_(set(item_ids)))
+    ).all()
+    if {item_id for item_id, _is_active in rows} != set(item_ids):
+        raise HTTPException(status_code=422, detail="套餐包含本医院不存在的检查项目")
+    if require_active and any(not is_active for _item_id, is_active in rows):
+        raise HTTPException(status_code=422, detail="已上架套餐不能包含已停用的检查项目")
+
+
+@router.get("/packages")
+def list_packages(admin: AdminContext = Depends(get_current_admin), db: Session = Depends(get_db)) -> list[dict]:
+    rows = db.scalars(
+        select(PackageInfo)
+        .where(PackageInfo.hospital_id == admin.hospital_id)
+        .order_by(PackageInfo.create_time.desc())
+    ).all()
+    return [package_dict(row) for row in rows]
+
+
+@router.post("/packages", status_code=status.HTTP_201_CREATED)
+def create_package(
+    payload: PackageCreate,
+    admin: AdminContext = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+) -> dict:
+    item_ids = list(dict.fromkeys(payload.includedItemIDs))
+    validate_package_items(db, admin.hospital_id, item_ids, require_active=payload.isPublished)
+    duration = payload.defaultDuration or sum(
+        db.scalars(select(ExamInfo.duration).where(ExamInfo.item_id.in_(item_ids)))
+    )
+    row = PackageInfo(
+        hospital_id=admin.hospital_id,
+        package_name=payload.packageName,
+        package_type=payload.packageType,
+        price=payload.price,
+        tag=payload.tag,
+        description=payload.description,
+        included_item_ids=item_ids,
+        default_duration=duration,
+        suitable=payload.suitable,
+        notice=payload.notice,
+        is_published=payload.isPublished,
+    )
+    db.add(row)
+    db.commit()
+    return package_dict(row)
+
+
+@router.patch("/packages/{package_id}")
+def update_package(
+    package_id: str,
+    payload: PackageUpdate,
+    admin: AdminContext = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+) -> dict:
+    row = require_package(db, admin.hospital_id, package_id)
+    data = payload.model_dump(exclude_unset=True)
+    if any(value is None for value in data.values()):
+        raise HTTPException(status_code=422, detail="套餐字段不能设为空值")
+    if "includedItemIDs" in data:
+        data["includedItemIDs"] = list(dict.fromkeys(data["includedItemIDs"]))
+    next_item_ids = data.get("includedItemIDs", row.included_item_ids)
+    next_published = data.get("isPublished", row.is_published)
+    validate_package_items(db, admin.hospital_id, next_item_ids, require_active=next_published)
+    fields = {
+        "packageName": "package_name",
+        "packageType": "package_type",
+        "price": "price",
+        "tag": "tag",
+        "description": "description",
+        "includedItemIDs": "included_item_ids",
+        "defaultDuration": "default_duration",
+        "suitable": "suitable",
+        "notice": "notice",
+        "isPublished": "is_published",
+    }
+    for key, value in data.items():
+        setattr(row, fields[key], value)
+    if ("includedItemIDs" in data and "defaultDuration" not in data) or data.get("defaultDuration") == 0:
+        row.default_duration = sum(
+            db.scalars(select(ExamInfo.duration).where(ExamInfo.item_id.in_(row.included_item_ids)))
+        )
+    row.update_time = utcnow()
+    db.commit()
+    return package_dict(row)
+
+
+@router.delete("/packages/{package_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_package(
+    package_id: str,
+    admin: AdminContext = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+) -> Response:
+    row = require_package(db, admin.hospital_id, package_id)
+    if db.scalar(select(func.count()).select_from(ExamPlan).where(ExamPlan.package_id == package_id)):
+        raise HTTPException(status_code=409, detail="套餐已有体检计划，请下架套餐以保留历史记录")
     db.delete(row)
     db.commit()
     return Response(status_code=204)

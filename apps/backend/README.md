@@ -1,6 +1,6 @@
 # Backend API
 
-FastAPI + SQLAlchemy 后端，提供医院管理员认证、多医院数据隔离、科室与检查项目 CRUD、GIS 版本管理、异常上报、排队快照、人流地图和数据看板接口。
+FastAPI + SQLAlchemy 后端，提供医院管理员认证、多医院数据隔离、科室与检查项目 CRUD、体检套餐管理及上下架、GIS 版本管理、异常上报、排队快照、人流地图和数据看板接口。
 
 ```bash
 python -m pip install -e ".[backend]"

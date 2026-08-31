@@ -7,7 +7,7 @@ from sqlalchemy import select
 
 from apps.backend.checkup_backend.database import Base
 from apps.backend.checkup_backend.main import create_app
-from apps.backend.checkup_backend.models import ExamPlan, PackageInfo, UserInfo
+from apps.backend.checkup_backend.models import ExamPlan, UserInfo
 
 
 class BackendAPITest(unittest.TestCase):
@@ -103,8 +103,11 @@ class BackendAPITest(unittest.TestCase):
             self.assertNotIn("secure-pass-123", user.password)
 
     def test_admin_page_assets_and_logout(self):
-        self.assertIn("智检云", self.client.get("/").text)
+        admin_page = self.client.get("/").text
+        self.assertIn("智检云", admin_page)
+        self.assertIn("套餐管理", admin_page)
         self.assertIn("renderMap", self.client.get("/assets/app.js").text)
+        self.assertIn("renderPackages", self.client.get("/assets/app.js").text)
         self.register()
         logout = self.client.post("/api/auth/logout")
         self.assertEqual(logout.status_code, 204)
@@ -183,16 +186,39 @@ class BackendAPITest(unittest.TestCase):
         department = self.create_department()
         first_exam = self.create_exam(department["deptID"], name="腹部超声")
         second_exam = self.create_exam(department["deptID"], name="甲状腺超声")
-        with self.app.state.session_factory() as session:
-            package = PackageInfo(
-                package_name="基础套餐",
-                description="患者端联调套餐",
-                included_item_ids=[first_exam["itemID"], second_exam["itemID"]],
-                default_duration=24,
+        package_response = self.client.post(
+            "/api/packages",
+            json={
+                "packageName": "基础套餐",
+                "packageType": "入职体检",
+                "price": 580,
+                "tag": "热门",
+                "description": "患者端联调套餐",
+                "includedItemIDs": [first_exam["itemID"], second_exam["itemID"]],
+                "defaultDuration": 0,
+                "suitable": ["18 岁以上人群"],
+                "notice": ["检查前保持空腹"],
+                "isPublished": True,
+            },
+        )
+        self.assertEqual(package_response.status_code, 201, package_response.text)
+        package = package_response.json()
+        package_id = package["packageID"]
+        self.assertEqual(package["defaultDuration"], 24)
+        invalid_clear = self.client.patch(f"/api/packages/{package_id}", json={"includedItemIDs": None})
+        self.assertEqual(invalid_clear.status_code, 422)
+        blocked_deactivate = self.client.patch(
+            f"/api/exams/{first_exam['itemID']}", json={"isActive": False}
+        )
+        self.assertEqual(blocked_deactivate.status_code, 409)
+
+        with TestClient(self.app) as second_admin_client:
+            self.register(second_admin_client, phone="13800000009", hospital="第二医院")
+            self.assertEqual(second_admin_client.get("/api/packages").json(), [])
+            cross_update = second_admin_client.patch(
+                f"/api/packages/{package_id}", json={"isPublished": False}
             )
-            session.add(package)
-            session.commit()
-            package_id = package.package_id
+            self.assertEqual(cross_update.status_code, 404)
 
         with TestClient(self.app) as patient_client:
             registered = patient_client.post(
@@ -217,6 +243,8 @@ class BackendAPITest(unittest.TestCase):
             )
             self.assertEqual(catalog.status_code, 200, catalog.text)
             self.assertEqual(catalog.json()["packages"][0]["packageID"], package_id)
+            self.assertEqual(catalog.json()["packages"][0]["price"], 580)
+            self.assertEqual(catalog.json()["packages"][0]["type"], "入职体检")
 
             created = patient_client.post(
                 "/api/patient/plans",
@@ -258,6 +286,24 @@ class BackendAPITest(unittest.TestCase):
             history = patient_client.get("/api/patient/plans")
             self.assertEqual(history.status_code, 200, history.text)
             self.assertEqual(history.json()[0]["status"], "已完成")
+
+            unpublished = self.client.patch(f"/api/packages/{package_id}", json={"isPublished": False})
+            self.assertEqual(unpublished.status_code, 200, unpublished.text)
+            catalog_after_unpublish = patient_client.get(
+                f"/api/patient/hospitals/{admin['hospital']['hospitalID']}/catalog"
+            )
+            self.assertEqual(catalog_after_unpublish.json()["packages"], [])
+            stale_create = patient_client.post(
+                "/api/patient/plans",
+                json={
+                    "hospitalID": admin["hospital"]["hospitalID"],
+                    "packageID": package_id,
+                    "profile": {},
+                },
+            )
+            self.assertEqual(stale_create.status_code, 404)
+            protected_history = self.client.delete(f"/api/packages/{package_id}")
+            self.assertEqual(protected_history.status_code, 409)
 
 
 if __name__ == "__main__":

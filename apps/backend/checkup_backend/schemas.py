@@ -126,6 +126,32 @@ class ExamUpdate(BaseModel):
     isActive: bool | None = None
 
 
+class PackageCreate(BaseModel):
+    packageName: str = Field(min_length=1, max_length=200)
+    packageType: str = Field(default="健康体检", min_length=1, max_length=100)
+    price: float = Field(default=0, ge=0, le=1_000_000)
+    tag: str = Field(default="", max_length=100)
+    description: str = Field(default="", max_length=5000)
+    includedItemIDs: list[str] = Field(min_length=1)
+    defaultDuration: int = Field(default=0, ge=0, le=100_000)
+    suitable: list[str] = Field(default_factory=list, max_length=100)
+    notice: list[str] = Field(default_factory=list, max_length=100)
+    isPublished: bool = False
+
+
+class PackageUpdate(BaseModel):
+    packageName: str | None = Field(default=None, min_length=1, max_length=200)
+    packageType: str | None = Field(default=None, min_length=1, max_length=100)
+    price: float | None = Field(default=None, ge=0, le=1_000_000)
+    tag: str | None = Field(default=None, max_length=100)
+    description: str | None = Field(default=None, max_length=5000)
+    includedItemIDs: list[str] | None = Field(default=None, min_length=1)
+    defaultDuration: int | None = Field(default=None, ge=0, le=100_000)
+    suitable: list[str] | None = Field(default=None, max_length=100)
+    notice: list[str] | None = Field(default=None, max_length=100)
+    isPublished: bool | None = None
+
+
 class GISUpload(BaseModel):
     geojson: dict[str, Any]
 

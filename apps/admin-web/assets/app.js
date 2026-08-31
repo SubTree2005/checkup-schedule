@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const state = { me: null, departments: [], exams: [], gis: [], dashboard: null, anomalies: [] };
+  const state = { me: null, departments: [], exams: [], packages: [], gis: [], dashboard: null, anomalies: [] };
   const byId = (id) => document.getElementById(id);
   const authView = byId("authView");
   const appView = byId("appView");
@@ -121,15 +121,17 @@
     const results = await Promise.all([
       api("/departments"),
       api("/exams"),
+      api("/packages"),
       api("/gis"),
       api("/dashboard/summary"),
       api("/anomalies")
     ]);
     state.departments = results[0];
     state.exams = results[1];
-    state.gis = results[2];
-    state.dashboard = results[3];
-    state.anomalies = results[4];
+    state.packages = results[2];
+    state.gis = results[3];
+    state.dashboard = results[4];
+    state.anomalies = results[5];
     renderEverything();
   }
 
@@ -137,6 +139,7 @@
     renderDashboard();
     renderDepartments();
     renderExams();
+    renderPackages();
     renderGisVersions();
     renderAdjustmentOptions();
     renderAnomalies();
@@ -394,6 +397,90 @@
       await api("/exams/" + id, { method: "DELETE" });
       await loadWorkspace();
       toast("项目已删除");
+    } catch (error) { toast(error.message, "error"); }
+  }
+
+  function renderPackages() {
+    const target = byId("packageTable");
+    if (!state.packages.length) {
+      target.innerHTML = emptyState("还没有体检套餐", "选择本医院检查项目创建套餐，上架后会自动显示在患者小程序");
+      return;
+    }
+    target.innerHTML = '<table class="data-table"><thead><tr><th>套餐</th><th>类型</th><th>价格</th><th>项目数</th><th>预计耗时</th><th>小程序状态</th><th>操作</th></tr></thead><tbody>' +
+      state.packages.map((item) => '<tr><td><b>' + escapeHtml(item.packageName) + '</b>' +
+        (item.tag ? '<br><small>' + escapeHtml(item.tag) + '</small>' : '') + '</td><td>' +
+        escapeHtml(item.packageType) + '</td><td>' + (item.price > 0 ? '¥' + Number(item.price).toFixed(2) : '以医院为准') +
+        '</td><td>' + item.includedItemIDs.length + ' 项</td><td>' + item.defaultDuration +
+        ' 分钟</td><td><span class="status-pill' + (item.isPublished ? '' : ' off') + '">' +
+        (item.isPublished ? '已上架' : '草稿/已下架') + '</span></td><td><div class="table-actions"><button data-edit-package="' +
+        item.packageID + '">编辑</button><button class="delete" data-delete-package="' + item.packageID +
+        '">删除</button></div></td></tr>').join("") + '</tbody></table>';
+    target.querySelectorAll("[data-edit-package]").forEach((button) => button.addEventListener("click", () => {
+      openPackage(state.packages.find((item) => item.packageID === button.dataset.editPackage));
+    }));
+    target.querySelectorAll("[data-delete-package]").forEach((button) => button.addEventListener("click", () => deletePackage(button.dataset.deletePackage)));
+  }
+
+  byId("addPackage").addEventListener("click", () => {
+    if (!state.exams.length) return toast("请先创建检查项目", "error");
+    openPackage(null);
+  });
+
+  function openPackage(item) {
+    byId("dialogTitle").textContent = item ? "编辑体检套餐" : "新增体检套餐";
+    const selected = new Set(item ? item.includedItemIDs : []);
+    const deptNames = Object.fromEntries(state.departments.map((dept) => [dept.deptID, dept.deptName]));
+    const examOptions = state.exams.map((exam) => '<label class="check-option"><input type="checkbox" name="includedItemIDs" value="' +
+      exam.itemID + '"' + (selected.has(exam.itemID) ? ' checked' : '') + ' /><span><b>' + escapeHtml(exam.itemName) +
+      '</b><small>' + escapeHtml(deptNames[exam.deptID] || "未知科室") + ' · ' + exam.duration + ' 分钟' +
+      (exam.isActive ? '' : ' · 已停用') + '</small></span></label>').join("");
+    dialogBody.innerHTML = '<form id="recordForm" class="dialog-grid">' +
+      field("套餐名称", "packageName", item && item.packageName, "text", true) +
+      field("套餐类型", "packageType", item ? item.packageType : "健康体检", "text", true) +
+      field("价格（元，0 表示以医院为准）", "price", item ? item.price : 0, "number", true, 'min="0" step="0.01"') +
+      field("展示标签", "tag", item && item.tag) +
+      field("预计总耗时（分钟，0 自动计算）", "defaultDuration", item ? item.defaultDuration : 0, "number", true, 'min="0"') +
+      '<label>小程序状态<select name="isPublished"><option value="false"' + (!item || !item.isPublished ? ' selected' : '') +
+      '>保存为草稿/下架</option><option value="true"' + (item && item.isPublished ? ' selected' : '') + '>立即上架</option></select></label>' +
+      textareaField("套餐说明", "description", item && item.description) +
+      textareaField("适用人群（每行一项）", "suitable", item ? item.suitable.join("\n") : "") +
+      textareaField("注意事项（每行一项）", "notice", item ? item.notice.join("\n") : "") +
+      '<div class="full"><span class="field-label">包含的检查项目</span><div class="check-grid">' + examOptions + '</div></div>' +
+      dialogActions() + '</form>';
+    byId("recordForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const data = formObject(event.currentTarget);
+      const includedItemIDs = Array.from(event.currentTarget.querySelectorAll('[name="includedItemIDs"]:checked')).map((input) => input.value);
+      if (!includedItemIDs.length) return toast("请至少选择一个检查项目", "error");
+      const lines = (value) => value.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+      const payload = {
+        packageName: data.packageName,
+        packageType: data.packageType,
+        price: Number(data.price),
+        tag: data.tag,
+        description: data.description,
+        includedItemIDs: includedItemIDs,
+        defaultDuration: Number(data.defaultDuration),
+        suitable: lines(data.suitable),
+        notice: lines(data.notice),
+        isPublished: data.isPublished === "true"
+      };
+      try {
+        await api(item ? "/packages/" + item.packageID : "/packages", { method: item ? "PATCH" : "POST", body: payload });
+        dialog.close();
+        await loadWorkspace();
+        toast(payload.isPublished ? "套餐已保存并上架" : "套餐草稿已保存");
+      } catch (error) { toast(error.message, "error"); }
+    });
+    dialog.showModal();
+  }
+
+  async function deletePackage(id) {
+    if (!confirm("确定删除这个套餐吗？已有体检计划时请改为下架。")) return;
+    try {
+      await api("/packages/" + id, { method: "DELETE" });
+      await loadWorkspace();
+      toast("套餐已删除");
     } catch (error) { toast(error.message, "error"); }
   }
 

@@ -1,0 +1,9 @@
+<view class="container">
+  <block wx:for="{{hospitals}}" wx:key="id">
+    <view class="card hospital-card">
+      <view class="hospital-title">{{item.name}}</view>
+      <view class="hospital-meta">状态：<text class="open">{{item.status}}</text></view>
+      <button class="primary-btn pick-btn" data-id="{{item.id}}" bindtap="selectHospital">选择医院</button>
+    </view>
+  </block>
+</view>

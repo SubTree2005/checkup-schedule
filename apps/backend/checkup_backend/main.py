@@ -13,6 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from . import models  # noqa: F401 - register SQLAlchemy metadata
 from .api import router
 from .database import Base, build_engine, build_session_factory
+from .patient_api import router as patient_router
 
 
 def create_app(database_url: str | None = None, static_dir: str | Path | None = None) -> FastAPI:
@@ -48,6 +49,7 @@ def create_app(database_url: str | None = None, static_dir: str | Path | None = 
         )
 
     app.include_router(router)
+    app.include_router(patient_router)
     if (admin_dir / "assets").is_dir():
         app.mount("/assets", StaticFiles(directory=admin_dir / "assets"), name="admin-assets")
 

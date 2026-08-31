@@ -27,6 +27,21 @@
 | 排队快照 | `GET/POST /api/queues` |
 | 看板与人流地图 | `GET /api/dashboard/summary`、`GET /api/dashboard/map/{floorKey}` |
 
+### 患者微信小程序接口
+
+患者端使用 `/api/patient` 前缀，登录和注册响应会返回 Bearer Token。医院管理员会话与患者会话相互隔离。
+
+| 功能 | 接口 |
+| --- | --- |
+| 患者注册、登录、当前用户、退出 | `POST /api/patient/auth/register`、`POST /api/patient/auth/login`、`GET /api/patient/auth/me`、`POST /api/patient/auth/logout` |
+| 个人资料与近期身体状态 | `PATCH /api/patient/profile` |
+| 医院和体检目录 | `GET /api/patient/hospitals`、`GET /api/patient/hospitals/{hospitalID}/catalog` |
+| 创建、当前、历史和详情 | `POST /api/patient/plans`、`GET /api/patient/plans/current`、`GET /api/patient/plans`、`GET /api/patient/plans/{planID}` |
+| 开始、完成和动态重排 | `POST /api/patient/plans/{planID}/steps/{detailID}/start`、`POST /api/patient/plans/{planID}/steps/{detailID}/complete`、`POST /api/patient/plans/{planID}/replan` |
+| 院内导航信息 | `GET /api/patient/plans/{planID}/navigation?detailID=...` |
+
+计划接口会在 Backend/Adapter 中把数据库实体转换为 `checkup_scheduler` 领域模型。小程序不包含算法副本，也不直接访问数据库。
+
 OpenAPI 交互文档在服务启动后的 `/docs`。
 
 ## GIS GeoJSON 约定

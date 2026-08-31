@@ -1,0 +1,56 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/register/register",
+    "pages/index/index",
+    "pages/hospital/hospital",
+    "pages/campus/campus",
+    "pages/select-mode/select-mode",
+    "pages/package/package",
+    "pages/department-projects/department-projects",
+    "pages/package-detail/package-detail",
+    "pages/profile/profile",
+    "pages/plan/plan",
+    "pages/navigation/navigation",
+    "pages/record/record",
+    "pages/mine/mine",
+    "pages/edit-profile/edit-profile",
+    "pages/staff/staff",
+    "pages/record-detail/record-detail"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTitleText": "检畅",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F7F9FC"
+  },
+  "tabBar": {
+    "color": "#7B8794",
+    "selectedColor": "#1350BE",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "addpicture/tab-home.png",
+        "selectedIconPath": "addpicture/tab-home-active.png"
+      },
+      {
+        "pagePath": "pages/record/record",
+        "text": "我的体检",
+        "iconPath": "addpicture/tab-record.png",
+        "selectedIconPath": "addpicture/tab-record-active.png"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "text": "我的",
+        "iconPath": "addpicture/tab-mine.png",
+        "selectedIconPath": "addpicture/tab-mine-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

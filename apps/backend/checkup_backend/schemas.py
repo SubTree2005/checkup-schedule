@@ -22,6 +22,41 @@ class LoginRequest(BaseModel):
     password: str
 
 
+class PatientRegister(BaseModel):
+    phone: str = Field(min_length=5, max_length=32)
+    password: str = Field(min_length=8, max_length=128)
+    name: str = Field(min_length=1, max_length=100)
+    gender: str | None = Field(default=None, max_length=16)
+    age: int | None = Field(default=None, ge=1, le=120)
+
+
+class PatientProfileUpdate(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=100)
+    phone: str | None = Field(default=None, min_length=5, max_length=32)
+    gender: str | None = Field(default=None, max_length=16)
+    age: int | None = Field(default=None, ge=1, le=120)
+    fasting: Literal["yes", "no"] | None = None
+    bladder: Literal["normal", "recentUrination"] | None = None
+    drinkingWater: Literal["adequate", "notyet"] | None = None
+    specialNeed: Literal["none", "has"] | None = None
+    booked: Literal["yes", "no"] | None = None
+    medicalHistory: str | None = Field(default=None, max_length=2000)
+    allergens: str | None = Field(default=None, max_length=2000)
+
+
+class PatientPlanCreate(BaseModel):
+    hospitalID: str
+    packageID: str | None = None
+    selectedItemIDs: list[str] = Field(default_factory=list)
+    profile: dict[str, Any] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def validate_selection(self):
+        if not self.packageID and not self.selectedItemIDs:
+            raise ValueError("请选择体检套餐或检查项目")
+        return self
+
+
 class HospitalUpdate(BaseModel):
     hospitalName: str | None = Field(default=None, min_length=2, max_length=200)
     address: str | None = Field(default=None, max_length=500)

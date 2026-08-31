@@ -1,0 +1,2 @@
+.history-step { padding: 24rpx 0; border-bottom: 1rpx solid #eef2f7; }
+.history-step:last-child { border-bottom: none; }

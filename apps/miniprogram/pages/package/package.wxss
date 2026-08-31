@@ -1,0 +1,7 @@
+.package-card { margin-top:20rpx; }
+.package-name { font-size:34rpx; font-weight:700; }
+.package-type { color:#6B7280; margin-top:8rpx; }
+.package-price { font-size:38rpx; color:#1D4ED8; font-weight:700; }
+.package-desc { margin-top:18rpx; line-height:1.7; color:#4B5563; }
+.btn-row { display:flex; gap:20rpx; margin-top:26rpx; }
+.mini-btn { flex:1; }

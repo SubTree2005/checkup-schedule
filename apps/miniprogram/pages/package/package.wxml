@@ -1,0 +1,19 @@
+<view class="container">
+  <block wx:for="{{packages}}" wx:key="id">
+    <view class="card package-card">
+      <view class="space-between">
+        <view>
+          <view class="package-name">{{item.name}}</view>
+          <view class="package-type">{{item.type}}</view>
+        </view>
+        <view class="package-price">{{item.price > 0 ? '¥' + item.price : '以医院为准'}}</view>
+      </view>
+      <view class="tag mt-16">{{item.tag}}</view>
+      <view class="package-desc">{{item.description}}</view>
+      <view class="btn-row">
+        <button class="outline-btn mini-btn" data-id="{{item.id}}" bindtap="viewDetail">查看详情</button>
+        <button class="primary-btn mini-btn" data-id="{{item.id}}" bindtap="selectPackage">选择套餐</button>
+      </view>
+    </view>
+  </block>
+</view>

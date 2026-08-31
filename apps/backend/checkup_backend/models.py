@@ -109,6 +109,7 @@ class UserStatusInfo(Base):
     fasting_hours: Mapped[float] = mapped_column("fastingHours", Float, default=0)
     is_bladder_ready: Mapped[bool] = mapped_column("isBladderReady", Boolean, default=False)
     blood_pressure: Mapped[float | None] = mapped_column("bloodPressure", Float, nullable=True)
+    profile_data: Mapped[dict] = mapped_column("profileData", JSON, default=dict)
     create_time: Mapped[datetime] = mapped_column("createTime", DateTime, default=utcnow)
 
 
@@ -118,6 +119,7 @@ class ExamPlan(Base):
     plan_id: Mapped[str] = mapped_column("planID", String(64), primary_key=True, default=new_id)
     user_id: Mapped[str] = mapped_column("userID", ForeignKey("user_info.userID", ondelete="RESTRICT"), index=True)
     hospital_id: Mapped[str] = mapped_column("hospitalID", ForeignKey("hospital_info.hospitalID", ondelete="RESTRICT"), index=True)
+    package_id: Mapped[str | None] = mapped_column("packageID", ForeignKey("package_info.packageID", ondelete="SET NULL"), nullable=True)
     record_id: Mapped[str | None] = mapped_column("recordID", ForeignKey("user_status_info.recordID", ondelete="SET NULL"), nullable=True)
     selected_item_ids: Mapped[list] = mapped_column("selectedItemIDs", JSON, default=list)
     total_duration: Mapped[int] = mapped_column("totalDuration", Integer, default=0)

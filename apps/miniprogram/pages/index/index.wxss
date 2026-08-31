@@ -1,0 +1,31 @@
+.home-page { padding-bottom: 50rpx; }
+.brand-panel { background: linear-gradient(135deg, #F7FBFF, #FFFFFF); padding-top: 36rpx; padding-bottom: 36rpx; }
+.brand-top { display:flex; align-items:center; justify-content:center; }
+.brand-logo { width: 320rpx; max-height: 120rpx; }
+.brand-title { text-align:center; font-size: 30rpx; color:#2B3A55; margin-top: 18rpx; font-weight: 700; }
+.brand-actions { display:flex; gap: 20rpx; }
+.hero-main-btn,.hero-sub-btn { flex:1; margin:0; }
+.hero-sub-btn { background:#FFFFFF; border: 2rpx solid #D8E6FF; color:#4F83F1; }
+.feature-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 20rpx; }
+.feature-card { min-height: 216rpx; }
+.feature-icon { width: 54rpx; height: 54rpx; border-radius: 16rpx; display:flex; align-items:center; justify-content:center; font-size: 30rpx; font-weight: 700; }
+.feature-icon-blue { background:#EAF2FF; color:#1350BE; }
+.feature-icon-green { background:#E8F8EF; color:#27AE60; }
+.feature-title { font-size: 30rpx; font-weight: 700; margin-top: 14rpx; }
+.feature-desc { font-size: 24rpx; color:#6B7280; margin-top: 10rpx; line-height: 1.6; }
+.feature-meta { margin-top: 20rpx; font-size: 24rpx; color:#4F83F1; }
+.tip-card { background: linear-gradient(135deg,#FFFFFF,#F7FBFF); }
+.tip-box { background:#EAF2FF; border-radius: 18rpx; padding: 20rpx; color:#3B4A63; line-height: 1.7; font-size: 26rpx; }
+.mini-process-list { display:flex; flex-direction:column; gap: 16rpx; }
+.mini-process-item { display:flex; align-items:center; background:#F8FBFF; border-radius: 18rpx; padding: 18rpx 20rpx; }
+.mini-process-index { width: 46rpx; height:46rpx; border-radius:50%; background:#4F83F1; color:#fff; display:flex; align-items:center; justify-content:center; font-size: 22rpx; margin-right: 18rpx; flex-shrink:0; }
+.mini-process-text { font-size: 26rpx; color:#2B3A55; }
+.value-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 20rpx; }
+.value-item { background:#F8FBFF; border-radius: 18rpx; padding: 22rpx; }
+.value-mark { width: 18rpx; height: 18rpx; border-radius: 50%; }
+.mark-blue { background:#4F83F1; }
+.mark-green { background:#27AE60; }
+.value-title { font-size: 28rpx; font-weight:700; margin-top: 14rpx; }
+.value-desc { font-size: 24rpx; color:#6B7280; margin-top: 8rpx; line-height: 1.6; }
+.staff-card { display:flex; align-items:center; justify-content:space-between; }
+.staff-btn { margin:0; width: 180rpx; }

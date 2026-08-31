@@ -1,0 +1,45 @@
+<view class="container">
+  <view class="card form-card">
+    <view class="form-item">
+      <view class="label">是否空腹</view>
+      <view class="option-row">
+        <view class="option {{form.fasting==='yes' ? 'option-active' : ''}}" data-key="fasting" data-value="yes" bindtap="setField">是</view>
+        <view class="option {{form.fasting==='no' ? 'option-active' : ''}}" data-key="fasting" data-value="no" bindtap="setField">否</view>
+      </view>
+    </view>
+
+    <view class="form-item">
+      <view class="label">膀胱充盈状态</view>
+      <view class="option-row">
+        <view class="option {{form.bladder==='normal' ? 'option-active' : ''}}" data-key="bladder" data-value="normal" bindtap="setField">正常</view>
+        <view class="option {{form.bladder==='recentUrination' ? 'option-active' : ''}}" data-key="bladder" data-value="recentUrination" bindtap="setField">半小时内排尿</view>
+      </view>
+    </view>
+
+    <view class="form-item">
+      <view class="label">喝水情况</view>
+      <view class="option-row">
+        <view class="option {{form.drinkingWater==='adequate' ? 'option-active' : ''}}" data-key="drinkingWater" data-value="adequate" bindtap="setField">已喝水</view>
+        <view class="option {{form.drinkingWater==='notyet' ? 'option-active' : ''}}" data-key="drinkingWater" data-value="notyet" bindtap="setField">未喝水</view>
+      </view>
+    </view>
+
+    <view class="form-item">
+      <view class="label">是否有特殊检查需求</view>
+      <view class="option-row">
+        <view class="option {{form.specialNeed==='none' ? 'option-active' : ''}}" data-key="specialNeed" data-value="none" bindtap="setField">无</view>
+        <view class="option {{form.specialNeed==='has' ? 'option-active' : ''}}" data-key="specialNeed" data-value="has" bindtap="setField">有</view>
+      </view>
+    </view>
+
+    <view class="form-item">
+      <view class="label">是否已经预约</view>
+      <view class="option-row">
+        <view class="option {{form.booked==='yes' ? 'option-active' : ''}}" data-key="booked" data-value="yes" bindtap="setField">是</view>
+        <view class="option {{form.booked==='no' ? 'option-active' : ''}}" data-key="booked" data-value="no" bindtap="setField">否</view>
+      </view>
+    </view>
+  </view>
+
+  <button class="primary-btn submit-btn" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submitProfile">开始智能规划</button>
+</view>

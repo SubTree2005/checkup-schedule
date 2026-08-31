@@ -1,0 +1,50 @@
+<view class="container" wx:if="{{pkg}}">
+  <view class="card detail-head">
+    <view class="package-name">{{pkg.name}}</view>
+    <view class="package-type">{{pkg.type}}</view>
+    <view class="detail-price">{{pkg.price > 0 ? '¥' + pkg.price : '价格以医院为准'}}</view>
+    <view class="detail-label">套餐定位</view>
+    <view class="detail-text">{{pkg.position}}</view>
+    <view class="detail-label mt-24">适合人群</view>
+    <view class="chips">
+      <block wx:for="{{pkg.suitable}}" wx:key="index">
+        <view class="tag chip">{{item}}</view>
+      </block>
+    </view>
+    <view class="tip mt-24">{{pkg.tip}}</view>
+  </view>
+
+  <view class="card mt-24">
+    <view class="section-title">核心检查概览</view>
+    <view class="detail-text">{{pkg.description}}</view>
+  </view>
+
+  <view class="card mt-24">
+    <view class="section-title">全部检查项目</view>
+    <block wx:for="{{groupViews}}" wx:key="name">
+      <view class="accordion-item" data-index="{{index}}" bindtap="toggleGroup">
+        <view class="space-between accordion-head">
+          <view>
+            <view class="accordion-name">{{item.name}}</view>
+            <view class="accordion-count">{{item.countText}}</view>
+          </view>
+          <view class="accordion-arrow">{{item.open ? '－' : '＋'}}</view>
+        </view>
+        <view class="accordion-body" wx:if="{{item.open}}">
+          <block wx:for="{{item.items}}" wx:key="index">
+            <view class="accordion-line">• {{item}}</view>
+          </block>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <view class="card mt-24">
+    <view class="section-title">注意事项</view>
+    <block wx:for="{{pkg.notice}}" wx:key="index">
+      <view class="accordion-line">• {{item}}</view>
+    </block>
+  </view>
+
+  <button class="primary-btn bottom-btn" bindtap="goProfile">生成我的体检路线</button>
+</view>

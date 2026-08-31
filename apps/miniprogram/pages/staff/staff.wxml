@@ -1,0 +1,14 @@
+<view class="container">
+  <view class="card hero-card">
+    <view class="section-title">医院工作人员入口</view>
+    <view class="section-subtitle">仅限医院内部人员使用，当前为前端演示入口。</view>
+  </view>
+
+  <block wx:for="{{sections}}" wx:key="title">
+    <view class="card mt-24">
+      <view class="item-title">{{item.title}}</view>
+      <view class="item-desc">{{item.desc}}</view>
+      <button class="secondary-btn mt-24">敬请期待</button>
+    </view>
+  </block>
+</view>

@@ -1,0 +1,27 @@
+.summary-card { margin-top: 8rpx; }
+.summary-name { font-size: 36rpx; font-weight:700; }
+.summary-price { color:#1D4ED8; margin-top:8rpx; }
+.summary-time { color:#4F83F1; font-weight:700; }
+.summary-desc { font-size: 28rpx; font-weight:700; }
+.summary-tip { color:#6B7280; line-height:1.6; font-size:24rpx; }
+.replan { margin-top: 12rpx; color:#1D4ED8; }
+.progress-bar { width:100%; height: 16rpx; background:#E5EDFA; border-radius:999rpx; overflow:hidden; }
+.progress-inner { height:100%; background: linear-gradient(90deg,#4F83F1,#79B0FF); }
+.remaining { color:#4B5563; font-size:24rpx; margin-top: 8rpx; }
+.action-row { display:flex; }
+.flex-btn { flex:1; }
+.step-card { border: 2rpx solid transparent; }
+.active-card { border-color:#CFE0FF; }
+.step-no { width: 68rpx; height:68rpx; border-radius:20rpx; background:#EAF2FF; color:#4F83F1; display:flex; align-items:center; justify-content:center; font-weight:700; margin-right:16rpx; }
+.step-title { font-size: 30rpx; font-weight:700; }
+.step-dept { color:#6B7280; margin-top:8rpx; font-size:24rpx; }
+.status { font-size:24rpx; font-weight:700; }
+.item-list { background:#F8FBFF; border-radius:16rpx; padding:16rpx; }
+.item-line { line-height:1.8; color:#4B5563; font-size:26rpx; }
+.info-line { margin-top: 10rpx; color:#6B7280; line-height:1.6; font-size:24rpx; }
+.location-box { background:#F8FBFF; border-radius:16rpx; padding:18rpx; }
+.location-title { font-size:26rpx; font-weight:700; color:#1F2937; }
+.location-desc { font-size:24rpx; color:#6B7280; line-height:1.6; margin-top:10rpx; }
+.nav-btn { margin-top: 20rpx; }
+.step-btn { margin-top: 24rpx; }
+.empty-card { margin-top: 40rpx; }

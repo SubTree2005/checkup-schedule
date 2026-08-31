@@ -23,6 +23,7 @@
 | 科室 | `GET/POST /api/departments`、`PATCH/DELETE /api/departments/{deptID}` |
 | 检查项目 | `GET/POST /api/exams`、`PATCH/DELETE /api/exams/{itemID}` |
 | 体检套餐与上下架 | `GET/POST /api/packages`、`PATCH/DELETE /api/packages/{packageID}` |
+| 工作区标准模板与一键导入 | `GET /api/imports/template`、`POST /api/imports/workspace` |
 | GIS | `GET /api/gis`、`GET/PUT /api/gis/{floorKey}` |
 | 异常 | `GET/POST /api/anomalies`、`POST /api/anomalies/{reportID}/resolve` |
 | 排队快照 | `GET/POST /api/queues` |
@@ -46,6 +47,8 @@
 套餐由医院管理员在 Web 管理端组合本医院的检查项目，并保存为草稿或上架。患者目录只返回所选医院已上架、且包含项目均处于启用状态的套餐；套餐下架后立即从目录消失，也不能再用旧套餐 ID 创建新计划。历史计划仍保留原套餐关联。
 
 OpenAPI 交互文档在服务启动后的 `/docs`。
+
+科室、项目、套餐和多楼层 GIS 可以通过一份标准 JSON 原子导入；业务 key、字段和 GeoJSON 关联规则见 [`workspace-import.md`](workspace-import.md)。
 
 ## GIS GeoJSON 约定
 

@@ -8,6 +8,7 @@
   const dialog = byId("editorDialog");
   const dialogBody = byId("dialogBody");
   let toastTimer;
+  let workspaceImportPayload = null;
 
   function escapeHtml(value) {
     return String(value == null ? "" : value)
@@ -41,7 +42,8 @@
       let message = "请求失败";
       try {
         const payload = await response.json();
-        message = typeof payload.detail === "string" ? payload.detail : message;
+        if (typeof payload.detail === "string") message = payload.detail;
+        if (Array.isArray(payload.detail)) message = payload.detail.map((item) => item.msg).join("；");
       } catch (_) {}
       throw new Error(message);
     }
@@ -500,6 +502,76 @@
   dialog.addEventListener("click", (event) => {
     if (event.target === dialog) dialog.close();
     if (event.target.id === "cancelDialog") dialog.close();
+  });
+
+  byId("workspaceImportForm").querySelector('[name="workspaceFile"]').addEventListener("change", async (event) => {
+    const file = event.currentTarget.files[0];
+    workspaceImportPayload = null;
+    byId("importResult").classList.add("hidden");
+    if (!file) {
+      byId("importFileSummary").innerHTML = "<span>尚未选择文件</span>";
+      return;
+    }
+    try {
+      const payload = JSON.parse(await file.text());
+      const sections = ["departments", "exams", "packages", "gis"];
+      sections.forEach((name) => {
+        if (payload[name] != null && !Array.isArray(payload[name])) throw new Error(name + " 必须是数组");
+      });
+      workspaceImportPayload = payload;
+      byId("importFileSummary").innerHTML = '<b>' + escapeHtml(file.name) + '</b><div class="import-counts">' +
+        '<span>科室 ' + (payload.departments || []).length + '</span><span>项目 ' + (payload.exams || []).length +
+        '</span><span>套餐 ' + (payload.packages || []).length + '</span><span>GIS ' + (payload.gis || []).length +
+        '</span></div><small>格式版本 ' + escapeHtml(payload.formatVersion || "未填写") + '</small>';
+    } catch (error) {
+      event.currentTarget.value = "";
+      byId("importFileSummary").innerHTML = "<span>文件解析失败，请重新选择</span>";
+      toast(error instanceof SyntaxError ? "文件不是有效的 JSON" : error.message, "error");
+    }
+  });
+
+  byId("workspaceImportForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!workspaceImportPayload) return toast("请先选择有效的标准 JSON 文件", "error");
+    const submitButton = event.currentTarget.querySelector('[type="submit"]');
+    submitButton.disabled = true;
+    submitButton.textContent = "正在校验并导入…";
+    try {
+      const result = await api("/imports/workspace", { method: "POST", body: workspaceImportPayload });
+      await loadWorkspace();
+      const summary = result.summary;
+      const summaryText = (name) => summary[name].created + " 新增 / " + summary[name].updated + " 更新";
+      byId("importResult").innerHTML = '<b>导入成功</b><div class="import-result-grid"><span>科室<small>' +
+        summaryText("departments") + '</small></span><span>项目<small>' + summaryText("exams") +
+        '</small></span><span>套餐<small>' + summaryText("packages") + '</small></span><span>GIS<small>' +
+        summaryText("gis") + '</small></span></div>';
+      byId("importResult").classList.remove("hidden");
+      event.currentTarget.reset();
+      workspaceImportPayload = null;
+      byId("importFileSummary").innerHTML = "<span>导入完成，可继续选择其他文件</span>";
+      toast("医院数据已完成一键导入");
+    } catch (error) {
+      toast(error.message, "error");
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = "一键校验并导入";
+    }
+  });
+
+  byId("downloadImportTemplate").addEventListener("click", async () => {
+    try {
+      const template = await api("/imports/template");
+      const blob = new Blob([JSON.stringify(template, null, 2)], { type: "application/json;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "hospital-workspace-template.json";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      toast("标准模板已下载");
+    } catch (error) { toast(error.message, "error"); }
   });
 
   byId("gisForm").addEventListener("submit", async (event) => {

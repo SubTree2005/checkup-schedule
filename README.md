@@ -70,7 +70,7 @@ python -m pip install -e ".[backend]"
 DATABASE_URL=sqlite:///./checkup.db uvicorn apps.backend.checkup_backend.main:app --reload
 ```
 
-打开 `http://127.0.0.1:8000` 即可注册医院账号并进入管理后台，API 文档位于 `/docs`。生产环境变量和微信云托管说明见 [`docs/deployment-cloudbase.md`](docs/deployment-cloudbase.md)，数据模型与 GIS 格式见 [`docs/backend-api.md`](docs/backend-api.md)。
+打开 `http://127.0.0.1:8000` 即可注册医院账号并进入管理后台。后台支持使用一份标准 JSON 一键导入科室、检查项目、多个套餐和多楼层 GIS，格式见 [`docs/workspace-import.md`](docs/workspace-import.md)。API 文档位于 `/docs`；生产环境变量和微信云托管说明见 [`docs/deployment-cloudbase.md`](docs/deployment-cloudbase.md)，数据模型与 GIS 格式见 [`docs/backend-api.md`](docs/backend-api.md)。
 
 患者小程序位于 `apps/miniprogram`，使用微信开发者工具直接导入。体检套餐由医院在 Web 管理端上架，小程序按医院动态读取。开发环境默认请求 `http://127.0.0.1:8000`，配置方式和联调说明见 [`apps/miniprogram/README.md`](apps/miniprogram/README.md)。
 

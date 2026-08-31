@@ -105,9 +105,11 @@ class BackendAPITest(unittest.TestCase):
     def test_admin_page_assets_and_logout(self):
         admin_page = self.client.get("/").text
         self.assertIn("智检云", admin_page)
+        self.assertIn("一键导入", admin_page)
         self.assertIn("套餐管理", admin_page)
         self.assertIn("renderMap", self.client.get("/assets/app.js").text)
         self.assertIn("renderPackages", self.client.get("/assets/app.js").text)
+        self.assertIn("workspaceImportForm", self.client.get("/assets/app.js").text)
         self.register()
         logout = self.client.post("/api/auth/logout")
         self.assertEqual(logout.status_code, 204)
@@ -163,6 +165,73 @@ class BackendAPITest(unittest.TestCase):
         flow = {item["deptID"]: item for item in dashboard.json()["flow"]}
         self.assertEqual(flow[department["deptID"]]["peopleFlow"], 9)
         self.assertEqual(flow[department["deptID"]]["estimatedWaitTime"], 1200)
+
+    def test_workspace_import_is_atomic_and_idempotent(self):
+        admin = self.register()
+        template_response = self.client.get("/api/imports/template")
+        self.assertEqual(template_response.status_code, 200, template_response.text)
+        template = template_response.json()
+        self.assertEqual(template["formatVersion"], "1.0")
+        self.assertEqual(len(template["packages"]), 2)
+
+        imported = self.client.post("/api/imports/workspace", json=template)
+        self.assertEqual(imported.status_code, 200, imported.text)
+        result = imported.json()
+        self.assertEqual(result["summary"]["departments"], {"created": 2, "updated": 0})
+        self.assertEqual(result["summary"]["exams"], {"created": 2, "updated": 0})
+        self.assertEqual(result["summary"]["packages"], {"created": 2, "updated": 0})
+        self.assertEqual(result["summary"]["gis"], {"created": 1, "updated": 0})
+        self.assertEqual(len(self.client.get("/api/departments").json()), 2)
+        self.assertEqual(len(self.client.get("/api/exams").json()), 2)
+        packages = self.client.get("/api/packages").json()
+        self.assertEqual(len(packages), 2)
+        self.assertEqual(sum(package["isPublished"] for package in packages), 1)
+
+        gis = self.client.get("/api/gis/1F").json()
+        department_features = [
+            feature
+            for feature in gis["geojson"]["features"]
+            if feature["properties"].get("featureType") == "department"
+        ]
+        self.assertTrue(all(feature["properties"].get("deptID") for feature in department_features))
+        self.assertTrue(all("departmentKey" not in feature["properties"] for feature in department_features))
+
+        repeated = self.client.post("/api/imports/workspace", json=template)
+        self.assertEqual(repeated.status_code, 200, repeated.text)
+        repeated_result = repeated.json()
+        self.assertEqual(repeated_result["summary"]["departments"], {"created": 0, "updated": 2})
+        self.assertEqual(repeated_result["summary"]["packages"], {"created": 0, "updated": 2})
+        self.assertEqual(repeated_result["gisVersions"]["1F"], 2)
+        self.assertEqual(len(self.client.get("/api/departments").json()), 2)
+
+        invalid = self.client.get("/api/imports/template").json()
+        invalid["departments"][0]["location"] = "不应写入"
+        route = next(
+            feature
+            for feature in invalid["gis"][0]["geojson"]["features"]
+            if feature["properties"].get("featureType") == "route"
+        )
+        route["properties"]["distanceMeters"] = -1
+        rejected = self.client.post("/api/imports/workspace", json=invalid)
+        self.assertEqual(rejected.status_code, 422, rejected.text)
+        departments = {row["deptName"]: row for row in self.client.get("/api/departments").json()}
+        self.assertEqual(departments["超声科"]["location"], "1F-A12")
+
+        with TestClient(self.app) as patient_client:
+            registered = patient_client.post(
+                "/api/patient/auth/register",
+                json={
+                    "phone": "13900000008",
+                    "password": "patient-pass-123",
+                    "name": "批量导入患者",
+                },
+            )
+            self.assertEqual(registered.status_code, 201, registered.text)
+            catalog = patient_client.get(
+                f"/api/patient/hospitals/{admin['hospital']['hospitalID']}/catalog"
+            )
+            self.assertEqual(catalog.status_code, 200, catalog.text)
+            self.assertEqual([row["packageName"] for row in catalog.json()["packages"]], ["基础体检套餐"])
 
     def test_anomaly_closes_and_reopens_department(self):
         self.register()

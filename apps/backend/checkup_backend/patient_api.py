@@ -594,7 +594,12 @@ def create_patient_plan(
         raise HTTPException(status_code=422, detail="检查项目不属于所选医院或已停用")
     selected_rows = [owned[item_id] for item_id in item_ids]
     user = db.get(UserInfo, patient.user_id)
-    profile = payload.profile or {}
+    previous_status = _latest_status(db, user.user_id)
+    profile_updates = payload.profile or {}
+    profile = {
+        **((previous_status.profile_data or {}) if previous_status else {}),
+        **profile_updates,
+    }
     schedule = _run_scheduler(db, user, hospital, selected_rows)
     if not schedule.feasible:
         reasons = "; ".join(item.reason for item in schedule.unscheduled[:3])
@@ -603,8 +608,22 @@ def create_patient_plan(
     total_duration = math.ceil((ordered[-1].finish_at - ordered[0].arrival_at).total_seconds() / 60) if ordered else 0
     status_record = UserStatusInfo(
         user_id=user.user_id,
-        fasting_hours=8 if profile.get("fasting") == "yes" else 0,
-        is_bladder_ready=profile.get("bladder") == "normal",
+        fasting_hours=(
+            8
+            if profile_updates.get(
+                "fasting",
+                "yes" if previous_status and previous_status.fasting_hours >= 8 else "no",
+            )
+            == "yes"
+            else 0
+        ),
+        is_bladder_ready=(
+            profile_updates.get(
+                "bladder",
+                "normal" if previous_status and previous_status.is_bladder_ready else "recentUrination",
+            )
+            == "normal"
+        ),
         profile_data=profile,
     )
     db.add(status_record)

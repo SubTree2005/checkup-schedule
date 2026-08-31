@@ -518,12 +518,17 @@ class BackendAPITest(unittest.TestCase):
                 },
             )
             self.assertEqual(registered.status_code, 201, registered.text)
+            first_profile = patient_client.patch(
+                "/api/patient/profile",
+                json={"medicalHistory": "高血压史", "allergens": "青霉素"},
+            )
+            self.assertEqual(first_profile.status_code, 200, first_profile.text)
             first = patient_client.post(
                 "/api/patient/plans",
                 json={
                     "hospitalID": admin["hospital"]["hospitalID"],
                     "packageID": package.json()["packageID"],
-                    "profile": {"fasting": "yes", "bladder": "normal", "medicalHistory": "高血压史"},
+                    "profile": {"fasting": "yes", "bladder": "normal"},
                 },
             )
             self.assertEqual(first.status_code, 201, first.text)
@@ -535,12 +540,17 @@ class BackendAPITest(unittest.TestCase):
             self.assertEqual(finished.status_code, 200, finished.text)
             self.assertTrue(finished.json()["finished"])
 
+            second_profile = patient_client.patch(
+                "/api/patient/profile",
+                json={"medicalHistory": "无", "allergens": "无"},
+            )
+            self.assertEqual(second_profile.status_code, 200, second_profile.text)
             second = patient_client.post(
                 "/api/patient/plans",
                 json={
                     "hospitalID": admin["hospital"]["hospitalID"],
                     "packageID": package.json()["packageID"],
-                    "profile": {"fasting": "no", "bladder": "recentUrination", "medicalHistory": "无"},
+                    "profile": {"fasting": "no", "bladder": "recentUrination"},
                 },
             )
             self.assertEqual(second.status_code, 201, second.text)
@@ -549,8 +559,10 @@ class BackendAPITest(unittest.TestCase):
             snapshots = {row["planID"]: row["profileSnapshot"] for row in history.json()}
             self.assertEqual(snapshots[first.json()["planID"]]["fasting"], "yes")
             self.assertEqual(snapshots[first.json()["planID"]]["medicalHistory"], "高血压史")
+            self.assertEqual(snapshots[first.json()["planID"]]["allergens"], "青霉素")
             self.assertEqual(snapshots[second.json()["planID"]]["fasting"], "no")
             self.assertEqual(snapshots[second.json()["planID"]]["medicalHistory"], "无")
+            self.assertEqual(snapshots[second.json()["planID"]]["allergens"], "无")
 
             with self.app.state.session_factory() as session:
                 first_plan = session.get(ExamPlan, first.json()["planID"])

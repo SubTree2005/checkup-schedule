@@ -1,3 +1,4 @@
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -7,7 +8,7 @@ from sqlalchemy import select
 
 from apps.backend.checkup_backend.database import Base
 from apps.backend.checkup_backend.main import create_app
-from apps.backend.checkup_backend.models import ExamPlan, PackageInfo, UserInfo
+from apps.backend.checkup_backend.models import ExamPlan, UserInfo
 
 
 class BackendAPITest(unittest.TestCase):
@@ -103,8 +104,13 @@ class BackendAPITest(unittest.TestCase):
             self.assertNotIn("secure-pass-123", user.password)
 
     def test_admin_page_assets_and_logout(self):
-        self.assertIn("智检云", self.client.get("/").text)
+        admin_page = self.client.get("/").text
+        self.assertIn("智检云", admin_page)
+        self.assertIn("一键导入", admin_page)
+        self.assertIn("套餐管理", admin_page)
         self.assertIn("renderMap", self.client.get("/assets/app.js").text)
+        self.assertIn("renderPackages", self.client.get("/assets/app.js").text)
+        self.assertIn("workspaceImportForm", self.client.get("/assets/app.js").text)
         self.register()
         logout = self.client.post("/api/auth/logout")
         self.assertEqual(logout.status_code, 204)
@@ -161,6 +167,136 @@ class BackendAPITest(unittest.TestCase):
         self.assertEqual(flow[department["deptID"]]["peopleFlow"], 9)
         self.assertEqual(flow[department["deptID"]]["estimatedWaitTime"], 1200)
 
+    def test_workspace_import_is_atomic_and_idempotent(self):
+        admin = self.register()
+        template_response = self.client.get("/api/imports/template")
+        self.assertEqual(template_response.status_code, 200, template_response.text)
+        template = template_response.json()
+        self.assertEqual(template["formatVersion"], "1.0")
+        self.assertEqual(len(template["packages"]), 2)
+
+        imported = self.client.post("/api/imports/workspace", json=template)
+        self.assertEqual(imported.status_code, 200, imported.text)
+        result = imported.json()
+        self.assertEqual(result["summary"]["hospital"], {"updated": 0})
+        self.assertEqual(result["summary"]["departments"], {"created": 2, "updated": 0})
+        self.assertEqual(result["summary"]["exams"], {"created": 2, "updated": 0})
+        self.assertEqual(result["summary"]["packages"], {"created": 2, "updated": 0})
+        self.assertEqual(result["summary"]["gis"], {"created": 1, "updated": 0})
+        self.assertEqual(len(self.client.get("/api/departments").json()), 2)
+        self.assertEqual(len(self.client.get("/api/exams").json()), 2)
+        packages = self.client.get("/api/packages").json()
+        self.assertEqual(len(packages), 2)
+        self.assertEqual(sum(package["isPublished"] for package in packages), 1)
+
+        gis = self.client.get("/api/gis/1F").json()
+        department_features = [
+            feature
+            for feature in gis["geojson"]["features"]
+            if feature["properties"].get("featureType") == "department"
+        ]
+        self.assertTrue(all(feature["properties"].get("deptID") for feature in department_features))
+        self.assertTrue(all("departmentKey" not in feature["properties"] for feature in department_features))
+
+        repeated = self.client.post("/api/imports/workspace", json=template)
+        self.assertEqual(repeated.status_code, 200, repeated.text)
+        repeated_result = repeated.json()
+        self.assertEqual(repeated_result["summary"]["departments"], {"created": 0, "updated": 2})
+        self.assertEqual(repeated_result["summary"]["packages"], {"created": 0, "updated": 2})
+        self.assertEqual(repeated_result["gisVersions"]["1F"], 2)
+        self.assertEqual(len(self.client.get("/api/departments").json()), 2)
+
+        invalid = self.client.get("/api/imports/template").json()
+        invalid["departments"][0]["location"] = "不应写入"
+        route = next(
+            feature
+            for feature in invalid["gis"][0]["geojson"]["features"]
+            if feature["properties"].get("featureType") == "route"
+        )
+        route["properties"]["distanceMeters"] = -1
+        rejected = self.client.post("/api/imports/workspace", json=invalid)
+        self.assertEqual(rejected.status_code, 422, rejected.text)
+        departments = {row["deptName"]: row for row in self.client.get("/api/departments").json()}
+        self.assertEqual(departments["超声科"]["location"], "1F-A12")
+
+        with TestClient(self.app) as patient_client:
+            registered = patient_client.post(
+                "/api/patient/auth/register",
+                json={
+                    "phone": "13900000008",
+                    "password": "patient-pass-123",
+                    "name": "批量导入患者",
+                },
+            )
+            self.assertEqual(registered.status_code, 201, registered.text)
+            catalog = patient_client.get(
+                f"/api/patient/hospitals/{admin['hospital']['hospitalID']}/catalog"
+            )
+            self.assertEqual(catalog.status_code, 200, catalog.text)
+            self.assertEqual([row["packageName"] for row in catalog.json()["packages"]], ["基础体检套餐"])
+
+    def test_zijingang_example_bundle_imports_end_to_end(self):
+        admin = self.register(hospital="待更新医院")
+        example_path = (
+            Path(__file__).resolve().parents[1]
+            / "examples"
+            / "hospitals"
+            / "zijingang-campus-hospital"
+            / "workspace.json"
+        )
+        payload = json.loads(example_path.read_text(encoding="utf-8"))
+
+        imported = self.client.post("/api/imports/workspace", json=payload)
+        self.assertEqual(imported.status_code, 200, imported.text)
+        summary = imported.json()["summary"]
+        self.assertEqual(summary["hospital"], {"updated": 1})
+        self.assertEqual(summary["departments"], {"created": 49, "updated": 0})
+        self.assertEqual(summary["exams"], {"created": 79, "updated": 0})
+        self.assertEqual(summary["packages"], {"created": 7, "updated": 0})
+        self.assertEqual(summary["gis"], {"created": 3, "updated": 0})
+
+        me = self.client.get("/api/auth/me").json()
+        self.assertEqual(me["hospital"]["hospitalName"], "浙江大学校医院（紫金港校区）")
+        self.assertEqual(me["hospital"]["address"], "杭州市余杭塘路866号")
+
+        departments = self.client.get("/api/departments").json()
+        self.assertEqual(len(departments), 49)
+        self.assertFalse(any("304" in row["location"] for row in departments))
+        self.assertIn("放射登记窗口", next(row for row in departments if row["deptName"].startswith("放射科"))["location"])
+
+        packages = self.client.get("/api/packages").json()
+        self.assertEqual(sorted(row["price"] for row in packages), [80, 120, 280, 398, 580, 800, 1350])
+        self.assertTrue(all(row["isPublished"] for row in packages))
+
+        department_feature_count = 0
+        for floor_key in ("1F", "2F", "3F"):
+            floor = self.client.get(f"/api/gis/{floor_key}")
+            self.assertEqual(floor.status_code, 200, floor.text)
+            department_features = [
+                feature
+                for feature in floor.json()["geojson"]["features"]
+                if feature["properties"].get("featureType") == "department"
+            ]
+            self.assertTrue(all(feature["properties"].get("deptID") for feature in department_features))
+            department_feature_count += len(department_features)
+        self.assertEqual(department_feature_count, 49)
+
+        with TestClient(self.app) as patient_client:
+            registered = patient_client.post(
+                "/api/patient/auth/register",
+                json={
+                    "phone": "13900000009",
+                    "password": "patient-pass-123",
+                    "name": "紫金港示例患者",
+                },
+            )
+            self.assertEqual(registered.status_code, 201, registered.text)
+            catalog = patient_client.get(
+                f"/api/patient/hospitals/{admin['hospital']['hospitalID']}/catalog"
+            )
+            self.assertEqual(catalog.status_code, 200, catalog.text)
+            self.assertEqual(len(catalog.json()["packages"]), 7)
+
     def test_anomaly_closes_and_reopens_department(self):
         self.register()
         department = self.create_department()
@@ -183,16 +319,39 @@ class BackendAPITest(unittest.TestCase):
         department = self.create_department()
         first_exam = self.create_exam(department["deptID"], name="腹部超声")
         second_exam = self.create_exam(department["deptID"], name="甲状腺超声")
-        with self.app.state.session_factory() as session:
-            package = PackageInfo(
-                package_name="基础套餐",
-                description="患者端联调套餐",
-                included_item_ids=[first_exam["itemID"], second_exam["itemID"]],
-                default_duration=24,
+        package_response = self.client.post(
+            "/api/packages",
+            json={
+                "packageName": "基础套餐",
+                "packageType": "入职体检",
+                "price": 580,
+                "tag": "热门",
+                "description": "患者端联调套餐",
+                "includedItemIDs": [first_exam["itemID"], second_exam["itemID"]],
+                "defaultDuration": 0,
+                "suitable": ["18 岁以上人群"],
+                "notice": ["检查前保持空腹"],
+                "isPublished": True,
+            },
+        )
+        self.assertEqual(package_response.status_code, 201, package_response.text)
+        package = package_response.json()
+        package_id = package["packageID"]
+        self.assertEqual(package["defaultDuration"], 24)
+        invalid_clear = self.client.patch(f"/api/packages/{package_id}", json={"includedItemIDs": None})
+        self.assertEqual(invalid_clear.status_code, 422)
+        blocked_deactivate = self.client.patch(
+            f"/api/exams/{first_exam['itemID']}", json={"isActive": False}
+        )
+        self.assertEqual(blocked_deactivate.status_code, 409)
+
+        with TestClient(self.app) as second_admin_client:
+            self.register(second_admin_client, phone="13800000009", hospital="第二医院")
+            self.assertEqual(second_admin_client.get("/api/packages").json(), [])
+            cross_update = second_admin_client.patch(
+                f"/api/packages/{package_id}", json={"isPublished": False}
             )
-            session.add(package)
-            session.commit()
-            package_id = package.package_id
+            self.assertEqual(cross_update.status_code, 404)
 
         with TestClient(self.app) as patient_client:
             registered = patient_client.post(
@@ -217,6 +376,8 @@ class BackendAPITest(unittest.TestCase):
             )
             self.assertEqual(catalog.status_code, 200, catalog.text)
             self.assertEqual(catalog.json()["packages"][0]["packageID"], package_id)
+            self.assertEqual(catalog.json()["packages"][0]["price"], 580)
+            self.assertEqual(catalog.json()["packages"][0]["type"], "入职体检")
 
             created = patient_client.post(
                 "/api/patient/plans",
@@ -258,6 +419,24 @@ class BackendAPITest(unittest.TestCase):
             history = patient_client.get("/api/patient/plans")
             self.assertEqual(history.status_code, 200, history.text)
             self.assertEqual(history.json()[0]["status"], "已完成")
+
+            unpublished = self.client.patch(f"/api/packages/{package_id}", json={"isPublished": False})
+            self.assertEqual(unpublished.status_code, 200, unpublished.text)
+            catalog_after_unpublish = patient_client.get(
+                f"/api/patient/hospitals/{admin['hospital']['hospitalID']}/catalog"
+            )
+            self.assertEqual(catalog_after_unpublish.json()["packages"], [])
+            stale_create = patient_client.post(
+                "/api/patient/plans",
+                json={
+                    "hospitalID": admin["hospital"]["hospitalID"],
+                    "packageID": package_id,
+                    "profile": {},
+                },
+            )
+            self.assertEqual(stale_create.status_code, 404)
+            protected_history = self.client.delete(f"/api/packages/{package_id}")
+            self.assertEqual(protected_history.status_code, 409)
 
 
 if __name__ == "__main__":

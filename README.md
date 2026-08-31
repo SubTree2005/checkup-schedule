@@ -11,13 +11,14 @@ Checkup Schedule 是体检检查智能排序项目的 Monorepo。当前项目发
 ```text
 apps/
   miniprogram/       患者微信小程序（登录、选检、排程、执行、记录、导航）
-  admin-web/         医院 Web 管理端（看板、GIS、人流、基础信息与临时调整）
+  admin-web/         医院 Web 管理端（看板、套餐上下架、GIS、人流与临时调整）
   backend/           FastAPI、SQLAlchemy、认证与多医院数据隔离
 packages/
   scheduler/         唯一正式 Scheduler 实现
 simulation/          Ground Truth、医院模型、paired experiment 与输出工具
 tests/               快速单元、回归和集成测试
 docs/                架构、开发和算法文档
+examples/hospitals/  可直接一键导入的医院示例整合包
 .github/workflows/   快速 CI
 ```
 
@@ -70,9 +71,29 @@ python -m pip install -e ".[backend]"
 DATABASE_URL=sqlite:///./checkup.db uvicorn apps.backend.checkup_backend.main:app --reload
 ```
 
-打开 `http://127.0.0.1:8000` 即可注册医院账号并进入管理后台，API 文档位于 `/docs`。生产环境变量和微信云托管说明见 [`docs/deployment-cloudbase.md`](docs/deployment-cloudbase.md)，数据模型与 GIS 格式见 [`docs/backend-api.md`](docs/backend-api.md)。
+打开 `http://127.0.0.1:8000` 即可注册医院账号并进入管理后台。后台支持使用一份标准 JSON 一键导入科室、检查项目、多个套餐和多楼层 GIS，格式见 [`docs/workspace-import.md`](docs/workspace-import.md)。API 文档位于 `/docs`；生产环境变量和微信云托管说明见 [`docs/deployment-cloudbase.md`](docs/deployment-cloudbase.md)，数据模型与 GIS 格式见 [`docs/backend-api.md`](docs/backend-api.md)。
 
-患者小程序位于 `apps/miniprogram`，使用微信开发者工具直接导入。开发环境默认请求 `http://127.0.0.1:8000`，配置方式和联调说明见 [`apps/miniprogram/README.md`](apps/miniprogram/README.md)。
+患者小程序位于 `apps/miniprogram`，使用微信开发者工具直接导入。体检套餐由医院在 Web 管理端上架，小程序按医院动态读取。开发环境默认请求 `http://127.0.0.1:8000`，配置方式和联调说明见 [`apps/miniprogram/README.md`](apps/miniprogram/README.md)。
+
+### 一键导入数据
+
+上传文件为 UTF-8 JSON，顶层格式如下：
+
+```json
+{
+  "formatVersion": "1.0",
+  "mode": "upsert",
+  "hospital": {},
+  "departments": [],
+  "exams": [],
+  "packages": [],
+  "gis": []
+}
+```
+
+`hospital` 可选，用于更新当前医院基本信息；其他数组可一次同时提交，也可只提交需要更新的部分。科室、项目和套餐必须使用稳定且唯一的业务 `key`，项目通过 `departmentKey` 关联科室，套餐通过 `includedItemKeys` 关联项目，GIS 科室点通过 `departmentKey` 关联科室。整包原子校验和写入，相同 `key` 重复上传会更新已有数据，不会删除文件中未出现的记录。
+
+可直接试用的完整数据见[紫金港校医院示例整合包](examples/hospitals/zijingang-campus-hospital/README.md)；字段、限制、GeoJSON 属性和接口说明见[上传格式文档](docs/workspace-import.md)。
 
 ## 三端结构
 

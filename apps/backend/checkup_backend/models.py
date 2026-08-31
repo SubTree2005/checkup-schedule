@@ -95,10 +95,19 @@ class PackageInfo(Base):
     __tablename__ = "package_info"
 
     package_id: Mapped[str] = mapped_column("packageID", String(64), primary_key=True, default=new_id)
+    hospital_id: Mapped[str] = mapped_column("hospitalID", ForeignKey("hospital_info.hospitalID", ondelete="CASCADE"), index=True)
     package_name: Mapped[str] = mapped_column("packageName", String(200))
+    package_type: Mapped[str] = mapped_column("packageType", String(100), default="健康体检")
+    price: Mapped[float] = mapped_column(Float, default=0)
+    tag: Mapped[str] = mapped_column(String(100), default="")
     description: Mapped[str] = mapped_column(Text, default="")
     included_item_ids: Mapped[list] = mapped_column("includedItemIDs", JSON, default=list)
     default_duration: Mapped[int] = mapped_column("defaultDuration", Integer, default=0)
+    suitable: Mapped[list] = mapped_column(JSON, default=list)
+    notice: Mapped[list] = mapped_column(JSON, default=list)
+    is_published: Mapped[bool] = mapped_column("isPublished", Boolean, default=False, index=True)
+    create_time: Mapped[datetime] = mapped_column("createTime", DateTime, default=utcnow)
+    update_time: Mapped[datetime] = mapped_column("updateTime", DateTime, default=utcnow, onupdate=utcnow)
 
 
 class UserStatusInfo(Base):

@@ -50,9 +50,11 @@
         <div class="sidebar-brand"><span class="brand-mark small">智</span><span><b>智检云</b><small>医院管理端</small></span></div>
         <nav aria-label="主导航">
           <button class="nav-item active" data-page="dashboard"><span>⌂</span>运行总览</button>
+          <button class="nav-item" data-page="import"><span>⇧</span>一键导入</button>
           <button class="nav-item" data-page="gis"><span>⌖</span>院内 GIS</button>
           <button class="nav-item" data-page="departments"><span>▦</span>科室管理</button>
           <button class="nav-item" data-page="exams"><span>✓</span>项目管理</button>
+          <button class="nav-item" data-page="packages"><span>▤</span>套餐管理</button>
           <button class="nav-item" data-page="adjustments"><span>!</span>临时调整</button>
         </nav>
         <div class="sidebar-footer">
@@ -86,6 +88,31 @@
             </div>
           </section>
 
+          <section class="page" id="page-import">
+            <div class="page-heading"><div><h1>一键导入医院数据</h1><p>使用一份标准 JSON 同时新增或更新 GIS、科室、检查项目和多个套餐</p></div><button id="downloadImportTemplate" class="secondary-button">下载标准模板</button></div>
+            <div class="split-grid import-grid">
+              <article class="panel form-panel">
+                <h3>选择医院工作区文件</h3>
+                <form id="workspaceImportForm" class="stack-form">
+                  <label class="upload-zone">选择标准 JSON 文件<input name="workspaceFile" type="file" accept=".json,application/json" required /><span>点击选择或拖入文件</span><small>格式版本 1.0 · 整批校验 · 原子写入</small></label>
+                  <div id="importFileSummary" class="import-file-summary"><span>尚未选择文件</span></div>
+                  <button class="primary-button" type="submit">一键校验并导入</button>
+                </form>
+              </article>
+              <article class="panel import-guide">
+                <div class="panel-heading"><div><h3>统一关联规则</h3><p>文件中的业务 key 会自动转换为数据库 ID</p></div></div>
+                <div class="import-rules">
+                  <div><b>1</b><span><strong>科室</strong><small>每个科室填写唯一 <code>key</code></small></span></div>
+                  <div><b>2</b><span><strong>检查项目</strong><small>通过 <code>departmentKey</code> 关联科室</small></span></div>
+                  <div><b>3</b><span><strong>套餐</strong><small>通过 <code>includedItemKeys</code> 组合项目</small></span></div>
+                  <div><b>4</b><span><strong>GIS</strong><small>点位和路线通过科室 key 自动关联</small></span></div>
+                </div>
+                <div class="hint-card"><b>可安全重复上传</b><p>相同医院、相同类型和相同 key 会更新原记录；文件中未出现的现有记录不会被删除。任何一项校验失败时，整批数据都不会写入。</p></div>
+                <div id="importResult" class="import-result hidden"></div>
+              </article>
+            </div>
+          </section>
+
           <section class="page" id="page-gis">
             <div class="page-heading"><div><h1>院内 GIS</h1><p>上传或更新 GeoJSON 楼层地图，科室点位会自动关联人流数据</p></div></div>
             <div class="split-grid">
@@ -111,6 +138,11 @@
           <section class="page" id="page-exams">
             <div class="page-heading"><div><h1>项目管理</h1><p>维护耗时、医学约束、时间窗和关键路径标记</p></div><button id="addExam" class="primary-button">新增项目</button></div>
             <article class="panel table-panel"><div id="examTable"></div></article>
+          </section>
+
+          <section class="page" id="page-packages">
+            <div class="page-heading"><div><h1>套餐管理</h1><p>组合本医院检查项目，保存草稿或上架到患者小程序</p></div><button id="addPackage" class="primary-button">新增套餐</button></div>
+            <article class="panel table-panel"><div id="packageTable"></div></article>
           </section>
 
           <section class="page" id="page-adjustments">

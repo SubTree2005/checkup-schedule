@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from .models import AnomalyReport, DepartmentInfo, ExamInfo, HospitalInfo, QueueSnapshot
+from .models import AnomalyReport, DepartmentInfo, ExamInfo, HospitalInfo, PackageInfo, QueueSnapshot
 
 
 def iso(value: datetime | None) -> str | None:
@@ -44,6 +44,25 @@ def exam_dict(row: ExamInfo) -> dict:
         "allowedTimeSlots": row.allowed_time_slots,
         "isCritical": row.is_critical,
         "isActive": row.is_active,
+    }
+
+
+def package_dict(row: PackageInfo) -> dict:
+    return {
+        "packageID": row.package_id,
+        "hospitalID": row.hospital_id,
+        "packageName": row.package_name,
+        "packageType": row.package_type,
+        "price": row.price,
+        "tag": row.tag,
+        "description": row.description,
+        "includedItemIDs": row.included_item_ids,
+        "defaultDuration": row.default_duration,
+        "suitable": row.suitable,
+        "notice": row.notice,
+        "isPublished": row.is_published,
+        "createTime": iso(row.create_time),
+        "updateTime": iso(row.update_time),
     }
 
 

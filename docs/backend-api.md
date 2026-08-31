@@ -22,6 +22,8 @@
 | 医院资料 | `GET/PATCH /api/hospital` |
 | 科室 | `GET/POST /api/departments`、`PATCH/DELETE /api/departments/{deptID}` |
 | 检查项目 | `GET/POST /api/exams`、`PATCH/DELETE /api/exams/{itemID}` |
+| 体检套餐与上下架 | `GET/POST /api/packages`、`PATCH/DELETE /api/packages/{packageID}` |
+| 工作区标准模板与一键导入 | `GET /api/imports/template`、`POST /api/imports/workspace` |
 | GIS | `GET /api/gis`、`GET/PUT /api/gis/{floorKey}` |
 | 异常 | `GET/POST /api/anomalies`、`POST /api/anomalies/{reportID}/resolve` |
 | 排队快照 | `GET/POST /api/queues` |
@@ -35,14 +37,18 @@
 | --- | --- |
 | 患者注册、登录、当前用户、退出 | `POST /api/patient/auth/register`、`POST /api/patient/auth/login`、`GET /api/patient/auth/me`、`POST /api/patient/auth/logout` |
 | 个人资料与近期身体状态 | `PATCH /api/patient/profile` |
-| 医院和体检目录 | `GET /api/patient/hospitals`、`GET /api/patient/hospitals/{hospitalID}/catalog` |
+| 医院和动态体检目录 | `GET /api/patient/hospitals`、`GET /api/patient/hospitals/{hospitalID}/catalog` |
 | 创建、当前、历史和详情 | `POST /api/patient/plans`、`GET /api/patient/plans/current`、`GET /api/patient/plans`、`GET /api/patient/plans/{planID}` |
 | 开始、完成和动态重排 | `POST /api/patient/plans/{planID}/steps/{detailID}/start`、`POST /api/patient/plans/{planID}/steps/{detailID}/complete`、`POST /api/patient/plans/{planID}/replan` |
 | 院内导航信息 | `GET /api/patient/plans/{planID}/navigation?detailID=...` |
 
 计划接口会在 Backend/Adapter 中把数据库实体转换为 `checkup_scheduler` 领域模型。小程序不包含算法副本，也不直接访问数据库。
 
+套餐由医院管理员在 Web 管理端组合本医院的检查项目，并保存为草稿或上架。患者目录只返回所选医院已上架、且包含项目均处于启用状态的套餐；套餐下架后立即从目录消失，也不能再用旧套餐 ID 创建新计划。历史计划仍保留原套餐关联。
+
 OpenAPI 交互文档在服务启动后的 `/docs`。
+
+科室、项目、套餐和多楼层 GIS 可以通过一份标准 JSON 原子导入；业务 key、字段和 GeoJSON 关联规则见 [`workspace-import.md`](workspace-import.md)。
 
 ## GIS GeoJSON 约定
 

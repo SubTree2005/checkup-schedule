@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+from copy import deepcopy
 from datetime import datetime, timedelta
+from math import isfinite
+from uuid import NAMESPACE_URL, uuid5
 
 from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Response, status
 from sqlalchemy import delete, func, select
@@ -18,6 +21,7 @@ from .models import (
     HospitalAdmin,
     HospitalGIS,
     HospitalInfo,
+    PackageInfo,
     PlanExecutionDetail,
     QueueSnapshot,
     UserInfo,
@@ -34,7 +38,10 @@ from .schemas import (
     HospitalRegister,
     HospitalUpdate,
     LoginRequest,
+    PackageCreate,
+    PackageUpdate,
     QueueUpdate,
+    WorkspaceImport,
 )
 from .security import (
     AdminContext,
@@ -47,7 +54,7 @@ from .security import (
     set_session_cookie,
     verify_password,
 )
-from .serializers import anomaly_dict, department_dict, exam_dict, hospital_dict, iso, queue_dict
+from .serializers import anomaly_dict, department_dict, exam_dict, hospital_dict, iso, package_dict, queue_dict
 
 router = APIRouter(prefix="/api")
 
@@ -80,6 +87,14 @@ def require_exam(db: Session, hospital_id: str, item_id: str) -> ExamInfo:
     if row is None:
         raise HTTPException(status_code=404, detail="检查项目不存在")
     return row
+
+
+def packages_using_item(db: Session, hospital_id: str, item_id: str) -> list[PackageInfo]:
+    return [
+        package
+        for package in db.scalars(select(PackageInfo).where(PackageInfo.hospital_id == hospital_id)).all()
+        if item_id in (package.included_item_ids or [])
+    ]
 
 
 def validate_conflicts(db: Session, hospital_id: str, conflicts: list[str]) -> None:
@@ -336,6 +351,12 @@ def update_exam(
         if item_id in data["conflicts"]:
             raise HTTPException(status_code=422, detail="项目不能与自身互斥")
         validate_conflicts(db, admin.hospital_id, data["conflicts"])
+    if data.get("isActive") is False:
+        published_packages = [
+            package for package in packages_using_item(db, admin.hospital_id, item_id) if package.is_published
+        ]
+        if published_packages:
+            raise HTTPException(status_code=409, detail="项目仍被已上架套餐使用，请先下架或调整套餐")
     fields = {
         "deptID": "dept_id",
         "itemName": "item_name",
@@ -362,6 +383,130 @@ def delete_exam(
     row = require_exam(db, admin.hospital_id, item_id)
     if db.scalar(select(func.count()).select_from(PlanExecutionDetail).where(PlanExecutionDetail.item_id == item_id)):
         raise HTTPException(status_code=409, detail="项目已有执行记录，请改为停用以保留历史数据")
+    if packages_using_item(db, admin.hospital_id, item_id):
+        raise HTTPException(status_code=409, detail="项目仍被体检套餐使用，请先调整套餐")
+    db.delete(row)
+    db.commit()
+    return Response(status_code=204)
+
+
+def require_package(db: Session, hospital_id: str, package_id: str) -> PackageInfo:
+    row = db.scalar(
+        select(PackageInfo).where(
+            PackageInfo.package_id == package_id,
+            PackageInfo.hospital_id == hospital_id,
+        )
+    )
+    if row is None:
+        raise HTTPException(status_code=404, detail="体检套餐不存在")
+    return row
+
+
+def validate_package_items(
+    db: Session,
+    hospital_id: str,
+    item_ids: list[str],
+    *,
+    require_active: bool = False,
+) -> None:
+    rows = db.execute(
+        select(ExamInfo.item_id, ExamInfo.is_active)
+        .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
+        .where(DepartmentInfo.hospital_id == hospital_id, ExamInfo.item_id.in_(set(item_ids)))
+    ).all()
+    if {item_id for item_id, _is_active in rows} != set(item_ids):
+        raise HTTPException(status_code=422, detail="套餐包含本医院不存在的检查项目")
+    if require_active and any(not is_active for _item_id, is_active in rows):
+        raise HTTPException(status_code=422, detail="已上架套餐不能包含已停用的检查项目")
+
+
+@router.get("/packages")
+def list_packages(admin: AdminContext = Depends(get_current_admin), db: Session = Depends(get_db)) -> list[dict]:
+    rows = db.scalars(
+        select(PackageInfo)
+        .where(PackageInfo.hospital_id == admin.hospital_id)
+        .order_by(PackageInfo.create_time.desc())
+    ).all()
+    return [package_dict(row) for row in rows]
+
+
+@router.post("/packages", status_code=status.HTTP_201_CREATED)
+def create_package(
+    payload: PackageCreate,
+    admin: AdminContext = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+) -> dict:
+    item_ids = list(dict.fromkeys(payload.includedItemIDs))
+    validate_package_items(db, admin.hospital_id, item_ids, require_active=payload.isPublished)
+    duration = payload.defaultDuration or sum(
+        db.scalars(select(ExamInfo.duration).where(ExamInfo.item_id.in_(item_ids)))
+    )
+    row = PackageInfo(
+        hospital_id=admin.hospital_id,
+        package_name=payload.packageName,
+        package_type=payload.packageType,
+        price=payload.price,
+        tag=payload.tag,
+        description=payload.description,
+        included_item_ids=item_ids,
+        default_duration=duration,
+        suitable=payload.suitable,
+        notice=payload.notice,
+        is_published=payload.isPublished,
+    )
+    db.add(row)
+    db.commit()
+    return package_dict(row)
+
+
+@router.patch("/packages/{package_id}")
+def update_package(
+    package_id: str,
+    payload: PackageUpdate,
+    admin: AdminContext = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+) -> dict:
+    row = require_package(db, admin.hospital_id, package_id)
+    data = payload.model_dump(exclude_unset=True)
+    if any(value is None for value in data.values()):
+        raise HTTPException(status_code=422, detail="套餐字段不能设为空值")
+    if "includedItemIDs" in data:
+        data["includedItemIDs"] = list(dict.fromkeys(data["includedItemIDs"]))
+    next_item_ids = data.get("includedItemIDs", row.included_item_ids)
+    next_published = data.get("isPublished", row.is_published)
+    validate_package_items(db, admin.hospital_id, next_item_ids, require_active=next_published)
+    fields = {
+        "packageName": "package_name",
+        "packageType": "package_type",
+        "price": "price",
+        "tag": "tag",
+        "description": "description",
+        "includedItemIDs": "included_item_ids",
+        "defaultDuration": "default_duration",
+        "suitable": "suitable",
+        "notice": "notice",
+        "isPublished": "is_published",
+    }
+    for key, value in data.items():
+        setattr(row, fields[key], value)
+    if ("includedItemIDs" in data and "defaultDuration" not in data) or data.get("defaultDuration") == 0:
+        row.default_duration = sum(
+            db.scalars(select(ExamInfo.duration).where(ExamInfo.item_id.in_(row.included_item_ids)))
+        )
+    row.update_time = utcnow()
+    db.commit()
+    return package_dict(row)
+
+
+@router.delete("/packages/{package_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_package(
+    package_id: str,
+    admin: AdminContext = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+) -> Response:
+    row = require_package(db, admin.hospital_id, package_id)
+    if db.scalar(select(func.count()).select_from(ExamPlan).where(ExamPlan.package_id == package_id)):
+        raise HTTPException(status_code=409, detail="套餐已有体检计划，请下架套餐以保留历史记录")
     db.delete(row)
     db.commit()
     return Response(status_code=204)
@@ -389,6 +534,324 @@ def sync_distances(db: Session, hospital_id: str, geojson: dict) -> None:
             db.add(DepartmentDistance(from_dept_id=from_id, to_dept_id=to_id, distance_meters=float(distance)))
         else:
             row.distance_meters = float(distance)
+
+
+def workspace_import_id(hospital_id: str, resource: str, key: str) -> str:
+    return uuid5(NAMESPACE_URL, f"checkup-schedule:{hospital_id}:{resource}:{key}").hex
+
+
+def resolve_workspace_geojson(
+    floor_key: str,
+    geojson: dict,
+    department_ids: dict[str, str],
+    department_names: dict[str, str],
+) -> dict:
+    resolved = deepcopy(geojson)
+    for feature in resolved.get("features", []):
+        properties = feature.setdefault("properties", {})
+        if properties.get("featureType") == "department":
+            department_key = properties.pop("departmentKey")
+            properties["deptID"] = department_ids[department_key]
+            properties.setdefault("name", department_names[department_key])
+        elif properties.get("featureType") == "route":
+            from_key = properties.pop("fromDepartmentKey")
+            to_key = properties.pop("toDepartmentKey")
+            distance = properties.get("distanceMeters")
+            if (
+                not isinstance(distance, (int, float))
+                or isinstance(distance, bool)
+                or not isfinite(distance)
+                or distance < 0
+            ):
+                raise HTTPException(status_code=422, detail=f"GIS {floor_key} 的路线 distanceMeters 必须是非负数")
+            properties["fromDeptID"] = department_ids[from_key]
+            properties["toDeptID"] = department_ids[to_key]
+    return resolved
+
+
+def workspace_import_template() -> dict:
+    return {
+        "formatVersion": "1.0",
+        "mode": "upsert",
+        "departments": [
+            {
+                "key": "ultrasound",
+                "deptName": "超声科",
+                "location": "1F-A12",
+                "openTimeStart": "08:00",
+                "openTimeEnd": "17:00",
+                "capacity": 2,
+                "isAvailable": True,
+            },
+            {
+                "key": "laboratory",
+                "deptName": "检验科",
+                "location": "1F-B06",
+                "openTimeStart": "07:30",
+                "openTimeEnd": "16:30",
+                "capacity": 4,
+                "isAvailable": True,
+            },
+        ],
+        "exams": [
+            {
+                "key": "blood-routine",
+                "departmentKey": "laboratory",
+                "itemName": "血常规",
+                "duration": 8,
+                "prerequisites": {"fastingHours": 8},
+                "prerequisiteItemKeys": [],
+                "conflictItemKeys": [],
+                "priority": 8,
+                "allowedTimeSlots": {"start": "07:30", "end": "11:00"},
+                "isCritical": True,
+                "isActive": True,
+            },
+            {
+                "key": "abdominal-ultrasound",
+                "departmentKey": "ultrasound",
+                "itemName": "腹部超声",
+                "duration": 15,
+                "prerequisites": {"fastingHours": 8},
+                "prerequisiteItemKeys": ["blood-routine"],
+                "conflictItemKeys": [],
+                "priority": 6,
+                "allowedTimeSlots": {"start": "08:00", "end": "11:30"},
+                "isCritical": True,
+                "isActive": True,
+            },
+        ],
+        "packages": [
+            {
+                "key": "basic",
+                "packageName": "基础体检套餐",
+                "packageType": "健康体检",
+                "price": 399,
+                "tag": "热门",
+                "description": "覆盖常规检验与腹部超声",
+                "includedItemKeys": ["blood-routine", "abdominal-ultrasound"],
+                "defaultDuration": 0,
+                "suitable": ["18 岁以上人群"],
+                "notice": ["检查前保持空腹"],
+                "isPublished": True,
+            },
+            {
+                "key": "lab-only",
+                "packageName": "基础检验套餐",
+                "packageType": "专项体检",
+                "price": 99,
+                "tag": "快捷",
+                "description": "基础实验室检查",
+                "includedItemKeys": ["blood-routine"],
+                "defaultDuration": 0,
+                "suitable": [],
+                "notice": ["检查前保持空腹"],
+                "isPublished": False,
+            },
+        ],
+        "gis": [
+            {
+                "floorKey": "1F",
+                "geojson": {
+                    "type": "FeatureCollection",
+                    "features": [
+                        {
+                            "type": "Feature",
+                            "properties": {"featureType": "department", "departmentKey": "ultrasound"},
+                            "geometry": {"type": "Point", "coordinates": [20, 30]},
+                        },
+                        {
+                            "type": "Feature",
+                            "properties": {"featureType": "department", "departmentKey": "laboratory"},
+                            "geometry": {"type": "Point", "coordinates": [80, 30]},
+                        },
+                        {
+                            "type": "Feature",
+                            "properties": {
+                                "featureType": "route",
+                                "fromDepartmentKey": "laboratory",
+                                "toDepartmentKey": "ultrasound",
+                                "distanceMeters": 60,
+                            },
+                            "geometry": {"type": "LineString", "coordinates": [[80, 30], [20, 30]]},
+                        },
+                    ],
+                },
+            }
+        ],
+    }
+
+
+@router.get("/imports/template")
+def get_workspace_import_template(_admin: AdminContext = Depends(get_current_admin)) -> dict:
+    return workspace_import_template()
+
+
+@router.post("/imports/workspace")
+def import_workspace(
+    payload: WorkspaceImport,
+    admin: AdminContext = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+) -> dict:
+    department_ids = {
+        row.key: workspace_import_id(admin.hospital_id, "department", row.key) for row in payload.departments
+    }
+    item_ids = {row.key: workspace_import_id(admin.hospital_id, "exam", row.key) for row in payload.exams}
+    package_ids = {
+        row.key: workspace_import_id(admin.hospital_id, "package", row.key) for row in payload.packages
+    }
+    summary = {
+        "hospital": {"updated": 0},
+        "departments": {"created": 0, "updated": 0},
+        "exams": {"created": 0, "updated": 0},
+        "packages": {"created": 0, "updated": 0},
+        "gis": {"created": 0, "updated": 0},
+    }
+    try:
+        if payload.hospital is not None:
+            hospital = db.get(HospitalInfo, admin.hospital_id)
+            hospital.hospital_name = payload.hospital.hospitalName
+            hospital.address = payload.hospital.address
+            hospital.open_time = payload.hospital.openTime
+            hospital.floor_map_url = payload.hospital.floorMapUrl
+            summary["hospital"]["updated"] = 1
+
+        for imported in payload.departments:
+            row = db.get(DepartmentInfo, department_ids[imported.key])
+            if row is None:
+                row = DepartmentInfo(dept_id=department_ids[imported.key], hospital_id=admin.hospital_id)
+                db.add(row)
+                summary["departments"]["created"] += 1
+            else:
+                if row.hospital_id != admin.hospital_id:
+                    raise HTTPException(status_code=409, detail=f"科室 key 冲突：{imported.key}")
+                summary["departments"]["updated"] += 1
+            row.dept_name = imported.deptName
+            row.location = imported.location
+            row.open_time_start = imported.openTimeStart
+            row.open_time_end = imported.openTimeEnd
+            row.capacity = imported.capacity
+            row.is_available = imported.isAvailable
+        db.flush()
+
+        for imported in payload.exams:
+            row = db.get(ExamInfo, item_ids[imported.key])
+            if row is None:
+                row = ExamInfo(item_id=item_ids[imported.key])
+                db.add(row)
+                summary["exams"]["created"] += 1
+            else:
+                current_department = db.get(DepartmentInfo, row.dept_id)
+                if current_department is None or current_department.hospital_id != admin.hospital_id:
+                    raise HTTPException(status_code=409, detail=f"检查项目 key 冲突：{imported.key}")
+                summary["exams"]["updated"] += 1
+            prerequisites = dict(imported.prerequisites)
+            if imported.prerequisiteItemKeys:
+                prerequisites["itemIDs"] = [item_ids[key] for key in imported.prerequisiteItemKeys]
+            row.dept_id = department_ids[imported.departmentKey]
+            row.item_name = imported.itemName
+            row.duration = imported.duration
+            row.prerequisites = prerequisites
+            row.conflicts = [item_ids[key] for key in imported.conflictItemKeys]
+            row.priority = imported.priority
+            row.allowed_time_slots = imported.allowedTimeSlots
+            row.is_critical = imported.isCritical
+            row.is_active = imported.isActive
+        db.flush()
+
+        duration_by_key = {row.key: row.duration for row in payload.exams}
+        for imported in payload.packages:
+            row = db.get(PackageInfo, package_ids[imported.key])
+            if row is None:
+                row = PackageInfo(package_id=package_ids[imported.key], hospital_id=admin.hospital_id)
+                db.add(row)
+                summary["packages"]["created"] += 1
+            else:
+                if row.hospital_id != admin.hospital_id:
+                    raise HTTPException(status_code=409, detail=f"套餐 key 冲突：{imported.key}")
+                summary["packages"]["updated"] += 1
+            row.package_name = imported.packageName
+            row.package_type = imported.packageType
+            row.price = imported.price
+            row.tag = imported.tag
+            row.description = imported.description
+            row.included_item_ids = [item_ids[key] for key in imported.includedItemKeys]
+            row.default_duration = imported.defaultDuration or sum(
+                duration_by_key[key] for key in imported.includedItemKeys
+            )
+            row.suitable = imported.suitable
+            row.notice = imported.notice
+            row.is_published = imported.isPublished
+            row.update_time = utcnow()
+        db.flush()
+
+        active_item_ids = set(
+            db.scalars(
+                select(ExamInfo.item_id)
+                .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
+                .where(DepartmentInfo.hospital_id == admin.hospital_id, ExamInfo.is_active.is_(True))
+            )
+        )
+        for package in db.scalars(
+            select(PackageInfo).where(
+                PackageInfo.hospital_id == admin.hospital_id,
+                PackageInfo.is_published.is_(True),
+            )
+        ):
+            if not set(package.included_item_ids or []).issubset(active_item_ids):
+                raise HTTPException(
+                    status_code=422,
+                    detail=f"已上架套餐“{package.package_name}”包含已停用或不存在的检查项目",
+                )
+
+        department_names = {row.key: row.deptName for row in payload.departments}
+        gis_versions: dict[str, int] = {}
+        for imported in payload.gis:
+            geojson = resolve_workspace_geojson(
+                imported.floorKey,
+                imported.geojson,
+                department_ids,
+                department_names,
+            )
+            row = db.scalar(
+                select(HospitalGIS).where(
+                    HospitalGIS.hospital_id == admin.hospital_id,
+                    HospitalGIS.floor_key == imported.floorKey,
+                )
+            )
+            if row is None:
+                row = HospitalGIS(
+                    hospital_id=admin.hospital_id,
+                    floor_key=imported.floorKey,
+                    geojson=geojson,
+                    updated_by=admin.user_id,
+                )
+                db.add(row)
+                summary["gis"]["created"] += 1
+            else:
+                row.geojson = geojson
+                row.version += 1
+                row.updated_by = admin.user_id
+                row.update_time = utcnow()
+                summary["gis"]["updated"] += 1
+            sync_distances(db, admin.hospital_id, geojson)
+            db.flush()
+            gis_versions[imported.floorKey] = row.version
+        db.commit()
+    except HTTPException:
+        db.rollback()
+        raise
+    except IntegrityError as exc:
+        db.rollback()
+        raise HTTPException(status_code=409, detail="导入内容与现有数据冲突，请检查科室名称和业务 key") from exc
+
+    return {
+        "formatVersion": payload.formatVersion,
+        "mode": payload.mode,
+        "summary": summary,
+        "ids": {"departments": department_ids, "exams": item_ids, "packages": package_ids},
+        "gisVersions": gis_versions,
+    }
 
 
 @router.get("/gis")

@@ -178,7 +178,21 @@ class BackendAPITest(unittest.TestCase):
             ).all()
             self.assertEqual(len(demos), 100)
             self.assertFalse(any(row.is_active for row in demos))
+            demo_users = session.scalars(
+                select(UserInfo).where(UserInfo.user_id.in_([row.user_id for row in demos]))
+            ).all()
+            self.assertEqual(len(demo_users), 100)
+            self.assertTrue(all(user.role == "演示患者" for user in demo_users))
+            self.assertTrue(all(user.password.startswith("pbkdf2_sha256$") for user in demo_users))
+            self.assertFalse(any("disabled-demo-account" in user.password for user in demo_users))
+            demo_phone = demo_users[0].phone
             self.assertEqual(session.scalars(select(ExamPlan)).all(), [])
+
+        demo_login = self.client.post(
+            "/api/patient/auth/login",
+            json={"phone": demo_phone, "password": "disabled-demo-account"},
+        )
+        self.assertEqual(demo_login.status_code, 401, demo_login.text)
 
     def test_registration_requires_complete_workspace(self):
         template = self.client.get("/api/auth/register-template")

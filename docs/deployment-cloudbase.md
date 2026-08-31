@@ -10,15 +10,21 @@
 - Dockerfile：`Dockerfile`；
 - 监听端口：`8080`（或与平台 `PORT` 保持一致）；
 - 健康检查：`GET /api/health`；
-- `DATABASE_URL`：MySQL SQLAlchemy URL；
+- 微信云托管 MySQL 环境变量：`MYSQL_ADDRESS`、`MYSQL_DATABASE`、`MYSQL_USERNAME`、`MYSQL_PASSWORD`；
 - `COOKIE_SECURE=true`；
 - `HOSPITAL_TIMEZONE=Asia/Shanghai`：医院上传的营业时间、科室开放时间和检查时段使用的 IANA 时区，未设置时默认 `Asia/Shanghai`。
 
-MySQL 示例：
+微信云托管示例：
 
 ```text
-mysql+pymysql://checkup:强密码@内网地址:3306/checkup_schedule?charset=utf8mb4
+MYSQL_ADDRESS=10.0.0.1:3306
+MYSQL_DATABASE=checkup_schedule
+MYSQL_USERNAME=checkup_app
+MYSQL_PASSWORD=控制台中设置的密码
 ```
+
+后端会安全处理密码中的特殊字符。其他托管平台仍可直接设置 `DATABASE_URL`，格式为
+`mysql+pymysql://用户名:密码@地址:3306/数据库?charset=utf8mb4`；若两种方式同时存在，优先使用 `DATABASE_URL`。
 
 如 Web 与 API 由同一服务访问，不需要设置 `ALLOWED_ORIGINS`。若未来拆分管理端域名，再将允许的完整来源以逗号分隔写入该变量。
 

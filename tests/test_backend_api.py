@@ -1,7 +1,9 @@
 import json
 import tempfile
 import unittest
+from datetime import datetime
 from pathlib import Path
+from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 from sqlalchemy import select
@@ -345,6 +347,86 @@ class BackendAPITest(unittest.TestCase):
         self.assertEqual(flow[department["deptID"]]["peopleFlow"], 9)
         self.assertEqual(flow[department["deptID"]]["estimatedWaitTime"], 1200)
 
+    def test_patient_schedule_uses_local_department_hours(self):
+        admin = self.register()
+        department_response = self.client.post(
+            "/api/departments",
+            json={
+                "deptName": "限时检查科",
+                "location": "1F-T01",
+                "openTimeStart": "10:00",
+                "openTimeEnd": "10:30",
+                "capacity": 1,
+                "isAvailable": True,
+            },
+        )
+        self.assertEqual(department_response.status_code, 201, department_response.text)
+        exam = self.create_exam(department_response.json()["deptID"], name="限时检查")
+        package = self.client.post(
+            "/api/packages",
+            json={
+                "packageName": "限时套餐",
+                "includedItemIDs": [exam["itemID"]],
+                "isPublished": True,
+            },
+        )
+        self.assertEqual(package.status_code, 201, package.text)
+
+        with TestClient(self.app) as patient_client:
+            registered = patient_client.post(
+                "/api/patient/auth/register",
+                json={
+                    "phone": "13900000073",
+                    "password": "patient-pass-123",
+                    "name": "本地时间患者",
+                },
+            )
+            self.assertEqual(registered.status_code, 201, registered.text)
+            with patch("apps.backend.checkup_backend.patient_api.utcnow", return_value=datetime(2026, 8, 31, 1, 0)):
+                created = patient_client.post(
+                    "/api/patient/plans",
+                    json={
+                        "hospitalID": admin["hospital"]["hospitalID"],
+                        "packageID": package.json()["packageID"],
+                        "profile": {},
+                    },
+                )
+            self.assertEqual(created.status_code, 201, created.text)
+            step = created.json()["steps"][0]
+            estimated_start = datetime.fromisoformat(step["estimatedStart"].removesuffix("Z"))
+            estimated_end = datetime.fromisoformat(step["estimatedEnd"].removesuffix("Z"))
+            self.assertGreaterEqual(estimated_start, datetime(2026, 8, 31, 2, 0))
+            self.assertLessEqual(estimated_end, datetime(2026, 8, 31, 2, 30))
+
+    def test_dashboard_uses_hospital_local_day(self):
+        admin = self.register()
+        with self.app.state.session_factory() as session:
+            session.add_all(
+                [
+                    ExamPlan(
+                        user_id=admin["user"]["userID"],
+                        hospital_id=admin["hospital"]["hospitalID"],
+                        selected_item_ids=[],
+                        generate_time=datetime(2026, 8, 31, 15, 30),
+                        plan_status="已完成",
+                    ),
+                    ExamPlan(
+                        user_id=admin["user"]["userID"],
+                        hospital_id=admin["hospital"]["hospitalID"],
+                        selected_item_ids=[],
+                        generate_time=datetime(2026, 8, 31, 16, 30),
+                        plan_status="进行中",
+                    ),
+                ]
+            )
+            session.commit()
+        with patch("apps.backend.checkup_backend.api.utcnow", return_value=datetime(2026, 8, 31, 17, 0)):
+            dashboard = self.client.get("/api/dashboard/summary")
+        self.assertEqual(dashboard.status_code, 200, dashboard.text)
+        self.assertEqual(dashboard.json()["metrics"]["todayPlans"], 1)
+        self.assertEqual(dashboard.json()["metrics"]["inProgressPlans"], 1)
+        self.assertEqual(dashboard.json()["metrics"]["completedPlans"], 0)
+
     def test_workspace_import_is_atomic_and_idempotent(self):
         admin = self.register()
         template_response = self.client.get("/api/imports/template")
@@ -559,14 +641,18 @@ class BackendAPITest(unittest.TestCase):
             self.assertEqual(catalog.json()["packages"][0]["price"], 580)
             self.assertEqual(catalog.json()["packages"][0]["type"], "入职体检")
 
-            created = patient_client.post(
-                "/api/patient/plans",
-                json={
-                    "hospitalID": admin["hospital"]["hospitalID"],
-                    "packageID": package_id,
-                    "profile": {"fasting": "yes", "bladder": "normal"},
-                },
-            )
+            with patch(
+                "apps.backend.checkup_backend.patient_api.utcnow",
+                return_value=datetime(2026, 8, 31, 0, 15),
+            ):
+                created = patient_client.post(
+                    "/api/patient/plans",
+                    json={
+                        "hospitalID": admin["hospital"]["hospitalID"],
+                        "packageID": package_id,
+                        "profile": {"fasting": "yes", "bladder": "normal"},
+                    },
+                )
             self.assertEqual(created.status_code, 201, created.text)
             plan = created.json()
             self.assertEqual(plan["packageName"], "基础套餐")

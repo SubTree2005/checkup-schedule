@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from datetime import datetime, timedelta
+from datetime import timedelta
 from math import isfinite
 from uuid import NAMESPACE_URL, uuid5
 
@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 
 from .database import get_db
 from .demo_patients import demo_pool_summary, prepare_demo_patient_pool, set_demo_patient_count
+from .hospital_time import hospital_local_date, local_day_bounds_utc
 from .models import (
     AnomalyReport,
     DepartmentDistance,
@@ -1175,9 +1176,9 @@ def current_flow(db: Session, hospital_id: str) -> list[dict]:
 
 @router.get("/dashboard/summary")
 def dashboard_summary(admin: AdminContext = Depends(get_current_admin), db: Session = Depends(get_db)) -> dict:
-    today = utcnow().date().isoformat()
-    start = datetime.fromisoformat(today)
-    end = start + timedelta(days=1)
+    now = utcnow()
+    today = hospital_local_date(now).isoformat()
+    start, end = local_day_bounds_utc(now)
     departments = db.scalars(select(DepartmentInfo).where(DepartmentInfo.hospital_id == admin.hospital_id)).all()
     unresolved = db.scalar(
         select(func.count())

@@ -22,6 +22,7 @@ from checkup_scheduler import (
 
 from .api import client_ip
 from .database import get_db
+from .hospital_time import daily_intersections_utc, next_daily_window_utc
 from .models import (
     DepartmentDistance,
     DepartmentInfo,
@@ -355,13 +356,11 @@ def _parse_open_window(hospital: HospitalInfo, now: datetime) -> tuple[datetime,
     start_hour, start_minute, end_hour, end_minute = (8, 0, 17, 0)
     if match:
         start_hour, start_minute, end_hour, end_minute = map(int, match.groups())
-    day = now.date()
-    start = datetime.combine(day, datetime.min.time()).replace(hour=start_hour, minute=start_minute)
-    end = datetime.combine(day, datetime.min.time()).replace(hour=end_hour, minute=end_minute)
-    if now >= end:
-        start += timedelta(days=1)
-        end += timedelta(days=1)
-    return max(now, start), end
+    return next_daily_window_utc(
+        now,
+        f"{start_hour:02d}:{start_minute:02d}",
+        f"{end_hour:02d}:{end_minute:02d}",
+    )
 
 
 def _exam_prerequisite_ids(exam: ExamInfo, selected_ids: set[str]) -> tuple[str, ...]:
@@ -376,13 +375,29 @@ def _allowed_windows(exam: ExamInfo, day_start: datetime, day_end: datetime) -> 
     if not start_text or not end_text:
         return ()
     try:
-        start_time = datetime.strptime(start_text, "%H:%M").time()
-        end_time = datetime.strptime(end_text, "%H:%M").time()
+        intersections = daily_intersections_utc(day_start, day_end, start_text, end_text)
     except ValueError:
         return ()
-    start = max(day_start, datetime.combine(day_start.date(), start_time))
-    end = min(day_end, datetime.combine(day_start.date(), end_time))
-    return (TimeWindow(start, end),) if start < end else ()
+    if intersections:
+        return tuple(TimeWindow(start, end) for start, end in intersections)
+    return (TimeWindow(day_end, day_end + timedelta(minutes=1)),)
+
+
+def _department_windows(
+    department: DepartmentInfo,
+    planning_start: datetime,
+    planning_end: datetime,
+) -> tuple[TimeWindow, ...]:
+    try:
+        intersections = daily_intersections_utc(
+            planning_start,
+            planning_end,
+            department.open_time_start,
+            department.open_time_end,
+        )
+    except ValueError:
+        return ()
+    return tuple(TimeWindow(start, end) for start, end in intersections)
 
 
 def _latest_department_waits(db: Session, hospital_id: str, now: datetime) -> dict[str, int]:
@@ -429,12 +444,13 @@ def _run_scheduler(
     waits = _latest_department_waits(db, hospital.hospital_id, now)
     departments: dict[str, DepartmentState] = {}
     for _exam, department in exam_rows:
+        service_windows = _department_windows(department, planning_start, planning_end)
         departments[department.dept_id] = DepartmentState(
             id=department.dept_id,
             observed_at=planning_start,
             expected_wait_minutes=waits.get(department.dept_id, 0),
-            accepting_patients=department.is_available,
-            service_windows=(TimeWindow(planning_start, planning_end),),
+            accepting_patients=department.is_available and bool(service_windows),
+            service_windows=service_windows,
             capacity=department.capacity,
         )
     exams = tuple(

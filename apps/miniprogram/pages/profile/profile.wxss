@@ -1,0 +1,7 @@
+.form-card { margin-top: 8rpx; }
+.form-item { margin-bottom: 28rpx; }
+.label { font-size: 30rpx; font-weight:700; margin-bottom: 16rpx; }
+.option-row { display:flex; gap: 18rpx; }
+.option { flex:1; text-align:center; padding: 22rpx 0; border-radius: 18rpx; background:#F3F6FB; color:#4B5563; }
+.option-active { background:#EAF2FF; color:#4F83F1; font-weight:700; border: 2rpx solid #CFE0FF; }
+.submit-btn { margin-top: 28rpx; }

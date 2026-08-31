@@ -1,0 +1,37 @@
+<view class="container" wx:if="{{record}}">
+  <view class="page-head">
+    <view class="page-title">本次体检记录</view>
+    <view class="page-desc">你可以查看本次体检的完成情况与历史路线。</view>
+  </view>
+
+  <view class="card">
+    <view class="record-name">{{record.packageName}}</view>
+    <view class="record-meta mt-16">{{record.date}}</view>
+    <view class="record-meta">状态：{{record.status}}</view>
+    <view class="record-meta">费用：{{record.packagePrice > 0 ? '¥' + record.packagePrice : '以医院为准'}}</view>
+    <view class="record-meta">体检结果：{{record.result || '敬请期待'}}</view>
+  </view>
+
+  <view class="card mt-24">
+    <view class="section-title">历史路线</view>
+    <block wx:for="{{steps}}" wx:key="step">
+      <view class="history-step">
+        <view class="space-between">
+          <view class="step-title">{{item.step}}. {{item.title}}</view>
+          <view class="done">已完成</view>
+        </view>
+        <view class="record-meta mt-8">{{item.department}}</view>
+        <view class="record-meta">耗时：{{item.totalDuration}} 分钟</view>
+      </view>
+    </block>
+  </view>
+
+  <button class="primary-btn mt-24" bindtap="goHome">返回首页</button>
+</view>
+
+<view class="container" wx:else>
+  <view class="card">
+    <view class="section-title">未找到记录</view>
+    <view class="section-subtitle">请返回体检记录页重新选择。</view>
+  </view>
+</view>

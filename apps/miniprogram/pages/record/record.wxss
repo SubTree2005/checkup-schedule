@@ -1,0 +1,5 @@
+.record-name { font-size: 30rpx; font-weight:700; }
+.record-meta { color:#6B7280; margin-top: 10rpx; }
+.empty-text { color:#9CA3AF; padding: 12rpx 0; }
+.history-item { padding: 20rpx 0; border-top: 1rpx solid #EEF2F7; }
+.done { color:#16A34A; margin-top: 10rpx; font-weight:700; }

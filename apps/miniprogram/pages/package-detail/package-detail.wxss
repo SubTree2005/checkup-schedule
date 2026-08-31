@@ -1,0 +1,15 @@
+.detail-head { margin-top: 8rpx; }
+.detail-price { font-size: 42rpx; color:#1D4ED8; font-weight:700; margin-top: 18rpx; }
+.detail-label { font-size: 28rpx; font-weight:700; color:#111827; }
+.detail-text { color:#4B5563; line-height:1.7; margin-top: 12rpx; }
+.chips { display:flex; flex-wrap:wrap; gap: 14rpx; margin-top:14rpx; }
+.chip { margin-right: 0; }
+.tip { background:#F8FBFF; color:#6B7280; padding:18rpx; border-radius:18rpx; line-height:1.6; }
+.accordion-item { border-top: 1rpx solid #EEF2F7; padding: 22rpx 0; }
+.accordion-head { align-items:flex-start; }
+.accordion-name { font-size: 30rpx; font-weight:700; }
+.accordion-count { color:#6B7280; font-size:24rpx; margin-top:8rpx; }
+.accordion-arrow { font-size: 36rpx; color:#4F83F1; }
+.accordion-body { margin-top: 16rpx; background:#F8FBFF; border-radius:16rpx; padding:16rpx 18rpx; }
+.accordion-line { color:#4B5563; line-height:1.8; font-size:26rpx; }
+.bottom-btn { margin: 28rpx 0 40rpx; }

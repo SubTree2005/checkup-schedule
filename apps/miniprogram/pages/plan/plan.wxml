@@ -1,0 +1,79 @@
+<view class="container" wx:if="{{plan}}">
+  <view class="page-head">
+    <view class="page-title">我的体检路线</view>
+    <view class="page-desc">系统会结合检查顺序、排队情况与后续算法，动态调整推荐路线。</view>
+  </view>
+
+  <view class="card summary-card">
+    <view class="space-between">
+      <view>
+        <view class="summary-name">{{plan.packageName}}</view>
+        <view class="summary-price">{{plan.packagePrice > 0 ? '¥' + plan.packagePrice : '价格以医院为准'}}</view>
+      </view>
+      <view class="summary-time">约 {{plan.totalDuration}} 分钟</view>
+    </view>
+    <view class="summary-desc mt-16">智能为你安排了 {{plan.totalSteps}} 个步骤</view>
+    <view class="summary-tip mt-16">{{plan.waitingHint}}</view>
+    <view class="summary-tip replan" wx:if="{{plan.replanNotice}}">{{plan.replanNotice}}</view>
+    <view class="summary-tip">计划已同步至服务端，可根据最新排队情况动态重排。</view>
+  </view>
+
+  <view class="card mt-24 progress-card">
+    <view class="space-between">
+      <view>STEP {{plan.currentStepIndex + 1}} / {{plan.totalSteps}}</view>
+      <view>{{plan.finished ? '100%' : plan.progress + '%'}}</view>
+    </view>
+    <view class="progress-bar mt-16">
+      <view class="progress-inner" style="width: {{plan.progress}}%;"></view>
+    </view>
+    <view class="remaining mt-16">预计剩余：约 {{plan.finished ? 0 : (plan.remainingDuration || plan.totalDuration)}} 分钟</view>
+    <view class="remaining">下一项：{{nextTitle}}</view>
+  </view>
+
+  <view class="action-row mt-24" wx:if="{{!plan.finished}}">
+    <button class="secondary-btn flex-btn" bindtap="onReplan">遇到排队？调整路线</button>
+  </view>
+
+  <block wx:for="{{plan.steps}}" wx:key="step">
+    <view class="card mt-24 step-card {{item.status === 'active' ? 'active-card' : ''}}">
+      <view class="space-between">
+        <view class="row">
+          <view class="step-no">{{item.step < 10 ? '0' + item.step : item.step}}</view>
+          <view>
+            <view class="step-title">{{item.title}}</view>
+            <view class="step-dept">{{item.department}}</view>
+          </view>
+        </view>
+        <view class="status status-{{item.status === 'done' ? 'done' : item.status === 'active' ? 'active' : 'pending'}}">
+          {{item.status === 'done' ? '已完成' : item.status === 'active' ? '进行中' : '未开始'}}
+        </view>
+      </view>
+
+      <view class="tag mt-16" wx:if="{{item.fasting}}">空腹</view>
+      <view class="item-list mt-16">
+        <block wx:for="{{item.items}}" wx:key="id">
+          <view class="item-line">• {{item.name}}</view>
+        </block>
+      </view>
+      <view class="info-line mt-16">预计耗时：{{item.totalDuration}} 分钟</view>
+      <view class="info-line">当前排队位次：{{item.queuePosition}}</view>
+      <view class="info-line">注意事项：{{item.note}}</view>
+      <view class="location-box mt-16">
+        <view class="location-title">科室位置</view>
+        <view class="location-desc">{{item.navigationTarget.locationText}}</view>
+      </view>
+      <button class="outline-btn nav-btn" data-detail-id="{{item.detailID}}" bindtap="goNavigation">步行导航</button>
+
+      <button wx:if="{{item.status === 'pending'}}" class="outline-btn step-btn" data-index="{{index}}" bindtap="onStartStep">开始此项</button>
+      <button wx:if="{{item.status === 'active'}}" class="primary-btn step-btn" data-index="{{index}}" bindtap="onCompleteStep">完成此项</button>
+    </view>
+  </block>
+</view>
+
+<view class="container" wx:else>
+  <view class="card empty-card">
+    <view class="section-title">还没有生成路线</view>
+    <view class="section-subtitle">请先选择套餐并完成智能规划。</view>
+    <button class="primary-btn mt-24" open-type="navigate" bindtap="backHome">返回首页</button>
+  </view>
+</view>

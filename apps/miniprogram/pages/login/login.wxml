@@ -1,0 +1,33 @@
+<view class="container auth-page">
+  <view class="page-head">
+    <view class="page-title">登录</view>
+    <view class="page-desc">登录后即可选择院区、生成智能体检路线并查看记录。</view>
+  </view>
+
+  <view class="auth-hero card">
+    <view class="brand-wrap brand-wrap-image">
+      <image class="login-logo-image" src="../../addpicture/logo.png" mode="widthFix"></image>
+    </view>
+  </view>
+
+  <view class="card mt-24">
+    <view class="section-title">选择登录身份</view>
+    <view class="role-row">
+      <view class="role-item {{activeRole==='user' ? 'role-active' : ''}}" data-role="user" bindtap="chooseRole">用户入口</view>
+      <view class="role-item {{activeRole==='manager' ? 'role-active' : ''}}" data-role="manager" bindtap="chooseRole">管理入口</view>
+    </view>
+
+    <view class="field-card mt-32">
+      <view class="label">账号</view>
+      <input class="input" placeholder="请输入手机号/账号" data-key="account" bindinput="onInput" value="{{form.account}}" />
+    </view>
+
+    <view class="field-card mt-24">
+      <view class="label">密码</view>
+      <input class="input" password="true" placeholder="请输入密码" data-key="password" bindinput="onInput" value="{{form.password}}" />
+    </view>
+
+    <button class="primary-btn mt-32" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submitLogin">立即登录</button>
+    <button class="secondary-btn ghost-btn mt-24" bindtap="goRegister">还没有账号？去注册</button>
+  </view>
+</view>

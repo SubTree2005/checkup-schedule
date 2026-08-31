@@ -1,0 +1,5 @@
+@import '../../app.wxss';
+.map-card { margin-top: 8rpx; }
+.nav-map-placeholder { height: 420rpx; border-radius: 24rpx; background: linear-gradient(135deg, #EEF5FF, #F7FBFF); color:#6B7280; display:flex; align-items:center; justify-content:center; border: 2rpx dashed #BFD6FF; }
+.nav-meta { color:#4B5563; margin-top: 12rpx; }
+.hint-line { line-height: 1.8; color:#4B5563; padding: 8rpx 0; }

@@ -1,0 +1,29 @@
+<view class="container">
+  <view class="card">
+    <view class="section-title">当前体检</view>
+    <view wx:if="{{currentPlan}}">
+      <view class="record-name">{{currentPlan.packageName}}</view>
+      <view class="record-meta">{{currentPlan.hospitalName}}</view>
+      <view class="record-meta">状态：{{currentPlan.finished ? '已完成' : '进行中'}}</view>
+      <view class="record-meta">完成进度：{{currentPlan.progress || 0}}%</view>
+      <button class="primary-btn mt-24" bindtap="goCurrentPlan">继续体检</button>
+    </view>
+    <view wx:else class="empty-text">暂无进行中的体检</view>
+  </view>
+
+  <view class="card mt-24">
+    <view class="section-title">历史体检记录</view>
+    <block wx:if="{{records.length}}">
+      <block wx:for="{{records}}" wx:key="id">
+        <view class="history-item" data-id="{{item.id}}" bindtap="goRecordDetail">
+          <view class="record-name">{{item.date}}</view>
+          <view class="record-meta">{{item.packageName}}</view>
+          <view class="record-meta">{{item.packagePrice > 0 ? '¥' + item.packagePrice : '价格以医院为准'}}</view>
+          <view class="record-meta">体检结果：{{item.result || '敬请期待'}}</view>
+          <view class="done">{{item.status}}</view>
+        </view>
+      </block>
+    </block>
+    <view wx:else class="empty-text">暂无历史记录</view>
+  </view>
+</view>

@@ -1,0 +1,3 @@
+@import '../../app.wxss';
+.profile-form-card { padding-bottom: 32rpx; }
+.field-card { background:#F8FBFF; border-radius: 22rpx; padding: 22rpx; border:2rpx solid #E8F0FF; }

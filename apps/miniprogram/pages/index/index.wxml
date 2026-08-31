@@ -1,0 +1,66 @@
+<view class="container home-page">
+  <view class="brand-panel card">
+    <view class="brand-top">
+      <image class="brand-logo" src="../../addpicture/logo.png" mode="widthFix"></image>
+    </view>
+    <view class="brand-title">少等一步，畅检全程</view>
+    <view class="brand-actions mt-24">
+      <button class="primary-btn hero-main-btn" bindtap="goStart">立即开始</button>
+      <button class="secondary-btn hero-sub-btn" wx:if="{{!isLoggedIn}}" bindtap="goLogin">登录 / 注册</button>
+    </view>
+  </view>
+
+  <view class="feature-grid mt-24">
+    <view class="feature-card card" bindtap="continuePlan">
+      <view class="feature-icon feature-icon-blue">◔</view>
+      <view class="feature-title">最近体检</view>
+      <view class="feature-desc">继续上次未完成的路线</view>
+      <view class="feature-meta" wx:if="{{currentPlan}}">当前进度 {{currentPlan.progress || 0}}%</view>
+      <view class="feature-meta" wx:else>暂无进行中的体检</view>
+    </view>
+    <view class="feature-card card" bindtap="goRecord">
+      <view class="feature-icon feature-icon-green">▤</view>
+      <view class="feature-title">体检记录</view>
+      <view class="feature-desc">查看历史记录与路线详情</view>
+      <view class="feature-meta">已完成与历史路线</view>
+    </view>
+  </view>
+
+  <view class="card mt-24 tip-card">
+    <view class="section-title">体检小贴士</view>
+    <view class="tip-box">{{tips}}</view>
+  </view>
+
+  <view class="card mt-24">
+    <view class="section-title">服务流程</view>
+    <view class="mini-process-list">
+      <block wx:for="{{steps}}" wx:key="index">
+        <view class="mini-process-item">
+          <view class="mini-process-index">{{index + 1}}</view>
+          <view class="mini-process-text">{{item}}</view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <view class="card mt-24">
+    <view class="section-title">智能规划优势</view>
+    <view class="value-grid">
+      <block wx:for="{{values}}" wx:key="title">
+        <view class="value-item">
+          <view class="value-mark {{item.colorClass}}"></view>
+          <view class="value-title">{{item.title}}</view>
+          <view class="value-desc">{{item.desc}}</view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <view class="card mt-24 staff-card">
+    <view>
+      <view class="section-title">医院工作人员入口</view>
+      <view class="section-subtitle">仅限医院内部人员使用</view>
+    </view>
+    <button class="secondary-btn staff-btn" bindtap="goStaff">我要管理</button>
+  </view>
+</view>

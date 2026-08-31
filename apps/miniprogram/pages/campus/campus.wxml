@@ -1,0 +1,17 @@
+<view class="container">
+  <view class="page-head">
+    <view class="page-title">选择院区</view>
+    <view class="page-desc">请选择当前开放的体检院区，更多院区将陆续开放。</view>
+  </view>
+
+  <block wx:for="{{campuses}}" wx:key="id">
+    <view class="card campus-card {{!item.available ? 'campus-card-disabled' : ''}}">
+      <view class="campus-top">
+        <view class="campus-name">{{item.name}}</view>
+        <view class="campus-badge {{item.available ? 'campus-badge-open' : 'campus-badge-wait'}}">{{item.available ? '可选择' : '敬请期待'}}</view>
+      </view>
+      <view class="campus-info">开放时间：{{item.openTime}}</view>
+      <button class="{{item.available ? 'primary-btn' : 'secondary-btn'}} pick-btn" data-id="{{item.id}}" data-available="{{item.available}}" bindtap="selectCampus">{{item.available ? '选择院区' : '敬请期待'}}</button>
+    </view>
+  </block>
+</view>

@@ -1,0 +1,16 @@
+<view class="container">
+  <view class="card map-card">
+    <view class="section-title">步行导航</view>
+    <view class="nav-map-placeholder">{{location || '请根据院内指引前往目标科室'}}</view>
+    <view class="nav-meta mt-24">起点：{{fromName}}</view>
+    <view class="nav-meta">终点：{{toName}}</view>
+    <view class="nav-meta">距离：{{distance}} · {{duration}}</view>
+  </view>
+
+  <view class="card mt-24">
+    <view class="section-title">导航提示</view>
+    <view class="hint-placeholder">路线距离来自医院 GIS 配置；暂无数据时请按院内标识或咨询工作人员。</view>
+  </view>
+
+  <button class="primary-btn mt-24" bindtap="goBackPlan">已到达</button>
+</view>

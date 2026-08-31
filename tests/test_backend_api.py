@@ -7,7 +7,7 @@ from sqlalchemy import select
 
 from apps.backend.checkup_backend.database import Base
 from apps.backend.checkup_backend.main import create_app
-from apps.backend.checkup_backend.models import UserInfo
+from apps.backend.checkup_backend.models import ExamPlan, PackageInfo, UserInfo
 
 
 class BackendAPITest(unittest.TestCase):
@@ -177,6 +177,87 @@ class BackendAPITest(unittest.TestCase):
         )
         self.assertEqual(resolved.status_code, 200, resolved.text)
         self.assertTrue(self.client.get("/api/departments").json()[0]["isAvailable"])
+
+    def test_patient_miniprogram_end_to_end(self):
+        admin = self.register()
+        department = self.create_department()
+        first_exam = self.create_exam(department["deptID"], name="腹部超声")
+        second_exam = self.create_exam(department["deptID"], name="甲状腺超声")
+        with self.app.state.session_factory() as session:
+            package = PackageInfo(
+                package_name="基础套餐",
+                description="患者端联调套餐",
+                included_item_ids=[first_exam["itemID"], second_exam["itemID"]],
+                default_duration=24,
+            )
+            session.add(package)
+            session.commit()
+            package_id = package.package_id
+
+        with TestClient(self.app) as patient_client:
+            registered = patient_client.post(
+                "/api/patient/auth/register",
+                json={
+                    "phone": "13900000001",
+                    "password": "patient-pass-123",
+                    "name": "体检用户",
+                    "gender": "女",
+                    "age": 28,
+                },
+            )
+            self.assertEqual(registered.status_code, 201, registered.text)
+            self.assertTrue(registered.json()["token"])
+            self.assertEqual(patient_client.get("/api/patient/auth/me").json()["name"], "体检用户")
+
+            hospitals = patient_client.get("/api/patient/hospitals")
+            self.assertEqual(hospitals.status_code, 200, hospitals.text)
+            self.assertEqual(hospitals.json()[0]["hospitalID"], admin["hospital"]["hospitalID"])
+            catalog = patient_client.get(
+                f"/api/patient/hospitals/{admin['hospital']['hospitalID']}/catalog"
+            )
+            self.assertEqual(catalog.status_code, 200, catalog.text)
+            self.assertEqual(catalog.json()["packages"][0]["packageID"], package_id)
+
+            created = patient_client.post(
+                "/api/patient/plans",
+                json={
+                    "hospitalID": admin["hospital"]["hospitalID"],
+                    "packageID": package_id,
+                    "profile": {"fasting": "yes", "bladder": "normal"},
+                },
+            )
+            self.assertEqual(created.status_code, 201, created.text)
+            plan = created.json()
+            self.assertEqual(plan["packageName"], "基础套餐")
+            self.assertEqual(plan["totalSteps"], 2)
+            self.assertEqual(plan["steps"][0]["status"], "active")
+            with self.app.state.session_factory() as session:
+                stored_plan = session.get(ExamPlan, plan["planID"])
+                self.assertEqual(stored_plan.package_id, package_id)
+                self.assertEqual(stored_plan.selected_item_ids, [first_exam["itemID"], second_exam["itemID"]])
+
+            first = plan["steps"][0]
+            completed = patient_client.post(
+                f"/api/patient/plans/{plan['planID']}/steps/{first['detailID']}/complete"
+            )
+            self.assertEqual(completed.status_code, 200, completed.text)
+            self.assertEqual(completed.json()["progress"], 50)
+            self.assertEqual(completed.json()["steps"][1]["status"], "active")
+            navigation = patient_client.get(
+                f"/api/patient/plans/{plan['planID']}/navigation",
+                params={"detailID": completed.json()["steps"][1]["detailID"]},
+            )
+            self.assertEqual(navigation.status_code, 200, navigation.text)
+            self.assertEqual(navigation.json()["toName"], "超声科")
+
+            second = completed.json()["steps"][1]
+            finished = patient_client.post(
+                f"/api/patient/plans/{plan['planID']}/steps/{second['detailID']}/complete"
+            )
+            self.assertTrue(finished.json()["finished"])
+            history = patient_client.get("/api/patient/plans")
+            self.assertEqual(history.status_code, 200, history.text)
+            self.assertEqual(history.json()[0]["status"], "已完成")
 
 
 if __name__ == "__main__":

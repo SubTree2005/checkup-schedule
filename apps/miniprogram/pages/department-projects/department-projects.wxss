@@ -1,0 +1,8 @@
+@import '../../app.wxss';
+.dept-card { padding-bottom: 12rpx; }
+.dept-header { display:flex; justify-content:space-between; align-items:center; }
+.dept-name { font-size: 30rpx; font-weight:700; color:#1F2A44; }
+.dept-tip { font-size: 22rpx; color:#6B7280; }
+.project-list { margin-top: 18rpx; display:flex; flex-direction:column; gap: 16rpx; }
+.project-item { background:#F8FBFF; border-radius: 16rpx; padding: 18rpx; }
+.project-label { display:flex; align-items:center; gap: 14rpx; font-size: 26rpx; color:#2B3A55; }

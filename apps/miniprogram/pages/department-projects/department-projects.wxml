@@ -1,0 +1,24 @@
+<view class="container">
+  <checkbox-group bindchange="onCheckedChange">
+    <block wx:for="{{departments}}" wx:key="name" wx:for-item="department">
+      <view class="card dept-card">
+        <view class="dept-header">
+          <view class="dept-name">{{department.name}}</view>
+          <view class="dept-tip">可勾选项目</view>
+        </view>
+        <view class="project-list">
+          <block wx:for="{{department.projects}}" wx:key="id" wx:for-item="project">
+            <view class="project-item">
+              <label class="project-label">
+                <checkbox value="{{project.id}}" color="#1350BE" />
+                <text>{{project.name}}</text>
+              </label>
+            </view>
+          </block>
+        </view>
+      </view>
+    </block>
+  </checkbox-group>
+
+  <button class="primary-btn mt-24" bindtap="submitSelection">确认勾选</button>
+</view>

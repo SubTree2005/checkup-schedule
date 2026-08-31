@@ -1,6 +1,7 @@
 import json
 import tempfile
 import unittest
+from datetime import datetime
 from pathlib import Path
 
 from fastapi.testclient import TestClient
@@ -361,6 +362,15 @@ class BackendAPITest(unittest.TestCase):
             self.assertEqual(replanned.status_code, 200, replanned.text)
             self.assertEqual(replanned.json()["totalSteps"], 2)
             self.assertTrue(replanned.json()["replanNotice"])
+            initial_steps = {step["itemID"]: step for step in valid_plan.json()["steps"]}
+            replanned_steps = {step["itemID"]: step for step in replanned.json()["steps"]}
+            active_end = datetime.fromisoformat(
+                initial_steps[prerequisite["itemID"]]["estimatedEnd"].removesuffix("Z")
+            )
+            pending_start = datetime.fromisoformat(
+                replanned_steps[follow_up["itemID"]]["estimatedStart"].removesuffix("Z")
+            )
+            self.assertGreaterEqual(pending_start, active_end)
 
     def test_demo_patient_pool_can_activate_resize_withdraw_and_reuse(self):
         admin = self.register()

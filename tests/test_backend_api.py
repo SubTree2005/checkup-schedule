@@ -200,6 +200,164 @@ class BackendAPITest(unittest.TestCase):
         with self.app.state.session_factory() as session:
             self.assertIsNone(session.scalar(select(UserInfo).where(UserInfo.phone == "13800000077")))
 
+    def test_registration_rejects_invalid_exam_constraints(self):
+        cases = []
+
+        missing_prerequisite = self.registration_workspace("遗漏前置项目医院")
+        missing_prerequisite["exams"].append(
+            {
+                **missing_prerequisite["exams"][0],
+                "key": "follow-up-exam",
+                "itemName": "后续检查",
+                "prerequisiteItemKeys": ["registration-exam"],
+            }
+        )
+        missing_prerequisite["packages"][0]["includedItemKeys"] = ["follow-up-exam"]
+        cases.append(("13800000071", missing_prerequisite, "缺少前置项目"))
+
+        cyclic = self.registration_workspace("循环前置医院")
+        cyclic["exams"][0]["prerequisiteItemKeys"] = ["follow-up-exam"]
+        cyclic["exams"].append(
+            {
+                **cyclic["exams"][0],
+                "key": "follow-up-exam",
+                "itemName": "后续检查",
+                "prerequisiteItemKeys": ["registration-exam"],
+            }
+        )
+        cyclic["packages"][0]["includedItemKeys"] = ["registration-exam", "follow-up-exam"]
+        cases.append(("13800000072", cyclic, "存在循环"))
+
+        conflicting = self.registration_workspace("互斥项目医院")
+        conflicting["exams"][0]["conflictItemKeys"] = ["follow-up-exam"]
+        conflicting["exams"].append(
+            {
+                **conflicting["exams"][0],
+                "key": "follow-up-exam",
+                "itemName": "互斥检查",
+                "conflictItemKeys": [],
+            }
+        )
+        conflicting["packages"][0]["includedItemKeys"] = ["registration-exam", "follow-up-exam"]
+        cases.append(("13800000073", conflicting, "互斥"))
+
+        for phone, workspace, expected in cases:
+            with self.subTest(expected=expected):
+                response = self.client.post(
+                    "/api/auth/register",
+                    json={
+                        "phone": phone,
+                        "password": "secure-pass-123",
+                        "adminName": "测试管理员",
+                        "workspace": workspace,
+                    },
+                )
+                self.assertEqual(response.status_code, 422, response.text)
+                self.assertIn(expected, response.text)
+                with self.app.state.session_factory() as session:
+                    self.assertIsNone(session.scalar(select(UserInfo).where(UserInfo.phone == phone)))
+
+    def test_package_and_patient_plan_enforce_exam_constraints(self):
+        admin = self.register()
+        department = self.create_department()
+        prerequisite = self.create_exam(department["deptID"], name="前置检查")
+        follow_up = self.create_exam(department["deptID"], name="后续检查")
+        updated = self.client.patch(
+            f"/api/exams/{follow_up['itemID']}",
+            json={"prerequisites": {"itemIDs": [prerequisite["itemID"]]}},
+        )
+        self.assertEqual(updated.status_code, 200, updated.text)
+
+        incomplete_package = self.client.post(
+            "/api/packages",
+            json={
+                "packageName": "遗漏前置项目套餐",
+                "includedItemIDs": [follow_up["itemID"]],
+                "isPublished": True,
+            },
+        )
+        self.assertEqual(incomplete_package.status_code, 422, incomplete_package.text)
+        self.assertIn("缺少前置项目", incomplete_package.text)
+
+        package = self.client.post(
+            "/api/packages",
+            json={
+                "packageName": "合法前置项目套餐",
+                "includedItemIDs": [prerequisite["itemID"], follow_up["itemID"]],
+                "isPublished": True,
+            },
+        )
+        self.assertEqual(package.status_code, 201, package.text)
+
+        cyclic_update = self.client.patch(
+            f"/api/exams/{prerequisite['itemID']}",
+            json={"prerequisites": {"itemIDs": [follow_up["itemID"]]}},
+        )
+        self.assertEqual(cyclic_update.status_code, 422, cyclic_update.text)
+        self.assertIn("存在循环", cyclic_update.text)
+        stored_prerequisite = next(
+            row for row in self.client.get("/api/exams").json() if row["itemID"] == prerequisite["itemID"]
+        )
+        self.assertNotIn("itemIDs", stored_prerequisite["prerequisites"])
+        self.assertEqual(
+            self.client.patch(f"/api/exams/{prerequisite['itemID']}", json={"prerequisites": None}).status_code,
+            422,
+        )
+        invalid_format = self.client.patch(
+            f"/api/exams/{prerequisite['itemID']}",
+            json={"prerequisites": {"itemIDs": "not-an-array"}},
+        )
+        self.assertEqual(invalid_format.status_code, 422, invalid_format.text)
+        self.assertIn("必须是项目 ID 数组", invalid_format.text)
+
+        conflicting = self.create_exam(department["deptID"], name="互斥检查")
+        conflict_update = self.client.patch(
+            f"/api/exams/{conflicting['itemID']}",
+            json={"conflicts": [prerequisite["itemID"]]},
+        )
+        self.assertEqual(conflict_update.status_code, 200, conflict_update.text)
+        conflict_package = self.client.post(
+            "/api/packages",
+            json={
+                "packageName": "互斥项目套餐",
+                "includedItemIDs": [prerequisite["itemID"], conflicting["itemID"]],
+                "isPublished": False,
+            },
+        )
+        self.assertEqual(conflict_package.status_code, 422, conflict_package.text)
+        self.assertIn("互斥", conflict_package.text)
+
+        with TestClient(self.app) as patient_client:
+            registered = patient_client.post(
+                "/api/patient/auth/register",
+                json={
+                    "phone": "13900000071",
+                    "password": "patient-pass-123",
+                    "name": "前置约束患者",
+                },
+            )
+            self.assertEqual(registered.status_code, 201, registered.text)
+            invalid_plan = patient_client.post(
+                "/api/patient/plans",
+                json={
+                    "hospitalID": admin["hospital"]["hospitalID"],
+                    "packageID": package.json()["packageID"],
+                    "selectedItemIDs": [follow_up["itemID"]],
+                },
+            )
+            self.assertEqual(invalid_plan.status_code, 422, invalid_plan.text)
+            self.assertIn("缺少前置项目", invalid_plan.text)
+            valid_plan = patient_client.post(
+                "/api/patient/plans",
+                json={
+                    "hospitalID": admin["hospital"]["hospitalID"],
+                    "packageID": package.json()["packageID"],
+                    "selectedItemIDs": [prerequisite["itemID"], follow_up["itemID"]],
+                },
+            )
+            self.assertEqual(valid_plan.status_code, 201, valid_plan.text)
+            self.assertEqual(valid_plan.json()["totalSteps"], 2)
+
     def test_demo_patient_pool_can_activate_resize_withdraw_and_reuse(self):
         admin = self.register()
         hospital_id = admin["hospital"]["hospitalID"]

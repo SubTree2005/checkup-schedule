@@ -22,6 +22,7 @@ from checkup_scheduler import (
 
 from .api import client_ip
 from .database import get_db
+from .exam_constraints import prerequisite_item_ids, validate_exam_selection
 from .models import (
     DepartmentDistance,
     DepartmentInfo,
@@ -364,12 +365,6 @@ def _parse_open_window(hospital: HospitalInfo, now: datetime) -> tuple[datetime,
     return max(now, start), end
 
 
-def _exam_prerequisite_ids(exam: ExamInfo, selected_ids: set[str]) -> tuple[str, ...]:
-    data = exam.prerequisites or {}
-    values = data.get("itemIDs") or data.get("items") or data.get("requires") or []
-    return tuple(item_id for item_id in values if item_id in selected_ids)
-
-
 def _allowed_windows(exam: ExamInfo, day_start: datetime, day_end: datetime) -> tuple[TimeWindow, ...]:
     data = exam.allowed_time_slots or {}
     start_text, end_text = data.get("start"), data.get("end")
@@ -426,6 +421,14 @@ def _run_scheduler(
     now = utcnow()
     planning_start, planning_end = _parse_open_window(hospital, now)
     selected_ids = {exam.item_id for exam, _department in exam_rows}
+    try:
+        validate_exam_selection(
+            selected_ids,
+            {exam.item_id: prerequisite_item_ids(exam.prerequisites) for exam, _department in exam_rows},
+            {exam.item_id: exam.conflicts or [] for exam, _department in exam_rows},
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=f"检查项目组合无效：{exc}") from exc
     waits = _latest_department_waits(db, hospital.hospital_id, now)
     departments: dict[str, DepartmentState] = {}
     for _exam, department in exam_rows:
@@ -442,7 +445,7 @@ def _run_scheduler(
             id=exam.item_id,
             department_id=exam.dept_id,
             duration_minutes=exam.duration,
-            prerequisites=_exam_prerequisite_ids(exam, selected_ids),
+            prerequisites=prerequisite_item_ids(exam.prerequisites),
             delay_cost_per_minute=float(exam.priority),
             allowed_windows=_allowed_windows(exam, planning_start, planning_end),
             is_critical=exam.is_critical,

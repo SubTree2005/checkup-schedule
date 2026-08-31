@@ -67,7 +67,7 @@
 }
 ```
 
-`departmentKey`、`prerequisiteItemKeys` 和 `conflictItemKeys` 必须引用同一文件中已声明的业务 key。医学状态条件继续放在 `prerequisites`；项目前置关系必须使用 `prerequisiteItemKeys`，不要直接填写 `itemIDs`。
+`departmentKey`、`prerequisiteItemKeys` 和 `conflictItemKeys` 必须引用同一文件中已声明的业务 key。医学状态条件继续放在 `prerequisites`；项目前置关系必须使用 `prerequisiteItemKeys`，不要直接填写 `itemIDs`。全部项目的前置关系必须是无环图，整包校验会拒绝直接或间接循环依赖。
 
 ## 套餐 packages
 
@@ -87,7 +87,7 @@
 }
 ```
 
-`defaultDuration` 为 `0` 时自动累加所含检查项目的时长。已上架套餐只能包含处于启用状态的项目；不满足条件时整批导入会失败。
+`defaultDuration` 为 `0` 时自动累加所含检查项目的时长。每个套餐必须包含其项目所需的全部前置项目，也不能同时包含任一对互斥项目；已上架套餐还只能包含处于启用状态的项目。不满足任一条件时整批导入会失败。
 
 ## GIS gis
 

@@ -6,11 +6,12 @@
 
 `user_info`、`hospital_info`、`department_info`、`exam_info`、`package_info`、`user_status_info`、`exam_plan`、`plan_execution_detail`、`anomaly_report`、`department_distance`、`user_mobility_profile`、`walk_speed_preset`、`queue_snapshot`、`department_waiting_stats`、`department_resource_calendar`。
 
-为实现管理端增加三张支撑表：
+为实现管理端增加四张支撑表：
 
 - `hospital_admin`：管理员与医院的归属关系，是多医院隔离的服务端依据；
 - `user_session`：只保存随机登录令牌的 SHA-256 摘要、登录 IP 与有效期；
 - `hospital_gis`：按医院和楼层保存 GeoJSON、版本号、更新人和更新时间。
+- `demo_patient_profile`：保存每家医院注册时固定生成的 100 人演示患者池、套餐项目组合和当前激活计划引用。
 
 密码使用带随机盐的 PBKDF2-SHA256，数据库不保存明文密码。客户端提交的 `hospitalID` 不参与授权判断。
 
@@ -19,6 +20,7 @@
 | 功能 | 接口 |
 | --- | --- |
 | 注册、登录、当前账号、退出 | `POST /api/auth/register`、`POST /api/auth/login`、`GET /api/auth/me`、`POST /api/auth/logout` |
+| 注册数据模板 | `GET /api/auth/register-template` |
 | 医院资料 | `GET/PATCH /api/hospital` |
 | 科室 | `GET/POST /api/departments`、`PATCH/DELETE /api/departments/{deptID}` |
 | 检查项目 | `GET/POST /api/exams`、`PATCH/DELETE /api/exams/{itemID}` |
@@ -28,6 +30,7 @@
 | 异常 | `GET/POST /api/anomalies`、`POST /api/anomalies/{reportID}/resolve` |
 | 排队快照 | `GET/POST /api/queues` |
 | 看板与人流地图 | `GET /api/dashboard/summary`、`GET /api/dashboard/map/{floorKey}` |
+| 演示患者池（仅创建者） | `GET /api/demo-patients`、`POST/DELETE /api/demo-patients/active` |
 
 ### 患者微信小程序接口
 
@@ -49,6 +52,8 @@
 OpenAPI 交互文档在服务启动后的 `/docs`。
 
 科室、项目、套餐和多楼层 GIS 可以通过一份标准 JSON 原子导入；业务 key、字段和 GeoJSON 关联规则见 [`workspace-import.md`](workspace-import.md)。
+
+医院注册请求必须在 `workspace` 字段中携带完整工作区，注册、导入和 100 人演示池生成使用同一事务。演示患者平时只有固定资料和项目组合；设置当前人数后才创建当天 `exam_plan` 与执行明细，撤回会删除这些运行记录但保留原患者池，因而再次激活不会重新随机。
 
 ## GIS GeoJSON 约定
 

@@ -8,15 +8,6 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 TIME_PATTERN = re.compile(r"^(?:[01]\d|2[0-3]):[0-5]\d$")
 
 
-class HospitalRegister(BaseModel):
-    phone: str = Field(min_length=5, max_length=32)
-    password: str = Field(min_length=8, max_length=128)
-    adminName: str = Field(min_length=1, max_length=100)
-    hospitalName: str = Field(min_length=2, max_length=200)
-    address: str = Field(default="", max_length=500)
-    openTime: str = Field(default="08:00-17:00", max_length=100)
-
-
 class LoginRequest(BaseModel):
     phone: str
     password: str
@@ -299,6 +290,38 @@ class WorkspaceImport(BaseModel):
                     if None in route_keys or not route_keys.issubset(department_keys):
                         raise ValueError(f"GIS {floor.floorKey} 的路线引用了未声明的科室")
         return self
+
+
+class HospitalRegister(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    phone: str = Field(min_length=5, max_length=32)
+    password: str = Field(min_length=8, max_length=128)
+    adminName: str = Field(min_length=1, max_length=100)
+    workspace: WorkspaceImport
+
+    @model_validator(mode="after")
+    def validate_complete_workspace(self):
+        missing = []
+        if self.workspace.hospital is None:
+            missing.append("hospital")
+        if not self.workspace.departments:
+            missing.append("departments")
+        if not self.workspace.exams:
+            missing.append("exams")
+        if not self.workspace.packages:
+            missing.append("packages")
+        if not self.workspace.gis:
+            missing.append("gis")
+        if missing:
+            raise ValueError(f"医院注册必须上传完整工作区数据，缺少：{', '.join(missing)}")
+        if not any(package.isPublished for package in self.workspace.packages):
+            raise ValueError("医院注册数据至少需要一个已上架套餐，用于准备演示患者池")
+        return self
+
+
+class DemoPatientTarget(BaseModel):
+    count: int = Field(ge=1, le=100)
 
 
 class AnomalyCreate(BaseModel):

@@ -71,7 +71,7 @@ python -m pip install -e ".[backend]"
 DATABASE_URL=sqlite:///./checkup.db uvicorn apps.backend.checkup_backend.main:app --reload
 ```
 
-打开 `http://127.0.0.1:8000` 即可注册医院账号并进入管理后台。后台支持使用一份标准 JSON 一键导入科室、检查项目、多个套餐和多楼层 GIS，格式见 [`docs/workspace-import.md`](docs/workspace-import.md)。API 文档位于 `/docs`；生产环境变量和微信云托管说明见 [`docs/deployment-cloudbase.md`](docs/deployment-cloudbase.md)，数据模型与 GIS 格式见 [`docs/backend-api.md`](docs/backend-api.md)。
+打开 `http://127.0.0.1:8000` 即可注册医院账号并进入管理后台。注册时必须选择一份包含医院、科室、项目、套餐和 GIS 的完整工作区 JSON；账号、医院数据和 100 人固定演示患者池在同一事务内创建。注册后仍可通过后台重复一键导入更新数据，格式见 [`docs/workspace-import.md`](docs/workspace-import.md)。API 文档位于 `/docs`；生产环境变量和微信云托管说明见 [`docs/deployment-cloudbase.md`](docs/deployment-cloudbase.md)，数据模型与 GIS 格式见 [`docs/backend-api.md`](docs/backend-api.md)。
 
 患者小程序位于 `apps/miniprogram`，使用微信开发者工具直接导入。体检套餐由医院在 Web 管理端上架，小程序按医院动态读取。开发环境默认请求 `http://127.0.0.1:8000`，配置方式和联调说明见 [`apps/miniprogram/README.md`](apps/miniprogram/README.md)。
 
@@ -92,6 +92,8 @@ DATABASE_URL=sqlite:///./checkup.db uvicorn apps.backend.checkup_backend.main:ap
 ```
 
 `hospital` 可选，用于更新当前医院基本信息；其他数组可一次同时提交，也可只提交需要更新的部分。科室、项目和套餐必须使用稳定且唯一的业务 `key`，项目通过 `departmentKey` 关联科室，套餐通过 `includedItemKeys` 关联项目，GIS 科室点通过 `departmentKey` 关联科室。整包原子校验和写入，相同 `key` 重复上传会更新已有数据，不会删除文件中未出现的记录。
+
+医院注册是例外：注册数据中的五个部分都不能为空，并且至少包含一个已上架套餐。系统会据此预生成该医院专属的 100 名演示患者及固定项目组合。创建者可通过侧边栏底部的隐藏演示入口指定当前纳入人数或全部撤回；未激活患者没有体检计划，不进入看板和人流计算。
 
 可直接试用的完整数据见[紫金港校医院示例整合包](examples/hospitals/zijingang-campus-hospital/README.md)；字段、限制、GeoJSON 属性和接口说明见[上传格式文档](docs/workspace-import.md)。
 

@@ -8,7 +8,7 @@ from sqlalchemy import select
 
 from apps.backend.checkup_backend.database import Base
 from apps.backend.checkup_backend.main import create_app
-from apps.backend.checkup_backend.models import ExamPlan, UserInfo
+from apps.backend.checkup_backend.models import DemoPatientProfile, ExamPlan, UserInfo, UserStatusInfo
 
 
 class BackendAPITest(unittest.TestCase):
@@ -24,7 +24,78 @@ class BackendAPITest(unittest.TestCase):
         self.client_context.__exit__(None, None, None)
         self.temp_dir.cleanup()
 
-    def register(self, client=None, phone="13800000001", hospital="测试医院"):
+    def registration_workspace(self, hospital="测试医院"):
+        return {
+            "formatVersion": "1.0",
+            "mode": "upsert",
+            "hospital": {
+                "hospitalName": hospital,
+                "address": "测试路 1 号",
+                "openTime": "08:00-17:00",
+                "floorMapUrl": None,
+            },
+            "departments": [
+                {
+                    "key": "registration-department",
+                    "deptName": "注册初始化科室",
+                    "location": "1F-R01",
+                    "openTimeStart": "08:00",
+                    "openTimeEnd": "17:00",
+                    "capacity": 2,
+                    "isAvailable": True,
+                }
+            ],
+            "exams": [
+                {
+                    "key": "registration-exam",
+                    "departmentKey": "registration-department",
+                    "itemName": "注册初始化项目",
+                    "duration": 10,
+                    "prerequisites": {},
+                    "prerequisiteItemKeys": [],
+                    "conflictItemKeys": [],
+                    "priority": 1,
+                    "allowedTimeSlots": {},
+                    "isCritical": False,
+                    "isActive": True,
+                }
+            ],
+            "packages": [
+                {
+                    "key": "registration-package",
+                    "packageName": "注册演示套餐",
+                    "packageType": "健康体检",
+                    "price": 100,
+                    "tag": "注册数据",
+                    "description": "测试注册时完整导入",
+                    "includedItemKeys": ["registration-exam"],
+                    "defaultDuration": 0,
+                    "suitable": [],
+                    "notice": [],
+                    "isPublished": True,
+                }
+            ],
+            "gis": [
+                {
+                    "floorKey": "1F",
+                    "geojson": {
+                        "type": "FeatureCollection",
+                        "features": [
+                            {
+                                "type": "Feature",
+                                "properties": {
+                                    "featureType": "department",
+                                    "departmentKey": "registration-department",
+                                },
+                                "geometry": {"type": "Point", "coordinates": [10, 10]},
+                            }
+                        ],
+                    },
+                }
+            ],
+        }
+
+    def register(self, client=None, phone="13800000001", hospital="测试医院", workspace=None):
         client = client or self.client
         response = client.post(
             "/api/auth/register",
@@ -32,9 +103,7 @@ class BackendAPITest(unittest.TestCase):
                 "phone": phone,
                 "password": "secure-pass-123",
                 "adminName": "测试管理员",
-                "hospitalName": hospital,
-                "address": "测试路 1 号",
-                "openTime": "08:00-17:00",
+                "workspace": workspace or self.registration_workspace(hospital),
             },
         )
         self.assertEqual(response.status_code, 201, response.text)
@@ -90,18 +159,107 @@ class BackendAPITest(unittest.TestCase):
             "queue_snapshot",
             "department_waiting_stats",
             "department_resource_calendar",
+            "demo_patient_profile",
         }
         self.assertTrue(expected.issubset(Base.metadata.tables))
 
     def test_register_login_and_password_hash(self):
         result = self.register()
         self.assertEqual(result["hospital"]["hospitalName"], "测试医院")
+        self.assertEqual(result["demoPool"], {"prepared": 100, "active": 0})
         self.assertIn("checkup_admin_session", self.client.cookies)
         self.assertEqual(self.client.get("/api/auth/me").status_code, 200)
         with self.app.state.session_factory() as session:
             user = session.scalar(select(UserInfo).where(UserInfo.phone == "13800000001"))
             self.assertTrue(user.password.startswith("pbkdf2_sha256$"))
             self.assertNotIn("secure-pass-123", user.password)
+            demos = session.scalars(
+                select(DemoPatientProfile).where(DemoPatientProfile.hospital_id == result["hospital"]["hospitalID"])
+            ).all()
+            self.assertEqual(len(demos), 100)
+            self.assertFalse(any(row.is_active for row in demos))
+            self.assertEqual(session.scalars(select(ExamPlan)).all(), [])
+
+    def test_registration_requires_complete_workspace(self):
+        template = self.client.get("/api/auth/register-template")
+        self.assertEqual(template.status_code, 200, template.text)
+        self.assertTrue(template.json()["hospital"])
+        self.assertTrue(all(template.json()[name] for name in ("departments", "exams", "packages", "gis")))
+        workspace = self.registration_workspace("不完整医院")
+        workspace["gis"] = []
+        response = self.client.post(
+            "/api/auth/register",
+            json={
+                "phone": "13800000077",
+                "password": "secure-pass-123",
+                "adminName": "测试管理员",
+                "workspace": workspace,
+            },
+        )
+        self.assertEqual(response.status_code, 422, response.text)
+        with self.app.state.session_factory() as session:
+            self.assertIsNone(session.scalar(select(UserInfo).where(UserInfo.phone == "13800000077")))
+
+    def test_demo_patient_pool_can_activate_resize_withdraw_and_reuse(self):
+        admin = self.register()
+        hospital_id = admin["hospital"]["hospitalID"]
+        initial = self.client.get("/api/demo-patients")
+        self.assertEqual(initial.status_code, 200, initial.text)
+        self.assertEqual(initial.json()["prepared"], 100)
+        self.assertEqual(initial.json()["active"], 0)
+
+        with self.app.state.session_factory() as session:
+            prepared = session.scalars(
+                select(DemoPatientProfile)
+                .where(DemoPatientProfile.hospital_id == hospital_id)
+                .order_by(DemoPatientProfile.ordinal)
+            ).all()
+            fixed_profiles = [(row.user_id, row.package_id, list(row.selected_item_ids)) for row in prepared]
+            demo_package_id = prepared[0].package_id
+
+        protected_package = self.client.delete(f"/api/packages/{demo_package_id}")
+        self.assertEqual(protected_package.status_code, 409, protected_package.text)
+
+        activated = self.client.post("/api/demo-patients/active", json={"count": 7})
+        self.assertEqual(activated.status_code, 200, activated.text)
+        self.assertEqual(activated.json()["active"], 7)
+        self.assertEqual(activated.json()["changed"], 7)
+        dashboard = self.client.get("/api/dashboard/summary").json()
+        self.assertEqual(dashboard["metrics"]["todayPlans"], 7)
+        self.assertEqual(dashboard["metrics"]["inProgressPlans"], 7)
+        self.assertEqual(sum(row["activeCount"] for row in dashboard["flow"]), 7)
+
+        resized = self.client.post("/api/demo-patients/active", json={"count": 3})
+        self.assertEqual(resized.status_code, 200, resized.text)
+        self.assertEqual(resized.json()["active"], 3)
+        first_plan_ids = [row["planID"] for row in resized.json()["activePatients"]]
+
+        withdrawn = self.client.delete("/api/demo-patients/active")
+        self.assertEqual(withdrawn.status_code, 200, withdrawn.text)
+        self.assertEqual(withdrawn.json()["active"], 0)
+        with self.app.state.session_factory() as session:
+            prepared = session.scalars(
+                select(DemoPatientProfile)
+                .where(DemoPatientProfile.hospital_id == hospital_id)
+                .order_by(DemoPatientProfile.ordinal)
+            ).all()
+            self.assertEqual(len(prepared), 100)
+            self.assertEqual(
+                [(row.user_id, row.package_id, list(row.selected_item_ids)) for row in prepared],
+                fixed_profiles,
+            )
+            self.assertFalse(any(row.is_active for row in prepared))
+            self.assertEqual(session.scalars(select(ExamPlan).where(ExamPlan.hospital_id == hospital_id)).all(), [])
+            self.assertEqual(
+                session.scalars(
+                    select(UserStatusInfo).where(UserStatusInfo.user_id.in_([row.user_id for row in prepared]))
+                ).all(),
+                [],
+            )
+
+        reactivated = self.client.post("/api/demo-patients/active", json={"count": 3})
+        self.assertEqual(reactivated.status_code, 200, reactivated.text)
+        self.assertEqual([row["planID"] for row in reactivated.json()["activePatients"]], first_plan_ids)
 
     def test_admin_page_assets_and_logout(self):
         admin_page = self.client.get("/").text
@@ -111,6 +269,8 @@ class BackendAPITest(unittest.TestCase):
         self.assertIn("renderMap", self.client.get("/assets/app.js").text)
         self.assertIn("renderPackages", self.client.get("/assets/app.js").text)
         self.assertIn("workspaceImportForm", self.client.get("/assets/app.js").text)
+        self.assertIn("demoPatientTrigger", admin_page)
+        self.assertIn("workspaceFile", admin_page)
         self.register()
         logout = self.client.post("/api/auth/logout")
         self.assertEqual(logout.status_code, 204)
@@ -120,13 +280,31 @@ class BackendAPITest(unittest.TestCase):
         self.register()
         first_department = self.create_department()
         with TestClient(self.app) as second_client:
-            self.register(second_client, phone="13800000002", hospital="第二医院")
-            self.assertEqual(second_client.get("/api/departments").json(), [])
+            second_admin = self.register(second_client, phone="13800000002", hospital="第二医院")
+            second_departments = second_client.get("/api/departments").json()
+            self.assertEqual(len(second_departments), 1)
+            self.assertNotEqual(second_departments[0]["deptID"], first_department["deptID"])
             cross_update = second_client.patch(
                 f"/api/departments/{first_department['deptID']}",
                 json={"deptName": "越权修改"},
             )
             self.assertEqual(cross_update.status_code, 404)
+        with self.app.state.session_factory() as session:
+            first_demo = session.scalars(
+                select(DemoPatientProfile).where(DemoPatientProfile.hospital_id == first_department["hospitalID"])
+            ).all()
+            second_demo = session.scalars(
+                select(DemoPatientProfile).where(
+                    DemoPatientProfile.hospital_id == second_admin["hospital"]["hospitalID"]
+                )
+            ).all()
+            self.assertEqual(len(first_demo), 100)
+            self.assertEqual(len(second_demo), 100)
+            self.assertTrue(
+                {item for row in first_demo for item in row.selected_item_ids}.isdisjoint(
+                    {item for row in second_demo for item in row.selected_item_ids}
+                )
+            )
 
     def test_gis_queue_and_dashboard_flow(self):
         self.register()
@@ -182,12 +360,12 @@ class BackendAPITest(unittest.TestCase):
         self.assertEqual(result["summary"]["departments"], {"created": 2, "updated": 0})
         self.assertEqual(result["summary"]["exams"], {"created": 2, "updated": 0})
         self.assertEqual(result["summary"]["packages"], {"created": 2, "updated": 0})
-        self.assertEqual(result["summary"]["gis"], {"created": 1, "updated": 0})
-        self.assertEqual(len(self.client.get("/api/departments").json()), 2)
-        self.assertEqual(len(self.client.get("/api/exams").json()), 2)
+        self.assertEqual(result["summary"]["gis"], {"created": 0, "updated": 1})
+        self.assertEqual(len(self.client.get("/api/departments").json()), 3)
+        self.assertEqual(len(self.client.get("/api/exams").json()), 3)
         packages = self.client.get("/api/packages").json()
-        self.assertEqual(len(packages), 2)
-        self.assertEqual(sum(package["isPublished"] for package in packages), 1)
+        self.assertEqual(len(packages), 3)
+        self.assertEqual(sum(package["isPublished"] for package in packages), 2)
 
         gis = self.client.get("/api/gis/1F").json()
         department_features = [
@@ -203,8 +381,8 @@ class BackendAPITest(unittest.TestCase):
         repeated_result = repeated.json()
         self.assertEqual(repeated_result["summary"]["departments"], {"created": 0, "updated": 2})
         self.assertEqual(repeated_result["summary"]["packages"], {"created": 0, "updated": 2})
-        self.assertEqual(repeated_result["gisVersions"]["1F"], 2)
-        self.assertEqual(len(self.client.get("/api/departments").json()), 2)
+        self.assertEqual(repeated_result["gisVersions"]["1F"], 3)
+        self.assertEqual(len(self.client.get("/api/departments").json()), 3)
 
         invalid = self.client.get("/api/imports/template").json()
         invalid["departments"][0]["location"] = "不应写入"
@@ -233,10 +411,12 @@ class BackendAPITest(unittest.TestCase):
                 f"/api/patient/hospitals/{admin['hospital']['hospitalID']}/catalog"
             )
             self.assertEqual(catalog.status_code, 200, catalog.text)
-            self.assertEqual([row["packageName"] for row in catalog.json()["packages"]], ["基础体检套餐"])
+            self.assertEqual(
+                {row["packageName"] for row in catalog.json()["packages"]},
+                {"基础体检套餐", "注册演示套餐"},
+            )
 
     def test_zijingang_example_bundle_imports_end_to_end(self):
-        admin = self.register(hospital="待更新医院")
         example_path = (
             Path(__file__).resolve().parents[1]
             / "examples"
@@ -245,15 +425,14 @@ class BackendAPITest(unittest.TestCase):
             / "workspace.json"
         )
         payload = json.loads(example_path.read_text(encoding="utf-8"))
-
-        imported = self.client.post("/api/imports/workspace", json=payload)
-        self.assertEqual(imported.status_code, 200, imported.text)
-        summary = imported.json()["summary"]
+        admin = self.register(hospital="待更新医院", workspace=payload)
+        summary = admin["workspaceSummary"]
         self.assertEqual(summary["hospital"], {"updated": 1})
         self.assertEqual(summary["departments"], {"created": 49, "updated": 0})
         self.assertEqual(summary["exams"], {"created": 79, "updated": 0})
         self.assertEqual(summary["packages"], {"created": 7, "updated": 0})
         self.assertEqual(summary["gis"], {"created": 3, "updated": 0})
+        self.assertEqual(admin["demoPool"], {"prepared": 100, "active": 0})
 
         me = self.client.get("/api/auth/me").json()
         self.assertEqual(me["hospital"]["hospitalName"], "浙江大学校医院（紫金港校区）")
@@ -305,14 +484,15 @@ class BackendAPITest(unittest.TestCase):
             json={"deptID": department["deptID"], "anomalyType": "设备故障", "description": "设备校准"},
         )
         self.assertEqual(created.status_code, 201, created.text)
-        departments = self.client.get("/api/departments").json()
-        self.assertFalse(departments[0]["isAvailable"])
+        departments = {row["deptID"]: row for row in self.client.get("/api/departments").json()}
+        self.assertFalse(departments[department["deptID"]]["isAvailable"])
         resolved = self.client.post(
             f"/api/anomalies/{created.json()['reportID']}/resolve",
             json={"reopenDepartment": True},
         )
         self.assertEqual(resolved.status_code, 200, resolved.text)
-        self.assertTrue(self.client.get("/api/departments").json()[0]["isAvailable"])
+        departments = {row["deptID"]: row for row in self.client.get("/api/departments").json()}
+        self.assertTrue(departments[department["deptID"]]["isAvailable"])
 
     def test_patient_miniprogram_end_to_end(self):
         admin = self.register()
@@ -347,7 +527,7 @@ class BackendAPITest(unittest.TestCase):
 
         with TestClient(self.app) as second_admin_client:
             self.register(second_admin_client, phone="13800000009", hospital="第二医院")
-            self.assertEqual(second_admin_client.get("/api/packages").json(), [])
+            self.assertNotIn(package_id, {row["packageID"] for row in second_admin_client.get("/api/packages").json()})
             cross_update = second_admin_client.patch(
                 f"/api/packages/{package_id}", json={"isPublished": False}
             )
@@ -425,7 +605,7 @@ class BackendAPITest(unittest.TestCase):
             catalog_after_unpublish = patient_client.get(
                 f"/api/patient/hospitals/{admin['hospital']['hospitalID']}/catalog"
             )
-            self.assertEqual(catalog_after_unpublish.json()["packages"], [])
+            self.assertNotIn(package_id, {row["packageID"] for row in catalog_after_unpublish.json()["packages"]})
             stale_create = patient_client.post(
                 "/api/patient/plans",
                 json={

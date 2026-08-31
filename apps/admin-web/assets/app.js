@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const state = { me: null, departments: [], exams: [], packages: [], gis: [], dashboard: null, anomalies: [] };
+  const state = { me: null, departments: [], exams: [], packages: [], gis: [], dashboard: null, anomalies: [], demo: null };
   const byId = (id) => document.getElementById(id);
   const authView = byId("authView");
   const appView = byId("appView");
@@ -9,6 +9,7 @@
   const dialogBody = byId("dialogBody");
   let toastTimer;
   let workspaceImportPayload = null;
+  let registrationWorkspacePayload = null;
 
   function escapeHtml(value) {
     return String(value == null ? "" : value)
@@ -65,6 +66,18 @@
     return Object.fromEntries(new FormData(form).entries());
   }
 
+  function downloadJson(payload, filename) {
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
   document.querySelectorAll("[data-auth-tab]").forEach((button) => {
     button.addEventListener("click", () => {
       document.querySelectorAll("[data-auth-tab]").forEach((item) => item.classList.toggle("active", item === button));
@@ -83,16 +96,59 @@
     } catch (error) { toast(error.message, "error"); }
   });
 
+  byId("registerForm").querySelector('[name="workspaceFile"]').addEventListener("change", async (event) => {
+    const file = event.currentTarget.files[0];
+    registrationWorkspacePayload = null;
+    if (!file) {
+      byId("registerWorkspaceSummary").innerHTML = "<span>尚未选择注册数据包</span>";
+      return;
+    }
+    try {
+      const payload = JSON.parse(await file.text());
+      const sections = ["departments", "exams", "packages", "gis"];
+      if (!payload.hospital) throw new Error("注册数据缺少 hospital 医院信息");
+      sections.forEach((name) => {
+        if (!Array.isArray(payload[name]) || !payload[name].length) throw new Error("注册数据中的 " + name + " 不能为空");
+      });
+      registrationWorkspacePayload = payload;
+      byId("registerWorkspaceSummary").innerHTML = '<b>' + escapeHtml(payload.hospital.hospitalName || file.name) +
+        '</b><div class="import-counts"><span>科室 ' + payload.departments.length + '</span><span>项目 ' +
+        payload.exams.length + '</span><span>套餐 ' + payload.packages.length + '</span><span>GIS ' +
+        payload.gis.length + '</span></div>';
+    } catch (error) {
+      event.currentTarget.value = "";
+      byId("registerWorkspaceSummary").innerHTML = "<span>文件解析失败，请重新选择</span>";
+      toast(error instanceof SyntaxError ? "文件不是有效的 JSON" : error.message, "error");
+    }
+  });
+
+  byId("downloadRegisterTemplate").addEventListener("click", async () => {
+    try {
+      downloadJson(await api("/auth/register-template"), "hospital-registration-workspace.json");
+      toast("注册数据模板已下载");
+    } catch (error) { toast(error.message, "error"); }
+  });
+
   byId("registerForm").addEventListener("submit", async (event) => {
     event.preventDefault();
+    if (!registrationWorkspacePayload) return toast("请先选择有效的完整医院数据包", "error");
     const payload = formObject(event.currentTarget);
-    payload.openTime = "08:00-17:00";
+    delete payload.workspaceFile;
+    payload.workspace = registrationWorkspacePayload;
+    const submitButton = event.currentTarget.querySelector('[type="submit"]');
+    submitButton.disabled = true;
+    submitButton.textContent = "正在创建并准备患者池…";
     try {
       state.me = await api("/auth/register", { method: "POST", body: payload });
       showApp();
       await loadWorkspace();
-      toast("医院账号创建成功");
+      registrationWorkspacePayload = null;
+      toast("医院账号、完整数据和 100 人演示池已创建");
     } catch (error) { toast(error.message, "error"); }
+    finally {
+      submitButton.disabled = false;
+      submitButton.textContent = "创建医院账号";
+    }
   });
 
   byId("logoutButton").addEventListener("click", async () => {
@@ -126,7 +182,8 @@
       api("/packages"),
       api("/gis"),
       api("/dashboard/summary"),
-      api("/anomalies")
+      api("/anomalies"),
+      state.me.user.isOwner ? api("/demo-patients") : Promise.resolve(null)
     ]);
     state.departments = results[0];
     state.exams = results[1];
@@ -134,6 +191,10 @@
     state.gis = results[3];
     state.dashboard = results[4];
     state.anomalies = results[5];
+    state.demo = results[6];
+    byId("demoPatientTrigger").classList.toggle(
+      "hidden", !state.me.user.isOwner || !state.demo || state.demo.prepared !== 100
+    );
     renderEverything();
   }
 
@@ -504,6 +565,41 @@
     if (event.target.id === "cancelDialog") dialog.close();
   });
 
+  byId("demoPatientTrigger").addEventListener("click", openDemoPatientTool);
+
+  function openDemoPatientTool() {
+    const demo = state.demo || { prepared: 0, active: 0, inactive: 0 };
+    byId("dialogTitle").textContent = "演示患者工具";
+    dialogBody.innerHTML = '<form id="demoPatientForm" class="dialog-grid">' +
+      '<div class="full demo-pool-status"><b>已预备 ' + demo.prepared + ' 人</b><span>当前纳入计算 ' +
+      demo.active + ' 人 · 未激活 ' + demo.inactive + ' 人</span></div>' +
+      '<label class="full">指定当前纳入人数<input name="count" type="number" min="1" max="100" value="' +
+      (demo.active || 20) + '" required /><small>设置的是当前总人数；患者资料与项目组合均来自注册时固定的 100 人池。</small></label>' +
+      '<div class="dialog-actions"><button type="button" class="danger-button" id="withdrawDemoPatients"' +
+      (demo.active ? '' : ' disabled') + '>撤回全部</button><button type="button" class="secondary-button" id="cancelDialog">取消</button>' +
+      '<button type="submit" class="primary-button">应用人数</button></div></form>';
+    byId("demoPatientForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const count = Number(new FormData(event.currentTarget).get("count"));
+      try {
+        const result = await api("/demo-patients/active", { method: "POST", body: { count: count } });
+        dialog.close();
+        await loadWorkspace();
+        toast("已将 " + result.active + " 名固定演示患者纳入当前计算");
+      } catch (error) { toast(error.message, "error"); }
+    });
+    byId("withdrawDemoPatients").addEventListener("click", async () => {
+      if (!demo.active || !confirm("确定撤回全部演示患者吗？患者池会保留，可再次使用同一批患者。")) return;
+      try {
+        await api("/demo-patients/active", { method: "DELETE" });
+        dialog.close();
+        await loadWorkspace();
+        toast("演示患者已全部撤回，固定患者池仍保留");
+      } catch (error) { toast(error.message, "error"); }
+    });
+    dialog.showModal();
+  }
+
   byId("workspaceImportForm").querySelector('[name="workspaceFile"]').addEventListener("change", async (event) => {
     const file = event.currentTarget.files[0];
     workspaceImportPayload = null;
@@ -563,15 +659,7 @@
   byId("downloadImportTemplate").addEventListener("click", async () => {
     try {
       const template = await api("/imports/template");
-      const blob = new Blob([JSON.stringify(template, null, 2)], { type: "application/json;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "hospital-workspace-template.json";
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
+      downloadJson(template, "hospital-workspace-template.json");
       toast("标准模板已下载");
     } catch (error) { toast(error.message, "error"); }
   });

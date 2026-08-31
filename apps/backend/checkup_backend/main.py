@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy.engine import URL
 
 from . import models  # noqa: F401 - register SQLAlchemy metadata
 from .api import router
@@ -16,8 +17,43 @@ from .database import Base, build_engine, build_session_factory
 from .patient_api import router as patient_router
 
 
+def resolve_database_url(explicit_url: str | None = None) -> str:
+    if explicit_url:
+        return explicit_url
+
+    configured_url = os.getenv("DATABASE_URL")
+    if configured_url:
+        return configured_url
+
+    mysql_values = {
+        "MYSQL_ADDRESS": os.getenv("MYSQL_ADDRESS"),
+        "MYSQL_USERNAME": os.getenv("MYSQL_USERNAME"),
+        "MYSQL_PASSWORD": os.getenv("MYSQL_PASSWORD"),
+    }
+    if any(mysql_values.values()):
+        missing = [name for name, value in mysql_values.items() if not value]
+        if missing:
+            raise RuntimeError(f"incomplete MySQL configuration: missing {', '.join(missing)}")
+
+        address = mysql_values["MYSQL_ADDRESS"] or ""
+        host, separator, port_text = address.rpartition(":")
+        if not separator or not host or not port_text.isdigit():
+            raise RuntimeError("MYSQL_ADDRESS must use the host:port format")
+        return URL.create(
+            "mysql+pymysql",
+            username=mysql_values["MYSQL_USERNAME"],
+            password=mysql_values["MYSQL_PASSWORD"],
+            host=host,
+            port=int(port_text),
+            database=os.getenv("MYSQL_DATABASE", "checkup_schedule"),
+            query={"charset": "utf8mb4"},
+        ).render_as_string(hide_password=False)
+
+    return "sqlite:///./checkup.db"
+
+
 def create_app(database_url: str | None = None, static_dir: str | Path | None = None) -> FastAPI:
-    resolved_database_url = database_url or os.getenv("DATABASE_URL", "sqlite:///./checkup.db")
+    resolved_database_url = resolve_database_url(database_url)
     engine = build_engine(resolved_database_url)
     session_factory = build_session_factory(engine)
     admin_dir = Path(static_dir) if static_dir else Path(__file__).resolve().parents[2] / "admin-web"

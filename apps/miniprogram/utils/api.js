@@ -1,36 +1,73 @@
-const { apiBaseUrl } = require('./runtime-config')
+const { requestTransport } = require('./runtime-config')
+
+let initializedCloudEnv = ''
+
+function ensureCloudInitialized(transport) {
+  if (!wx.cloud || typeof wx.cloud.init !== 'function' || typeof wx.cloud.callContainer !== 'function') {
+    throw new Error('当前微信版本不支持云托管，请升级微信后重试')
+  }
+  if (initializedCloudEnv === transport.env) return
+  wx.cloud.init({ env: transport.env, traceUser: true })
+  initializedCloudEnv = transport.env
+}
+
+function handleResponse(response, resolve, reject) {
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    resolve(response.data)
+    return
+  }
+  if (response.statusCode === 401) wx.removeStorageSync('patientToken')
+  const message = response.data && response.data.detail
+  reject(new Error(typeof message === 'string' ? message : `请求失败（${response.statusCode}）`))
+}
 
 function request(path, options = {}) {
   return new Promise((resolve, reject) => {
-    let url
+    let transport
     try {
-      url = `${apiBaseUrl()}${path}`
+      transport = requestTransport()
     } catch (error) {
       reject(error)
       return
     }
     const token = wx.getStorageSync('patientToken')
+    const method = options.method || 'GET'
+    const header = {
+      'content-type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {})
+    }
+    const callbacks = {
+      success: response => handleResponse(response, resolve, reject),
+      fail(error) {
+        reject(new Error(error.errMsg || '无法连接服务器，请检查云托管服务状态'))
+      }
+    }
+
+    if (transport.type === 'cloud') {
+      try {
+        ensureCloudInitialized(transport)
+      } catch (error) {
+        reject(error)
+        return
+      }
+      wx.cloud.callContainer({
+        config: { env: transport.env },
+        path,
+        header: { 'X-WX-SERVICE': transport.service, ...header },
+        method,
+        data: options.data === undefined ? '' : options.data,
+        ...callbacks
+      })
+      return
+    }
+
     wx.request({
-      url,
-      method: options.method || 'GET',
+      url: `${transport.baseUrl}${path}`,
+      method,
       data: options.data,
       timeout: 15000,
-      header: {
-        'content-type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {})
-      },
-      success(response) {
-        if (response.statusCode >= 200 && response.statusCode < 300) {
-          resolve(response.data)
-          return
-        }
-        if (response.statusCode === 401) wx.removeStorageSync('patientToken')
-        const message = response.data && response.data.detail
-        reject(new Error(typeof message === 'string' ? message : `请求失败（${response.statusCode}）`))
-      },
-      fail(error) {
-        reject(new Error(error.errMsg || '无法连接服务器，请检查 API 地址'))
-      }
+      header,
+      ...callbacks
     })
   })
 }

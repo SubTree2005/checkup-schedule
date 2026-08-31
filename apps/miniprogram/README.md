@@ -22,13 +22,18 @@
 
 ## 体验版与正式版
 
-编辑 [`utils/runtime-config.js`](utils/runtime-config.js)，把 `PRODUCTION_API_BASE_URL` 替换为实际 Backend HTTPS 地址：
+体验版和正式版通过 `wx.cloud.callContainer` 直连微信云托管，不需要配置 `request` 合法域名。生产环境信息位于
+[`utils/runtime-config.js`](utils/runtime-config.js)：
 
 ```js
-const PRODUCTION_API_BASE_URL = 'https://api.example-hospital.cn'
+const PRODUCTION_CLOUD_CONTAINER = {
+  env: 'prod-d3gt6bqwxd07c2857',
+  service: 'checkup-schedule'
+}
 ```
 
-体验版和正式版不会读取本地 `apiBaseUrl` 覆盖，也不会回退到 localhost；仍保留 `api.example.com` 等示例值时会直接提示未配置，避免把本地地址误发到线上。随后在微信公众平台“开发管理 → 开发设置 → 服务器域名”中，把同一来源加入 `request` 合法域名。
+体验版和正式版不会读取本地 `apiBaseUrl` 覆盖，也不会回退到 localhost。开发版仍可用
+`wx.setStorageSync('apiBaseUrl', 'https://...')` 切换普通 HTTP API；生产环境只使用上述云托管环境和服务。
 
 正式提审前还需要：
 

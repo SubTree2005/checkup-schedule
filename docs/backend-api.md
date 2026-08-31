@@ -59,6 +59,8 @@ OpenAPI 交互文档在服务启动后的 `/docs`。
 
 普通患者创建计划时，服务端会在排程成功后创建 `user_status_info` 并写入该计划的 `recordID`。计划详情和历史列表中的 `profileSnapshot` 来自这条固定记录；患者之后修改资料或创建新计划，不会改变旧计划的状态快照。旧数据若没有 `recordID`，该字段返回空对象。
 
+医院 `openTime`、科室 `openTimeStart/openTimeEnd`、检查 `allowedTimeSlots` 和按日统计均按 `HOSPITAL_TIMEZONE` 解释，默认 `Asia/Shanghai`。服务端在进入 Scheduler 和写入数据库前转换为无时区 UTC 时间，API 的时间戳继续以 `Z` 输出。患者排程会取医院、科室和检查三层时间窗的交集；交集不足以完成项目时返回不可排程，而不会越过闭诊时间。
+
 ## GIS GeoJSON 约定
 
 每个楼层上传一个 `FeatureCollection`。支持 `Point`、`LineString`、`Polygon` 和 `MultiPolygon`。

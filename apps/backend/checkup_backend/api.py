@@ -11,11 +11,13 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from .database import get_db
+from .demo_patients import demo_pool_summary, prepare_demo_patient_pool, set_demo_patient_count
 from .models import (
     AnomalyReport,
     DepartmentDistance,
     DepartmentInfo,
     DepartmentWaitingStats,
+    DemoPatientProfile,
     ExamInfo,
     ExamPlan,
     HospitalAdmin,
@@ -32,6 +34,7 @@ from .schemas import (
     AnomalyResolve,
     DepartmentCreate,
     DepartmentUpdate,
+    DemoPatientTarget,
     ExamCreate,
     ExamUpdate,
     GISUpload,
@@ -116,6 +119,18 @@ def health() -> dict:
     return {"status": "ok", "time": iso(utcnow())}
 
 
+@router.get("/auth/register-template")
+def get_hospital_registration_template() -> dict:
+    template = workspace_import_template()
+    template["hospital"] = {
+        "hospitalName": "示例医院",
+        "address": "请填写医院地址",
+        "openTime": "08:00-17:00",
+        "floorMapUrl": None,
+    }
+    return template
+
+
 @router.post("/auth/register", status_code=status.HTTP_201_CREATED)
 def register_hospital(
     payload: HospitalRegister,
@@ -125,10 +140,14 @@ def register_hospital(
 ) -> dict:
     if db.scalar(select(UserInfo.user_id).where(UserInfo.phone == payload.phone)):
         raise HTTPException(status_code=409, detail="该手机号已注册")
+    hospital_data = payload.workspace.hospital
+    if hospital_data is None:
+        raise HTTPException(status_code=422, detail="医院注册必须上传包含 hospital 的完整工作区数据")
     hospital = HospitalInfo(
-        hospital_name=payload.hospitalName,
-        address=payload.address,
-        open_time=payload.openTime,
+        hospital_name=hospital_data.hospitalName,
+        address=hospital_data.address,
+        open_time=hospital_data.openTime,
+        floor_map_url=hospital_data.floorMapUrl,
     )
     user = UserInfo(
         phone=payload.phone,
@@ -137,11 +156,23 @@ def register_hospital(
         role="管理员",
     )
     db.add_all([hospital, user])
-    db.flush()
-    db.add(HospitalAdmin(user_id=user.user_id, hospital_id=hospital.hospital_id, is_owner=True))
-    token = issue_session(db, user.user_id, client_ip(request))
     try:
+        db.flush()
+        db.add(HospitalAdmin(user_id=user.user_id, hospital_id=hospital.hospital_id, is_owner=True))
+        admin = AdminContext(
+            user_id=user.user_id,
+            hospital_id=hospital.hospital_id,
+            name=user.name,
+            phone=user.phone,
+            is_owner=True,
+        )
+        workspace_result = _apply_workspace_import(payload.workspace, admin, db, commit=False)
+        prepared = prepare_demo_patient_pool(db, hospital.hospital_id)
+        token = issue_session(db, user.user_id, client_ip(request))
         db.commit()
+    except HTTPException:
+        db.rollback()
+        raise
     except IntegrityError as exc:
         db.rollback()
         raise HTTPException(status_code=409, detail="医院账号注册冲突") from exc
@@ -149,6 +180,8 @@ def register_hospital(
     return {
         "user": {"userID": user.user_id, "name": user.name, "phone": user.phone, "role": user.role},
         "hospital": hospital_dict(hospital),
+        "workspaceSummary": workspace_result["summary"],
+        "demoPool": {"prepared": prepared, "active": 0},
     }
 
 
@@ -498,6 +531,54 @@ def update_package(
     return package_dict(row)
 
 
+def require_owner(admin: AdminContext) -> None:
+    if not admin.is_owner:
+        raise HTTPException(status_code=403, detail="仅医院创建者可使用演示患者工具")
+
+
+@router.get("/demo-patients")
+def get_demo_patients(admin: AdminContext = Depends(get_current_admin), db: Session = Depends(get_db)) -> dict:
+    require_owner(admin)
+    return demo_pool_summary(db, admin.hospital_id)
+
+
+@router.post("/demo-patients/active")
+def activate_demo_patients(
+    payload: DemoPatientTarget,
+    admin: AdminContext = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+) -> dict:
+    require_owner(admin)
+    try:
+        result = set_demo_patient_count(db, admin.hospital_id, payload.count)
+        db.commit()
+        return result
+    except HTTPException:
+        db.rollback()
+        raise
+    except IntegrityError as exc:
+        db.rollback()
+        raise HTTPException(status_code=409, detail="演示患者激活失败，请检查患者池与当前数据") from exc
+
+
+@router.delete("/demo-patients/active")
+def withdraw_demo_patients(
+    admin: AdminContext = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+) -> dict:
+    require_owner(admin)
+    try:
+        result = set_demo_patient_count(db, admin.hospital_id, 0)
+        db.commit()
+        return result
+    except HTTPException:
+        db.rollback()
+        raise
+    except IntegrityError as exc:
+        db.rollback()
+        raise HTTPException(status_code=409, detail="演示患者撤回失败，请稍后重试") from exc
+
+
 @router.delete("/packages/{package_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_package(
     package_id: str,
@@ -507,6 +588,10 @@ def delete_package(
     row = require_package(db, admin.hospital_id, package_id)
     if db.scalar(select(func.count()).select_from(ExamPlan).where(ExamPlan.package_id == package_id)):
         raise HTTPException(status_code=409, detail="套餐已有体检计划，请下架套餐以保留历史记录")
+    if db.scalar(
+        select(func.count()).select_from(DemoPatientProfile).where(DemoPatientProfile.package_id == package_id)
+    ):
+        raise HTTPException(status_code=409, detail="套餐已用于注册时生成的演示患者池，请改为下架")
     db.delete(row)
     db.commit()
     return Response(status_code=204)
@@ -687,11 +772,12 @@ def get_workspace_import_template(_admin: AdminContext = Depends(get_current_adm
     return workspace_import_template()
 
 
-@router.post("/imports/workspace")
-def import_workspace(
+def _apply_workspace_import(
     payload: WorkspaceImport,
-    admin: AdminContext = Depends(get_current_admin),
-    db: Session = Depends(get_db),
+    admin: AdminContext,
+    db: Session,
+    *,
+    commit: bool = True,
 ) -> dict:
     department_ids = {
         row.key: workspace_import_id(admin.hospital_id, "department", row.key) for row in payload.departments
@@ -837,7 +923,8 @@ def import_workspace(
             sync_distances(db, admin.hospital_id, geojson)
             db.flush()
             gis_versions[imported.floorKey] = row.version
-        db.commit()
+        if commit:
+            db.commit()
     except HTTPException:
         db.rollback()
         raise
@@ -852,6 +939,15 @@ def import_workspace(
         "ids": {"departments": department_ids, "exams": item_ids, "packages": package_ids},
         "gisVersions": gis_versions,
     }
+
+
+@router.post("/imports/workspace")
+def import_workspace(
+    payload: WorkspaceImport,
+    admin: AdminContext = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+) -> dict:
+    return _apply_workspace_import(payload, admin, db)
 
 
 @router.get("/gis")

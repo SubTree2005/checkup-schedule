@@ -136,6 +136,37 @@ class ExamPlan(Base):
     plan_status: Mapped[str] = mapped_column("planStatus", String(20), default="待执行")
 
 
+class DemoPatientProfile(Base):
+    __tablename__ = "demo_patient_profile"
+    __table_args__ = (
+        UniqueConstraint("hospitalID", "ordinal", name="uq_demo_patient_hospital_ordinal"),
+        UniqueConstraint("userID", name="uq_demo_patient_user"),
+    )
+
+    demo_id: Mapped[str] = mapped_column("demoID", String(64), primary_key=True, default=new_id)
+    hospital_id: Mapped[str] = mapped_column(
+        "hospitalID", ForeignKey("hospital_info.hospitalID", ondelete="CASCADE"), index=True
+    )
+    user_id: Mapped[str] = mapped_column(
+        "userID", ForeignKey("user_info.userID", ondelete="CASCADE"), index=True
+    )
+    ordinal: Mapped[int] = mapped_column(Integer)
+    package_id: Mapped[str | None] = mapped_column(
+        "packageID", ForeignKey("package_info.packageID", ondelete="SET NULL"), nullable=True
+    )
+    selected_item_ids: Mapped[list] = mapped_column("selectedItemIDs", JSON, default=list)
+    profile_data: Mapped[dict] = mapped_column("profileData", JSON, default=dict)
+    active_plan_id: Mapped[str | None] = mapped_column(
+        "activePlanID", ForeignKey("exam_plan.planID", ondelete="SET NULL"), nullable=True
+    )
+    active_record_id: Mapped[str | None] = mapped_column(
+        "activeRecordID", ForeignKey("user_status_info.recordID", ondelete="SET NULL"), nullable=True
+    )
+    is_active: Mapped[bool] = mapped_column("isActive", Boolean, default=False, index=True)
+    activated_at: Mapped[datetime | None] = mapped_column("activatedAt", DateTime, nullable=True)
+    create_time: Mapped[datetime] = mapped_column("createTime", DateTime, default=utcnow)
+
+
 class PlanExecutionDetail(Base):
     __tablename__ = "plan_execution_detail"
 

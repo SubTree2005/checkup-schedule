@@ -29,6 +29,12 @@
 
 `hospital` 为可选段；填写后会更新当前登录医院账号的名称、地址、开放时间和楼层图地址，不会创建另一家医院。
 
+## 注册时的完整数据要求
+
+医院注册页面直接选择同一格式的 JSON，并把它作为 `POST /api/auth/register` 的 `workspace` 字段提交。此时 `hospital`、`departments`、`exams`、`packages` 和 `gis` 五个部分都必须非空，并且至少要有一个 `isPublished: true` 的套餐。可在注册页通过 `GET /api/auth/register-template` 下载注册模板。
+
+注册、完整数据导入和 100 人演示患者池生成是同一数据库事务，任何一项失败都不会留下半成品医院账号。注册完成后的普通一键更新仍允许只提交需要更新的部分，`hospital` 也仍是可选段。
+
 ## 科室 departments
 
 ```json
@@ -127,5 +133,6 @@
 | --- | --- |
 | 下载完整标准模板 | `GET /api/imports/template` |
 | 校验并一键导入 | `POST /api/imports/workspace` |
+| 下载医院注册模板 | `GET /api/auth/register-template` |
 
-两个接口都要求医院管理员登录。导入结果会返回医院信息是否更新，分别返回科室、项目、套餐和 GIS 的新增数、更新数，并提供业务 key 到数据库 ID 的映射。
+普通导入的两个接口要求医院管理员登录；注册模板可在登录前下载。导入结果会返回医院信息是否更新，分别返回科室、项目、套餐和 GIS 的新增数、更新数，并提供业务 key 到数据库 ID 的映射。

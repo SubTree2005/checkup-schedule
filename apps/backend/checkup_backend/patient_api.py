@@ -421,15 +421,18 @@ def _run_scheduler(
     hospital: HospitalInfo,
     exam_rows: list[tuple[ExamInfo, DepartmentInfo]],
     previous_order: tuple[str, ...] = (),
+    satisfied_item_ids: set[str] | None = None,
 ):
     now = utcnow()
     planning_start, planning_end = _parse_open_window(hospital, now)
     selected_ids = {exam.item_id for exam, _department in exam_rows}
+    satisfied_ids = satisfied_item_ids or set()
     try:
         validate_exam_selection(
             selected_ids,
             {exam.item_id: prerequisite_item_ids(exam.prerequisites) for exam, _department in exam_rows},
             {exam.item_id: exam.conflicts or [] for exam, _department in exam_rows},
+            satisfied_item_ids=satisfied_ids,
         )
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=f"检查项目组合无效：{exc}") from exc
@@ -449,7 +452,9 @@ def _run_scheduler(
             id=exam.item_id,
             department_id=exam.dept_id,
             duration_minutes=exam.duration,
-            prerequisites=prerequisite_item_ids(exam.prerequisites),
+            prerequisites=tuple(
+                item_id for item_id in prerequisite_item_ids(exam.prerequisites) if item_id in selected_ids
+            ),
             delay_cost_per_minute=float(exam.priority),
             allowed_windows=_allowed_windows(exam, planning_start, planning_end),
             is_critical=exam.is_critical,
@@ -752,6 +757,14 @@ def replan_patient_route(
     if not pending_details:
         return _serialize_plan(db, plan, replanned=True)
     pending_ids = [detail.item_id for detail in pending_details]
+    satisfied_ids = set(
+        db.scalars(
+            select(PlanExecutionDetail.item_id).where(
+                PlanExecutionDetail.plan_id == plan.plan_id,
+                PlanExecutionDetail.exec_status != "待开始",
+            )
+        )
+    )
     exam_rows = db.execute(
         select(ExamInfo, DepartmentInfo)
         .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
@@ -765,6 +778,7 @@ def replan_patient_route(
         db.get(HospitalInfo, plan.hospital_id),
         ordered_rows,
         previous_order=tuple(pending_ids),
+        satisfied_item_ids=satisfied_ids,
     )
     if not schedule.feasible:
         raise HTTPException(status_code=422, detail="最新排队状态下无法生成完整后续路线")

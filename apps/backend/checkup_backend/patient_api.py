@@ -175,7 +175,7 @@ def login_patient(
 ) -> dict:
     user = db.scalar(select(UserInfo).where(UserInfo.phone == payload.phone))
     is_admin = user and db.scalar(select(HospitalAdmin.user_id).where(HospitalAdmin.user_id == user.user_id))
-    if user is None or is_admin or not verify_password(payload.password, user.password):
+    if user is None or is_admin or user.role == "演示患者" or not verify_password(payload.password, user.password):
         raise HTTPException(status_code=401, detail="手机号或密码错误")
     token = issue_session(db, user.user_id, client_ip(request))
     db.commit()

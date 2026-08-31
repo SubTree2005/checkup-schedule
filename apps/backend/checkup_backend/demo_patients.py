@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import random
+import secrets
 from datetime import timedelta
 from uuid import NAMESPACE_URL, uuid5
 
@@ -20,6 +21,7 @@ from .models import (
     UserStatusInfo,
     utcnow,
 )
+from .security import hash_password
 
 DEMO_POOL_SIZE = 100
 SURNAMES = "赵钱孙李周吴郑王冯陈褚卫蒋沈韩杨朱秦许何吕施张孔曹严华金魏陶姜"
@@ -95,6 +97,7 @@ def prepare_demo_patient_pool(db: Session, hospital_id: str, size: int = DEMO_PO
 
     rng = random.Random(_seed_for_hospital(hospital_id))
     current_year = utcnow().year
+    disabled_password_hash = hash_password(secrets.token_urlsafe(48))
     profiles = []
     for ordinal in range(1, size + 1):
         gender = "男" if rng.random() < 0.5 else "女"
@@ -119,7 +122,7 @@ def prepare_demo_patient_pool(db: Session, hospital_id: str, size: int = DEMO_PO
         user = UserInfo(
             user_id=_stable_id(hospital_id, "user", ordinal),
             phone=f"demo-{hospital_id[:16]}-{ordinal:03d}",
-            password="disabled-demo-account",
+            password=disabled_password_hash,
             name=name,
             gender=gender,
             birth_date=f"{current_year - age:04d}-{month:02d}-{day:02d}",

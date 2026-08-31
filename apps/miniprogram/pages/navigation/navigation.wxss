@@ -1,5 +1,15 @@
 @import '../../app.wxss';
-.map-card { margin-top: 8rpx; }
-.nav-map-placeholder { height: 420rpx; border-radius: 24rpx; background: linear-gradient(135deg, #EEF5FF, #F7FBFF); color:#6B7280; display:flex; align-items:center; justify-content:center; border: 2rpx dashed #BFD6FF; }
-.nav-meta { color:#4B5563; margin-top: 12rpx; }
-.hint-line { line-height: 1.8; color:#4B5563; padding: 8rpx 0; }
+.map-card { margin-top:8rpx; }
+.map-heading { display:flex; justify-content:space-between; align-items:center; }
+.floor-badge { padding:8rpx 18rpx; border-radius:999rpx; background:#E7F0FF; color:#1350BE; font-size:24rpx; font-weight:700; }
+.nav-map-canvas, .nav-map-placeholder { width:100%; height:460rpx; margin-top:20rpx; border-radius:24rpx; background:#F8FAFC; border:2rpx solid #DCE5EF; }
+.nav-map-placeholder { color:#64748B; display:flex; align-items:center; justify-content:center; text-align:center; box-sizing:border-box; padding:36rpx; }
+.map-legend { display:flex; align-items:center; gap:28rpx; color:#64748B; font-size:22rpx; margin-top:18rpx; }
+.map-legend > view { display:flex; align-items:center; gap:8rpx; }
+.legend-dot { width:18rpx; height:18rpx; border-radius:50%; display:inline-block; }
+.start-dot { background:#F59E0B; }
+.target-dot { background:#16A34A; }
+.legend-line { width:34rpx; height:6rpx; border-radius:4rpx; background:#1350BE; display:inline-block; }
+.nav-meta { color:#475569; margin-top:12rpx; line-height:1.6; }
+.hint-line { line-height:1.8; color:#334155; padding-top:12rpx; }
+.secondary-hint { color:#64748B; font-size:24rpx; }

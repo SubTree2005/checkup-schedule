@@ -10,7 +10,14 @@ from sqlalchemy import select
 
 from apps.backend.checkup_backend.database import Base
 from apps.backend.checkup_backend.main import create_app
-from apps.backend.checkup_backend.models import DemoPatientProfile, ExamPlan, UserInfo, UserSession, UserStatusInfo
+from apps.backend.checkup_backend.models import (
+    DemoPatientProfile,
+    ExamPlan,
+    UserConsent,
+    UserInfo,
+    UserSession,
+    UserStatusInfo,
+)
 from apps.backend.checkup_backend.security import issue_session, session_digest
 
 
@@ -163,8 +170,58 @@ class BackendAPITest(unittest.TestCase):
             "department_waiting_stats",
             "department_resource_calendar",
             "demo_patient_profile",
+            "user_consent",
         }
         self.assertTrue(expected.issubset(Base.metadata.tables))
+
+    def test_patient_registration_records_privacy_consent_and_account_can_be_deleted(self):
+        rejected = self.client.post(
+            "/api/patient/auth/register",
+            json={
+                "phone": "13900000090",
+                "password": "patient-pass-123",
+                "name": "未同意用户",
+            },
+        )
+        self.assertEqual(rejected.status_code, 422, rejected.text)
+
+        with TestClient(self.app) as patient_client:
+            registered = patient_client.post(
+                "/api/patient/auth/register",
+                json={
+                    "phone": "13900000091",
+                    "password": "patient-pass-123",
+                    "name": "隐私测试用户",
+                    "privacyConsent": True,
+                    "privacyConsentVersion": "v0.3.1-2026-08-31",
+                },
+            )
+            self.assertEqual(registered.status_code, 201, registered.text)
+            user_id = registered.json()["user"]["userID"]
+            updated = patient_client.patch(
+                "/api/patient/profile",
+                json={"medicalHistory": "测试病史", "allergens": "测试过敏原"},
+            )
+            self.assertEqual(updated.status_code, 200, updated.text)
+            wrong_password = patient_client.request(
+                "DELETE",
+                "/api/patient/account",
+                json={"password": "wrong-password"},
+            )
+            self.assertEqual(wrong_password.status_code, 401, wrong_password.text)
+            deleted = patient_client.request(
+                "DELETE",
+                "/api/patient/account",
+                json={"password": "patient-pass-123"},
+            )
+            self.assertEqual(deleted.status_code, 204, deleted.text)
+            self.assertEqual(patient_client.get("/api/patient/auth/me").status_code, 401)
+
+        with self.app.state.session_factory() as session:
+            self.assertIsNone(session.get(UserInfo, user_id))
+            self.assertIsNone(session.scalar(select(UserConsent).where(UserConsent.user_id == user_id)))
+            self.assertIsNone(session.scalar(select(UserStatusInfo).where(UserStatusInfo.user_id == user_id)))
+            self.assertIsNone(session.scalar(select(UserSession).where(UserSession.user_id == user_id)))
 
     def test_register_login_and_password_hash(self):
         result = self.register()
@@ -360,6 +417,8 @@ class BackendAPITest(unittest.TestCase):
                     "phone": "13900000071",
                     "password": "patient-pass-123",
                     "name": "前置约束患者",
+                    "privacyConsent": True,
+                    "privacyConsentVersion": "v0.3.1-2026-08-31",
                 },
             )
             self.assertEqual(registered.status_code, 201, registered.text)
@@ -621,6 +680,8 @@ class BackendAPITest(unittest.TestCase):
                     "phone": "13900000073",
                     "password": "patient-pass-123",
                     "name": "本地时间患者",
+                    "privacyConsent": True,
+                    "privacyConsentVersion": "v0.3.1-2026-08-31",
                 },
             )
             self.assertEqual(registered.status_code, 201, registered.text)
@@ -676,6 +737,8 @@ class BackendAPITest(unittest.TestCase):
                     "phone": "13900000074",
                     "password": "patient-pass-123",
                     "name": "午休验证患者",
+                    "privacyConsent": True,
+                    "privacyConsentVersion": "v0.3.1-2026-08-31",
                 },
             )
             self.assertEqual(registered.status_code, 201, registered.text)
@@ -782,6 +845,8 @@ class BackendAPITest(unittest.TestCase):
                     "phone": "13900000008",
                     "password": "patient-pass-123",
                     "name": "批量导入患者",
+                    "privacyConsent": True,
+                    "privacyConsentVersion": "v0.3.1-2026-08-31",
                 },
             )
             self.assertEqual(registered.status_code, 201, registered.text)
@@ -793,6 +858,36 @@ class BackendAPITest(unittest.TestCase):
                 {row["packageName"] for row in catalog.json()["packages"]},
                 {"基础体检套餐", "注册演示套餐"},
             )
+            route_package = next(
+                row for row in catalog.json()["packages"] if row["packageName"] == "基础体检套餐"
+            )
+            with patch(
+                "apps.backend.checkup_backend.patient_api.utcnow",
+                return_value=datetime(2026, 8, 31, 0, 15),
+            ):
+                plan = patient_client.post(
+                    "/api/patient/plans",
+                    json={
+                        "hospitalID": admin["hospital"]["hospitalID"],
+                        "packageID": route_package["packageID"],
+                        "profile": {"fasting": "yes", "bladder": "normal"},
+                    },
+                )
+            self.assertEqual(plan.status_code, 201, plan.text)
+            first_step, second_step = plan.json()["steps"]
+            completed = patient_client.post(
+                f"/api/patient/plans/{plan.json()['planID']}/steps/{first_step['detailID']}/complete"
+            )
+            self.assertEqual(completed.status_code, 200, completed.text)
+            navigation = patient_client.get(
+                f"/api/patient/plans/{plan.json()['planID']}/navigation",
+                params={"detailID": second_step["detailID"]},
+            )
+            self.assertEqual(navigation.status_code, 200, navigation.text)
+            self.assertEqual(navigation.json()["distanceMeters"], 60)
+            self.assertEqual(navigation.json()["map"]["floorKey"], "1F")
+            self.assertEqual(navigation.json()["map"]["routeCoordinates"], [[80.0, 30.0], [20.0, 30.0]])
+            self.assertIn("蓝色路线", navigation.json()["floorInstruction"])
 
     def test_zijingang_example_bundle_imports_end_to_end(self):
         example_path = (
@@ -845,6 +940,8 @@ class BackendAPITest(unittest.TestCase):
                     "phone": "13900000009",
                     "password": "patient-pass-123",
                     "name": "紫金港示例患者",
+                    "privacyConsent": True,
+                    "privacyConsentVersion": "v0.3.1-2026-08-31",
                 },
             )
             self.assertEqual(registered.status_code, 201, registered.text)
@@ -893,6 +990,8 @@ class BackendAPITest(unittest.TestCase):
                     "phone": "13900000072",
                     "password": "patient-pass-123",
                     "name": "状态快照患者",
+                    "privacyConsent": True,
+                    "privacyConsentVersion": "v0.3.1-2026-08-31",
                 },
             )
             self.assertEqual(registered.status_code, 201, registered.text)
@@ -1007,6 +1106,8 @@ class BackendAPITest(unittest.TestCase):
                     "name": "体检用户",
                     "gender": "女",
                     "age": 28,
+                    "privacyConsent": True,
+                    "privacyConsentVersion": "v0.3.1-2026-08-31",
                 },
             )
             self.assertEqual(registered.status_code, 201, registered.text)

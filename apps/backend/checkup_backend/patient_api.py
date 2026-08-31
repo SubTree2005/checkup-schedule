@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import heapq
 import math
+import os
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Cookie, Depends, Header, HTTPException, Request, Response, status
-from sqlalchemy import func, or_, select
+from sqlalchemy import delete, func, or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -24,26 +26,31 @@ from .database import get_db
 from .exam_constraints import prerequisite_item_ids, validate_exam_selection
 from .hospital_time import daily_intersections_utc, next_daily_windows_utc, parse_open_time_ranges
 from .models import (
+    AnomalyReport,
     DepartmentDistance,
     DepartmentInfo,
     ExamInfo,
     ExamPlan,
     HospitalAdmin,
+    HospitalGIS,
     HospitalInfo,
     PackageInfo,
     PlanExecutionDetail,
     QueueSnapshot,
+    UserConsent,
     UserInfo,
+    UserMobilityProfile,
     UserSession,
     UserStatusInfo,
     utcnow,
 )
-from .schemas import LoginRequest, PatientPlanCreate, PatientProfileUpdate, PatientRegister
+from .schemas import LoginRequest, PatientAccountDelete, PatientPlanCreate, PatientProfileUpdate, PatientRegister
 from .security import hash_password, issue_session, revoke_session, session_digest, verify_password
 from .serializers import hospital_dict, iso
 
 router = APIRouter(prefix="/api/patient", tags=["patient-miniprogram"])
 PATIENT_SESSION_COOKIE = "checkup_patient_session"
+PRIVACY_POLICY_VERSION = "v0.3.1-2026-08-31"
 
 
 @dataclass(frozen=True)
@@ -93,6 +100,7 @@ def _set_patient_cookie(response: Response, token: str) -> None:
         token,
         max_age=7 * 24 * 3600,
         httponly=True,
+        secure=os.getenv("COOKIE_SECURE", "false").lower() == "true",
         samesite="lax",
         path="/",
     )
@@ -164,6 +172,13 @@ def register_patient(
     )
     db.add(user)
     db.flush()
+    db.add(
+        UserConsent(
+            user_id=user.user_id,
+            policy_version=PRIVACY_POLICY_VERSION,
+            accepted_ip=client_ip(request),
+        )
+    )
     token = issue_session(db, user.user_id, client_ip(request))
     db.commit()
     _set_patient_cookie(response, token)
@@ -200,6 +215,33 @@ def logout_patient(
     db: Session = Depends(get_db),
 ) -> Response:
     revoke_session(db, _bearer_token(authorization, cookie_token))
+    db.commit()
+    response.delete_cookie(PATIENT_SESSION_COOKIE, path="/")
+    response.status_code = 204
+    return response
+
+
+@router.delete("/account", status_code=status.HTTP_204_NO_CONTENT)
+def delete_patient_account(
+    payload: PatientAccountDelete,
+    response: Response,
+    patient: PatientContext = Depends(get_current_patient),
+    db: Session = Depends(get_db),
+) -> Response:
+    user = db.get(UserInfo, patient.user_id)
+    if user is None or not verify_password(payload.password, user.password):
+        raise HTTPException(status_code=401, detail="密码错误，无法注销账号")
+
+    plan_ids = list(db.scalars(select(ExamPlan.plan_id).where(ExamPlan.user_id == patient.user_id)))
+    if plan_ids:
+        db.execute(delete(PlanExecutionDetail).where(PlanExecutionDetail.plan_id.in_(plan_ids)))
+        db.execute(delete(ExamPlan).where(ExamPlan.plan_id.in_(plan_ids)))
+    db.execute(delete(AnomalyReport).where(AnomalyReport.reporter_id == patient.user_id))
+    db.execute(delete(UserMobilityProfile).where(UserMobilityProfile.user_id == patient.user_id))
+    db.execute(delete(UserStatusInfo).where(UserStatusInfo.user_id == patient.user_id))
+    db.execute(delete(UserSession).where(UserSession.user_id == patient.user_id))
+    db.execute(delete(UserConsent).where(UserConsent.user_id == patient.user_id))
+    db.delete(user)
     db.commit()
     response.delete_cookie(PATIENT_SESSION_COOKIE, path="/")
     response.status_code = 204
@@ -894,11 +936,162 @@ def patient_navigation(
                 )
             )
         )
+    map_data = _navigation_map(
+        db,
+        plan.hospital_id,
+        from_department.dept_id if from_department else None,
+        target.DepartmentInfo.dept_id,
+        from_department.dept_name if from_department else "医院入口",
+        target.DepartmentInfo.dept_name,
+    )
     speed = max(db.get(UserInfo, patient.user_id).walk_speed, 0.2)
+    floor_instruction = "请根据院内标识或咨询工作人员前往目标科室。"
+    if map_data:
+        from_floor = map_data.get("fromPoint", {}).get("floorKey") if map_data.get("fromPoint") else None
+        target_floor = map_data["toPoint"]["floorKey"]
+        if from_floor and from_floor != target_floor:
+            floor_instruction = f"请先前往 {target_floor}，再按楼层图前往目标科室。"
+        elif map_data["routeCoordinates"]:
+            floor_instruction = "请沿图中蓝色路线前往绿色终点。"
+        else:
+            floor_instruction = f"请前往 {target_floor}，并按楼层图中的绿色终点寻找科室。"
     return {
         "fromName": from_department.dept_name if from_department else "医院入口",
         "toName": target.DepartmentInfo.dept_name,
         "location": target.DepartmentInfo.location,
         "distanceMeters": round(distance) if distance is not None else None,
         "durationMinutes": max(1, math.ceil(distance / speed / 60)) if distance is not None else None,
+        "floorInstruction": floor_instruction,
+        "map": map_data,
     }
+
+
+def _navigation_map(
+    db: Session,
+    hospital_id: str,
+    from_department_id: str | None,
+    to_department_id: str,
+    from_name: str,
+    to_name: str,
+) -> dict | None:
+    floors = db.scalars(
+        select(HospitalGIS)
+        .where(HospitalGIS.hospital_id == hospital_id)
+        .order_by(HospitalGIS.floor_key)
+    ).all()
+    locations: dict[str, tuple[HospitalGIS, list[float]]] = {}
+    for floor in floors:
+        for feature in floor.geojson.get("features", []):
+            properties = feature.get("properties") or {}
+            geometry = feature.get("geometry") or {}
+            point = _coordinate_pair(geometry.get("coordinates"))
+            if properties.get("featureType") == "department" and geometry.get("type") == "Point" and point:
+                locations[properties.get("deptID")] = (floor, point)
+
+    target_location = locations.get(to_department_id)
+    if target_location is None:
+        return None
+    target_floor, target_point = target_location
+    from_location = locations.get(from_department_id) if from_department_id else None
+    route_coordinates: list[list[float]] = []
+    from_point = None
+    if from_location:
+        source_floor, source_coordinates = from_location
+        from_point = {
+            "departmentID": from_department_id,
+            "name": from_name,
+            "floorKey": source_floor.floor_key,
+            "coordinates": source_coordinates,
+        }
+        if source_floor.floor_key == target_floor.floor_key:
+            route_coordinates = _shortest_geojson_route(
+                target_floor.geojson,
+                source_coordinates,
+                target_point,
+            )
+    return {
+        "floorKey": target_floor.floor_key,
+        "version": target_floor.version,
+        "geojson": target_floor.geojson,
+        "fromPoint": from_point,
+        "toPoint": {
+            "departmentID": to_department_id,
+            "name": to_name,
+            "floorKey": target_floor.floor_key,
+            "coordinates": target_point,
+        },
+        "routeCoordinates": route_coordinates,
+    }
+
+
+def _coordinate_pair(value) -> list[float] | None:
+    if not isinstance(value, (list, tuple)) or len(value) < 2:
+        return None
+    x, y = value[0], value[1]
+    if isinstance(x, bool) or isinstance(y, bool) or not isinstance(x, (int, float)) or not isinstance(y, (int, float)):
+        return None
+    if not math.isfinite(x) or not math.isfinite(y):
+        return None
+    return [float(x), float(y)]
+
+
+def _point_key(point: list[float]) -> tuple[float, float]:
+    return round(point[0], 9), round(point[1], 9)
+
+
+def _coordinate_distance(first: list[float], second: list[float]) -> float:
+    return math.hypot(second[0] - first[0], second[1] - first[1])
+
+
+def _shortest_geojson_route(
+    geojson: dict,
+    source: list[float],
+    target: list[float],
+) -> list[list[float]]:
+    graph: dict[tuple[float, float], list[tuple[tuple[float, float], float]]] = {}
+    coordinates_by_key: dict[tuple[float, float], list[float]] = {}
+    for feature in geojson.get("features", []):
+        properties = feature.get("properties") or {}
+        geometry = feature.get("geometry") or {}
+        if properties.get("featureType") not in {"corridor", "route"} or geometry.get("type") != "LineString":
+            continue
+        points = [point for value in geometry.get("coordinates", []) if (point := _coordinate_pair(value))]
+        for first, second in zip(points, points[1:]):
+            first_key, second_key = _point_key(first), _point_key(second)
+            distance = max(_coordinate_distance(first, second), 1e-12)
+            coordinates_by_key[first_key] = first
+            coordinates_by_key[second_key] = second
+            graph.setdefault(first_key, []).append((second_key, distance))
+            graph.setdefault(second_key, []).append((first_key, distance))
+    if not graph:
+        return []
+
+    source_key = min(coordinates_by_key, key=lambda key: _coordinate_distance(source, coordinates_by_key[key]))
+    target_key = min(coordinates_by_key, key=lambda key: _coordinate_distance(target, coordinates_by_key[key]))
+    distances = {source_key: 0.0}
+    previous: dict[tuple[float, float], tuple[float, float]] = {}
+    queue = [(0.0, source_key)]
+    while queue:
+        current_distance, current = heapq.heappop(queue)
+        if current == target_key:
+            break
+        if current_distance > distances.get(current, math.inf):
+            continue
+        for neighbor, weight in graph.get(current, []):
+            candidate = current_distance + weight
+            if candidate < distances.get(neighbor, math.inf):
+                distances[neighbor] = candidate
+                previous[neighbor] = current
+                heapq.heappush(queue, (candidate, neighbor))
+    if target_key not in distances:
+        return []
+    keys = [target_key]
+    while keys[-1] != source_key:
+        keys.append(previous[keys[-1]])
+    keys.reverse()
+    route = [coordinates_by_key[key] for key in keys]
+    if _point_key(source) != source_key:
+        route.insert(0, source)
+    if _point_key(target) != target_key:
+        route.append(target)
+    return route

@@ -4,12 +4,13 @@
 
 数据库实现《需求分析说明书》第 4.4 节定义的 15 张业务表：
 
-`user_info`、`hospital_info`、`department_info`、`exam_info`、`package_info`、`user_status_info`、`exam_plan`、`plan_execution_detail`、`anomaly_report`、`department_distance`、`user_mobility_profile`、`walk_speed_preset`、`queue_snapshot`、`department_waiting_stats`、`department_resource_calendar`。
+`user_info`、`hospital_info`、`department_info`、`exam_info`、`package_info`、`user_status_info`、`exam_plan`、`plan_execution_detail`、`anomaly_report`、`department_distance`、`user_mobility_profile`、`walk_speed_preset`、`queue_snapshot`、`department_waiting_stats`、`department_resource_calendar`。支撑表另含 `hospital_admin`、`user_session`、`user_consent`、`hospital_gis` 和 `demo_patient_profile`。
 
-为实现管理端增加四张支撑表：
+为管理、认证、隐私同意和 GIS 增加五张支撑表：
 
 - `hospital_admin`：管理员与医院的归属关系，是多医院隔离的服务端依据；
 - `user_session`：只保存随机登录令牌的 SHA-256 摘要、登录 IP 与有效期；
+- `user_consent`：保存患者同意的隐私政策版本、时间和请求 IP，作为注册授权审计记录；
 - `hospital_gis`：按医院和楼层保存 GeoJSON、版本号、更新人和更新时间。
 - `demo_patient_profile`：保存每家医院注册时固定生成的 100 人演示患者池、套餐项目组合和当前激活计划引用。
 
@@ -39,11 +40,12 @@
 | 功能 | 接口 |
 | --- | --- |
 | 患者注册、登录、当前用户、退出 | `POST /api/patient/auth/register`、`POST /api/patient/auth/login`、`GET /api/patient/auth/me`、`POST /api/patient/auth/logout` |
+| 密码确认后注销患者账号 | `DELETE /api/patient/account` |
 | 个人资料与近期身体状态 | `PATCH /api/patient/profile` |
 | 医院和动态体检目录 | `GET /api/patient/hospitals`、`GET /api/patient/hospitals/{hospitalID}/catalog` |
 | 创建、当前、历史和详情 | `POST /api/patient/plans`、`GET /api/patient/plans/current`、`GET /api/patient/plans`、`GET /api/patient/plans/{planID}` |
 | 开始、完成和动态重排 | `POST /api/patient/plans/{planID}/steps/{detailID}/start`、`POST /api/patient/plans/{planID}/steps/{detailID}/complete`、`POST /api/patient/plans/{planID}/replan` |
-| 院内导航信息 | `GET /api/patient/plans/{planID}/navigation?detailID=...` |
+| 院内导航信息与楼层 GIS 路线 | `GET /api/patient/plans/{planID}/navigation?detailID=...` |
 
 计划接口会在 Backend/Adapter 中把数据库实体转换为 `checkup_scheduler` 领域模型。小程序不包含算法副本，也不直接访问数据库。
 

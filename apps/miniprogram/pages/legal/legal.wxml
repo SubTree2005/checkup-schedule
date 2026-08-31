@@ -1,0 +1,12 @@
+<view class="container legal-page">
+  <view class="card">
+    <view class="page-title">{{title}}</view>
+    <view class="legal-version">版本：{{version}}</view>
+    <view class="legal-intro">{{intro}}</view>
+  </view>
+
+  <view class="card mt-24" wx:for="{{sections}}" wx:key="title">
+    <view class="section-title">{{item.title}}</view>
+    <view class="legal-paragraph" wx:for="{{item.paragraphs}}" wx:for-item="paragraph" wx:key="*this">{{paragraph}}</view>
+  </view>
+</view>

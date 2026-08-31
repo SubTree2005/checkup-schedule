@@ -35,6 +35,17 @@
       <input class="input" password="true" placeholder="请设置登录密码" data-key="password" bindinput="onInput" value="{{form.password}}" />
     </view>
 
+    <view class="policy-row mt-24" bindtap="togglePolicies">
+      <view class="policy-check {{acceptedPolicies ? 'policy-check-active' : ''}}">{{acceptedPolicies ? '✓' : ''}}</view>
+      <view class="policy-copy">
+        我已阅读并同意
+        <text class="policy-link" catchtap="openTerms">《用户协议》</text>
+        和
+        <text class="policy-link" catchtap="openPrivacy">《隐私政策》</text>
+        ，并同意按所选体检服务处理必要的健康信息。
+      </view>
+    </view>
+
     <button class="primary-btn mt-32" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submitRegister">完成注册</button>
   </view>
 </view>

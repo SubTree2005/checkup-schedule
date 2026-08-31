@@ -1,0 +1,4 @@
+@import '../../app.wxss';
+.legal-page { padding-bottom:48rpx; }
+.legal-version { color:#94A3B8; font-size:22rpx; margin-top:12rpx; }
+.legal-intro, .legal-paragraph { color:#475569; font-size:26rpx; line-height:1.85; margin-top:18rpx; }

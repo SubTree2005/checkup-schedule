@@ -62,6 +62,19 @@ class UserSession(Base):
     expires_at: Mapped[datetime] = mapped_column("expiresAt", DateTime, index=True)
 
 
+class UserConsent(Base):
+    __tablename__ = "user_consent"
+    __table_args__ = (UniqueConstraint("userID", "policyVersion", name="uq_user_consent_version"),)
+
+    consent_id: Mapped[str] = mapped_column("consentID", String(64), primary_key=True, default=new_id)
+    user_id: Mapped[str] = mapped_column(
+        "userID", ForeignKey("user_info.userID", ondelete="CASCADE"), index=True
+    )
+    policy_version: Mapped[str] = mapped_column("policyVersion", String(64))
+    accepted_at: Mapped[datetime] = mapped_column("acceptedAt", DateTime, default=utcnow)
+    accepted_ip: Mapped[str | None] = mapped_column("acceptedIP", String(64), nullable=True)
+
+
 class DepartmentInfo(Base):
     __tablename__ = "department_info"
     __table_args__ = (UniqueConstraint("hospitalID", "deptName", name="uq_department_hospital_name"),)

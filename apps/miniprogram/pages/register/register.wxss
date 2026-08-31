@@ -1,3 +1,8 @@
 @import '../../app.wxss';
+.policy-row { display:flex; align-items:flex-start; gap:16rpx; color:#64748B; font-size:24rpx; line-height:1.7; }
+.policy-check { width:32rpx; height:32rpx; flex:0 0 32rpx; margin-top:4rpx; border:2rpx solid #94A3B8; border-radius:8rpx; color:#FFFFFF; display:flex; align-items:center; justify-content:center; }
+.policy-check-active { background:#1350BE; border-color:#1350BE; }
+.policy-copy { flex:1; }
+.policy-link { color:#1350BE; }
 .field-card { background:#F8FBFF; border-radius: 22rpx; padding: 22rpx; border:2rpx solid #E8F0FF; }
 .field-card .input { display:block; width:100%; min-width:0; height: 84rpx; line-height: 84rpx; padding: 0; background: transparent; border:none; font-size: 26rpx; white-space: nowrap; overflow: visible; text-overflow: clip; }

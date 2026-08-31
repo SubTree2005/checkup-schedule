@@ -1,14 +1,17 @@
 import json
 import tempfile
 import unittest
+from datetime import datetime
 from pathlib import Path
+from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 from sqlalchemy import select
 
 from apps.backend.checkup_backend.database import Base
 from apps.backend.checkup_backend.main import create_app
-from apps.backend.checkup_backend.models import DemoPatientProfile, ExamPlan, UserInfo, UserStatusInfo
+from apps.backend.checkup_backend.models import DemoPatientProfile, ExamPlan, UserInfo, UserSession, UserStatusInfo
+from apps.backend.checkup_backend.security import issue_session, session_digest
 
 
 class BackendAPITest(unittest.TestCase):
@@ -178,7 +181,30 @@ class BackendAPITest(unittest.TestCase):
             ).all()
             self.assertEqual(len(demos), 100)
             self.assertFalse(any(row.is_active for row in demos))
+            demo_users = session.scalars(
+                select(UserInfo).where(UserInfo.user_id.in_([row.user_id for row in demos]))
+            ).all()
+            self.assertEqual(len(demo_users), 100)
+            self.assertTrue(all(user.role == "演示患者" for user in demo_users))
+            self.assertTrue(all(user.password.startswith("pbkdf2_sha256$") for user in demo_users))
+            self.assertFalse(any("disabled-demo-account" in user.password for user in demo_users))
+            demo_phone = demo_users[0].phone
+            demo_token = issue_session(session, demo_users[0].user_id, "127.0.0.1")
+            session.commit()
             self.assertEqual(session.scalars(select(ExamPlan)).all(), [])
+
+        demo_login = self.client.post(
+            "/api/patient/auth/login",
+            json={"phone": demo_phone, "password": "disabled-demo-account"},
+        )
+        self.assertEqual(demo_login.status_code, 401, demo_login.text)
+        demo_session = self.client.get(
+            "/api/patient/auth/me",
+            headers={"Authorization": f"Bearer {demo_token}"},
+        )
+        self.assertEqual(demo_session.status_code, 403, demo_session.text)
+        with self.app.state.session_factory() as session:
+            self.assertIsNone(session.get(UserSession, session_digest(demo_token)))
 
     def test_registration_requires_complete_workspace(self):
         template = self.client.get("/api/auth/register-template")
@@ -199,6 +225,224 @@ class BackendAPITest(unittest.TestCase):
         self.assertEqual(response.status_code, 422, response.text)
         with self.app.state.session_factory() as session:
             self.assertIsNone(session.scalar(select(UserInfo).where(UserInfo.phone == "13800000077")))
+
+    def test_registration_rejects_invalid_exam_constraints(self):
+        cases = []
+
+        missing_prerequisite = self.registration_workspace("遗漏前置项目医院")
+        missing_prerequisite["exams"].append(
+            {
+                **missing_prerequisite["exams"][0],
+                "key": "follow-up-exam",
+                "itemName": "后续检查",
+                "prerequisiteItemKeys": ["registration-exam"],
+            }
+        )
+        missing_prerequisite["packages"][0]["includedItemKeys"] = ["follow-up-exam"]
+        cases.append(("13800000071", missing_prerequisite, "缺少前置项目"))
+
+        cyclic = self.registration_workspace("循环前置医院")
+        cyclic["exams"][0]["prerequisiteItemKeys"] = ["follow-up-exam"]
+        cyclic["exams"].append(
+            {
+                **cyclic["exams"][0],
+                "key": "follow-up-exam",
+                "itemName": "后续检查",
+                "prerequisiteItemKeys": ["registration-exam"],
+            }
+        )
+        cyclic["packages"][0]["includedItemKeys"] = ["registration-exam", "follow-up-exam"]
+        cases.append(("13800000072", cyclic, "存在循环"))
+
+        conflicting = self.registration_workspace("互斥项目医院")
+        conflicting["exams"][0]["conflictItemKeys"] = ["follow-up-exam"]
+        conflicting["exams"].append(
+            {
+                **conflicting["exams"][0],
+                "key": "follow-up-exam",
+                "itemName": "互斥检查",
+                "conflictItemKeys": [],
+            }
+        )
+        conflicting["packages"][0]["includedItemKeys"] = ["registration-exam", "follow-up-exam"]
+        cases.append(("13800000073", conflicting, "互斥"))
+
+        for phone, workspace, expected in cases:
+            with self.subTest(expected=expected):
+                response = self.client.post(
+                    "/api/auth/register",
+                    json={
+                        "phone": phone,
+                        "password": "secure-pass-123",
+                        "adminName": "测试管理员",
+                        "workspace": workspace,
+                    },
+                )
+                self.assertEqual(response.status_code, 422, response.text)
+                self.assertIn(expected, response.text)
+                with self.app.state.session_factory() as session:
+                    self.assertIsNone(session.scalar(select(UserInfo).where(UserInfo.phone == phone)))
+
+    def test_package_and_patient_plan_enforce_exam_constraints(self):
+        admin = self.register()
+        department = self.create_department()
+        prerequisite = self.create_exam(department["deptID"], name="前置检查")
+        follow_up = self.create_exam(department["deptID"], name="后续检查")
+        updated = self.client.patch(
+            f"/api/exams/{follow_up['itemID']}",
+            json={"prerequisites": {"itemIDs": [prerequisite["itemID"]]}},
+        )
+        self.assertEqual(updated.status_code, 200, updated.text)
+
+        incomplete_package = self.client.post(
+            "/api/packages",
+            json={
+                "packageName": "遗漏前置项目套餐",
+                "includedItemIDs": [follow_up["itemID"]],
+                "isPublished": True,
+            },
+        )
+        self.assertEqual(incomplete_package.status_code, 422, incomplete_package.text)
+        self.assertIn("缺少前置项目", incomplete_package.text)
+
+        package = self.client.post(
+            "/api/packages",
+            json={
+                "packageName": "合法前置项目套餐",
+                "includedItemIDs": [prerequisite["itemID"], follow_up["itemID"]],
+                "isPublished": True,
+            },
+        )
+        self.assertEqual(package.status_code, 201, package.text)
+
+        cyclic_update = self.client.patch(
+            f"/api/exams/{prerequisite['itemID']}",
+            json={"prerequisites": {"itemIDs": [follow_up["itemID"]]}},
+        )
+        self.assertEqual(cyclic_update.status_code, 422, cyclic_update.text)
+        self.assertIn("存在循环", cyclic_update.text)
+        stored_prerequisite = next(
+            row for row in self.client.get("/api/exams").json() if row["itemID"] == prerequisite["itemID"]
+        )
+        self.assertNotIn("itemIDs", stored_prerequisite["prerequisites"])
+        self.assertEqual(
+            self.client.patch(f"/api/exams/{prerequisite['itemID']}", json={"prerequisites": None}).status_code,
+            422,
+        )
+        invalid_format = self.client.patch(
+            f"/api/exams/{prerequisite['itemID']}",
+            json={"prerequisites": {"itemIDs": "not-an-array"}},
+        )
+        self.assertEqual(invalid_format.status_code, 422, invalid_format.text)
+        self.assertIn("必须是项目 ID 数组", invalid_format.text)
+
+        conflicting = self.create_exam(department["deptID"], name="互斥检查")
+        conflict_update = self.client.patch(
+            f"/api/exams/{conflicting['itemID']}",
+            json={"conflicts": [prerequisite["itemID"]]},
+        )
+        self.assertEqual(conflict_update.status_code, 200, conflict_update.text)
+        conflict_package = self.client.post(
+            "/api/packages",
+            json={
+                "packageName": "互斥项目套餐",
+                "includedItemIDs": [prerequisite["itemID"], conflicting["itemID"]],
+                "isPublished": False,
+            },
+        )
+        self.assertEqual(conflict_package.status_code, 422, conflict_package.text)
+        self.assertIn("互斥", conflict_package.text)
+
+        with TestClient(self.app) as patient_client:
+            registered = patient_client.post(
+                "/api/patient/auth/register",
+                json={
+                    "phone": "13900000071",
+                    "password": "patient-pass-123",
+                    "name": "前置约束患者",
+                },
+            )
+            self.assertEqual(registered.status_code, 201, registered.text)
+            invalid_plan = patient_client.post(
+                "/api/patient/plans",
+                json={
+                    "hospitalID": admin["hospital"]["hospitalID"],
+                    "packageID": package.json()["packageID"],
+                    "selectedItemIDs": [follow_up["itemID"]],
+                },
+            )
+            self.assertEqual(invalid_plan.status_code, 422, invalid_plan.text)
+            self.assertIn("缺少前置项目", invalid_plan.text)
+            with patch(
+                "apps.backend.checkup_backend.patient_api.utcnow",
+                return_value=datetime(2026, 8, 31, 0, 15),
+            ):
+                valid_plan = patient_client.post(
+                    "/api/patient/plans",
+                    json={
+                        "hospitalID": admin["hospital"]["hospitalID"],
+                        "packageID": package.json()["packageID"],
+                        "selectedItemIDs": [prerequisite["itemID"], follow_up["itemID"]],
+                    },
+                )
+                self.assertEqual(valid_plan.status_code, 201, valid_plan.text)
+                self.assertEqual(valid_plan.json()["totalSteps"], 2)
+                replanned = patient_client.post(f"/api/patient/plans/{valid_plan.json()['planID']}/replan")
+            self.assertEqual(replanned.status_code, 200, replanned.text)
+            self.assertEqual(replanned.json()["totalSteps"], 2)
+            self.assertTrue(replanned.json()["replanNotice"])
+            initial_steps = {step["itemID"]: step for step in valid_plan.json()["steps"]}
+            replanned_steps = {step["itemID"]: step for step in replanned.json()["steps"]}
+            active_end = datetime.fromisoformat(
+                initial_steps[prerequisite["itemID"]]["estimatedEnd"].removesuffix("Z")
+            )
+            pending_start = datetime.fromisoformat(
+                replanned_steps[follow_up["itemID"]]["estimatedStart"].removesuffix("Z")
+            )
+            self.assertGreaterEqual(pending_start, active_end)
+
+    def test_time_fields_are_validated_at_api_boundaries(self):
+        self.register()
+        valid_hospital = self.client.patch(
+            "/api/hospital",
+            json={"openTime": "工作日08:00-12:00,13:30-17:00；急诊24小时"},
+        )
+        self.assertEqual(valid_hospital.status_code, 200, valid_hospital.text)
+        invalid_hospital = self.client.patch("/api/hospital", json={"openTime": "早八点到晚五点"})
+        self.assertEqual(invalid_hospital.status_code, 422, invalid_hospital.text)
+
+        department = self.create_department()
+        invalid_exam = self.client.post(
+            "/api/exams",
+            json={
+                "deptID": department["deptID"],
+                "itemName": "错误时段项目",
+                "duration": 10,
+                "allowedTimeSlots": {"start": "11:00", "end": "08:00"},
+            },
+        )
+        self.assertEqual(invalid_exam.status_code, 422, invalid_exam.text)
+        exam = self.create_exam(department["deptID"])
+        invalid_clear = self.client.patch(
+            f"/api/exams/{exam['itemID']}",
+            json={"allowedTimeSlots": None},
+        )
+        self.assertEqual(invalid_clear.status_code, 422, invalid_clear.text)
+
+        workspace = self.registration_workspace("时段错误医院")
+        workspace["exams"][0]["allowedTimeSlots"] = {"start": "8:00", "end": "11:00"}
+        invalid_registration = self.client.post(
+            "/api/auth/register",
+            json={
+                "phone": "13800000076",
+                "password": "secure-pass-123",
+                "adminName": "测试管理员",
+                "workspace": workspace,
+            },
+        )
+        self.assertEqual(invalid_registration.status_code, 422, invalid_registration.text)
+        with self.app.state.session_factory() as session:
+            self.assertIsNone(session.scalar(select(UserInfo).where(UserInfo.phone == "13800000076")))
 
     def test_demo_patient_pool_can_activate_resize_withdraw_and_reuse(self):
         admin = self.register()
@@ -344,6 +588,140 @@ class BackendAPITest(unittest.TestCase):
         flow = {item["deptID"]: item for item in dashboard.json()["flow"]}
         self.assertEqual(flow[department["deptID"]]["peopleFlow"], 9)
         self.assertEqual(flow[department["deptID"]]["estimatedWaitTime"], 1200)
+
+    def test_patient_schedule_uses_local_department_hours(self):
+        admin = self.register()
+        department_response = self.client.post(
+            "/api/departments",
+            json={
+                "deptName": "限时检查科",
+                "location": "1F-T01",
+                "openTimeStart": "10:00",
+                "openTimeEnd": "10:30",
+                "capacity": 1,
+                "isAvailable": True,
+            },
+        )
+        self.assertEqual(department_response.status_code, 201, department_response.text)
+        exam = self.create_exam(department_response.json()["deptID"], name="限时检查")
+        package = self.client.post(
+            "/api/packages",
+            json={
+                "packageName": "限时套餐",
+                "includedItemIDs": [exam["itemID"]],
+                "isPublished": True,
+            },
+        )
+        self.assertEqual(package.status_code, 201, package.text)
+
+        with TestClient(self.app) as patient_client:
+            registered = patient_client.post(
+                "/api/patient/auth/register",
+                json={
+                    "phone": "13900000073",
+                    "password": "patient-pass-123",
+                    "name": "本地时间患者",
+                },
+            )
+            self.assertEqual(registered.status_code, 201, registered.text)
+            with patch("apps.backend.checkup_backend.patient_api.utcnow", return_value=datetime(2026, 8, 31, 1, 0)):
+                created = patient_client.post(
+                    "/api/patient/plans",
+                    json={
+                        "hospitalID": admin["hospital"]["hospitalID"],
+                        "packageID": package.json()["packageID"],
+                        "profile": {},
+                    },
+                )
+            self.assertEqual(created.status_code, 201, created.text)
+            step = created.json()["steps"][0]
+            estimated_start = datetime.fromisoformat(step["estimatedStart"].removesuffix("Z"))
+            estimated_end = datetime.fromisoformat(step["estimatedEnd"].removesuffix("Z"))
+            self.assertGreaterEqual(estimated_start, datetime(2026, 8, 31, 2, 0))
+            self.assertLessEqual(estimated_end, datetime(2026, 8, 31, 2, 30))
+
+    def test_patient_schedule_respects_hospital_lunch_break(self):
+        admin = self.register()
+        updated = self.client.patch(
+            "/api/hospital",
+            json={"openTime": "工作日08:00-12:00,13:30-17:00"},
+        )
+        self.assertEqual(updated.status_code, 200, updated.text)
+        department = self.create_department()
+        exam = self.client.post(
+            "/api/exams",
+            json={
+                "deptID": department["deptID"],
+                "itemName": "下午检查",
+                "duration": 12,
+                "allowedTimeSlots": {},
+                "isActive": True,
+            },
+        )
+        self.assertEqual(exam.status_code, 201, exam.text)
+        package = self.client.post(
+            "/api/packages",
+            json={
+                "packageName": "午休验证套餐",
+                "includedItemIDs": [exam.json()["itemID"]],
+                "isPublished": True,
+            },
+        )
+        self.assertEqual(package.status_code, 201, package.text)
+
+        with TestClient(self.app) as patient_client:
+            registered = patient_client.post(
+                "/api/patient/auth/register",
+                json={
+                    "phone": "13900000074",
+                    "password": "patient-pass-123",
+                    "name": "午休验证患者",
+                },
+            )
+            self.assertEqual(registered.status_code, 201, registered.text)
+            with patch("apps.backend.checkup_backend.patient_api.utcnow", return_value=datetime(2026, 8, 31, 4, 30)):
+                created = patient_client.post(
+                    "/api/patient/plans",
+                    json={
+                        "hospitalID": admin["hospital"]["hospitalID"],
+                        "packageID": package.json()["packageID"],
+                        "profile": {},
+                    },
+                )
+            self.assertEqual(created.status_code, 201, created.text)
+            estimated_start = datetime.fromisoformat(
+                created.json()["steps"][0]["estimatedStart"].removesuffix("Z")
+            )
+            self.assertGreaterEqual(estimated_start, datetime(2026, 8, 31, 5, 30))
+
+    def test_dashboard_uses_hospital_local_day(self):
+        admin = self.register()
+        with self.app.state.session_factory() as session:
+            session.add_all(
+                [
+                    ExamPlan(
+                        user_id=admin["user"]["userID"],
+                        hospital_id=admin["hospital"]["hospitalID"],
+                        selected_item_ids=[],
+                        generate_time=datetime(2026, 8, 31, 15, 30),
+                        plan_status="已完成",
+                    ),
+                    ExamPlan(
+                        user_id=admin["user"]["userID"],
+                        hospital_id=admin["hospital"]["hospitalID"],
+                        selected_item_ids=[],
+                        generate_time=datetime(2026, 8, 31, 16, 30),
+                        plan_status="进行中",
+                    ),
+                ]
+            )
+            session.commit()
+        with patch("apps.backend.checkup_backend.api.utcnow", return_value=datetime(2026, 8, 31, 17, 0)):
+            dashboard = self.client.get("/api/dashboard/summary")
+        self.assertEqual(dashboard.status_code, 200, dashboard.text)
+        self.assertEqual(dashboard.json()["metrics"]["todayPlans"], 1)
+        self.assertEqual(dashboard.json()["metrics"]["inProgressPlans"], 1)
+        self.assertEqual(dashboard.json()["metrics"]["completedPlans"], 0)
 
     def test_workspace_import_is_atomic_and_idempotent(self):
         admin = self.register()
@@ -494,6 +872,93 @@ class BackendAPITest(unittest.TestCase):
         departments = {row["deptID"]: row for row in self.client.get("/api/departments").json()}
         self.assertTrue(departments[department["deptID"]]["isAvailable"])
 
+    def test_patient_plans_keep_their_status_snapshots(self):
+        admin = self.register()
+        department = self.create_department()
+        exam = self.create_exam(department["deptID"], name="状态快照检查")
+        package = self.client.post(
+            "/api/packages",
+            json={
+                "packageName": "状态快照套餐",
+                "includedItemIDs": [exam["itemID"]],
+                "isPublished": True,
+            },
+        )
+        self.assertEqual(package.status_code, 201, package.text)
+
+        with TestClient(self.app) as patient_client:
+            registered = patient_client.post(
+                "/api/patient/auth/register",
+                json={
+                    "phone": "13900000072",
+                    "password": "patient-pass-123",
+                    "name": "状态快照患者",
+                },
+            )
+            self.assertEqual(registered.status_code, 201, registered.text)
+            first_profile = patient_client.patch(
+                "/api/patient/profile",
+                json={"medicalHistory": "高血压史", "allergens": "青霉素"},
+            )
+            self.assertEqual(first_profile.status_code, 200, first_profile.text)
+            with patch(
+                "apps.backend.checkup_backend.patient_api.utcnow",
+                return_value=datetime(2026, 8, 31, 0, 15),
+            ):
+                first = patient_client.post(
+                    "/api/patient/plans",
+                    json={
+                        "hospitalID": admin["hospital"]["hospitalID"],
+                        "packageID": package.json()["packageID"],
+                        "profile": {"fasting": "yes", "bladder": "normal"},
+                    },
+                )
+            self.assertEqual(first.status_code, 201, first.text)
+            self.assertEqual(first.json()["profileSnapshot"]["medicalHistory"], "高血压史")
+            first_step = first.json()["steps"][0]
+            finished = patient_client.post(
+                f"/api/patient/plans/{first.json()['planID']}/steps/{first_step['detailID']}/complete"
+            )
+            self.assertEqual(finished.status_code, 200, finished.text)
+            self.assertTrue(finished.json()["finished"])
+
+            second_profile = patient_client.patch(
+                "/api/patient/profile",
+                json={"medicalHistory": "无", "allergens": "无"},
+            )
+            self.assertEqual(second_profile.status_code, 200, second_profile.text)
+            with patch(
+                "apps.backend.checkup_backend.patient_api.utcnow",
+                return_value=datetime(2026, 8, 31, 0, 30),
+            ):
+                second = patient_client.post(
+                    "/api/patient/plans",
+                    json={
+                        "hospitalID": admin["hospital"]["hospitalID"],
+                        "packageID": package.json()["packageID"],
+                        "profile": {"fasting": "no", "bladder": "recentUrination"},
+                    },
+                )
+            self.assertEqual(second.status_code, 201, second.text)
+            history = patient_client.get("/api/patient/plans")
+            self.assertEqual(history.status_code, 200, history.text)
+            snapshots = {row["planID"]: row["profileSnapshot"] for row in history.json()}
+            self.assertEqual(snapshots[first.json()["planID"]]["fasting"], "yes")
+            self.assertEqual(snapshots[first.json()["planID"]]["medicalHistory"], "高血压史")
+            self.assertEqual(snapshots[first.json()["planID"]]["allergens"], "青霉素")
+            self.assertEqual(snapshots[second.json()["planID"]]["fasting"], "no")
+            self.assertEqual(snapshots[second.json()["planID"]]["medicalHistory"], "无")
+            self.assertEqual(snapshots[second.json()["planID"]]["allergens"], "无")
+
+            with self.app.state.session_factory() as session:
+                first_plan = session.get(ExamPlan, first.json()["planID"])
+                second_plan = session.get(ExamPlan, second.json()["planID"])
+                self.assertIsNotNone(first_plan.record_id)
+                self.assertIsNotNone(second_plan.record_id)
+                self.assertNotEqual(first_plan.record_id, second_plan.record_id)
+                self.assertEqual(session.get(UserStatusInfo, first_plan.record_id).profile_data["fasting"], "yes")
+                self.assertEqual(session.get(UserStatusInfo, second_plan.record_id).profile_data["fasting"], "no")
+
     def test_patient_miniprogram_end_to_end(self):
         admin = self.register()
         department = self.create_department()
@@ -559,14 +1024,18 @@ class BackendAPITest(unittest.TestCase):
             self.assertEqual(catalog.json()["packages"][0]["price"], 580)
             self.assertEqual(catalog.json()["packages"][0]["type"], "入职体检")
 
-            created = patient_client.post(
-                "/api/patient/plans",
-                json={
-                    "hospitalID": admin["hospital"]["hospitalID"],
-                    "packageID": package_id,
-                    "profile": {"fasting": "yes", "bladder": "normal"},
-                },
-            )
+            with patch(
+                "apps.backend.checkup_backend.patient_api.utcnow",
+                return_value=datetime(2026, 8, 31, 0, 15),
+            ):
+                created = patient_client.post(
+                    "/api/patient/plans",
+                    json={
+                        "hospitalID": admin["hospital"]["hospitalID"],
+                        "packageID": package_id,
+                        "profile": {"fasting": "yes", "bladder": "normal"},
+                    },
+                )
             self.assertEqual(created.status_code, 201, created.text)
             plan = created.json()
             self.assertEqual(plan["packageName"], "基础套餐")

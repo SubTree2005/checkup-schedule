@@ -11,7 +11,8 @@
 - 监听端口：`8080`（或与平台 `PORT` 保持一致）；
 - 健康检查：`GET /api/health`；
 - `DATABASE_URL`：MySQL SQLAlchemy URL；
-- `COOKIE_SECURE=true`。
+- `COOKIE_SECURE=true`；
+- `HOSPITAL_TIMEZONE=Asia/Shanghai`：医院上传的营业时间、科室开放时间和检查时段使用的 IANA 时区，未设置时默认 `Asia/Shanghai`。
 
 MySQL 示例：
 

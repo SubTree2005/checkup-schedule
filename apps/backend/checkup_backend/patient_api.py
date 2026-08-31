@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import math
-import re
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
@@ -22,6 +21,8 @@ from checkup_scheduler import (
 
 from .api import client_ip
 from .database import get_db
+from .exam_constraints import prerequisite_item_ids, validate_exam_selection
+from .hospital_time import daily_intersections_utc, next_daily_windows_utc, parse_open_time_ranges
 from .models import (
     DepartmentDistance,
     DepartmentInfo,
@@ -43,7 +44,6 @@ from .serializers import hospital_dict, iso
 
 router = APIRouter(prefix="/api/patient", tags=["patient-miniprogram"])
 PATIENT_SESSION_COOKIE = "checkup_patient_session"
-TIME_RANGE_PATTERN = re.compile(r"(\d{2}):(\d{2}).*?(\d{2}):(\d{2})")
 
 
 @dataclass(frozen=True)
@@ -77,8 +77,12 @@ def get_current_patient(
             db.delete(row.UserSession)
             db.commit()
         raise HTTPException(status_code=401, detail="登录已过期")
+    if row.UserInfo.role == "演示患者":
+        db.delete(row.UserSession)
+        db.commit()
+        raise HTTPException(status_code=403, detail="演示患者账号不能登录患者端")
     is_admin = db.scalar(select(HospitalAdmin.user_id).where(HospitalAdmin.user_id == row.UserInfo.user_id))
-    if is_admin:
+    if is_admin or row.UserInfo.role != "普通用户":
         raise HTTPException(status_code=403, detail="医院管理员请使用 Web 管理端")
     return PatientContext(row.UserInfo.user_id, row.UserInfo.name, row.UserInfo.phone)
 
@@ -175,7 +179,7 @@ def login_patient(
 ) -> dict:
     user = db.scalar(select(UserInfo).where(UserInfo.phone == payload.phone))
     is_admin = user and db.scalar(select(HospitalAdmin.user_id).where(HospitalAdmin.user_id == user.user_id))
-    if user is None or is_admin or not verify_password(payload.password, user.password):
+    if user is None or is_admin or user.role == "演示患者" or not verify_password(payload.password, user.password):
         raise HTTPException(status_code=401, detail="手机号或密码错误")
     token = issue_session(db, user.user_id, client_ip(request))
     db.commit()
@@ -350,24 +354,19 @@ def patient_catalog(
     }
 
 
-def _parse_open_window(hospital: HospitalInfo, now: datetime) -> tuple[datetime, datetime]:
-    match = TIME_RANGE_PATTERN.search(hospital.open_time or "")
-    start_hour, start_minute, end_hour, end_minute = (8, 0, 17, 0)
-    if match:
-        start_hour, start_minute, end_hour, end_minute = map(int, match.groups())
-    day = now.date()
-    start = datetime.combine(day, datetime.min.time()).replace(hour=start_hour, minute=start_minute)
-    end = datetime.combine(day, datetime.min.time()).replace(hour=end_hour, minute=end_minute)
-    if now >= end:
-        start += timedelta(days=1)
-        end += timedelta(days=1)
-    return max(now, start), end
-
-
-def _exam_prerequisite_ids(exam: ExamInfo, selected_ids: set[str]) -> tuple[str, ...]:
-    data = exam.prerequisites or {}
-    values = data.get("itemIDs") or data.get("items") or data.get("requires") or []
-    return tuple(item_id for item_id in values if item_id in selected_ids)
+def _parse_open_windows(hospital: HospitalInfo, now: datetime) -> tuple[TimeWindow, ...]:
+    try:
+        ranges = parse_open_time_ranges(hospital.open_time or "")
+    except ValueError:
+        ranges = (("08:00", "17:00"),)
+    return tuple(
+        TimeWindow(start, end)
+        for start, end in next_daily_windows_utc(
+            now,
+            ranges,
+            weekdays_only="工作日" in (hospital.open_time or ""),
+        )
+    )
 
 
 def _allowed_windows(exam: ExamInfo, day_start: datetime, day_end: datetime) -> tuple[TimeWindow, ...]:
@@ -376,13 +375,29 @@ def _allowed_windows(exam: ExamInfo, day_start: datetime, day_end: datetime) -> 
     if not start_text or not end_text:
         return ()
     try:
-        start_time = datetime.strptime(start_text, "%H:%M").time()
-        end_time = datetime.strptime(end_text, "%H:%M").time()
+        intersections = daily_intersections_utc(day_start, day_end, start_text, end_text)
     except ValueError:
         return ()
-    start = max(day_start, datetime.combine(day_start.date(), start_time))
-    end = min(day_end, datetime.combine(day_start.date(), end_time))
-    return (TimeWindow(start, end),) if start < end else ()
+    if intersections:
+        return tuple(TimeWindow(start, end) for start, end in intersections)
+    return (TimeWindow(day_end, day_end + timedelta(minutes=1)),)
+
+
+def _department_windows(
+    department: DepartmentInfo,
+    planning_start: datetime,
+    planning_end: datetime,
+) -> tuple[TimeWindow, ...]:
+    try:
+        intersections = daily_intersections_utc(
+            planning_start,
+            planning_end,
+            department.open_time_start,
+            department.open_time_end,
+        )
+    except ValueError:
+        return ()
+    return tuple(TimeWindow(start, end) for start, end in intersections)
 
 
 def _latest_department_waits(db: Session, hospital_id: str, now: datetime) -> dict[str, int]:
@@ -422,19 +437,34 @@ def _run_scheduler(
     hospital: HospitalInfo,
     exam_rows: list[tuple[ExamInfo, DepartmentInfo]],
     previous_order: tuple[str, ...] = (),
+    satisfied_item_ids: set[str] | None = None,
+    available_at: datetime | None = None,
+    location_id: str = "entrance",
 ):
     now = utcnow()
-    planning_start, planning_end = _parse_open_window(hospital, now)
+    hospital_windows = _parse_open_windows(hospital, max(now, available_at or now))
+    planning_start, planning_end = hospital_windows[0].start, hospital_windows[-1].end
     selected_ids = {exam.item_id for exam, _department in exam_rows}
+    satisfied_ids = satisfied_item_ids or set()
+    try:
+        validate_exam_selection(
+            selected_ids,
+            {exam.item_id: prerequisite_item_ids(exam.prerequisites) for exam, _department in exam_rows},
+            {exam.item_id: exam.conflicts or [] for exam, _department in exam_rows},
+            satisfied_item_ids=satisfied_ids,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=f"检查项目组合无效：{exc}") from exc
     waits = _latest_department_waits(db, hospital.hospital_id, now)
     departments: dict[str, DepartmentState] = {}
     for _exam, department in exam_rows:
+        service_windows = _department_windows(department, planning_start, planning_end)
         departments[department.dept_id] = DepartmentState(
             id=department.dept_id,
             observed_at=planning_start,
             expected_wait_minutes=waits.get(department.dept_id, 0),
-            accepting_patients=department.is_available,
-            service_windows=(TimeWindow(planning_start, planning_end),),
+            accepting_patients=department.is_available and bool(service_windows),
+            service_windows=service_windows,
             capacity=department.capacity,
         )
     exams = tuple(
@@ -442,7 +472,9 @@ def _run_scheduler(
             id=exam.item_id,
             department_id=exam.dept_id,
             duration_minutes=exam.duration,
-            prerequisites=_exam_prerequisite_ids(exam, selected_ids),
+            prerequisites=tuple(
+                item_id for item_id in prerequisite_item_ids(exam.prerequisites) if item_id in selected_ids
+            ),
             delay_cost_per_minute=float(exam.priority),
             allowed_windows=_allowed_windows(exam, planning_start, planning_end),
             is_critical=exam.is_critical,
@@ -453,9 +485,9 @@ def _run_scheduler(
         patient_id=user.user_id,
         exams=exams,
         now=planning_start,
-        location_id="entrance",
+        location_id=location_id,
         previous_order=previous_order,
-        availability_windows=(TimeWindow(planning_start, planning_end),),
+        availability_windows=hospital_windows,
         age_years=_age_from_birth_date(user.birth_date),
         gender=user.gender,
     )
@@ -498,6 +530,11 @@ def _serialize_plan(db: Session, plan: ExamPlan, *, replanned: bool = False) -> 
         .order_by(PlanExecutionDetail.step_order)
     ).all()
     package = db.get(PackageInfo, plan.package_id) if plan.package_id else None
+    status_record = db.get(UserStatusInfo, plan.record_id) if plan.record_id else None
+    profile_snapshot = dict(status_record.profile_data or {}) if status_record else {}
+    if status_record:
+        profile_snapshot.setdefault("fasting", "yes" if status_record.fasting_hours >= 8 else "no")
+        profile_snapshot.setdefault("bladder", "normal" if status_record.is_bladder_ready else "recentUrination")
     selected_ids = list(plan.selected_item_ids or [])
     queues = _queue_by_item(db, selected_ids)
     completed = sum(detail.exec_status == "已完成" for detail, _exam, _department in rows)
@@ -549,6 +586,7 @@ def _serialize_plan(db: Session, plan: ExamPlan, *, replanned: bool = False) -> 
         "planStatus": plan.plan_status,
         "status": plan.plan_status,
         "finished": plan.plan_status == "已完成",
+        "profileSnapshot": profile_snapshot,
         "waitingHint": "路线由服务端 Scheduler 根据时间窗、排队与步行距离生成。",
         "replanNotice": "已按最新排队情况重新安排后续路线。" if replanned else "",
         "result": "敬请期待",
@@ -588,25 +626,45 @@ def create_patient_plan(
         raise HTTPException(status_code=422, detail="检查项目不属于所选医院或已停用")
     selected_rows = [owned[item_id] for item_id in item_ids]
     user = db.get(UserInfo, patient.user_id)
-    profile = payload.profile or {}
-    db.add(
-        UserStatusInfo(
-            user_id=user.user_id,
-            fasting_hours=8 if profile.get("fasting") == "yes" else 0,
-            is_bladder_ready=profile.get("bladder") == "normal",
-            profile_data=profile,
-        )
-    )
+    previous_status = _latest_status(db, user.user_id)
+    profile_updates = payload.profile or {}
+    profile = {
+        **((previous_status.profile_data or {}) if previous_status else {}),
+        **profile_updates,
+    }
     schedule = _run_scheduler(db, user, hospital, selected_rows)
     if not schedule.feasible:
         reasons = "; ".join(item.reason for item in schedule.unscheduled[:3])
         raise HTTPException(status_code=422, detail=f"当前无法生成完整计划：{reasons}")
     ordered = sorted(schedule.steps, key=lambda item: item.start_at)
     total_duration = math.ceil((ordered[-1].finish_at - ordered[0].arrival_at).total_seconds() / 60) if ordered else 0
+    status_record = UserStatusInfo(
+        user_id=user.user_id,
+        fasting_hours=(
+            8
+            if profile_updates.get(
+                "fasting",
+                "yes" if previous_status and previous_status.fasting_hours >= 8 else "no",
+            )
+            == "yes"
+            else 0
+        ),
+        is_bladder_ready=(
+            profile_updates.get(
+                "bladder",
+                "normal" if previous_status and previous_status.is_bladder_ready else "recentUrination",
+            )
+            == "normal"
+        ),
+        profile_data=profile,
+    )
+    db.add(status_record)
+    db.flush()
     plan = ExamPlan(
         user_id=user.user_id,
         hospital_id=hospital.hospital_id,
         package_id=package.package_id if package else None,
+        record_id=status_record.record_id,
         selected_item_ids=item_ids,
         total_duration=total_duration,
         plan_status="进行中",
@@ -745,6 +803,27 @@ def replan_patient_route(
     if not pending_details:
         return _serialize_plan(db, plan, replanned=True)
     pending_ids = [detail.item_id for detail in pending_details]
+    fixed_rows = db.execute(
+        select(PlanExecutionDetail, ExamInfo)
+        .join(ExamInfo, ExamInfo.item_id == PlanExecutionDetail.item_id)
+        .where(
+            PlanExecutionDetail.plan_id == plan.plan_id,
+            PlanExecutionDetail.exec_status != "待开始",
+        )
+        .order_by(PlanExecutionDetail.step_order)
+    ).all()
+    satisfied_ids = {detail.item_id for detail, _exam in fixed_rows}
+    active_row = next(
+        ((detail, exam) for detail, exam in fixed_rows if detail.exec_status == "进行中"),
+        None,
+    )
+    anchor_row = active_row or (fixed_rows[-1] if fixed_rows else None)
+    active_available_at = None
+    if active_row:
+        active_detail, active_exam = active_row
+        active_available_at = active_detail.estimated_end or (
+            (active_detail.actual_start or utcnow()) + timedelta(minutes=active_exam.duration)
+        )
     exam_rows = db.execute(
         select(ExamInfo, DepartmentInfo)
         .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
@@ -758,6 +837,9 @@ def replan_patient_route(
         db.get(HospitalInfo, plan.hospital_id),
         ordered_rows,
         previous_order=tuple(pending_ids),
+        satisfied_item_ids=satisfied_ids,
+        available_at=active_available_at,
+        location_id=anchor_row[1].dept_id if anchor_row else "entrance",
     )
     if not schedule.feasible:
         raise HTTPException(status_code=422, detail="最新排队状态下无法生成完整后续路线")

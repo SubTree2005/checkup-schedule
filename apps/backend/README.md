@@ -9,6 +9,6 @@ python -m pip install -e ".[backend]"
 DATABASE_URL=sqlite:///./checkup.db uvicorn apps.backend.checkup_backend.main:app --reload
 ```
 
-生产环境应使用 MySQL，并设置 `COOKIE_SECURE=true`。数据库实体保持《需求分析说明书》第 4.4 节的 15 张业务表，另增加 `hospital_admin`、`user_session` 和 `hospital_gis` 三张支撑表。
+生产环境应使用 MySQL，并设置 `COOKIE_SECURE=true`；医院位于中国大陆时保持 `HOSPITAL_TIMEZONE=Asia/Shanghai`，其他地区填写对应 IANA 时区。数据库实体保持《需求分析说明书》第 4.4 节的 15 张业务表，另增加 `hospital_admin`、`user_session`、`hospital_gis` 和 `demo_patient_profile` 四张支撑表。
 
 管理后台由同一进程从 `apps/admin-web` 提供，客户端始终只访问 Backend API。

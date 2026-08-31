@@ -5,7 +5,30 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from .exam_constraints import validate_exam_selection, validate_prerequisite_graph
+from .hospital_time import parse_open_time_ranges
+
 TIME_PATTERN = re.compile(r"^(?:[01]\d|2[0-3]):[0-5]\d$")
+
+
+def validate_hospital_open_time(value: str) -> str:
+    parse_open_time_ranges(value)
+    return value
+
+
+def validate_allowed_time_slots(value: dict[str, Any]) -> dict[str, Any]:
+    if not value:
+        return {}
+    if set(value) != {"start", "end"}:
+        raise ValueError('允许时段必须为空对象或只包含 "start" 和 "end"')
+    start, end = value["start"], value["end"]
+    if not isinstance(start, str) or not TIME_PATTERN.fullmatch(start):
+        raise ValueError("允许时段 start 必须为 HH:MM")
+    if not isinstance(end, str) or not TIME_PATTERN.fullmatch(end):
+        raise ValueError("允许时段 end 必须为 HH:MM")
+    if start >= end:
+        raise ValueError("允许时段 end 必须晚于 start")
+    return {"start": start, "end": end}
 
 
 class LoginRequest(BaseModel):
@@ -53,6 +76,13 @@ class HospitalUpdate(BaseModel):
     address: str | None = Field(default=None, max_length=500)
     openTime: str | None = Field(default=None, max_length=100)
     floorMapUrl: str | None = Field(default=None, max_length=1000)
+
+    @field_validator("openTime")
+    @classmethod
+    def validate_open_time(cls, value: str | None) -> str | None:
+        if value is None:
+            raise ValueError("openTime 不能为 null")
+        return validate_hospital_open_time(value)
 
 
 class DepartmentCreate(BaseModel):
@@ -104,6 +134,11 @@ class ExamCreate(BaseModel):
     isCritical: bool = False
     isActive: bool = True
 
+    @field_validator("allowedTimeSlots")
+    @classmethod
+    def validate_time_slots(cls, value: dict[str, Any]) -> dict[str, Any]:
+        return validate_allowed_time_slots(value)
+
 
 class ExamUpdate(BaseModel):
     deptID: str | None = None
@@ -115,6 +150,13 @@ class ExamUpdate(BaseModel):
     allowedTimeSlots: dict[str, Any] | None = None
     isCritical: bool | None = None
     isActive: bool | None = None
+
+    @field_validator("allowedTimeSlots")
+    @classmethod
+    def validate_time_slots(cls, value: dict[str, Any] | None) -> dict[str, Any]:
+        if value is None:
+            raise ValueError("清空允许时段请使用空对象 {}")
+        return validate_allowed_time_slots(value)
 
 
 class PackageCreate(BaseModel):
@@ -180,6 +222,11 @@ class WorkspaceHospital(BaseModel):
     openTime: str = Field(default="08:00-17:00", max_length=100)
     floorMapUrl: str | None = Field(default=None, max_length=1000)
 
+    @field_validator("openTime")
+    @classmethod
+    def validate_open_time(cls, value: str) -> str:
+        return validate_hospital_open_time(value)
+
 
 class WorkspaceExam(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -195,6 +242,11 @@ class WorkspaceExam(BaseModel):
     allowedTimeSlots: dict[str, Any] = Field(default_factory=dict)
     isCritical: bool = False
     isActive: bool = True
+
+    @field_validator("allowedTimeSlots")
+    @classmethod
+    def validate_time_slots(cls, value: dict[str, Any]) -> dict[str, Any]:
+        return validate_allowed_time_slots(value)
 
 
 class WorkspacePackage(BaseModel):
@@ -254,6 +306,8 @@ class WorkspaceImport(BaseModel):
 
         department_keys = set(collections["科室"])
         item_keys = set(collections["检查项目"])
+        prerequisites_by_item: dict[str, set[str]] = {}
+        conflicts_by_item: dict[str, set[str]] = {}
         for exam in self.exams:
             if exam.departmentKey not in department_keys:
                 raise ValueError(f"检查项目 {exam.key} 引用了未声明的科室 {exam.departmentKey}")
@@ -272,12 +326,26 @@ class WorkspaceImport(BaseModel):
             overlap = set(exam.prerequisiteItemKeys) & set(exam.conflictItemKeys)
             if overlap:
                 raise ValueError(f"检查项目 {exam.key} 不能同时前置和互斥项目 {sorted(overlap)}")
+            prerequisites_by_item[exam.key] = set(exam.prerequisiteItemKeys)
+            conflicts_by_item[exam.key] = set(exam.conflictItemKeys)
+        try:
+            validate_prerequisite_graph(item_keys, prerequisites_by_item)
+        except ValueError as exc:
+            raise ValueError(f"检查项目前置关系无效：{exc}") from exc
         for package in self.packages:
             if len(package.includedItemKeys) != len(set(package.includedItemKeys)):
                 raise ValueError(f"套餐 {package.key} 的 includedItemKeys 包含重复项")
             missing = set(package.includedItemKeys) - item_keys
             if missing:
                 raise ValueError(f"套餐 {package.key} 引用了未声明的项目 {sorted(missing)}")
+            try:
+                validate_exam_selection(
+                    package.includedItemKeys,
+                    prerequisites_by_item,
+                    conflicts_by_item,
+                )
+            except ValueError as exc:
+                raise ValueError(f"套餐 {package.key} 的项目组合无效：{exc}") from exc
         for floor in self.gis:
             for feature in floor.geojson.get("features", []):
                 properties = feature.get("properties") or {}

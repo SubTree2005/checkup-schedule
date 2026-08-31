@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import math
-import re
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
@@ -23,7 +22,7 @@ from checkup_scheduler import (
 from .api import client_ip
 from .database import get_db
 from .exam_constraints import prerequisite_item_ids, validate_exam_selection
-from .hospital_time import daily_intersections_utc, next_daily_window_utc
+from .hospital_time import daily_intersections_utc, next_daily_windows_utc, parse_open_time_ranges
 from .models import (
     DepartmentDistance,
     DepartmentInfo,
@@ -45,7 +44,6 @@ from .serializers import hospital_dict, iso
 
 router = APIRouter(prefix="/api/patient", tags=["patient-miniprogram"])
 PATIENT_SESSION_COOKIE = "checkup_patient_session"
-TIME_RANGE_PATTERN = re.compile(r"(\d{2}):(\d{2}).*?(\d{2}):(\d{2})")
 
 
 @dataclass(frozen=True)
@@ -356,15 +354,18 @@ def patient_catalog(
     }
 
 
-def _parse_open_window(hospital: HospitalInfo, now: datetime) -> tuple[datetime, datetime]:
-    match = TIME_RANGE_PATTERN.search(hospital.open_time or "")
-    start_hour, start_minute, end_hour, end_minute = (8, 0, 17, 0)
-    if match:
-        start_hour, start_minute, end_hour, end_minute = map(int, match.groups())
-    return next_daily_window_utc(
-        now,
-        f"{start_hour:02d}:{start_minute:02d}",
-        f"{end_hour:02d}:{end_minute:02d}",
+def _parse_open_windows(hospital: HospitalInfo, now: datetime) -> tuple[TimeWindow, ...]:
+    try:
+        ranges = parse_open_time_ranges(hospital.open_time or "")
+    except ValueError:
+        ranges = (("08:00", "17:00"),)
+    return tuple(
+        TimeWindow(start, end)
+        for start, end in next_daily_windows_utc(
+            now,
+            ranges,
+            weekdays_only="工作日" in (hospital.open_time or ""),
+        )
     )
 
 
@@ -441,7 +442,8 @@ def _run_scheduler(
     location_id: str = "entrance",
 ):
     now = utcnow()
-    planning_start, planning_end = _parse_open_window(hospital, max(now, available_at or now))
+    hospital_windows = _parse_open_windows(hospital, max(now, available_at or now))
+    planning_start, planning_end = hospital_windows[0].start, hospital_windows[-1].end
     selected_ids = {exam.item_id for exam, _department in exam_rows}
     satisfied_ids = satisfied_item_ids or set()
     try:
@@ -485,7 +487,7 @@ def _run_scheduler(
         now=planning_start,
         location_id=location_id,
         previous_order=previous_order,
-        availability_windows=(TimeWindow(planning_start, planning_end),),
+        availability_windows=hospital_windows,
         age_years=_age_from_birth_date(user.birth_date),
         gender=user.gender,
     )

@@ -29,6 +29,8 @@
 
 `hospital` 为可选段；填写后会更新当前登录医院账号的名称、地址、开放时间和楼层图地址，不会创建另一家医院。
 
+`openTime` 至少包含一个二十四小时制 `HH:MM-HH:MM` 时段，也可以填写多个时段，例如 `工作日08:00-12:00,13:30-17:00`。含“工作日”时排程会跳过周六、周日；全天开放可填写 `全天开放` 或 `24小时`。描述中的其他文字仅用于展示，不会自动推断法定节假日。
+
 ## 注册时的完整数据要求
 
 医院注册页面直接选择同一格式的 JSON，并把它作为 `POST /api/auth/register` 的 `workspace` 字段提交。此时 `hospital`、`departments`、`exams`、`packages` 和 `gis` 五个部分都必须非空，并且至少要有一个 `isPublished: true` 的套餐。可在注册页通过 `GET /api/auth/register-template` 下载注册模板。
@@ -68,6 +70,8 @@
 ```
 
 `departmentKey`、`prerequisiteItemKeys` 和 `conflictItemKeys` 必须引用同一文件中已声明的业务 key。医学状态条件继续放在 `prerequisites`；项目前置关系必须使用 `prerequisiteItemKeys`，不要直接填写 `itemIDs`。全部项目的前置关系必须是无环图，整包校验会拒绝直接或间接循环依赖。
+
+`openTimeStart`、`openTimeEnd` 以及 `allowedTimeSlots.start/end` 必须使用补零后的 `HH:MM`。`allowedTimeSlots` 只能是空对象 `{}`（不限项目时段）或同时包含 `start`、`end`；结束时间必须晚于开始时间。
 
 ## 套餐 packages
 

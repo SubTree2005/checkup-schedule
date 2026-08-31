@@ -422,9 +422,11 @@ def _run_scheduler(
     exam_rows: list[tuple[ExamInfo, DepartmentInfo]],
     previous_order: tuple[str, ...] = (),
     satisfied_item_ids: set[str] | None = None,
+    available_at: datetime | None = None,
+    location_id: str = "entrance",
 ):
     now = utcnow()
-    planning_start, planning_end = _parse_open_window(hospital, now)
+    planning_start, planning_end = _parse_open_window(hospital, max(now, available_at or now))
     selected_ids = {exam.item_id for exam, _department in exam_rows}
     satisfied_ids = satisfied_item_ids or set()
     try:
@@ -465,7 +467,7 @@ def _run_scheduler(
         patient_id=user.user_id,
         exams=exams,
         now=planning_start,
-        location_id="entrance",
+        location_id=location_id,
         previous_order=previous_order,
         availability_windows=(TimeWindow(planning_start, planning_end),),
         age_years=_age_from_birth_date(user.birth_date),
@@ -757,14 +759,27 @@ def replan_patient_route(
     if not pending_details:
         return _serialize_plan(db, plan, replanned=True)
     pending_ids = [detail.item_id for detail in pending_details]
-    satisfied_ids = set(
-        db.scalars(
-            select(PlanExecutionDetail.item_id).where(
-                PlanExecutionDetail.plan_id == plan.plan_id,
-                PlanExecutionDetail.exec_status != "待开始",
-            )
+    fixed_rows = db.execute(
+        select(PlanExecutionDetail, ExamInfo)
+        .join(ExamInfo, ExamInfo.item_id == PlanExecutionDetail.item_id)
+        .where(
+            PlanExecutionDetail.plan_id == plan.plan_id,
+            PlanExecutionDetail.exec_status != "待开始",
         )
+        .order_by(PlanExecutionDetail.step_order)
+    ).all()
+    satisfied_ids = {detail.item_id for detail, _exam in fixed_rows}
+    active_row = next(
+        ((detail, exam) for detail, exam in fixed_rows if detail.exec_status == "进行中"),
+        None,
     )
+    anchor_row = active_row or (fixed_rows[-1] if fixed_rows else None)
+    active_available_at = None
+    if active_row:
+        active_detail, active_exam = active_row
+        active_available_at = active_detail.estimated_end or (
+            (active_detail.actual_start or utcnow()) + timedelta(minutes=active_exam.duration)
+        )
     exam_rows = db.execute(
         select(ExamInfo, DepartmentInfo)
         .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
@@ -779,6 +794,8 @@ def replan_patient_route(
         ordered_rows,
         previous_order=tuple(pending_ids),
         satisfied_item_ids=satisfied_ids,
+        available_at=active_available_at,
+        location_id=anchor_row[1].dept_id if anchor_row else "entrance",
     )
     if not schedule.feasible:
         raise HTTPException(status_code=422, detail="最新排队状态下无法生成完整后续路线")

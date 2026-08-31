@@ -1,5 +1,16 @@
 const { requestTransport } = require('./runtime-config')
 
+let initializedCloudEnv = ''
+
+function ensureCloudInitialized(transport) {
+  if (!wx.cloud || typeof wx.cloud.init !== 'function' || typeof wx.cloud.callContainer !== 'function') {
+    throw new Error('当前微信版本不支持云托管，请升级微信后重试')
+  }
+  if (initializedCloudEnv === transport.env) return
+  wx.cloud.init({ env: transport.env, traceUser: true })
+  initializedCloudEnv = transport.env
+}
+
 function handleResponse(response, resolve, reject) {
   if (response.statusCode >= 200 && response.statusCode < 300) {
     resolve(response.data)
@@ -33,6 +44,12 @@ function request(path, options = {}) {
     }
 
     if (transport.type === 'cloud') {
+      try {
+        ensureCloudInitialized(transport)
+      } catch (error) {
+        reject(error)
+        return
+      }
       wx.cloud.callContainer({
         config: { env: transport.env },
         path,

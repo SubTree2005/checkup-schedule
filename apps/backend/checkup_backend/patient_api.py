@@ -77,8 +77,12 @@ def get_current_patient(
             db.delete(row.UserSession)
             db.commit()
         raise HTTPException(status_code=401, detail="登录已过期")
+    if row.UserInfo.role == "演示患者":
+        db.delete(row.UserSession)
+        db.commit()
+        raise HTTPException(status_code=403, detail="演示患者账号不能登录患者端")
     is_admin = db.scalar(select(HospitalAdmin.user_id).where(HospitalAdmin.user_id == row.UserInfo.user_id))
-    if is_admin:
+    if is_admin or row.UserInfo.role != "普通用户":
         raise HTTPException(status_code=403, detail="医院管理员请使用 Web 管理端")
     return PatientContext(row.UserInfo.user_id, row.UserInfo.name, row.UserInfo.phone)
 

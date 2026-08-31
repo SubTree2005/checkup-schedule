@@ -8,7 +8,8 @@ from sqlalchemy import select
 
 from apps.backend.checkup_backend.database import Base
 from apps.backend.checkup_backend.main import create_app
-from apps.backend.checkup_backend.models import DemoPatientProfile, ExamPlan, UserInfo, UserStatusInfo
+from apps.backend.checkup_backend.models import DemoPatientProfile, ExamPlan, UserInfo, UserSession, UserStatusInfo
+from apps.backend.checkup_backend.security import issue_session, session_digest
 
 
 class BackendAPITest(unittest.TestCase):
@@ -186,6 +187,8 @@ class BackendAPITest(unittest.TestCase):
             self.assertTrue(all(user.password.startswith("pbkdf2_sha256$") for user in demo_users))
             self.assertFalse(any("disabled-demo-account" in user.password for user in demo_users))
             demo_phone = demo_users[0].phone
+            demo_token = issue_session(session, demo_users[0].user_id, "127.0.0.1")
+            session.commit()
             self.assertEqual(session.scalars(select(ExamPlan)).all(), [])
 
         demo_login = self.client.post(
@@ -193,6 +196,13 @@ class BackendAPITest(unittest.TestCase):
             json={"phone": demo_phone, "password": "disabled-demo-account"},
         )
         self.assertEqual(demo_login.status_code, 401, demo_login.text)
+        demo_session = self.client.get(
+            "/api/patient/auth/me",
+            headers={"Authorization": f"Bearer {demo_token}"},
+        )
+        self.assertEqual(demo_session.status_code, 403, demo_session.text)
+        with self.app.state.session_factory() as session:
+            self.assertIsNone(session.get(UserSession, session_digest(demo_token)))
 
     def test_registration_requires_complete_workspace(self):
         template = self.client.get("/api/auth/register-template")

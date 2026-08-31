@@ -115,7 +115,7 @@
   });
 
   async function loadWorkspace() {
-    if (!state.me) state.me = await api("/auth/me");
+    state.me = await api("/auth/me");
     byId("hospitalName").textContent = state.me.hospital.hospitalName;
     byId("adminName").textContent = state.me.user.name;
     byId("adminPhone").textContent = state.me.user.phone;
@@ -520,6 +520,7 @@
       });
       workspaceImportPayload = payload;
       byId("importFileSummary").innerHTML = '<b>' + escapeHtml(file.name) + '</b><div class="import-counts">' +
+        (payload.hospital ? '<span>医院信息 1</span>' : '') +
         '<span>科室 ' + (payload.departments || []).length + '</span><span>项目 ' + (payload.exams || []).length +
         '</span><span>套餐 ' + (payload.packages || []).length + '</span><span>GIS ' + (payload.gis || []).length +
         '</span></div><small>格式版本 ' + escapeHtml(payload.formatVersion || "未填写") + '</small>';
@@ -541,7 +542,8 @@
       await loadWorkspace();
       const summary = result.summary;
       const summaryText = (name) => summary[name].created + " 新增 / " + summary[name].updated + " 更新";
-      byId("importResult").innerHTML = '<b>导入成功</b><div class="import-result-grid"><span>科室<small>' +
+      byId("importResult").innerHTML = '<b>导入成功</b><div class="import-result-grid">' +
+        (summary.hospital.updated ? '<span>医院信息<small>已更新</small></span>' : '') + '<span>科室<small>' +
         summaryText("departments") + '</small></span><span>项目<small>' + summaryText("exams") +
         '</small></span><span>套餐<small>' + summaryText("packages") + '</small></span><span>GIS<small>' +
         summaryText("gis") + '</small></span></div>';

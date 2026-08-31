@@ -701,12 +701,21 @@ def import_workspace(
         row.key: workspace_import_id(admin.hospital_id, "package", row.key) for row in payload.packages
     }
     summary = {
+        "hospital": {"updated": 0},
         "departments": {"created": 0, "updated": 0},
         "exams": {"created": 0, "updated": 0},
         "packages": {"created": 0, "updated": 0},
         "gis": {"created": 0, "updated": 0},
     }
     try:
+        if payload.hospital is not None:
+            hospital = db.get(HospitalInfo, admin.hospital_id)
+            hospital.hospital_name = payload.hospital.hospitalName
+            hospital.address = payload.hospital.address
+            hospital.open_time = payload.hospital.openTime
+            hospital.floor_map_url = payload.hospital.floorMapUrl
+            summary["hospital"]["updated"] = 1
+
         for imported in payload.departments:
             row = db.get(DepartmentInfo, department_ids[imported.key])
             if row is None:

@@ -1,3 +1,4 @@
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -177,6 +178,7 @@ class BackendAPITest(unittest.TestCase):
         imported = self.client.post("/api/imports/workspace", json=template)
         self.assertEqual(imported.status_code, 200, imported.text)
         result = imported.json()
+        self.assertEqual(result["summary"]["hospital"], {"updated": 0})
         self.assertEqual(result["summary"]["departments"], {"created": 2, "updated": 0})
         self.assertEqual(result["summary"]["exams"], {"created": 2, "updated": 0})
         self.assertEqual(result["summary"]["packages"], {"created": 2, "updated": 0})
@@ -232,6 +234,68 @@ class BackendAPITest(unittest.TestCase):
             )
             self.assertEqual(catalog.status_code, 200, catalog.text)
             self.assertEqual([row["packageName"] for row in catalog.json()["packages"]], ["基础体检套餐"])
+
+    def test_zijingang_example_bundle_imports_end_to_end(self):
+        admin = self.register(hospital="待更新医院")
+        example_path = (
+            Path(__file__).resolve().parents[1]
+            / "examples"
+            / "hospitals"
+            / "zijingang-campus-hospital"
+            / "workspace.json"
+        )
+        payload = json.loads(example_path.read_text(encoding="utf-8"))
+
+        imported = self.client.post("/api/imports/workspace", json=payload)
+        self.assertEqual(imported.status_code, 200, imported.text)
+        summary = imported.json()["summary"]
+        self.assertEqual(summary["hospital"], {"updated": 1})
+        self.assertEqual(summary["departments"], {"created": 49, "updated": 0})
+        self.assertEqual(summary["exams"], {"created": 79, "updated": 0})
+        self.assertEqual(summary["packages"], {"created": 7, "updated": 0})
+        self.assertEqual(summary["gis"], {"created": 3, "updated": 0})
+
+        me = self.client.get("/api/auth/me").json()
+        self.assertEqual(me["hospital"]["hospitalName"], "浙江大学校医院（紫金港校区）")
+        self.assertEqual(me["hospital"]["address"], "杭州市余杭塘路866号")
+
+        departments = self.client.get("/api/departments").json()
+        self.assertEqual(len(departments), 49)
+        self.assertFalse(any("304" in row["location"] for row in departments))
+        self.assertIn("放射登记窗口", next(row for row in departments if row["deptName"].startswith("放射科"))["location"])
+
+        packages = self.client.get("/api/packages").json()
+        self.assertEqual(sorted(row["price"] for row in packages), [80, 120, 280, 398, 580, 800, 1350])
+        self.assertTrue(all(row["isPublished"] for row in packages))
+
+        department_feature_count = 0
+        for floor_key in ("1F", "2F", "3F"):
+            floor = self.client.get(f"/api/gis/{floor_key}")
+            self.assertEqual(floor.status_code, 200, floor.text)
+            department_features = [
+                feature
+                for feature in floor.json()["geojson"]["features"]
+                if feature["properties"].get("featureType") == "department"
+            ]
+            self.assertTrue(all(feature["properties"].get("deptID") for feature in department_features))
+            department_feature_count += len(department_features)
+        self.assertEqual(department_feature_count, 49)
+
+        with TestClient(self.app) as patient_client:
+            registered = patient_client.post(
+                "/api/patient/auth/register",
+                json={
+                    "phone": "13900000009",
+                    "password": "patient-pass-123",
+                    "name": "紫金港示例患者",
+                },
+            )
+            self.assertEqual(registered.status_code, 201, registered.text)
+            catalog = patient_client.get(
+                f"/api/patient/hospitals/{admin['hospital']['hospitalID']}/catalog"
+            )
+            self.assertEqual(catalog.status_code, 200, catalog.text)
+            self.assertEqual(len(catalog.json()["packages"]), 7)
 
     def test_anomaly_closes_and_reopens_department(self):
         self.register()

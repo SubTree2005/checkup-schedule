@@ -181,6 +181,15 @@ class WorkspaceDepartment(DepartmentCreate):
     key: str = Field(min_length=1, max_length=64, pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
 
 
+class WorkspaceHospital(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    hospitalName: str = Field(min_length=2, max_length=200)
+    address: str = Field(default="", max_length=500)
+    openTime: str = Field(default="08:00-17:00", max_length=100)
+    floorMapUrl: str | None = Field(default=None, max_length=1000)
+
+
 class WorkspaceExam(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -232,6 +241,7 @@ class WorkspaceImport(BaseModel):
 
     formatVersion: Literal["1.0"]
     mode: Literal["upsert"] = "upsert"
+    hospital: WorkspaceHospital | None = None
     departments: list[WorkspaceDepartment] = Field(default_factory=list, max_length=500)
     exams: list[WorkspaceExam] = Field(default_factory=list, max_length=5000)
     packages: list[WorkspacePackage] = Field(default_factory=list, max_length=500)
@@ -248,7 +258,7 @@ class WorkspaceImport(BaseModel):
         for label, keys in collections.items():
             if len(keys) != len(set(keys)):
                 raise ValueError(f"{label}包含重复 key")
-        if not any(collections.values()):
+        if self.hospital is None and not any(collections.values()):
             raise ValueError("导入文件至少需要包含一类数据")
 
         department_keys = set(collections["科室"])

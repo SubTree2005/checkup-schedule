@@ -498,6 +498,11 @@ def _serialize_plan(db: Session, plan: ExamPlan, *, replanned: bool = False) -> 
         .order_by(PlanExecutionDetail.step_order)
     ).all()
     package = db.get(PackageInfo, plan.package_id) if plan.package_id else None
+    status_record = db.get(UserStatusInfo, plan.record_id) if plan.record_id else None
+    profile_snapshot = dict(status_record.profile_data or {}) if status_record else {}
+    if status_record:
+        profile_snapshot.setdefault("fasting", "yes" if status_record.fasting_hours >= 8 else "no")
+        profile_snapshot.setdefault("bladder", "normal" if status_record.is_bladder_ready else "recentUrination")
     selected_ids = list(plan.selected_item_ids or [])
     queues = _queue_by_item(db, selected_ids)
     completed = sum(detail.exec_status == "已完成" for detail, _exam, _department in rows)
@@ -549,6 +554,7 @@ def _serialize_plan(db: Session, plan: ExamPlan, *, replanned: bool = False) -> 
         "planStatus": plan.plan_status,
         "status": plan.plan_status,
         "finished": plan.plan_status == "已完成",
+        "profileSnapshot": profile_snapshot,
         "waitingHint": "路线由服务端 Scheduler 根据时间窗、排队与步行距离生成。",
         "replanNotice": "已按最新排队情况重新安排后续路线。" if replanned else "",
         "result": "敬请期待",
@@ -589,24 +595,25 @@ def create_patient_plan(
     selected_rows = [owned[item_id] for item_id in item_ids]
     user = db.get(UserInfo, patient.user_id)
     profile = payload.profile or {}
-    db.add(
-        UserStatusInfo(
-            user_id=user.user_id,
-            fasting_hours=8 if profile.get("fasting") == "yes" else 0,
-            is_bladder_ready=profile.get("bladder") == "normal",
-            profile_data=profile,
-        )
-    )
     schedule = _run_scheduler(db, user, hospital, selected_rows)
     if not schedule.feasible:
         reasons = "; ".join(item.reason for item in schedule.unscheduled[:3])
         raise HTTPException(status_code=422, detail=f"当前无法生成完整计划：{reasons}")
     ordered = sorted(schedule.steps, key=lambda item: item.start_at)
     total_duration = math.ceil((ordered[-1].finish_at - ordered[0].arrival_at).total_seconds() / 60) if ordered else 0
+    status_record = UserStatusInfo(
+        user_id=user.user_id,
+        fasting_hours=8 if profile.get("fasting") == "yes" else 0,
+        is_bladder_ready=profile.get("bladder") == "normal",
+        profile_data=profile,
+    )
+    db.add(status_record)
+    db.flush()
     plan = ExamPlan(
         user_id=user.user_id,
         hospital_id=hospital.hospital_id,
         package_id=package.package_id if package else None,
+        record_id=status_record.record_id,
         selected_item_ids=item_ids,
         total_duration=total_duration,
         plan_status="进行中",

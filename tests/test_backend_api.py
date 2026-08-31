@@ -573,6 +573,8 @@ class BackendAPITest(unittest.TestCase):
         self.assertIn("renderPackages", self.client.get("/assets/app.js").text)
         self.assertIn("workspaceImportForm", self.client.get("/assets/app.js").text)
         self.assertIn("demoPatientTrigger", admin_page)
+        self.assertIn('id="closeDialog"', admin_page)
+        self.assertNotIn('<form method="dialog" class="dialog-frame">', admin_page)
         self.assertIn("workspaceFile", admin_page)
         self.register()
         logout = self.client.post("/api/auth/logout")

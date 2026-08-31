@@ -562,6 +562,7 @@
 
   dialog.addEventListener("click", (event) => {
     if (event.target === dialog) dialog.close();
+    if (event.target.id === "closeDialog") dialog.close();
     if (event.target.id === "cancelDialog") dialog.close();
   });
 

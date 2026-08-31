@@ -373,17 +373,21 @@ class BackendAPITest(unittest.TestCase):
             )
             self.assertEqual(invalid_plan.status_code, 422, invalid_plan.text)
             self.assertIn("缺少前置项目", invalid_plan.text)
-            valid_plan = patient_client.post(
-                "/api/patient/plans",
-                json={
-                    "hospitalID": admin["hospital"]["hospitalID"],
-                    "packageID": package.json()["packageID"],
-                    "selectedItemIDs": [prerequisite["itemID"], follow_up["itemID"]],
-                },
-            )
-            self.assertEqual(valid_plan.status_code, 201, valid_plan.text)
-            self.assertEqual(valid_plan.json()["totalSteps"], 2)
-            replanned = patient_client.post(f"/api/patient/plans/{valid_plan.json()['planID']}/replan")
+            with patch(
+                "apps.backend.checkup_backend.patient_api.utcnow",
+                return_value=datetime(2026, 8, 31, 0, 15),
+            ):
+                valid_plan = patient_client.post(
+                    "/api/patient/plans",
+                    json={
+                        "hospitalID": admin["hospital"]["hospitalID"],
+                        "packageID": package.json()["packageID"],
+                        "selectedItemIDs": [prerequisite["itemID"], follow_up["itemID"]],
+                    },
+                )
+                self.assertEqual(valid_plan.status_code, 201, valid_plan.text)
+                self.assertEqual(valid_plan.json()["totalSteps"], 2)
+                replanned = patient_client.post(f"/api/patient/plans/{valid_plan.json()['planID']}/replan")
             self.assertEqual(replanned.status_code, 200, replanned.text)
             self.assertEqual(replanned.json()["totalSteps"], 2)
             self.assertTrue(replanned.json()["replanNotice"])
@@ -897,14 +901,18 @@ class BackendAPITest(unittest.TestCase):
                 json={"medicalHistory": "高血压史", "allergens": "青霉素"},
             )
             self.assertEqual(first_profile.status_code, 200, first_profile.text)
-            first = patient_client.post(
-                "/api/patient/plans",
-                json={
-                    "hospitalID": admin["hospital"]["hospitalID"],
-                    "packageID": package.json()["packageID"],
-                    "profile": {"fasting": "yes", "bladder": "normal"},
-                },
-            )
+            with patch(
+                "apps.backend.checkup_backend.patient_api.utcnow",
+                return_value=datetime(2026, 8, 31, 0, 15),
+            ):
+                first = patient_client.post(
+                    "/api/patient/plans",
+                    json={
+                        "hospitalID": admin["hospital"]["hospitalID"],
+                        "packageID": package.json()["packageID"],
+                        "profile": {"fasting": "yes", "bladder": "normal"},
+                    },
+                )
             self.assertEqual(first.status_code, 201, first.text)
             self.assertEqual(first.json()["profileSnapshot"]["medicalHistory"], "高血压史")
             first_step = first.json()["steps"][0]
@@ -919,14 +927,18 @@ class BackendAPITest(unittest.TestCase):
                 json={"medicalHistory": "无", "allergens": "无"},
             )
             self.assertEqual(second_profile.status_code, 200, second_profile.text)
-            second = patient_client.post(
-                "/api/patient/plans",
-                json={
-                    "hospitalID": admin["hospital"]["hospitalID"],
-                    "packageID": package.json()["packageID"],
-                    "profile": {"fasting": "no", "bladder": "recentUrination"},
-                },
-            )
+            with patch(
+                "apps.backend.checkup_backend.patient_api.utcnow",
+                return_value=datetime(2026, 8, 31, 0, 30),
+            ):
+                second = patient_client.post(
+                    "/api/patient/plans",
+                    json={
+                        "hospitalID": admin["hospital"]["hospitalID"],
+                        "packageID": package.json()["packageID"],
+                        "profile": {"fasting": "no", "bladder": "recentUrination"},
+                    },
+                )
             self.assertEqual(second.status_code, 201, second.text)
             history = patient_client.get("/api/patient/plans")
             self.assertEqual(history.status_code, 200, history.text)

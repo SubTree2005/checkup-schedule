@@ -1,15 +1,26 @@
 <view class="container">
   <view class="card map-card">
-    <view class="section-title">步行导航</view>
-    <view class="nav-map-placeholder">{{location || '请根据院内指引前往目标科室'}}</view>
+    <view class="map-heading">
+      <view class="section-title">院内步行导航</view>
+      <view wx:if="{{hasMap}}" class="floor-badge">{{map.floorKey}}</view>
+    </view>
+    <canvas wx:if="{{hasMap}}" id="indoorMap" canvas-id="indoorMap" class="nav-map-canvas"></canvas>
+    <view wx:else class="nav-map-placeholder">{{location || '请根据院内指引前往目标科室'}}</view>
+    <view wx:if="{{hasMap}}" class="map-legend">
+      <view><text class="legend-dot start-dot"></text>起点</view>
+      <view><text class="legend-line"></text>推荐路线</view>
+      <view><text class="legend-dot target-dot"></text>终点</view>
+    </view>
     <view class="nav-meta mt-24">起点：{{fromName}}</view>
     <view class="nav-meta">终点：{{toName}}</view>
-    <view class="nav-meta">距离：{{distance}} · {{duration}}</view>
+    <view class="nav-meta">位置：{{location || '以现场标识为准'}}</view>
+    <view class="nav-meta">距离：{{distance}}{{duration ? ' · ' + duration : ''}}</view>
   </view>
 
   <view class="card mt-24">
     <view class="section-title">导航提示</view>
-    <view class="hint-placeholder">路线距离来自医院 GIS 配置；暂无数据时请按院内标识或咨询工作人员。</view>
+    <view class="hint-line">{{floorInstruction}}</view>
+    <view class="hint-line secondary-hint">路线来自医院上传的 GIS；封路、楼梯或电梯调整时请以现场指引为准。</view>
   </view>
 
   <button class="primary-btn mt-24" bindtap="goBackPlan">已到达</button>

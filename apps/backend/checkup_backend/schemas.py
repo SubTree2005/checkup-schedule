@@ -42,6 +42,12 @@ class PatientRegister(BaseModel):
     name: str = Field(min_length=1, max_length=100)
     gender: str | None = Field(default=None, max_length=16)
     age: int | None = Field(default=None, ge=1, le=120)
+    privacyConsent: Literal[True]
+    privacyConsentVersion: Literal["v0.3.1-2026-08-31"]
+
+
+class PatientAccountDelete(BaseModel):
+    password: str = Field(min_length=8, max_length=128)
 
 
 class PatientProfileUpdate(BaseModel):

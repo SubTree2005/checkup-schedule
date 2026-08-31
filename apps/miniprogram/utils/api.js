@@ -1,14 +1,17 @@
-const DEFAULT_BASE_URL = 'http://127.0.0.1:8000'
-
-function baseUrl() {
-  return (wx.getStorageSync('apiBaseUrl') || DEFAULT_BASE_URL).replace(/\/$/, '')
-}
+const { apiBaseUrl } = require('./runtime-config')
 
 function request(path, options = {}) {
   return new Promise((resolve, reject) => {
+    let url
+    try {
+      url = `${apiBaseUrl()}${path}`
+    } catch (error) {
+      reject(error)
+      return
+    }
     const token = wx.getStorageSync('patientToken')
     wx.request({
-      url: `${baseUrl()}${path}`,
+      url,
       method: options.method || 'GET',
       data: options.data,
       timeout: 15000,
@@ -42,7 +45,8 @@ module.exports = {
     register: data => request('/api/patient/auth/register', { method: 'POST', data }),
     login: data => request('/api/patient/auth/login', { method: 'POST', data }),
     me: () => request('/api/patient/auth/me'),
-    logout: () => request('/api/patient/auth/logout', { method: 'POST' })
+    logout: () => request('/api/patient/auth/logout', { method: 'POST' }),
+    deleteAccount: password => request('/api/patient/account', { method: 'DELETE', data: { password } })
   },
   profile: {
     update: data => request('/api/patient/profile', { method: 'PATCH', data })

@@ -10,6 +10,7 @@ Page({
       { key: 'profile', label: '个人信息' },
       { key: 'record', label: '体检记录' },
       { key: 'package', label: '开始新的体检' },
+      { key: 'account', label: '账号与隐私' },
       { key: 'logout', label: '退出登录' }
     ]
   },
@@ -36,6 +37,7 @@ Page({
     if (key === 'profile') return wx.navigateTo({ url: '/pages/edit-profile/edit-profile' })
     if (key === 'record') return wx.switchTab({ url: '/pages/record/record' })
     if (key === 'package') return wx.navigateTo({ url: '/pages/hospital/hospital' })
+    if (key === 'account') return wx.navigateTo({ url: '/pages/account-security/account-security' })
     if (key === 'logout') {
       try { await api.auth.logout() } catch (_error) {}
       app.clearLoginState()

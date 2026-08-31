@@ -1,0 +1,6 @@
+@import '../../app.wxss';
+.danger-card { border:2rpx solid #FECACA; }
+.danger-title { color:#B91C1C; }
+.danger-copy { color:#64748B; font-size:25rpx; line-height:1.7; margin-top:16rpx; }
+.danger-button { background:#C62828; color:#FFFFFF; border-radius:16rpx; font-size:28rpx; }
+.danger-button[disabled] { opacity:.55; }

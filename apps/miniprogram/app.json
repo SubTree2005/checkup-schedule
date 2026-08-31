@@ -15,6 +15,8 @@
     "pages/record/record",
     "pages/mine/mine",
     "pages/edit-profile/edit-profile",
+    "pages/account-security/account-security",
+    "pages/legal/legal",
     "pages/staff/staff",
     "pages/record-detail/record-detail"
   ],

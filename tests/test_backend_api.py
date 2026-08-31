@@ -690,6 +690,73 @@ class BackendAPITest(unittest.TestCase):
         departments = {row["deptID"]: row for row in self.client.get("/api/departments").json()}
         self.assertTrue(departments[department["deptID"]]["isAvailable"])
 
+    def test_patient_plans_keep_their_status_snapshots(self):
+        admin = self.register()
+        department = self.create_department()
+        exam = self.create_exam(department["deptID"], name="状态快照检查")
+        package = self.client.post(
+            "/api/packages",
+            json={
+                "packageName": "状态快照套餐",
+                "includedItemIDs": [exam["itemID"]],
+                "isPublished": True,
+            },
+        )
+        self.assertEqual(package.status_code, 201, package.text)
+
+        with TestClient(self.app) as patient_client:
+            registered = patient_client.post(
+                "/api/patient/auth/register",
+                json={
+                    "phone": "13900000072",
+                    "password": "patient-pass-123",
+                    "name": "状态快照患者",
+                },
+            )
+            self.assertEqual(registered.status_code, 201, registered.text)
+            first = patient_client.post(
+                "/api/patient/plans",
+                json={
+                    "hospitalID": admin["hospital"]["hospitalID"],
+                    "packageID": package.json()["packageID"],
+                    "profile": {"fasting": "yes", "bladder": "normal", "medicalHistory": "高血压史"},
+                },
+            )
+            self.assertEqual(first.status_code, 201, first.text)
+            self.assertEqual(first.json()["profileSnapshot"]["medicalHistory"], "高血压史")
+            first_step = first.json()["steps"][0]
+            finished = patient_client.post(
+                f"/api/patient/plans/{first.json()['planID']}/steps/{first_step['detailID']}/complete"
+            )
+            self.assertEqual(finished.status_code, 200, finished.text)
+            self.assertTrue(finished.json()["finished"])
+
+            second = patient_client.post(
+                "/api/patient/plans",
+                json={
+                    "hospitalID": admin["hospital"]["hospitalID"],
+                    "packageID": package.json()["packageID"],
+                    "profile": {"fasting": "no", "bladder": "recentUrination", "medicalHistory": "无"},
+                },
+            )
+            self.assertEqual(second.status_code, 201, second.text)
+            history = patient_client.get("/api/patient/plans")
+            self.assertEqual(history.status_code, 200, history.text)
+            snapshots = {row["planID"]: row["profileSnapshot"] for row in history.json()}
+            self.assertEqual(snapshots[first.json()["planID"]]["fasting"], "yes")
+            self.assertEqual(snapshots[first.json()["planID"]]["medicalHistory"], "高血压史")
+            self.assertEqual(snapshots[second.json()["planID"]]["fasting"], "no")
+            self.assertEqual(snapshots[second.json()["planID"]]["medicalHistory"], "无")
+
+            with self.app.state.session_factory() as session:
+                first_plan = session.get(ExamPlan, first.json()["planID"])
+                second_plan = session.get(ExamPlan, second.json()["planID"])
+                self.assertIsNotNone(first_plan.record_id)
+                self.assertIsNotNone(second_plan.record_id)
+                self.assertNotEqual(first_plan.record_id, second_plan.record_id)
+                self.assertEqual(session.get(UserStatusInfo, first_plan.record_id).profile_data["fasting"], "yes")
+                self.assertEqual(session.get(UserStatusInfo, second_plan.record_id).profile_data["fasting"], "no")
+
     def test_patient_miniprogram_end_to_end(self):
         admin = self.register()
         department = self.create_department()

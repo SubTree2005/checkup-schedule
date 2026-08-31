@@ -35,7 +35,7 @@ MYSQL_PASSWORD=控制台中设置的密码
 3. 从仓库根目录构建并部署；
 4. 通过 `/api/health` 确认服务正常，再访问首页注册第一家医院；
 5. 上传科室信息和楼层 GeoJSON，随后在首页检查地图与人流显示。
-6. 把云托管 HTTPS 访问地址写入 `apps/miniprogram/utils/runtime-config.js` 的 `PRODUCTION_API_BASE_URL`，并配置为小程序 `request` 合法域名；
+6. 把云托管环境 ID 和服务名写入 `apps/miniprogram/utils/runtime-config.js` 的 `PRODUCTION_CLOUD_CONTAINER`；小程序通过 `wx.cloud.callContainer` 访问，不需要配置 `request` 合法域名；
 7. 创建普通患者测试账号，在体验版真机完成注册、计划、导航和注销验收。
 
 当前 MVP 在启动时创建缺失表（包括隐私同意记录表 `user_consent`），不会删除已有表或数据。正式进入持续迭代后，应在第一次破坏性字段变更前引入版本化迁移工具。生产数据库应开启自动备份，数据库账号只授予业务所需权限，并在发布前验证一次备份恢复流程。

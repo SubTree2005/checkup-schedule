@@ -1,7 +1,9 @@
 const LOCAL_API_BASE_URL = 'http://127.0.0.1:8000'
 
-// 上线前替换为已加入微信公众平台 request 合法域名的 HTTPS 地址。
-const PRODUCTION_API_BASE_URL = 'https://api.example.com'
+const PRODUCTION_CLOUD_CONTAINER = {
+  env: 'prod-d3gt6bqwxd07c2857',
+  service: 'checkup-schedule'
+}
 
 function environmentVersion() {
   try {
@@ -15,16 +17,20 @@ function normalizeBaseUrl(value) {
   return String(value || '').trim().replace(/\/$/, '')
 }
 
-function apiBaseUrl() {
+function requestTransport() {
   const environment = environmentVersion()
   const developmentOverride = environment === 'develop' ? wx.getStorageSync('apiBaseUrl') : ''
-  const configured = normalizeBaseUrl(
-    developmentOverride || (environment === 'develop' ? LOCAL_API_BASE_URL : PRODUCTION_API_BASE_URL)
-  )
-  if (environment !== 'develop' && (!configured.startsWith('https://') || configured.includes('example.com'))) {
-    throw new Error('尚未配置生产 HTTPS API 地址，请联系小程序管理员')
+  if (environment === 'develop') {
+    return {
+      type: 'http',
+      baseUrl: normalizeBaseUrl(developmentOverride || LOCAL_API_BASE_URL)
+    }
   }
-  return configured
+
+  if (!PRODUCTION_CLOUD_CONTAINER.env || !PRODUCTION_CLOUD_CONTAINER.service) {
+    throw new Error('尚未配置生产云托管服务，请联系小程序管理员')
+  }
+  return { type: 'cloud', ...PRODUCTION_CLOUD_CONTAINER }
 }
 
-module.exports = { apiBaseUrl, environmentVersion }
+module.exports = { environmentVersion, requestTransport }

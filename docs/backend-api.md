@@ -55,7 +55,7 @@ OpenAPI 交互文档在服务启动后的 `/docs`。
 
 医院注册请求必须在 `workspace` 字段中携带完整工作区，注册、导入和 100 人演示池生成使用同一事务。演示患者平时只有固定资料和项目组合；设置当前人数后才创建当天 `exam_plan` 与执行明细，撤回会删除这些运行记录但保留原患者池，因而再次激活不会重新随机。
 
-医院 `openTime`、科室 `openTimeStart/openTimeEnd`、检查 `allowedTimeSlots` 和按日统计均按 `HOSPITAL_TIMEZONE` 解释，默认 `Asia/Shanghai`。服务端在进入 Scheduler 和写入数据库前转换为无时区 UTC 时间，API 的时间戳继续以 `Z` 输出。患者排程会取医院、科室和检查三层时间窗的交集；交集不足以完成项目时返回不可排程，而不会越过闭诊时间。
+医院 `openTime`、科室 `openTimeStart/openTimeEnd`、检查 `allowedTimeSlots` 和按日统计均按 `HOSPITAL_TIMEZONE` 解释，默认 `Asia/Shanghai`。服务端在进入 Scheduler 和写入数据库前转换为无时区 UTC 时间，API 的时间戳继续以 `Z` 输出。医院开放时间可包含多个 `HH:MM-HH:MM` 时段（例如 `工作日08:00-12:00,13:30-17:00`）；含“工作日”时，闭诊后生成的计划会自动跳到下一个工作日。患者排程会取医院、科室和检查三层时间窗的交集；交集不足以完成项目时返回不可排程，而不会越过午休或闭诊时间。
 
 ## GIS GeoJSON 约定
 

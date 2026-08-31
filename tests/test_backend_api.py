@@ -202,6 +202,49 @@ class BackendAPITest(unittest.TestCase):
         with self.app.state.session_factory() as session:
             self.assertIsNone(session.scalar(select(UserInfo).where(UserInfo.phone == "13800000077")))
 
+    def test_time_fields_are_validated_at_api_boundaries(self):
+        self.register()
+        valid_hospital = self.client.patch(
+            "/api/hospital",
+            json={"openTime": "工作日08:00-12:00,13:30-17:00；急诊24小时"},
+        )
+        self.assertEqual(valid_hospital.status_code, 200, valid_hospital.text)
+        invalid_hospital = self.client.patch("/api/hospital", json={"openTime": "早八点到晚五点"})
+        self.assertEqual(invalid_hospital.status_code, 422, invalid_hospital.text)
+
+        department = self.create_department()
+        invalid_exam = self.client.post(
+            "/api/exams",
+            json={
+                "deptID": department["deptID"],
+                "itemName": "错误时段项目",
+                "duration": 10,
+                "allowedTimeSlots": {"start": "11:00", "end": "08:00"},
+            },
+        )
+        self.assertEqual(invalid_exam.status_code, 422, invalid_exam.text)
+        exam = self.create_exam(department["deptID"])
+        invalid_clear = self.client.patch(
+            f"/api/exams/{exam['itemID']}",
+            json={"allowedTimeSlots": None},
+        )
+        self.assertEqual(invalid_clear.status_code, 422, invalid_clear.text)
+
+        workspace = self.registration_workspace("时段错误医院")
+        workspace["exams"][0]["allowedTimeSlots"] = {"start": "8:00", "end": "11:00"}
+        invalid_registration = self.client.post(
+            "/api/auth/register",
+            json={
+                "phone": "13800000076",
+                "password": "secure-pass-123",
+                "adminName": "测试管理员",
+                "workspace": workspace,
+            },
+        )
+        self.assertEqual(invalid_registration.status_code, 422, invalid_registration.text)
+        with self.app.state.session_factory() as session:
+            self.assertIsNone(session.scalar(select(UserInfo).where(UserInfo.phone == "13800000076")))
+
     def test_demo_patient_pool_can_activate_resize_withdraw_and_reuse(self):
         admin = self.register()
         hospital_id = admin["hospital"]["hospitalID"]
@@ -397,6 +440,60 @@ class BackendAPITest(unittest.TestCase):
             estimated_end = datetime.fromisoformat(step["estimatedEnd"].removesuffix("Z"))
             self.assertGreaterEqual(estimated_start, datetime(2026, 8, 31, 2, 0))
             self.assertLessEqual(estimated_end, datetime(2026, 8, 31, 2, 30))
+
+    def test_patient_schedule_respects_hospital_lunch_break(self):
+        admin = self.register()
+        updated = self.client.patch(
+            "/api/hospital",
+            json={"openTime": "工作日08:00-12:00,13:30-17:00"},
+        )
+        self.assertEqual(updated.status_code, 200, updated.text)
+        department = self.create_department()
+        exam = self.client.post(
+            "/api/exams",
+            json={
+                "deptID": department["deptID"],
+                "itemName": "下午检查",
+                "duration": 12,
+                "allowedTimeSlots": {},
+                "isActive": True,
+            },
+        )
+        self.assertEqual(exam.status_code, 201, exam.text)
+        package = self.client.post(
+            "/api/packages",
+            json={
+                "packageName": "午休验证套餐",
+                "includedItemIDs": [exam.json()["itemID"]],
+                "isPublished": True,
+            },
+        )
+        self.assertEqual(package.status_code, 201, package.text)
+
+        with TestClient(self.app) as patient_client:
+            registered = patient_client.post(
+                "/api/patient/auth/register",
+                json={
+                    "phone": "13900000074",
+                    "password": "patient-pass-123",
+                    "name": "午休验证患者",
+                },
+            )
+            self.assertEqual(registered.status_code, 201, registered.text)
+            with patch("apps.backend.checkup_backend.patient_api.utcnow", return_value=datetime(2026, 8, 31, 4, 30)):
+                created = patient_client.post(
+                    "/api/patient/plans",
+                    json={
+                        "hospitalID": admin["hospital"]["hospitalID"],
+                        "packageID": package.json()["packageID"],
+                        "profile": {},
+                    },
+                )
+            self.assertEqual(created.status_code, 201, created.text)
+            estimated_start = datetime.fromisoformat(
+                created.json()["steps"][0]["estimatedStart"].removesuffix("Z")
+            )
+            self.assertGreaterEqual(estimated_start, datetime(2026, 8, 31, 5, 30))
 
     def test_dashboard_uses_hospital_local_day(self):
         admin = self.register()

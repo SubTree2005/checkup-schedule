@@ -10,6 +10,7 @@ from fastapi import HTTPException
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from .exam_constraints import prerequisite_item_ids, validate_exam_selection
 from .models import (
     DemoPatientProfile,
     DepartmentInfo,
@@ -53,14 +54,30 @@ def _seed_for_hospital(hospital_id: str) -> int:
     return int.from_bytes(hashlib.sha256(hospital_id.encode()).digest()[:8], "big")
 
 
+def _validate_package_items(package: PackageInfo, exams: dict[str, ExamInfo]) -> list[str]:
+    item_ids = [item_id for item_id in package.included_item_ids or [] if item_id in exams]
+    try:
+        validate_exam_selection(
+            item_ids,
+            {item_id: prerequisite_item_ids(exams[item_id].prerequisites) for item_id in item_ids},
+            {item_id: exams[item_id].conflicts or [] for item_id in item_ids},
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=422,
+            detail=f"套餐“{package.package_name}”的项目组合无效：{exc}",
+        ) from exc
+    return item_ids
+
+
 def _ordered_package_items(package: PackageInfo, exams: dict[str, ExamInfo], rng: random.Random) -> list[str]:
-    remaining = {item_id for item_id in package.included_item_ids or [] if item_id in exams}
+    remaining = set(_validate_package_items(package, exams))
     ordered: list[str] = []
     while remaining:
         ready = []
         resolved = set(ordered)
         for item_id in remaining:
-            prerequisite_ids = set((exams[item_id].prerequisites or {}).get("itemIDs") or []) & remaining
+            prerequisite_ids = set(prerequisite_item_ids(exams[item_id].prerequisites))
             if prerequisite_ids.issubset(resolved):
                 ready.append(item_id)
         if not ready:
@@ -94,6 +111,8 @@ def prepare_demo_patient_pool(db: Session, hospital_id: str, size: int = DEMO_PO
     packages = [row for row in packages if row.included_item_ids and set(row.included_item_ids).issubset(exams)]
     if not packages:
         raise HTTPException(status_code=422, detail="完整数据至少需要一个包含有效项目的已上架套餐")
+    for package in packages:
+        _validate_package_items(package, exams)
 
     rng = random.Random(_seed_for_hospital(hospital_id))
     current_year = utcnow().year

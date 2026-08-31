@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 
 from .database import get_db
 from .demo_patients import demo_pool_summary, prepare_demo_patient_pool, set_demo_patient_count
+from .exam_constraints import prerequisite_item_ids, validate_exam_selection, validate_prerequisite_graph
 from .models import (
     AnomalyReport,
     DepartmentDistance,
@@ -112,6 +113,40 @@ def validate_conflicts(db: Session, hospital_id: str, conflicts: list[str]) -> N
     )
     if owned != set(conflicts):
         raise HTTPException(status_code=422, detail="互斥项目包含本医院不存在的项目")
+
+
+def validate_prerequisites(db: Session, hospital_id: str, prerequisites: dict) -> tuple[str, ...]:
+    try:
+        item_ids = prerequisite_item_ids(prerequisites)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=f"前置项目格式无效：{exc}") from exc
+    if not item_ids:
+        return ()
+    owned = set(
+        db.scalars(
+            select(ExamInfo.item_id)
+            .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
+            .where(DepartmentInfo.hospital_id == hospital_id, ExamInfo.item_id.in_(set(item_ids)))
+        )
+    )
+    if owned != set(item_ids):
+        raise HTTPException(status_code=422, detail="前置项目包含本医院不存在的项目")
+    return item_ids
+
+
+def validate_hospital_prerequisite_graph(db: Session, hospital_id: str) -> None:
+    rows = db.scalars(
+        select(ExamInfo)
+        .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
+        .where(DepartmentInfo.hospital_id == hospital_id)
+    ).all()
+    try:
+        validate_prerequisite_graph(
+            [row.item_id for row in rows],
+            {row.item_id: prerequisite_item_ids(row.prerequisites) for row in rows},
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=f"检查项目前置关系无效：{exc}") from exc
 
 
 @router.get("/health")
@@ -353,6 +388,10 @@ def create_exam(
 ) -> dict:
     require_department(db, admin.hospital_id, payload.deptID)
     validate_conflicts(db, admin.hospital_id, payload.conflicts)
+    prerequisite_ids = validate_prerequisites(db, admin.hospital_id, payload.prerequisites)
+    overlap = set(prerequisite_ids) & set(payload.conflicts)
+    if overlap:
+        raise HTTPException(status_code=422, detail=f"项目不能同时前置和互斥 {sorted(overlap)}")
     row = ExamInfo(
         dept_id=payload.deptID,
         item_name=payload.itemName,
@@ -365,8 +404,14 @@ def create_exam(
         is_active=payload.isActive,
     )
     db.add(row)
-    db.commit()
-    return exam_dict(row)
+    try:
+        db.flush()
+        validate_hospital_prerequisite_graph(db, admin.hospital_id)
+        db.commit()
+        return exam_dict(row)
+    except HTTPException:
+        db.rollback()
+        raise
 
 
 @router.patch("/exams/{item_id}")
@@ -378,12 +423,22 @@ def update_exam(
 ) -> dict:
     row = require_exam(db, admin.hospital_id, item_id)
     data = payload.model_dump(exclude_unset=True)
+    if any(value is None for value in data.values()):
+        raise HTTPException(status_code=422, detail="检查项目字段不能设为空值")
     if "deptID" in data:
         require_department(db, admin.hospital_id, data["deptID"])
     if "conflicts" in data:
         if item_id in data["conflicts"]:
             raise HTTPException(status_code=422, detail="项目不能与自身互斥")
         validate_conflicts(db, admin.hospital_id, data["conflicts"])
+    next_prerequisites = data.get("prerequisites", row.prerequisites)
+    next_conflicts = data.get("conflicts", row.conflicts)
+    prerequisite_ids = validate_prerequisites(db, admin.hospital_id, next_prerequisites)
+    if item_id in prerequisite_ids:
+        raise HTTPException(status_code=422, detail="项目不能以自身作为前置项目")
+    overlap = set(prerequisite_ids) & set(next_conflicts or [])
+    if overlap:
+        raise HTTPException(status_code=422, detail=f"项目不能同时前置和互斥 {sorted(overlap)}")
     if data.get("isActive") is False:
         published_packages = [
             package for package in packages_using_item(db, admin.hospital_id, item_id) if package.is_published
@@ -403,8 +458,21 @@ def update_exam(
     }
     for key, value in data.items():
         setattr(row, fields[key], value)
-    db.commit()
-    return exam_dict(row)
+    try:
+        db.flush()
+        validate_hospital_prerequisite_graph(db, admin.hospital_id)
+        for package in packages_using_item(db, admin.hospital_id, item_id):
+            validate_package_items(
+                db,
+                admin.hospital_id,
+                package.included_item_ids,
+                require_active=package.is_published,
+            )
+        db.commit()
+        return exam_dict(row)
+    except HTTPException:
+        db.rollback()
+        raise
 
 
 @router.delete("/exams/{item_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -442,15 +510,23 @@ def validate_package_items(
     *,
     require_active: bool = False,
 ) -> None:
-    rows = db.execute(
-        select(ExamInfo.item_id, ExamInfo.is_active)
+    rows = db.scalars(
+        select(ExamInfo)
         .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
         .where(DepartmentInfo.hospital_id == hospital_id, ExamInfo.item_id.in_(set(item_ids)))
     ).all()
-    if {item_id for item_id, _is_active in rows} != set(item_ids):
+    if {row.item_id for row in rows} != set(item_ids):
         raise HTTPException(status_code=422, detail="套餐包含本医院不存在的检查项目")
-    if require_active and any(not is_active for _item_id, is_active in rows):
+    if require_active and any(not row.is_active for row in rows):
         raise HTTPException(status_code=422, detail="已上架套餐不能包含已停用的检查项目")
+    try:
+        validate_exam_selection(
+            item_ids,
+            {row.item_id: prerequisite_item_ids(row.prerequisites) for row in rows},
+            {row.item_id: row.conflicts or [] for row in rows},
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=f"套餐项目组合无效：{exc}") from exc
 
 
 @router.get("/packages")

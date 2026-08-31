@@ -49,10 +49,17 @@ def validate_exam_selection(
     item_ids: Iterable[str],
     prerequisites_by_item: Mapping[str, Iterable[str]],
     conflicts_by_item: Mapping[str, Iterable[str]],
+    *,
+    satisfied_item_ids: Iterable[str] = (),
 ) -> None:
     """Validate that one package or plan is complete and internally compatible."""
     selected = set(item_ids)
-    validate_prerequisite_graph(selected, prerequisites_by_item)
+    satisfied = set(satisfied_item_ids)
+    remaining_prerequisites = {
+        item_id: set(prerequisites_by_item.get(item_id, ())) - satisfied
+        for item_id in selected
+    }
+    validate_prerequisite_graph(selected, remaining_prerequisites)
     for item_id in sorted(selected):
         conflicts = set(conflicts_by_item.get(item_id, ())) & selected
         if conflicts:

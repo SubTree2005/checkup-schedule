@@ -357,6 +357,10 @@ class BackendAPITest(unittest.TestCase):
             )
             self.assertEqual(valid_plan.status_code, 201, valid_plan.text)
             self.assertEqual(valid_plan.json()["totalSteps"], 2)
+            replanned = patient_client.post(f"/api/patient/plans/{valid_plan.json()['planID']}/replan")
+            self.assertEqual(replanned.status_code, 200, replanned.text)
+            self.assertEqual(replanned.json()["totalSteps"], 2)
+            self.assertTrue(replanned.json()["replanNotice"])
 
     def test_demo_patient_pool_can_activate_resize_withdraw_and_reuse(self):
         admin = self.register()

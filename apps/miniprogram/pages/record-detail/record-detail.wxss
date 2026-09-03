@@ -1,2 +1,38 @@
-.history-step { padding: 24rpx 0; border-bottom: 1rpx solid #eef2f7; }
-.history-step:last-child { border-bottom: none; }
+@import '../../app.wxss';
+
+page { background: linear-gradient(180deg, #F7FAFF 0%, #FFFFFF 100%); }
+.detail-page { min-height: 100vh; }
+.flow-nav { height: 128rpx; padding: 0 28rpx; display: flex; align-items: center; justify-content: space-between; }
+.nav-back { width: 64rpx; height: 64rpx; display: flex; align-items: center; color: #101827; font-size: 58rpx; }
+.nav-title { color: #111827; font-size: 31rpx; font-weight: 650; }
+.nav-space { width: 64rpx; }
+.detail-scroll { width: 100%; height: calc(100vh - env(safe-area-inset-top) - 148rpx); padding: 8rpx 28rpx 48rpx; box-sizing: border-box; }
+.summary-card, .items-card { background: rgba(255,255,255,0.94); border: 2rpx solid #E0E7F1; border-radius: 28rpx; box-shadow: 0 14rpx 36rpx rgba(50,75,118,0.06); }
+.summary-card { min-height: 146rpx; padding: 24rpx; display: flex; align-items: center; gap: 20rpx; }
+.hospital-photo { width: 102rpx; height: 82rpx; flex: none; display: block; border-radius: 16rpx; background: #EEF3F8; }
+.summary-copy { flex: 1; min-width: 0; }
+.hospital-name { overflow: hidden; color: #172033; font-size: 26rpx; font-weight: 650; line-height: 1.4; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.package-name { margin-top: 8rpx; color: #536178; font-size: 22rpx; }
+.completion-date { margin-top: 8rpx; color: #8792A4; font-size: 21rpx; }
+.status-badge { flex: none; padding: 8rpx 12rpx; border-radius: 10rpx; font-size: 20rpx; font-weight: 600; }
+.status-done { color: #23884B; background: #EAF8EF; }
+.status-reported { color: #23884B; background: #EAF8EF; }
+.status-interrupted { color: #B35C16; background: #FFF2E7; }
+.status-pending { color: #617087; background: #EFF3F8; }
+.status-active { color: #2F69EC; background: #EDF4FF; }
+.status-scheduled { color: #9B6A12; background: #FFF5DE; }
+.status-neutral { color: #617087; background: #EFF3F8; }
+.detail-tabs { margin: 24rpx 0; padding: 6rpx; display: flex; background: #EAF0F8; border-radius: 22rpx; }
+.detail-tab { flex: 1; padding: 17rpx 10rpx; color: #68758B; font-size: 24rpx; font-weight: 600; text-align: center; border-radius: 17rpx; }
+.detail-tab-active { color: #1358C8; background: #FFFFFF; box-shadow: 0 5rpx 16rpx rgba(55,89,145,0.12); }
+.items-card { padding: 0 24rpx; }
+.item-row { min-height: 90rpx; display: flex; align-items: center; justify-content: space-between; border-bottom: 2rpx solid #EDF1F6; }
+.item-row:last-child { border-bottom: none; }
+.item-title { flex: 1; min-width: 0; color: #263248; font-size: 25rpx; }
+.item-status { padding: 6rpx 10rpx; border-radius: 9rpx; font-size: 20rpx; }
+.item-done { color: #778399; background: #EFF3F8; }
+.item-reported { color: #23884B; background: #EAF8EF; }
+.item-active { color: #2F69EC; background: #EDF4FF; }
+.item-pending { color: #778399; background: #EFF3F8; }
+.item-arrow { margin-left: 10rpx; color: #A0AABA; font-size: 34rpx; }
+.empty-state { padding-top: 280rpx; text-align: center; color: #8A96A9; }

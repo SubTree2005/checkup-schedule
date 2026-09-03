@@ -1,0 +1,53 @@
+<view class="flow-page safe-top">
+  <view class="flow-nav">
+    <view class="nav-back" bindtap="goBack" aria-label="返回">‹</view>
+    <view class="nav-title">选择日期与时间</view>
+    <view class="nav-space"></view>
+  </view>
+
+  <view class="flow-content">
+    <view class="page-hint"><view class="hint-dot"></view>请选择预约体检的日期与时间段</view>
+
+    <view wx:if="{{loading}}" class="page-note">正在读取医院号源</view>
+    <view wx:elif="{{!hasBookableSlot}}" class="page-note">当前没有可预约号源</view>
+
+    <view wx:if="{{hasDates}}" class="selection-card date-card">
+      <view class="section-title">选择日期</view>
+      <scroll-view class="date-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+        <view class="date-list">
+          <view
+            wx:for="{{dates}}"
+            wx:key="key"
+            class="date-option {{selectedDate === item.key ? 'option-selected' : ''}} {{!item.available ? 'option-disabled' : ''}}"
+            data-key="{{item.key}}"
+            bindtap="selectDate"
+          >
+            <view class="date-relative">{{item.title}}</view>
+            <view class="date-value">{{item.shortDate}}</view>
+            <view class="date-week">{{item.weekday}}</view>
+            <view class="date-availability">{{item.availabilityLabel}}</view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <view wx:if="{{selectedDate}}" class="selection-card slot-card">
+      <view class="section-title">选择时间段</view>
+      <view class="slot-grid">
+        <view
+          wx:for="{{slots}}"
+          wx:key="key"
+          class="slot-option {{selectedSlot === item.key ? 'option-selected' : ''}} {{!item.available ? 'option-disabled' : ''}}"
+          data-key="{{item.key}}"
+          bindtap="selectSlot"
+        >
+          <view class="slot-time">{{item.start}}–{{item.end}}</view>
+          <view class="slot-booked">{{item.available ? '已约 ' + item.booked : '号源已满'}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="flow-bottom-bar"><button class="primary-btn continue-btn" disabled="{{!selectedSlot}}" bindtap="nextStep">下一步</button></view>
+</view>
+<ai-agent />

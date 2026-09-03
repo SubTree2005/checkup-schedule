@@ -1,17 +1,34 @@
-<view class="container">
-  <view class="card">
-    <view class="section-title">协议与隐私</view>
-    <view class="menu-item" bindtap="openTerms"><view>用户协议</view><view class="menu-arrow">></view></view>
-    <view class="menu-item" bindtap="openPrivacy"><view>隐私政策</view><view class="menu-arrow">></view></view>
+<view class="account-page safe-top">
+  <view class="flow-nav">
+    <view class="nav-back" bindtap="goBack" aria-label="返回">‹</view>
+    <view class="nav-title">账号与隐私</view>
+    <view class="nav-space"></view>
   </view>
 
-  <view class="card mt-24 danger-card">
-    <view class="section-title danger-title">注销账号</view>
-    <view class="danger-copy">注销后将删除当前账号、登录会话、健康状态、体检计划和执行记录。此操作不可撤回。</view>
-    <view class="field-card mt-24">
-      <view class="label">当前密码</view>
-      <input class="input" password="true" value="{{password}}" bindinput="onPasswordInput" placeholder="输入密码以确认本人操作" />
+  <scroll-view class="account-scroll" scroll-y="true">
+    <view class="section-label">隐私与协议</view>
+    <view class="menu-card">
+      <view class="menu-row" bindtap="openTerms">
+        <view class="menu-title">用户协议</view>
+        <view class="menu-arrow">›</view>
+      </view>
+      <view class="menu-row" bindtap="openPrivacy">
+        <view class="menu-title">隐私政策</view>
+        <view class="menu-arrow">›</view>
+      </view>
     </view>
-    <button class="danger-button mt-24" loading="{{deleting}}" disabled="{{deleting}}" bindtap="deleteAccount">永久注销账号</button>
-  </view>
+
+    <view class="section-label action-label">账号操作</view>
+    <view class="menu-card">
+      <view class="menu-row logout-row" bindtap="logout">
+        <view class="logout-title">退出登录</view>
+        <view class="menu-arrow">›</view>
+      </view>
+      <view class="menu-row" bindtap="openDeleteAccount">
+        <view class="delete-entry-title">注销账号</view>
+        <view class="menu-arrow">›</view>
+      </view>
+    </view>
+  </scroll-view>
 </view>
+<ai-agent />

@@ -33,4 +33,7 @@ function requestTransport() {
   return { type: 'cloud', ...PRODUCTION_CLOUD_CONTAINER }
 }
 
-module.exports = { environmentVersion, requestTransport }
+module.exports = {
+  environmentVersion,
+  requestTransport
+}

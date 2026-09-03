@@ -43,3 +43,4 @@
 
   <button class="primary-btn submit-btn" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submitProfile">开始智能规划</button>
 </view>
+<ai-agent />

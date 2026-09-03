@@ -1,15 +1,26 @@
 @import '../../app.wxss';
-.map-card { margin-top:8rpx; }
-.map-heading { display:flex; justify-content:space-between; align-items:center; }
-.floor-badge { padding:8rpx 18rpx; border-radius:999rpx; background:#E7F0FF; color:#1350BE; font-size:24rpx; font-weight:700; }
-.nav-map-canvas, .nav-map-placeholder { width:100%; height:460rpx; margin-top:20rpx; border-radius:24rpx; background:#F8FAFC; border:2rpx solid #DCE5EF; }
-.nav-map-placeholder { color:#64748B; display:flex; align-items:center; justify-content:center; text-align:center; box-sizing:border-box; padding:36rpx; }
-.map-legend { display:flex; align-items:center; gap:28rpx; color:#64748B; font-size:22rpx; margin-top:18rpx; }
-.map-legend > view { display:flex; align-items:center; gap:8rpx; }
-.legend-dot { width:18rpx; height:18rpx; border-radius:50%; display:inline-block; }
-.start-dot { background:#F59E0B; }
-.target-dot { background:#16A34A; }
-.legend-line { width:34rpx; height:6rpx; border-radius:4rpx; background:#1350BE; display:inline-block; }
-.nav-meta { color:#475569; margin-top:12rpx; line-height:1.6; }
-.hint-line { line-height:1.8; color:#334155; padding-top:12rpx; }
-.secondary-hint { color:#64748B; font-size:24rpx; }
+
+page { background: linear-gradient(180deg, #F7FAFF 0%, #FFFFFF 100%); }
+.navigation-page { min-height: 100vh; }
+.flow-nav { height: 128rpx; padding: 0 28rpx; display: flex; align-items: center; justify-content: space-between; }
+.nav-back { width: 64rpx; height: 64rpx; display: flex; align-items: center; color: #101827; font-size: 58rpx; }
+.nav-title { color: #111827; font-size: 31rpx; font-weight: 650; }
+.nav-space { width: 64rpx; }
+.navigation-scroll { width: 100%; height: calc(100vh - env(safe-area-inset-top) - 148rpx); padding: 12rpx 24rpx calc(env(safe-area-inset-bottom) + 150rpx); box-sizing: border-box; }
+.destination-card, .map-card, .direction-card { background: rgba(255,255,255,0.94); border: 2rpx solid #DFE7F2; border-radius: 28rpx; box-shadow: 0 16rpx 42rpx rgba(50,75,118,0.07); }
+.destination-card { min-height: 112rpx; padding: 0 28rpx; display: flex; align-items: center; gap: 24rpx; }
+.destination-pin { width: 56rpx; height: 56rpx; flex: none; display: block; }
+.destination-copy { flex: 1; min-width: 0; color: #263248; font-size: 27rpx; font-weight: 600; line-height: 1.45; }
+.destination-copy text { margin-left: 10rpx; color: #2F69EC; font-size: 29rpx; }
+.map-card { margin-top: 18rpx; padding: 14rpx; }
+.nav-map-canvas, .nav-map-placeholder { width: 100%; height: 490rpx; border-radius: 22rpx; background: #F8FAFC; }
+.nav-map-placeholder { padding: 36rpx; display: flex; align-items: center; justify-content: center; color: #7B8798; text-align: center; font-size: 24rpx; }
+.direction-card { min-height: 126rpx; margin-top: 18rpx; padding: 24rpx; display: flex; align-items: center; gap: 22rpx; }
+.direction-icon { width: 70rpx; height: 70rpx; flex: none; display: block; }
+.direction-copy { min-width: 0; }
+.direction-title { color: #172033; font-size: 27rpx; font-weight: 650; line-height: 1.5; }
+.direction-meta { margin-top: 10rpx; color: #718096; font-size: 22rpx; }
+.main-btn { width: 100%; margin: 24rpx 0 0; }
+.utility-actions { min-height: 78rpx; margin: 8rpx 0 0; display: flex; align-items: center; justify-content: center; }
+.utility-action { padding: 14rpx 20rpx; color: #737F91; font-size: 24rpx; font-weight: 500; line-height: 1; }
+.utility-divider { width: 2rpx; height: 24rpx; flex: none; background: #C7CED8; }

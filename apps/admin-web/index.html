@@ -51,6 +51,7 @@
         <div class="sidebar-brand"><span class="brand-mark small">智</span><span><b>智检云</b><small>医院管理端</small></span></div>
         <nav aria-label="主导航">
           <button class="nav-item active" data-page="dashboard"><span>⌂</span>运行总览</button>
+          <button class="nav-item" data-page="hospital"><span>⚙</span>医院设置</button>
           <button class="nav-item" data-page="import"><span>⇧</span>一键导入</button>
           <button class="nav-item" data-page="gis"><span>⌖</span>院内 GIS</button>
           <button class="nav-item" data-page="departments"><span>▦</span>科室管理</button>
@@ -75,8 +76,10 @@
 
         <main class="content">
           <section class="page active" id="page-dashboard">
-            <div class="page-heading"><div><h1>运行总览</h1><p>实时掌握今日体检进度与院内人流</p></div><time id="generatedAt"></time></div>
+            <div class="page-heading"><div><h1>现在要处理什么</h1><p>优先关注拥堵、停诊和未解决异常</p></div><time id="generatedAt"></time></div>
+            <div id="priorityBoard" class="priority-board"></div>
             <div id="metricGrid" class="metric-grid"></div>
+            <p class="trace-hint">点击指标卡片可查看数据来源与关联明细。</p>
             <div class="dashboard-grid">
               <article class="panel map-panel">
                 <div class="panel-heading"><div><h3>院内人流态势</h3><p>圆点大小表示当前排队与检查中的人数</p></div><select id="dashboardFloor" aria-label="选择楼层"></select></div>
@@ -86,6 +89,36 @@
               <article class="panel flow-panel">
                 <div class="panel-heading"><div><h3>科室人流排行</h3><p>优先关注等待时间较长的科室</p></div></div>
                 <div id="flowList" class="flow-list"></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="page" id="page-hospital">
+            <div class="page-heading"><div><h1>医院设置</h1><p>维护患者端实际使用的院区资料与预约号源规则</p></div></div>
+            <div class="hospital-settings-grid">
+              <article class="panel form-panel">
+                <form id="hospitalSettingsForm" class="stack-form">
+                  <label>医院与院区名称<input name="hospitalName" required maxlength="200" placeholder="例如：浙江大学校医院（紫金港院区）" /></label>
+                  <div class="form-row">
+                    <label>医院等级<input name="hospitalLevel" required maxlength="50" placeholder="例如：三级甲等" /></label>
+                    <label>医院定位介绍<input name="positioning" required maxlength="100" placeholder="例如：社区医院、知名综合医院" /></label>
+                  </div>
+                  <label>院区地址<input name="address" maxlength="500" /></label>
+                  <label>开放时间<input name="openTime" required maxlength="100" placeholder="例如：08:00-12:00, 13:30-17:00" /></label>
+                  <label>患者端状态<select name="isAvailable"><option value="true">正常开放</option><option value="false">暂停开放</option></select></label>
+                  <div class="form-row">
+                    <label>预约时段（分钟）<input name="appointmentSlotMinutes" type="number" min="15" max="240" required /></label>
+                    <label>每时段号源<input name="appointmentSlotCapacity" type="number" min="1" max="1000" required /></label>
+                  </div>
+                  <label>可预约天数<input name="appointmentDaysAhead" type="number" min="1" max="60" required /></label>
+                  <button class="primary-button" type="submit">保存医院设置</button>
+                </form>
+              </article>
+              <article class="panel hospital-cover-panel">
+                <div class="panel-heading"><div><h3>患者端医院图片</h3><p>用于小程序“选择医院与院区”卡片</p></div></div>
+                <div class="cover-preview-frame"><img id="hospitalCoverPreview" alt="医院图片预览" /></div>
+                <label class="upload-zone hospital-cover-upload">选择医院图片<input id="hospitalCoverFile" type="file" accept="image/jpeg,image/png,image/webp" /><span>上传 JPEG、PNG 或 WebP</span><small>不超过 1 MB；保存设置后生效</small></label>
+                <button id="removeHospitalCover" class="secondary-button" type="button">移除当前图片</button>
               </article>
             </div>
           </section>
@@ -110,6 +143,7 @@
                   <div><b>4</b><span><strong>GIS</strong><small>点位和路线通过科室 key 自动关联</small></span></div>
                 </div>
                 <div class="hint-card"><b>可安全重复上传</b><p>相同医院、相同类型和相同 key 会更新原记录；文件中未出现的现有记录不会被删除。任何一项校验失败时，整批数据都不会写入。</p></div>
+                <div id="importPreview" class="validation-panel"></div>
                 <div id="importResult" class="import-result hidden"></div>
               </article>
             </div>
@@ -125,10 +159,11 @@
                   <label class="upload-zone">选择 GeoJSON 文件<input name="gisFile" type="file" accept=".json,.geojson,application/geo+json,application/json" required /><span>点击选择或拖入文件</span><small>支持 Point、LineString、Polygon、MultiPolygon</small></label>
                   <button class="primary-button" type="submit">上传并发布新版本</button>
                 </form>
+                <div id="gisUploadPreview" class="validation-panel"></div>
                 <div class="hint-card"><b>科室点位约定</b><p>Point 的 properties 中填写 <code>featureType: "department"</code> 和对应 <code>deptID</code>。路线可填写 fromDeptID、toDeptID 与 distanceMeters。</p></div>
                 <div id="gisVersions" class="version-list"></div>
               </article>
-              <article class="panel map-panel tall"><div class="panel-heading"><div><h3>地图预览</h3><p id="gisPreviewMeta">选择一个已上传楼层</p></div></div><div id="gisPreview" class="map-stage"></div></article>
+              <article class="panel map-panel tall"><div class="panel-heading"><div><h3>地图预览</h3><p id="gisPreviewMeta">选择一个已上传楼层</p></div></div><div id="gisPreview" class="map-stage"></div><div id="gisPreviewValidation" class="validation-panel inset"></div></article>
             </div>
           </section>
 

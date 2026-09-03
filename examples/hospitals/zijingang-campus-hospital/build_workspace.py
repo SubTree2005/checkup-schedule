@@ -335,6 +335,8 @@ def main() -> None:
         "mode": "upsert",
         "hospital": {
             "hospitalName": "浙江大学校医院（紫金港校区）",
+            "hospitalLevel": "未定级",
+            "positioning": "校内医疗服务",
             "address": "杭州市余杭塘路866号",
             "openTime": "工作日08:00-12:00,13:30-17:00；急诊24小时",
             "floorMapUrl": None,

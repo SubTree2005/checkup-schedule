@@ -1,34 +1,32 @@
 const api = require('../../utils/api')
+const flowGuard = require('../../utils/flow-guard')
 const app = getApp()
 
 Page({
-  data: { password: '', deleting: false },
-  onPasswordInput(e) { this.setData({ password: e.detail.value }) },
+  data: {},
+  onLoad() { flowGuard.requireLogin(app) },
+  goBack() { wx.navigateBack({ delta: 1 }) },
   openTerms() { wx.navigateTo({ url: '/pages/legal/legal?type=terms' }) },
   openPrivacy() { wx.navigateTo({ url: '/pages/legal/legal?type=privacy' }) },
-  async deleteAccount() {
-    if (this.data.password.length < 8) return wx.showToast({ title: '请输入当前账号密码', icon: 'none' })
+  openDeleteAccount() { wx.navigateTo({ url: '/pages/delete-account/delete-account' }) },
+  async logout() {
     const confirmed = await new Promise(resolve => {
       wx.showModal({
-        title: '确认永久注销账号？',
-        content: '账号、健康状态、体检计划和执行记录将被删除，且无法恢复。',
-        confirmText: '确认注销',
-        confirmColor: '#C62828',
+        title: '确认退出登录？',
+        content: '退出后需重新登录才能查看体检信息。',
+        confirmText: '退出登录',
+        confirmColor: '#D83A3A',
         success: result => resolve(result.confirm),
         fail: () => resolve(false)
       })
     })
     if (!confirmed) return
-    this.setData({ deleting: true })
     try {
-      await api.auth.deleteAccount(this.data.password)
-      app.clearLoginState()
-      wx.showToast({ title: '账号已注销', icon: 'success' })
-      setTimeout(() => wx.reLaunch({ url: '/pages/login/login' }), 500)
+      await api.auth.logout()
     } catch (error) {
-      api.showError(error)
-    } finally {
-      this.setData({ deleting: false })
+      // 无论服务端会话是否仍有效，都清除本地登录状态。
     }
+    app.clearLoginState()
+    wx.reLaunch({ url: '/pages/login/login' })
   }
 })

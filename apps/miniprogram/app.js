@@ -10,7 +10,13 @@ App({
     selectedHospitalId: null,
     selectedHospital: null,
     selectedCampusId: null,
+    selectedCampus: null,
+    selectedPlanMode: null,
+    appointmentDraft: null,
+    preparationDecision: null,
+    splitPlanDraft: null,
     catalog: null,
+    viewingPlanRecord: null,
     userInfo: null,
     userRole: 'user',
     isLoggedIn: false
@@ -22,7 +28,9 @@ App({
     this.globalData.userInfo = wx.getStorageSync('userInfo') || null
     this.globalData.isLoggedIn = !!wx.getStorageSync('patientToken')
     if (this.globalData.isLoggedIn) {
-      api.auth.me().then(payload => this.applyUser(payload)).catch(() => this.clearLoginState())
+      api.auth.me().then(payload => this.applyUser(payload)).catch(error => {
+        if (error && error.statusCode === 401) this.clearLoginState()
+      })
     }
   },
 
@@ -32,7 +40,8 @@ App({
       name: payload.name,
       gender: payload.gender,
       age: payload.age,
-      phone: payload.phone
+      phone: payload.phone,
+      avatarUrl: payload.avatarUrl || ''
     }
     this.globalData.userInfo = userInfo
     this.globalData.profile = payload.profile || this.globalData.profile
@@ -52,6 +61,18 @@ App({
     this.globalData.userInfo = null
     this.globalData.profile = null
     this.globalData.currentPlan = null
+    this.globalData.currentPackageId = null
+    this.globalData.selectedItemIDs = []
+    this.globalData.selectedHospitalId = null
+    this.globalData.selectedHospital = null
+    this.globalData.selectedCampusId = null
+    this.globalData.selectedCampus = null
+    this.globalData.selectedPlanMode = null
+    this.globalData.appointmentDraft = null
+    this.globalData.preparationDecision = null
+    this.globalData.splitPlanDraft = null
+    this.globalData.catalog = null
+    this.globalData.viewingPlanRecord = null
     wx.removeStorageSync('patientToken')
     wx.removeStorageSync('userInfo')
     wx.removeStorageSync('profile')

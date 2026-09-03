@@ -1,9 +1,11 @@
 const api = require('../../utils/api')
+const flowGuard = require('../../utils/flow-guard')
 const app = getApp()
 
 Page({
   data: { departments: [], selectedItemIDs: [] },
   async onLoad() {
+    if (!flowGuard.requireHospital(app)) return
     try {
       const catalog = app.globalData.catalog || await api.hospitals.catalog(app.globalData.selectedHospitalId)
       app.globalData.catalog = catalog

@@ -59,7 +59,7 @@
   "departmentKey": "ultrasound",
   "itemName": "腹部超声",
   "duration": 15,
-  "prerequisites": {"fastingHours": 8},
+  "prerequisites": {"fastingHours": 8, "bladderRequired": false},
   "prerequisiteItemKeys": ["blood-routine"],
   "conflictItemKeys": [],
   "priority": 6,
@@ -69,7 +69,7 @@
 }
 ```
 
-`departmentKey`、`prerequisiteItemKeys` 和 `conflictItemKeys` 必须引用同一文件中已声明的业务 key。医学状态条件继续放在 `prerequisites`；项目前置关系必须使用 `prerequisiteItemKeys`，不要直接填写 `itemIDs`。全部项目的前置关系必须是无环图，整包校验会拒绝直接或间接循环依赖。
+`departmentKey`、`prerequisiteItemKeys` 和 `conflictItemKeys` 必须引用同一文件中已声明的业务 key。医学状态条件继续放在 `prerequisites`：`fastingHours` 表示空腹时长，`bladderRequired` 表示需要充盈膀胱；项目前置关系必须使用 `prerequisiteItemKeys`，不要直接填写 `itemIDs`。全部项目的前置关系必须是无环图，整包校验会拒绝直接或间接循环依赖。
 
 `openTimeStart`、`openTimeEnd` 以及 `allowedTimeSlots.start/end` 必须使用补零后的 `HH:MM`。`allowedTimeSlots` 只能是空对象 `{}`（不限项目时段）或同时包含 `start`、`end`；结束时间必须晚于开始时间。
 

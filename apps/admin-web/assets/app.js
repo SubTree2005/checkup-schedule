@@ -10,6 +10,9 @@
   let toastTimer;
   let workspaceImportPayload = null;
   let registrationWorkspacePayload = null;
+  let pendingGisUpload = null;
+  let hospitalCoverDataUrl = null;
+  let hospitalCoverDirty = false;
 
   function escapeHtml(value) {
     return String(value == null ? "" : value)
@@ -78,6 +81,33 @@
     URL.revokeObjectURL(url);
   }
 
+  function syntaxLocationMessage(text, error) {
+    const match = String(error && error.message || "").match(/position\s+(\d+)/i);
+    if (!match) return "文件不是有效的 JSON";
+    const position = Number(match[1]);
+    const before = text.slice(0, position);
+    const line = before.split(/\r?\n/).length;
+    const column = before.length - before.lastIndexOf("\n");
+    return "JSON 解析失败：第 " + line + " 行，第 " + column + " 列附近";
+  }
+
+  function formatMinutesFromSeconds(value) {
+    return Math.round(Number(value || 0) / 60);
+  }
+
+  function metricDetailButton(label, value, note, key, alert) {
+    return '<button type="button" class="metric-card' + (alert ? ' alert' : '') +
+      '" data-metric-detail="' + escapeHtml(key) + '"><span class="metric-label">' +
+      escapeHtml(label) + '</span><strong>' + escapeHtml(value) + '</strong><small>' +
+      escapeHtml(note) + '</small></button>';
+  }
+
+  function validationCard(title, lines, tone) {
+    return '<div class="validation-card ' + escapeHtml(tone || "ok") + '"><h4>' +
+      escapeHtml(title) + '</h4><ul>' + lines.map((line) => '<li>' + escapeHtml(line) +
+      '</li>').join("") + '</ul></div>';
+  }
+
   document.querySelectorAll("[data-auth-tab]").forEach((button) => {
     button.addEventListener("click", () => {
       document.querySelectorAll("[data-auth-tab]").forEach((item) => item.classList.toggle("active", item === button));
@@ -103,8 +133,9 @@
       byId("registerWorkspaceSummary").innerHTML = "<span>尚未选择注册数据包</span>";
       return;
     }
+    const text = await file.text();
     try {
-      const payload = JSON.parse(await file.text());
+      const payload = JSON.parse(text);
       const sections = ["departments", "exams", "packages", "gis"];
       if (!payload.hospital) throw new Error("注册数据缺少 hospital 医院信息");
       sections.forEach((name) => {
@@ -118,7 +149,7 @@
     } catch (error) {
       event.currentTarget.value = "";
       byId("registerWorkspaceSummary").innerHTML = "<span>文件解析失败，请重新选择</span>";
-      toast(error instanceof SyntaxError ? "文件不是有效的 JSON" : error.message, "error");
+      toast(error instanceof SyntaxError ? syntaxLocationMessage(text, error) : error.message, "error");
     }
   });
 
@@ -199,6 +230,7 @@
   }
 
   function renderEverything() {
+    renderHospitalSettings();
     renderDashboard();
     renderDepartments();
     renderExams();
@@ -208,20 +240,112 @@
     renderAnomalies();
   }
 
-  function metricCard(label, value, note, alert) {
-    return '<article class="metric-card' + (alert ? ' alert' : '') + '"><span class="metric-label">' +
-      escapeHtml(label) + '</span><strong>' + escapeHtml(value) + '</strong><small>' + escapeHtml(note) + '</small></article>';
+  function renderHospitalCover(value) {
+    const preview = byId("hospitalCoverPreview");
+    const frame = preview.parentElement;
+    if (value) preview.src = value;
+    else preview.removeAttribute("src");
+    preview.classList.toggle("hidden", !value);
+    frame.classList.toggle("empty", !value);
   }
+
+  function renderHospitalSettings() {
+    if (!state.me || !state.me.hospital) return;
+    const hospital = state.me.hospital;
+    const form = byId("hospitalSettingsForm");
+    form.elements.hospitalName.value = hospital.hospitalName || "";
+    form.elements.hospitalLevel.value = hospital.hospitalLevel || "未定级";
+    form.elements.positioning.value = hospital.positioning || "综合医疗机构";
+    form.elements.address.value = hospital.address || "";
+    form.elements.openTime.value = hospital.openTime || "08:00-17:00";
+    form.elements.isAvailable.value = hospital.isAvailable === false ? "false" : "true";
+    form.elements.appointmentSlotMinutes.value = hospital.appointmentSlotMinutes || 30;
+    form.elements.appointmentSlotCapacity.value = hospital.appointmentSlotCapacity || 20;
+    form.elements.appointmentDaysAhead.value = hospital.appointmentDaysAhead || 7;
+    hospitalCoverDataUrl = hospital.coverImageUrl || null;
+    hospitalCoverDirty = false;
+    byId("hospitalCoverFile").value = "";
+    renderHospitalCover(hospitalCoverDataUrl);
+  }
+
+  byId("hospitalCoverFile").addEventListener("change", (event) => {
+    const file = event.currentTarget.files[0];
+    if (!file) return;
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      event.currentTarget.value = "";
+      return toast("请选择 JPEG、PNG 或 WebP 图片", "error");
+    }
+    if (file.size > 1024 * 1024) {
+      event.currentTarget.value = "";
+      return toast("医院图片不能超过 1 MB", "error");
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      hospitalCoverDataUrl = String(reader.result || "");
+      hospitalCoverDirty = true;
+      renderHospitalCover(hospitalCoverDataUrl);
+    };
+    reader.onerror = () => toast("图片读取失败，请重新选择", "error");
+    reader.readAsDataURL(file);
+  });
+
+  byId("removeHospitalCover").addEventListener("click", () => {
+    hospitalCoverDataUrl = null;
+    hospitalCoverDirty = true;
+    byId("hospitalCoverFile").value = "";
+    renderHospitalCover(null);
+  });
+
+  byId("hospitalSettingsForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const data = formObject(event.currentTarget);
+    const payload = {
+      hospitalName: data.hospitalName,
+      hospitalLevel: data.hospitalLevel,
+      positioning: data.positioning,
+      address: data.address,
+      openTime: data.openTime,
+      isAvailable: data.isAvailable === "true",
+      appointmentSlotMinutes: Number(data.appointmentSlotMinutes),
+      appointmentSlotCapacity: Number(data.appointmentSlotCapacity),
+      appointmentDaysAhead: Number(data.appointmentDaysAhead)
+    };
+    if (hospitalCoverDirty) payload.coverImageUrl = hospitalCoverDataUrl;
+    const button = event.currentTarget.querySelector('[type="submit"]');
+    button.disabled = true;
+    try {
+      state.me.hospital = await api("/hospital", { method: "PATCH", body: payload });
+      byId("hospitalName").textContent = state.me.hospital.hospitalName;
+      renderHospitalSettings();
+      toast("医院设置已保存");
+    } catch (error) { toast(error.message, "error"); }
+    finally { button.disabled = false; }
+  });
 
   function renderDashboard() {
     const metrics = state.dashboard.metrics;
+    const flow = state.dashboard.flow || [];
+    const closedCount = state.departments.filter((item) => !item.isAvailable).length;
+    const crowdedCount = flow.filter((item) =>
+      item.peopleFlow >= 8 || formatMinutesFromSeconds(item.estimatedWaitTime) >= 30
+    ).length;
+    const maxWait = flow.length
+      ? Math.max(...flow.map((item) => formatMinutesFromSeconds(item.estimatedWaitTime)))
+      : 0;
+
+    renderPriorityBoard(flow, closedCount, metrics.unresolvedAnomalies);
     byId("metricGrid").innerHTML =
-      metricCard("今日规划", metrics.todayPlans, metrics.inProgressPlans + " 人正在体检") +
-      metricCard("今日已完成", metrics.completedPlans, metrics.todayServed + " 项服务记录") +
-      metricCard("平均等待", Math.round(metrics.averageWaitSeconds / 60) + " 分钟", "来自今日科室反馈") +
-      metricCard("现场异常", metrics.unresolvedAnomalies, metrics.openDepartments + "/" + metrics.departmentCount + " 科室开放", metrics.unresolvedAnomalies > 0);
+      metricDetailButton("拥堵科室", crowdedCount, "等待较长或现场人流繁忙", "crowded", crowdedCount > 0) +
+      metricDetailButton("暂停开放", closedCount, metrics.openDepartments + "/" + metrics.departmentCount + " 科室开放", "closed", closedCount > 0) +
+      metricDetailButton("未解决异常", metrics.unresolvedAnomalies, "来自现场异常上报", "anomalies", metrics.unresolvedAnomalies > 0) +
+      metricDetailButton("今日体检", metrics.todayPlans, metrics.inProgressPlans + " 人正在体检", "plans") +
+      metricDetailButton("平均等待", formatMinutesFromSeconds(metrics.averageWaitSeconds) + " 分钟", "来自今日科室反馈", "averageWait") +
+      metricDetailButton("最长等待", maxWait + " 分钟", "按当前科室队列计算", "maxWait", maxWait >= 30);
     byId("generatedAt").textContent = "更新于 " + formatTime(state.dashboard.generatedAt);
-    renderFlowList(state.dashboard.flow);
+    byId("metricGrid").querySelectorAll("[data-metric-detail]").forEach((button) => {
+      button.addEventListener("click", () => openMetricDetail(button.dataset.metricDetail));
+    });
+    renderFlowList(flow);
     const floorSelect = byId("dashboardFloor");
     const previous = floorSelect.value;
     floorSelect.innerHTML = state.gis.length
@@ -230,6 +354,67 @@
     if (state.gis.some((item) => item.floorKey === previous)) floorSelect.value = previous;
     if (floorSelect.value) loadDashboardMap(floorSelect.value);
     else renderMapEmpty(byId("dashboardMap"), "尚未上传院内 GIS", "前往“院内 GIS”上传 GeoJSON 后，人流会自动显示在地图上。");
+  }
+
+  function renderPriorityBoard(flow, closedCount, unresolvedCount) {
+    const crowded = flow.filter((item) => item.peopleFlow > 0 || item.estimatedWaitTime > 0).sort((a, b) =>
+      b.estimatedWaitTime - a.estimatedWaitTime || b.peopleFlow - a.peopleFlow
+    )[0];
+    const closed = state.departments.filter((item) => !item.isAvailable).slice(0, 2);
+    const latestAnomaly = state.anomalies.find((item) => !item.isResolved);
+    byId("priorityBoard").innerHTML =
+      '<article class="priority-card"><header><h3>当前最拥堵</h3><span class="priority-tag ' +
+      (crowded && formatMinutesFromSeconds(crowded.estimatedWaitTime) >= 30 ? 'warn' : '') + '">' +
+      (crowded ? formatMinutesFromSeconds(crowded.estimatedWaitTime) + ' 分钟' : '暂无') +
+      '</span></header><p>' + (crowded ? escapeHtml(crowded.deptName) + '，现场 ' + crowded.peopleFlow +
+      ' 人。' : '当前没有有效排队数据。') + '</p></article>' +
+      '<article class="priority-card"><header><h3>暂停开放</h3><span class="priority-tag ' +
+      (closedCount ? 'danger' : '') + '">' + closedCount + ' 个</span></header><p>' +
+      (closed.length ? escapeHtml(closed.map((item) => item.deptName).join('、')) + '，请确认恢复时间。' :
+      '全部科室正常开放。') + '</p></article>' +
+      '<article class="priority-card"><header><h3>待处理异常</h3><span class="priority-tag ' +
+      (unresolvedCount ? 'danger' : '') + '">' + unresolvedCount + ' 条</span></header><p>' +
+      (latestAnomaly ? escapeHtml(latestAnomaly.anomalyType + ' · ' + (latestAnomaly.deptName || '未关联科室')) +
+      '，上报于 ' + formatTime(latestAnomaly.reportTime) + '。' : '当前没有未解决异常。') + '</p></article>';
+  }
+
+  function openMetricDetail(key) {
+    const metrics = state.dashboard.metrics;
+    const flow = state.dashboard.flow || [];
+    const closed = state.departments.filter((item) => !item.isAvailable);
+    const crowded = flow.filter((item) =>
+      item.peopleFlow >= 8 || formatMinutesFromSeconds(item.estimatedWaitTime) >= 30
+    );
+    const titleByKey = {
+      crowded: "拥堵科室明细",
+      closed: "暂停开放科室",
+      anomalies: "未解决异常",
+      plans: "今日体检情况",
+      averageWait: "各科室等待时间",
+      maxWait: "最长等待排行"
+    };
+    const linesByKey = {
+      crowded: crowded.map((item) => item.deptName + "：" + item.peopleFlow + " 人，预计等待 " +
+        formatMinutesFromSeconds(item.estimatedWaitTime) + " 分钟"),
+      closed: closed.map((item) => item.deptName + "：" + (item.location || "未设置位置") +
+        "，开放时间 " + (item.openTimeStart || "—") + "–" + (item.openTimeEnd || "—")),
+      anomalies: state.anomalies.filter((item) => !item.isResolved).map((item) =>
+        item.anomalyType + " · " + (item.deptName || "未关联科室") + " · " + formatTime(item.reportTime)),
+      plans: ["今日计划 " + metrics.todayPlans + " 人", "进行中 " + metrics.inProgressPlans + " 人",
+        "已完成 " + metrics.completedPlans + " 人"],
+      averageWait: flow.map((item) => item.deptName + "：" +
+        formatMinutesFromSeconds(item.estimatedWaitTime) + " 分钟"),
+      maxWait: flow.slice().sort((a, b) => b.estimatedWaitTime - a.estimatedWaitTime).slice(0, 6).map((item) =>
+        item.deptName + "：" + formatMinutesFromSeconds(item.estimatedWaitTime) + " 分钟")
+    };
+    byId("dialogTitle").textContent = titleByKey[key] || "指标明细";
+    const lines = linesByKey[key] && linesByKey[key].length ? linesByKey[key] : ["暂无关联明细。"];
+    dialogBody.innerHTML = '<div class="validation-panel metric-detail-panel">' +
+      validationCard("数据来源", ["运行总览、有效排队快照与异常记录；更新时间 " +
+        formatTime(state.dashboard.generatedAt)], "ok") +
+      validationCard("关联明细", lines, key === "closed" || key === "anomalies" ? "warn" : "ok") +
+      '</div><div class="dialog-actions"><button type="button" class="primary-button" id="cancelDialog">知道了</button></div>';
+    dialog.showModal();
   }
 
   function renderFlowList(flow) {
@@ -601,16 +786,139 @@
     dialog.showModal();
   }
 
+  function validateWorkspacePayload(payload) {
+    const warnings = [];
+    const errors = [];
+    const sections = ["departments", "exams", "packages", "gis"];
+    if (payload.formatVersion !== "1.0") warnings.push("formatVersion 建议使用 1.0。");
+    sections.forEach((name) => {
+      if (payload[name] != null && !Array.isArray(payload[name])) errors.push(name + " 必须是数组。");
+    });
+    const departmentKeys = new Set((payload.departments || []).map((item) => item.key));
+    const examKeys = new Set((payload.exams || []).map((item) => item.key));
+    (payload.exams || []).forEach((exam, index) => {
+      if (!departmentKeys.has(exam.departmentKey)) {
+        errors.push("exams[" + index + "] 引用了未声明科室 " + exam.departmentKey);
+      }
+      (exam.prerequisiteItemKeys || []).forEach((key) => {
+        if (!examKeys.has(key)) errors.push("exams[" + index + "] 缺少前置项目 " + key);
+      });
+      (exam.conflictItemKeys || []).forEach((key) => {
+        if (!examKeys.has(key)) errors.push("exams[" + index + "] 互斥项目不存在 " + key);
+      });
+    });
+    (payload.packages || []).forEach((pkg, index) => {
+      const included = new Set(pkg.includedItemKeys || []);
+      (pkg.includedItemKeys || []).forEach((key) => {
+        if (!examKeys.has(key)) errors.push("packages[" + index + "] 包含未声明项目 " + key);
+      });
+      (payload.exams || []).forEach((exam) => {
+        if (!included.has(exam.key)) return;
+        (exam.prerequisiteItemKeys || []).forEach((key) => {
+          if (!included.has(key)) {
+            errors.push("packages[" + index + "] 上架前缺少 " + exam.itemName + " 的前置项目 " + key);
+          }
+        });
+        (exam.conflictItemKeys || []).forEach((key) => {
+          if (included.has(key)) errors.push("packages[" + index + "] 存在互斥组合 " + exam.key + " / " + key);
+        });
+      });
+    });
+    return {
+      errors: errors,
+      warnings: warnings,
+      affectedPackages: (payload.packages || []).map((item) => item.packageName || item.key).slice(0, 8)
+    };
+  }
+
+  function renderImportPreview(payload) {
+    if (!payload) {
+      byId("importPreview").innerHTML = "";
+      return;
+    }
+    const validation = validateWorkspacePayload(payload);
+    const cards = [validationCard("导入预检", [
+      "医院信息：" + (payload.hospital ? "1 项更新" : "不更新"),
+      "科室：" + (payload.departments || []).length + " 项",
+      "检查项目：" + (payload.exams || []).length + " 项",
+      "套餐：" + (payload.packages || []).length + " 项",
+      "GIS 楼层：" + (payload.gis || []).length + " 项"
+    ], validation.errors.length ? "bad" : "ok")];
+    if (validation.errors.length) cards.push(validationCard("需要修正", validation.errors.slice(0, 8), "bad"));
+    if (validation.warnings.length) cards.push(validationCard("导入提醒", validation.warnings.slice(0, 8), "warn"));
+    if (validation.affectedPackages.length) {
+      cards.push(validationCard("涉及套餐", validation.affectedPackages, "warn"));
+    }
+    if (!validation.errors.length && !validation.warnings.length) {
+      cards.push(validationCard("结构检查", ["未发现明显结构错误；提交时仍会执行后端事务校验。"], "ok"));
+    }
+    byId("importPreview").innerHTML = cards.join("");
+  }
+
+  function validateGisGeojson(geojson) {
+    const departmentIds = new Set(state.departments.map((item) => item.deptID));
+    const pointDeptIds = new Set();
+    const routeDeptIds = new Set();
+    let routeCount = 0;
+    const warnings = [];
+    const errors = [];
+    if (!geojson || !Array.isArray(geojson.features)) {
+      return { errors: ["GeoJSON 必须包含 features 数组。"], warnings: [], pointCount: 0, routeCount: 0 };
+    }
+    geojson.features.forEach((feature, index) => {
+      const props = feature.properties || {};
+      const geometry = feature.geometry || {};
+      if (!["Point", "LineString", "Polygon", "MultiPolygon"].includes(geometry.type)) {
+        errors.push("features[" + index + "] 使用了不支持的 geometry 类型。");
+      }
+      if (props.featureType === "department") {
+        if (!props.deptID) errors.push("features[" + index + "] 科室点缺少 deptID。");
+        else pointDeptIds.add(props.deptID);
+      }
+      if (props.featureType === "route") {
+        routeCount += 1;
+        if (props.fromDeptID) routeDeptIds.add(props.fromDeptID);
+        if (props.toDeptID) routeDeptIds.add(props.toDeptID);
+      }
+    });
+    const missingPoints = state.departments.filter((dept) => !pointDeptIds.has(dept.deptID))
+      .map((dept) => dept.deptName).slice(0, 10);
+    if (missingPoints.length) warnings.push("缺少科室点位：" + missingPoints.join("、"));
+    routeDeptIds.forEach((id) => {
+      if (!departmentIds.has(id)) errors.push("路线引用了不存在的科室 " + id);
+    });
+    if (pointDeptIds.size > 1 && !routeCount) {
+      warnings.push("存在多个科室点，但没有 route 路线；导航可能只能显示目标点。");
+    }
+    if (state.gis.length > 1 && !routeCount) warnings.push("当前医院已有多个楼层，请确认换层路线是否完整。");
+    return { errors: errors, warnings: warnings, pointCount: pointDeptIds.size, routeCount: routeCount };
+  }
+
+  function renderGisValidation(container, result) {
+    const cards = [validationCard("GIS 预检", [
+      "科室点位 " + result.pointCount + " 个",
+      "科室路线 " + result.routeCount + " 条"
+    ], result.errors.length ? "bad" : (result.warnings.length ? "warn" : "ok"))];
+    if (result.errors.length) cards.push(validationCard("需要修正", result.errors.slice(0, 8), "bad"));
+    if (result.warnings.length) cards.push(validationCard("导航提醒", result.warnings.slice(0, 8), "warn"));
+    if (!result.errors.length && !result.warnings.length) {
+      cards.push(validationCard("结构检查", ["未发现明显点位或路线问题。"], "ok"));
+    }
+    container.innerHTML = cards.join("");
+  }
+
   byId("workspaceImportForm").querySelector('[name="workspaceFile"]').addEventListener("change", async (event) => {
     const file = event.currentTarget.files[0];
     workspaceImportPayload = null;
     byId("importResult").classList.add("hidden");
     if (!file) {
       byId("importFileSummary").innerHTML = "<span>尚未选择文件</span>";
+      renderImportPreview(null);
       return;
     }
     try {
-      const payload = JSON.parse(await file.text());
+      const text = await file.text();
+      const payload = JSON.parse(text);
       const sections = ["departments", "exams", "packages", "gis"];
       sections.forEach((name) => {
         if (payload[name] != null && !Array.isArray(payload[name])) throw new Error(name + " 必须是数组");
@@ -621,16 +929,24 @@
         '<span>科室 ' + (payload.departments || []).length + '</span><span>项目 ' + (payload.exams || []).length +
         '</span><span>套餐 ' + (payload.packages || []).length + '</span><span>GIS ' + (payload.gis || []).length +
         '</span></div><small>格式版本 ' + escapeHtml(payload.formatVersion || "未填写") + '</small>';
+      renderImportPreview(payload);
     } catch (error) {
       event.currentTarget.value = "";
       byId("importFileSummary").innerHTML = "<span>文件解析失败，请重新选择</span>";
-      toast(error instanceof SyntaxError ? "文件不是有效的 JSON" : error.message, "error");
+      renderImportPreview(null);
+      const text = file ? await file.text() : "";
+      toast(error instanceof SyntaxError ? syntaxLocationMessage(text, error) : error.message, "error");
     }
   });
 
   byId("workspaceImportForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!workspaceImportPayload) return toast("请先选择有效的标准 JSON 文件", "error");
+    const validation = validateWorkspacePayload(workspaceImportPayload);
+    if (validation.errors.length) {
+      renderImportPreview(workspaceImportPayload);
+      return toast("导入预检未通过，请先修正文件", "error");
+    }
     const submitButton = event.currentTarget.querySelector('[type="submit"]');
     submitButton.disabled = true;
     submitButton.textContent = "正在校验并导入…";
@@ -648,6 +964,7 @@
       event.currentTarget.reset();
       workspaceImportPayload = null;
       byId("importFileSummary").innerHTML = "<span>导入完成，可继续选择其他文件</span>";
+      renderImportPreview(null);
       toast("医院数据已完成一键导入");
     } catch (error) {
       toast(error.message, "error");
@@ -665,14 +982,42 @@
     } catch (error) { toast(error.message, "error"); }
   });
 
+  byId("gisForm").querySelector('[name="gisFile"]').addEventListener("change", async (event) => {
+    const file = event.currentTarget.files[0];
+    pendingGisUpload = null;
+    byId("gisUploadPreview").innerHTML = "";
+    if (!file) return;
+    const text = await file.text();
+    try {
+      const geojson = JSON.parse(text);
+      pendingGisUpload = geojson;
+      const validation = validateGisGeojson(geojson);
+      renderGisValidation(byId("gisUploadPreview"), validation);
+      byId("gisPreviewMeta").textContent = "本地预览 · " + file.name;
+      renderMap(byId("gisPreview"), geojson, state.dashboard ? state.dashboard.flow : []);
+      renderGisValidation(byId("gisPreviewValidation"), validation);
+    } catch (error) {
+      event.currentTarget.value = "";
+      byId("gisUploadPreview").innerHTML = "";
+      toast(error instanceof SyntaxError ? syntaxLocationMessage(text, error) : error.message, "error");
+    }
+  });
+
   byId("gisForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const file = data.get("gisFile");
     try {
-      const geojson = JSON.parse(await file.text());
+      const geojson = pendingGisUpload || JSON.parse(await file.text());
+      const validation = validateGisGeojson(geojson);
+      if (validation.errors.length) {
+        renderGisValidation(byId("gisUploadPreview"), validation);
+        return toast("GIS 预检未通过，请先修正文件", "error");
+      }
       await api("/gis/" + encodeURIComponent(data.get("floorKey")), { method: "PUT", body: { geojson: geojson } });
       event.currentTarget.reset();
+      pendingGisUpload = null;
+      byId("gisUploadPreview").innerHTML = "";
       await loadWorkspace();
       toast("GIS 地图已发布新版本");
     } catch (error) { toast(error instanceof SyntaxError ? "文件不是有效的 JSON" : error.message, "error"); }
@@ -685,7 +1030,10 @@
     ).join("") : emptyState("暂无地图版本", "上传后会保留楼层版本号与更新时间");
     byId("gisVersions").querySelectorAll("[data-preview-floor]").forEach((button) => button.addEventListener("click", () => previewGis(button.dataset.previewFloor)));
     if (state.gis.length && !byId("gisPreview").querySelector("svg")) previewGis(state.gis[0].floorKey);
-    if (!state.gis.length) renderMapEmpty(byId("gisPreview"), "等待 GIS 文件", "上传 GeoJSON 后可在这里检查楼层轮廓和科室点位。");
+    if (!state.gis.length) {
+      renderMapEmpty(byId("gisPreview"), "等待 GIS 文件", "上传 GeoJSON 后可在这里检查楼层轮廓和科室点位。");
+      byId("gisPreviewValidation").innerHTML = "";
+    }
   }
 
   async function previewGis(floor) {
@@ -693,6 +1041,7 @@
       const data = await api("/gis/" + encodeURIComponent(floor));
       byId("gisPreviewMeta").textContent = floor + " · 版本 " + data.version + " · " + formatTime(data.updateTime);
       renderMap(byId("gisPreview"), data.geojson, state.dashboard ? state.dashboard.flow : []);
+      renderGisValidation(byId("gisPreviewValidation"), validateGisGeojson(data.geojson));
     } catch (error) { toast(error.message, "error"); }
   }
 

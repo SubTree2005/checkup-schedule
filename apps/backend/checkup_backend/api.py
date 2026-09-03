@@ -25,6 +25,7 @@ from .models import (
     HospitalAdmin,
     HospitalGIS,
     HospitalInfo,
+    HospitalSettings,
     PackageInfo,
     PlanExecutionDetail,
     QueueSnapshot,
@@ -69,6 +70,14 @@ def client_ip(request: Request) -> str | None:
     if forwarded:
         return forwarded.split(",", 1)[0].strip()[:64]
     return request.client.host[:64] if request.client else None
+
+
+def get_hospital_settings(db: Session, hospital_id: str, *, create: bool = False) -> HospitalSettings | None:
+    settings = db.get(HospitalSettings, hospital_id)
+    if settings is None and create:
+        settings = HospitalSettings(hospital_id=hospital_id)
+        db.add(settings)
+    return settings
 
 
 def require_department(db: Session, hospital_id: str, dept_id: str) -> DepartmentInfo:
@@ -163,6 +172,13 @@ def get_hospital_registration_template() -> dict:
         "address": "请填写医院地址",
         "openTime": "08:00-17:00",
         "floorMapUrl": None,
+        "coverImageUrl": None,
+        "hospitalLevel": "未定级",
+        "positioning": "综合医疗机构",
+        "isAvailable": True,
+        "appointmentSlotMinutes": 30,
+        "appointmentSlotCapacity": 20,
+        "appointmentDaysAhead": 7,
     }
     return template
 
@@ -194,6 +210,17 @@ def register_hospital(
     db.add_all([hospital, user])
     try:
         db.flush()
+        settings = HospitalSettings(
+            hospital_id=hospital.hospital_id,
+            cover_image_url=hospital_data.coverImageUrl,
+            hospital_level=hospital_data.hospitalLevel,
+            positioning=hospital_data.positioning,
+            is_available=hospital_data.isAvailable,
+            appointment_slot_minutes=hospital_data.appointmentSlotMinutes,
+            appointment_slot_capacity=hospital_data.appointmentSlotCapacity,
+            appointment_days_ahead=hospital_data.appointmentDaysAhead,
+        )
+        db.add(settings)
         db.add(HospitalAdmin(user_id=user.user_id, hospital_id=hospital.hospital_id, is_owner=True))
         admin = AdminContext(
             user_id=user.user_id,
@@ -215,7 +242,7 @@ def register_hospital(
     set_session_cookie(response, token)
     return {
         "user": {"userID": user.user_id, "name": user.name, "phone": user.phone, "role": user.role},
-        "hospital": hospital_dict(hospital),
+        "hospital": hospital_dict(hospital, settings),
         "workspaceSummary": workspace_result["summary"],
         "demoPool": {"prepared": prepared, "active": 0},
     }
@@ -233,12 +260,13 @@ def login(
     if user is None or membership is None or not verify_password(payload.password, user.password):
         raise HTTPException(status_code=401, detail="手机号或密码错误")
     hospital = db.get(HospitalInfo, membership.hospital_id)
+    settings = get_hospital_settings(db, membership.hospital_id)
     token = issue_session(db, user.user_id, client_ip(request))
     db.commit()
     set_session_cookie(response, token)
     return {
         "user": {"userID": user.user_id, "name": user.name, "phone": user.phone, "role": user.role},
-        "hospital": hospital_dict(hospital),
+        "hospital": hospital_dict(hospital, settings),
     }
 
 
@@ -258,6 +286,7 @@ def logout(
 @router.get("/auth/me")
 def me(admin: AdminContext = Depends(get_current_admin), db: Session = Depends(get_db)) -> dict:
     hospital = db.get(HospitalInfo, admin.hospital_id)
+    settings = get_hospital_settings(db, admin.hospital_id)
     return {
         "user": {
             "userID": admin.user_id,
@@ -266,13 +295,16 @@ def me(admin: AdminContext = Depends(get_current_admin), db: Session = Depends(g
             "role": "管理员",
             "isOwner": admin.is_owner,
         },
-        "hospital": hospital_dict(hospital),
+        "hospital": hospital_dict(hospital, settings),
     }
 
 
 @router.get("/hospital")
 def get_hospital(admin: AdminContext = Depends(get_current_admin), db: Session = Depends(get_db)) -> dict:
-    return hospital_dict(db.get(HospitalInfo, admin.hospital_id))
+    return hospital_dict(
+        db.get(HospitalInfo, admin.hospital_id),
+        get_hospital_settings(db, admin.hospital_id),
+    )
 
 
 @router.patch("/hospital")
@@ -288,10 +320,23 @@ def update_hospital(
         "openTime": "open_time",
         "floorMapUrl": "floor_map_url",
     }
+    settings_fields = {
+        "coverImageUrl": "cover_image_url",
+        "hospitalLevel": "hospital_level",
+        "positioning": "positioning",
+        "isAvailable": "is_available",
+        "appointmentSlotMinutes": "appointment_slot_minutes",
+        "appointmentSlotCapacity": "appointment_slot_capacity",
+        "appointmentDaysAhead": "appointment_days_ahead",
+    }
+    settings = get_hospital_settings(db, admin.hospital_id, create=True)
     for key, value in payload.model_dump(exclude_unset=True).items():
-        setattr(row, fields[key], value)
+        if key in fields:
+            setattr(row, fields[key], value)
+        else:
+            setattr(settings, settings_fields[key], value)
     db.commit()
-    return hospital_dict(row)
+    return hospital_dict(row, settings)
 
 
 @router.get("/departments")
@@ -877,6 +922,14 @@ def _apply_workspace_import(
             hospital.address = payload.hospital.address
             hospital.open_time = payload.hospital.openTime
             hospital.floor_map_url = payload.hospital.floorMapUrl
+            settings = get_hospital_settings(db, admin.hospital_id, create=True)
+            settings.cover_image_url = payload.hospital.coverImageUrl
+            settings.hospital_level = payload.hospital.hospitalLevel
+            settings.positioning = payload.hospital.positioning
+            settings.is_available = payload.hospital.isAvailable
+            settings.appointment_slot_minutes = payload.hospital.appointmentSlotMinutes
+            settings.appointment_slot_capacity = payload.hospital.appointmentSlotCapacity
+            settings.appointment_days_ahead = payload.hospital.appointmentDaysAhead
             summary["hospital"]["updated"] = 1
 
         for imported in payload.departments:

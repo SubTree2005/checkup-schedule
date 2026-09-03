@@ -10,6 +10,6 @@ Page({
   selectCampus(e) {
     if (!e.currentTarget.dataset.available) return wx.showToast({ title: '敬请期待', icon: 'none' })
     app.globalData.selectedCampusId = e.currentTarget.dataset.id
-    wx.navigateTo({ url: '/pages/select-mode/select-mode' })
+    wx.navigateTo({ url: '/pages/package/package' })
   }
 })

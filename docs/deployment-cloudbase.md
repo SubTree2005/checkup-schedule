@@ -13,6 +13,36 @@
 - 微信云托管 MySQL 环境变量：`MYSQL_ADDRESS`、`MYSQL_DATABASE`、`MYSQL_USERNAME`、`MYSQL_PASSWORD`；
 - `COOKIE_SECURE=true`；
 - `HOSPITAL_TIMEZONE=Asia/Shanghai`：医院上传的营业时间、科室开放时间和检查时段使用的 IANA 时区，未设置时默认 `Asia/Shanghai`。
+- `CHATANYWHERE_API_KEY`：AI 助手服务端访问凭据，只能配置为云托管密钥型环境变量，不能写入小程序或仓库；默认接口为 `https://api.chatanywhere.tech/v1/chat/completions`，默认模型为 `deepseek-v4-flash`。
+
+## 微信订阅提醒
+
+先在微信公众平台“订阅消息”中选用一次性模板，再按该模板的实际字段配置云托管环境变量：
+
+```text
+WECHAT_APP_ID=小程序AppID
+WECHAT_APP_SECRET=小程序AppSecret
+WECHAT_REMINDER_TEMPLATE_ID=订阅消息模板ID
+WECHAT_REMINDER_DATA_TEMPLATE={"thing1":{"value":"{hospital}"},"time2":{"value":"{appointment}"},"thing3":{"value":"{package}"}}
+WECHAT_REMINDER_PAGE=pages/record/record
+WECHAT_MINIPROGRAM_STATE=trial
+WECHAT_REMINDER_LANG=zh_CN
+WECHAT_TRUST_CLOUDBASE_IDENTITY=true
+REMINDER_DISPATCH_TOKEN=至少32字节的随机字符串
+```
+
+`WECHAT_REMINDER_DATA_TEMPLATE` 的键必须与微信公众平台中该模板的字段完全一致；上面的 `thing1/time2/thing3` 仅为格式示例。可使用 `{hospital}`、`{appointment}`、`{package}` 和 `{preparation}` 占位符。AppSecret 与派发令牌只能放在后端环境变量，不能写入小程序代码或仓库。体验版使用 `trial`，正式版改为 `formal`。
+
+服务启动后，`GET /api/patient/reminders/config` 只有在上述发送配置和云托管身份透传都有效时才返回可用。小程序通过 `wx.cloud.callContainer` 访问时，网关会注入 `x-wx-openid` 与 `x-wx-appid`；普通 HTTP 请求不能代替这条可信身份链路。
+
+最后在 CloudBase 定时任务中每分钟调用一次：
+
+```http
+POST /api/internal/reminders/dispatch
+X-Reminder-Dispatch-Token: 与 REMINDER_DISPATCH_TOKEN 相同
+```
+
+可使用同环境的定时云函数，Cron 为 `0 * * * * * *`（七段表达式），也可使用能安全保存派发令牌的外部调度器。任务可重复调用：接口只领取到期且未发送的记录，失败后按 1、5、30 分钟退避，最多尝试 3 次。配置完成后先用体验版创建一个数分钟后的测试预约，并在 `GET /api/patient/reminders` 或数据库 `wechat_reminder` 表确认状态从 `pending` 变为 `sent`。
 
 微信云托管示例：
 
@@ -38,7 +68,7 @@ MYSQL_PASSWORD=控制台中设置的密码
 6. 把云托管环境 ID 和服务名写入 `apps/miniprogram/utils/runtime-config.js` 的 `PRODUCTION_CLOUD_CONTAINER`；小程序通过 `wx.cloud.callContainer` 访问，不需要配置 `request` 合法域名；
 7. 创建普通患者测试账号，在体验版真机完成注册、计划、导航和注销验收。
 
-当前 MVP 在启动时创建缺失表（包括隐私同意记录表 `user_consent`），不会删除已有表或数据。正式进入持续迭代后，应在第一次破坏性字段变更前引入版本化迁移工具。生产数据库应开启自动备份，数据库账号只授予业务所需权限，并在发布前验证一次备份恢复流程。
+当前 MVP 在启动时创建缺失表（包括隐私同意记录表 `user_consent` 和提醒表 `wechat_reminder`），不会删除已有表或数据。正式进入持续迭代后，应在第一次破坏性字段变更前引入版本化迁移工具。生产数据库应开启自动备份，数据库账号只授予业务所需权限，并在发布前验证一次备份恢复流程。
 
 ## 管理员密码应急重置
 

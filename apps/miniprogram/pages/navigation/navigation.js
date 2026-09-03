@@ -1,4 +1,19 @@
 const api = require('../../utils/api')
+const flowGuard = require('../../utils/flow-guard')
+const app = getApp()
+
+function confirmAction(title, content, confirmText) {
+  return new Promise(resolve => {
+    wx.showModal({
+      title,
+      content,
+      confirmText,
+      confirmColor: '#C43D4D',
+      success: result => resolve(result.confirm),
+      fail: () => resolve(false)
+    })
+  })
+}
 
 function validPoint(value) {
   return Array.isArray(value) && value.length >= 2 && Number.isFinite(value[0]) && Number.isFinite(value[1])
@@ -21,6 +36,8 @@ function polygonRings(geometry) {
 
 Page({
   data: {
+    planID: '',
+    detailID: '',
     fromName: '当前检查点',
     toName: '下一检查科室',
     distance: '暂无路线数据',
@@ -28,24 +45,32 @@ Page({
     location: '',
     floorInstruction: '请根据院内指引前往目标科室。',
     hasMap: false,
-    map: null
+    map: null,
+    operating: false
   },
   onLoad(options) {
-    if (!options.planID || !options.detailID) return
-    api.plans.navigation(options.planID, options.detailID).then(data => {
-      this.setData({
-        fromName: data.fromName,
-        toName: data.toName,
-        distance: data.distanceMeters === null ? '暂无路线数据' : `${data.distanceMeters} 米`,
-        duration: data.durationMinutes === null ? '' : `约 ${data.durationMinutes} 分钟`,
-        location: data.location || '',
-        floorInstruction: data.floorInstruction || '请根据院内指引前往目标科室。',
-        hasMap: !!data.map,
-        map: data.map || null
-      }, () => {
-        if (data.map) wx.nextTick(() => this.drawIndoorMap())
-      })
-    }).catch(api.showError)
+    if (!flowGuard.requireLogin(app)) return
+    const currentPlan = app.globalData.currentPlan || {}
+    const currentStep = (currentPlan.steps || []).find(step => ['active', 'pending'].includes(step.status)) || {}
+    const planID = options.planID || currentPlan.planID || currentPlan.id
+    const detailID = options.detailID || currentStep.detailID
+    if (!planID || !detailID) return wx.redirectTo({ url: '/pages/plan/plan' })
+    this.setData({ planID, detailID })
+    api.plans.navigation(planID, detailID).then(data => this.applyNavigation(data)).catch(api.showError)
+  },
+  applyNavigation(data) {
+    this.setData({
+      fromName: data.fromName,
+      toName: data.toName,
+      distance: data.distanceMeters === null ? '暂无路线数据' : `${data.distanceMeters} 米`,
+      duration: data.durationMinutes === null ? '' : `约 ${data.durationMinutes} 分钟`,
+      location: data.location || '',
+      floorInstruction: data.floorInstruction || '请根据院内指引前往目标科室。',
+      hasMap: !!data.map,
+      map: data.map || null
+    }, () => {
+      if (data.map) wx.nextTick(() => this.drawIndoorMap())
+    })
   },
   drawIndoorMap() {
     const map = this.data.map
@@ -129,12 +154,46 @@ Page({
         context.stroke()
         context.setFillStyle('#0F172A')
         context.setFontSize(11)
-        context.fillText(label, projected[0] + 10, projected[1] - 8)
+        const measured = typeof context.measureText === 'function' ? context.measureText(label) : null
+        const labelWidth = measured && measured.width ? measured.width : label.length * 11
+        const preferredX = projected[0] + 10
+        const labelX = preferredX + labelWidth > rect.width - 8
+          ? Math.max(8, projected[0] - labelWidth - 10)
+          : preferredX
+        context.fillText(label, labelX, Math.max(14, projected[1] - 8))
       }
       drawMarker(map.fromPoint, '#F59E0B', map.fromPoint ? `起：${map.fromPoint.name}` : '')
       drawMarker(map.toPoint, '#16A34A', `终：${map.toPoint.name}`)
       context.draw()
     }).exec()
   },
-  goBackPlan() { wx.navigateBack() }
+  completeNavigation() { wx.redirectTo({ url: `/pages/plan/plan?planID=${this.data.planID}` }) },
+  goOverview() { wx.navigateTo({ url: `/pages/plan-overview/plan-overview?planID=${this.data.planID}` }) },
+  async runAction(action) {
+    if (this.data.operating) return null
+    this.setData({ operating: true })
+    try {
+      const updated = await action()
+      app.saveCurrentPlan(updated.finished ? null : updated)
+      return updated
+    } catch (error) {
+      api.showError(error)
+      return null
+    } finally {
+      this.setData({ operating: false })
+    }
+  },
+  async pausePlan() {
+    const confirmed = await confirmAction('中断体检', '将保留当前进度，之后继续时会重新安排后续路线。', '确认中断')
+    if (!confirmed) return
+    const updated = await this.runAction(() => api.plans.pause(this.data.planID))
+    if (updated) wx.switchTab({ url: '/pages/index/index' })
+  },
+  async finishPlan() {
+    const confirmed = await confirmAction('结束体检', '未完成的项目将保留为未完成，本次体检结束后不可继续。', '确认结束')
+    if (!confirmed) return
+    const updated = await this.runAction(() => api.plans.finish(this.data.planID))
+    if (updated) wx.redirectTo({ url: `/pages/plan-complete/plan-complete?id=${updated.planID}&ended=1` })
+  },
+  goBack() { wx.navigateBack({ delta: 1 }) }
 })

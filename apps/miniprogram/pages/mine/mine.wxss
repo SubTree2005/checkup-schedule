@@ -1,12 +1,18 @@
 @import '../../app.wxss';
-.profile-card { display:flex; flex-direction:column; align-items:center; }
-.avatar { width: 120rpx; height: 120rpx; border-radius: 50%; background:#EAF2FF; }
-.user-name { margin-top: 18rpx; font-size: 34rpx; font-weight: 700; }
-.user-sub { margin-top: 8rpx; color:#6B7280; font-size: 24rpx; }
-.info-card .info-line { display:flex; justify-content:space-between; padding: 16rpx 0; border-bottom: 1rpx solid #EEF2F7; font-size: 26rpx; }
-.info-card .info-line:last-child { border-bottom: none; }
-.info-label { color:#6B7280; }
-.empty-hint { margin-top: 10rpx; background:#F8FBFF; color:#6B7280; font-size: 24rpx; line-height: 1.7; padding: 18rpx; border-radius: 16rpx; }
-.menu-item { display:flex; justify-content:space-between; align-items:center; padding: 24rpx 0; border-bottom: 1rpx solid #EEF2F7; }
-.menu-item:last-child { border-bottom:none; }
-.menu-arrow { color:#9CA3AF; }
+
+page { background: linear-gradient(180deg, #F3F8FF 0%, #FFFFFF 70%); }
+.mine-page { padding-left: 28rpx; padding-right: 28rpx; }
+.mine-nav { height: 104rpx; display: flex; align-items: center; color: #111827; font-size: 32rpx; font-weight: 650; }
+.user-head { padding: 26rpx 10rpx 34rpx; display: flex; align-items: center; gap: 24rpx; }
+.avatar-orb { width: 104rpx; height: 104rpx; flex: none; display: block; border-radius: 50%; background: #E7EBF1; }
+.user-copy { min-width: 0; }
+.user-name { color: #172033; font-size: 31rpx; font-weight: 650; }
+.user-phone { margin-top: 10rpx; color: #718096; font-size: 23rpx; }
+.menu-card { background: rgba(255,255,255,0.92); border: 2rpx solid #E1E8F2; border-radius: 28rpx; box-shadow: 0 16rpx 42rpx rgba(50,75,118,0.07); }
+.settings-card { padding: 0 28rpx; }
+.ai-settings-card { margin-top: 20rpx; }
+.menu-row { min-height: 100rpx; display: flex; align-items: center; justify-content: space-between; border-bottom: 2rpx solid #EDF1F6; }
+.menu-row:last-child { border-bottom: none; }
+.menu-title { color: #172033; font-size: 27rpx; font-weight: 600; }
+.menu-subtitle { margin-top: 7rpx; color: #8792A4; font-size: 21rpx; }
+.menu-arrow { color: #99A5B7; font-size: 38rpx; }

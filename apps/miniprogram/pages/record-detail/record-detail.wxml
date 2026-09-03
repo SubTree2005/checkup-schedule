@@ -1,37 +1,34 @@
-<view class="container" wx:if="{{record}}">
-  <view class="page-head">
-    <view class="page-title">本次体检记录</view>
-    <view class="page-desc">你可以查看本次体检的完成情况与历史路线。</view>
-  </view>
+<view class="detail-page safe-top" wx:if="{{record}}">
+  <view class="flow-nav"><view class="nav-back" bindtap="goBack" aria-label="返回">‹</view><view class="nav-title">体检详情</view><view class="nav-space"></view></view>
 
-  <view class="card">
-    <view class="record-name">{{record.packageName}}</view>
-    <view class="record-meta mt-16">{{record.date}}</view>
-    <view class="record-meta">状态：{{record.status}}</view>
-    <view class="record-meta">费用：{{record.packagePrice > 0 ? '¥' + record.packagePrice : '以医院为准'}}</view>
-    <view class="record-meta">体检结果：{{record.result || '敬请期待'}}</view>
-  </view>
-
-  <view class="card mt-24">
-    <view class="section-title">历史路线</view>
-    <block wx:for="{{steps}}" wx:key="step">
-      <view class="history-step">
-        <view class="space-between">
-          <view class="step-title">{{item.step}}. {{item.title}}</view>
-          <view class="done">已完成</view>
-        </view>
-        <view class="record-meta mt-8">{{item.department}}</view>
-        <view class="record-meta">耗时：{{item.totalDuration}} 分钟</view>
+  <scroll-view class="detail-scroll" scroll-y="true">
+    <view class="summary-card">
+      <image class="hospital-photo" src="{{record.hospitalImage}}" mode="aspectFill"></image>
+      <view class="summary-copy">
+        <view class="hospital-name">{{record.hospitalName}}</view>
+        <view class="package-name">{{record.packageName}}</view>
+        <view class="completion-date">{{record.completionDate}}</view>
       </view>
-    </block>
-  </view>
+      <view class="status-badge status-{{record.statusTone}}">{{record.displayStatus}}</view>
+    </view>
 
-  <button class="primary-btn mt-24" bindtap="goHome">返回首页</button>
+    <view class="detail-tabs">
+      <view class="detail-tab {{activeTab === 'items' ? 'detail-tab-active' : ''}}" data-tab="items" bindtap="setTab">项目情况</view>
+      <view class="detail-tab {{activeTab === 'reports' ? 'detail-tab-active' : ''}}" data-tab="reports" bindtap="setTab">体检报告</view>
+    </view>
+
+    <view class="items-card">
+      <view class="item-row" wx:for="{{steps}}" wx:key="detailID" data-id="{{item.detailID}}" bindtap="openStep">
+        <view class="item-title">{{item.title}}</view>
+        <view class="item-status item-{{item.statusTone}}">{{item.statusText}}</view>
+        <view class="item-arrow">›</view>
+      </view>
+    </view>
+  </scroll-view>
 </view>
 
-<view class="container" wx:else>
-  <view class="card">
-    <view class="section-title">未找到记录</view>
-    <view class="section-subtitle">请返回体检记录页重新选择。</view>
-  </view>
+<view class="detail-page safe-top" wx:else>
+  <view class="flow-nav"><view class="nav-space"></view><view class="nav-title">体检详情</view><view class="nav-space"></view></view>
+  <view class="empty-state">正在加载体检记录</view>
 </view>
+<ai-agent />

@@ -1,6 +1,7 @@
 const { requestTransport } = require('./runtime-config')
 
 let initializedCloudEnv = ''
+let authRedirectPending = false
 
 function ensureCloudInitialized(transport) {
   if (!wx.cloud || typeof wx.cloud.init !== 'function' || typeof wx.cloud.callContainer !== 'function') {
@@ -11,14 +12,43 @@ function ensureCloudInitialized(transport) {
   initializedCloudEnv = transport.env
 }
 
-function handleResponse(response, resolve, reject) {
+function expireSession() {
+  try {
+    const app = getApp()
+    if (app && typeof app.clearLoginState === 'function') app.clearLoginState()
+    else wx.removeStorageSync('patientToken')
+  } catch (error) {
+    wx.removeStorageSync('patientToken')
+  }
+  const pages = typeof getCurrentPages === 'function' ? getCurrentPages() : []
+  const route = pages.length ? pages[pages.length - 1].route : ''
+  if (!pages.length || route === 'pages/login/login' || authRedirectPending) return
+  authRedirectPending = true
+  wx.reLaunch({
+    url: '/pages/login/login',
+    complete() { authRedirectPending = false }
+  })
+}
+
+function handleResponse(response, resolve, reject, options) {
   if (response.statusCode >= 200 && response.statusCode < 300) {
     resolve(response.data)
     return
   }
-  if (response.statusCode === 401) wx.removeStorageSync('patientToken')
+  if (response.statusCode === 401 && !options.skipAuthExpiry) expireSession()
   const message = response.data && response.data.detail
-  reject(new Error(typeof message === 'string' ? message : `请求失败（${response.statusCode}）`))
+  const error = new Error(typeof message === 'string' ? message : `请求失败（${response.statusCode}）`)
+  error.statusCode = response.statusCode
+  reject(error)
+}
+
+function networkError(error) {
+  const detail = String(error && error.errMsg || '').trim()
+  const generic = !detail || /^request:fail(?:\s|$)/i.test(detail) || /^cloud\.callContainer:fail(?:\s|$)/i.test(detail)
+  const message = generic ? '暂时无法连接服务，请稍后重试' : detail
+  const result = new Error(message)
+  result.isNetworkError = true
+  return result
 }
 
 function request(path, options = {}) {
@@ -37,9 +67,9 @@ function request(path, options = {}) {
       ...(token ? { Authorization: `Bearer ${token}` } : {})
     }
     const callbacks = {
-      success: response => handleResponse(response, resolve, reject),
+      success: response => handleResponse(response, resolve, reject, options),
       fail(error) {
-        reject(new Error(error.errMsg || '无法连接服务器，请检查云托管服务状态'))
+        reject(networkError(error))
       }
     }
 
@@ -80,7 +110,7 @@ module.exports = {
   showError,
   auth: {
     register: data => request('/api/patient/auth/register', { method: 'POST', data }),
-    login: data => request('/api/patient/auth/login', { method: 'POST', data }),
+    login: data => request('/api/patient/auth/login', { method: 'POST', data, skipAuthExpiry: true }),
     me: () => request('/api/patient/auth/me'),
     logout: () => request('/api/patient/auth/logout', { method: 'POST' }),
     deleteAccount: password => request('/api/patient/account', { method: 'DELETE', data: { password } })
@@ -90,7 +120,8 @@ module.exports = {
   },
   hospitals: {
     list: () => request('/api/patient/hospitals'),
-    catalog: hospitalID => request(`/api/patient/hospitals/${encodeURIComponent(hospitalID)}/catalog`)
+    catalog: hospitalID => request(`/api/patient/hospitals/${encodeURIComponent(hospitalID)}/catalog`),
+    appointmentSlots: hospitalID => request(`/api/patient/hospitals/${encodeURIComponent(hospitalID)}/appointment-slots`)
   },
   plans: {
     create: data => request('/api/patient/plans', { method: 'POST', data }),
@@ -99,7 +130,18 @@ module.exports = {
     get: planID => request(`/api/patient/plans/${encodeURIComponent(planID)}`),
     start: (planID, detailID) => request(`/api/patient/plans/${encodeURIComponent(planID)}/steps/${encodeURIComponent(detailID)}/start`, { method: 'POST' }),
     complete: (planID, detailID) => request(`/api/patient/plans/${encodeURIComponent(planID)}/steps/${encodeURIComponent(detailID)}/complete`, { method: 'POST' }),
+    pause: planID => request(`/api/patient/plans/${encodeURIComponent(planID)}/pause`, { method: 'POST' }),
+    resume: planID => request(`/api/patient/plans/${encodeURIComponent(planID)}/resume`, { method: 'POST' }),
+    finish: planID => request(`/api/patient/plans/${encodeURIComponent(planID)}/finish`, { method: 'POST' }),
     replan: planID => request(`/api/patient/plans/${encodeURIComponent(planID)}/replan`, { method: 'POST' }),
     navigation: (planID, detailID) => request(`/api/patient/plans/${encodeURIComponent(planID)}/navigation?detailID=${encodeURIComponent(detailID)}`)
+  },
+  reminders: {
+    config: () => request('/api/patient/reminders/config'),
+    list: () => request('/api/patient/reminders')
+  },
+  agent: {
+    status: () => request('/api/patient/agent/status'),
+    chat: data => request('/api/patient/agent/chat', { method: 'POST', data })
   }
 }

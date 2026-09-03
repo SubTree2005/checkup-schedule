@@ -6,7 +6,7 @@ Page({
   data: {
     submitting: false,
     acceptedPolicies: false,
-    form: { name: '', gender: '女', age: '', phone: '', password: '' }
+    form: { name: '', gender: '女', age: '', phone: '', password: '', confirmPassword: '', medicalHistory: '', allergens: '' }
   },
   setGender(e) { this.setData({ 'form.gender': e.currentTarget.dataset.value }) },
   onInput(e) { this.setData({ [`form.${e.currentTarget.dataset.key}`]: e.detail.value }) },
@@ -15,9 +15,19 @@ Page({
   openPrivacy() { wx.navigateTo({ url: '/pages/legal/legal?type=privacy' }) },
 
   async submitRegister() {
-    const { name, gender, age, phone, password } = this.data.form
-    if (!name || !age || !phone || !password) return wx.showToast({ title: '请完整填写注册信息', icon: 'none' })
+    const name = String(this.data.form.name || '').trim()
+    const gender = this.data.form.gender
+    const age = Number(this.data.form.age)
+    const phone = String(this.data.form.phone || '').trim()
+    const password = String(this.data.form.password || '')
+    const confirmPassword = String(this.data.form.confirmPassword || '')
+    const medicalHistory = String(this.data.form.medicalHistory || '').trim()
+    const allergens = String(this.data.form.allergens || '').trim()
+    if (!name || !age || !phone || !password || !confirmPassword || !medicalHistory || !allergens) return wx.showToast({ title: '请完整填写注册信息', icon: 'none' })
+    if (!Number.isInteger(age) || age < 1 || age > 120) return wx.showToast({ title: '请输入正确的年龄', icon: 'none' })
+    if (!/^1\d{10}$/.test(phone)) return wx.showToast({ title: '请输入正确的手机号', icon: 'none' })
     if (password.length < 8) return wx.showToast({ title: '密码至少需要 8 位', icon: 'none' })
+    if (password !== confirmPassword) return wx.showToast({ title: '两次输入的密码不一致', icon: 'none' })
     if (!this.data.acceptedPolicies) return wx.showToast({ title: '请先阅读并同意协议', icon: 'none' })
     this.setData({ submitting: true })
     try {
@@ -27,6 +37,8 @@ Page({
         age: Number(age),
         phone,
         password,
+        medicalHistory,
+        allergens,
         privacyConsent: true,
         privacyConsentVersion: PRIVACY_POLICY_VERSION
       })

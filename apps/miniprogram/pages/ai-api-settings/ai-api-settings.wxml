@@ -1,0 +1,14 @@
+<view class="api-settings-page safe-top">
+  <view class="settings-nav"><view class="nav-back" bindtap="goBack">‹</view><view class="nav-title">模型服务</view><view class="nav-space"></view></view>
+
+  <view class="settings-content">
+    <view class="section-label">当前接入</view>
+    <view class="settings-card">
+      <view class="info-row"><view class="info-label">接入方式</view><view class="info-value">系统统一接入</view></view>
+      <view class="info-row"><view class="info-label">默认模型</view><view class="info-value">{{modelName}}</view></view>
+      <view class="info-row"><view class="info-label">连接状态</view><view class="status-value {{configured ? '' : 'is-offline'}}"><text class="status-dot"></text>{{statusText}}</view></view>
+    </view>
+    <view class="security-note">访问凭据仅保存在服务端，小程序不会读取或保存模型密钥。</view>
+  </view>
+</view>
+<ai-agent />

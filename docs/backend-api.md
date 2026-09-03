@@ -4,15 +4,17 @@
 
 数据库实现《需求分析说明书》第 4.4 节定义的 15 张业务表：
 
-`user_info`、`hospital_info`、`department_info`、`exam_info`、`package_info`、`user_status_info`、`exam_plan`、`plan_execution_detail`、`anomaly_report`、`department_distance`、`user_mobility_profile`、`walk_speed_preset`、`queue_snapshot`、`department_waiting_stats`、`department_resource_calendar`。支撑表另含 `hospital_admin`、`user_session`、`user_consent`、`hospital_gis` 和 `demo_patient_profile`。
+`user_info`、`hospital_info`、`department_info`、`exam_info`、`package_info`、`user_status_info`、`exam_plan`、`plan_execution_detail`、`anomaly_report`、`department_distance`、`user_mobility_profile`、`walk_speed_preset`、`queue_snapshot`、`department_waiting_stats`、`department_resource_calendar`。支撑表另含 `hospital_admin`、`user_session`、`user_consent`、`hospital_gis`、`demo_patient_profile` 和 `wechat_reminder`。
 
-为管理、认证、隐私同意和 GIS 增加五张支撑表：
+为管理、认证、隐私同意、患者端医院设置和 GIS 增加六张支撑表：
 
 - `hospital_admin`：管理员与医院的归属关系，是多医院隔离的服务端依据；
+- `hospital_settings`：保存患者端医院图片、开放状态以及预约时段、号源容量和可预约天数；
 - `user_session`：只保存随机登录令牌的 SHA-256 摘要、登录 IP 与有效期；
 - `user_consent`：保存患者同意的隐私政策版本、时间和请求 IP，作为注册授权审计记录；
 - `hospital_gis`：按医院和楼层保存 GeoJSON、版本号、更新人和更新时间。
 - `demo_patient_profile`：保存每家医院注册时固定生成的 100 人演示患者池、套餐项目组合和当前激活计划引用。
+- `wechat_reminder`：保存患者一次性订阅对应的 OpenID、模板、发送时间、消息快照、派发状态、重试次数和错误信息。
 
 密码使用带随机盐的 PBKDF2-SHA256，数据库不保存明文密码。客户端提交的 `hospitalID` 不参与授权判断。
 
@@ -22,7 +24,7 @@
 | --- | --- |
 | 注册、登录、当前账号、退出 | `POST /api/auth/register`、`POST /api/auth/login`、`GET /api/auth/me`、`POST /api/auth/logout` |
 | 注册数据模板 | `GET /api/auth/register-template` |
-| 医院资料 | `GET/PATCH /api/hospital` |
+| 医院资料、患者端图片与预约规则 | `GET/PATCH /api/hospital` |
 | 科室 | `GET/POST /api/departments`、`PATCH/DELETE /api/departments/{deptID}` |
 | 检查项目 | `GET/POST /api/exams`、`PATCH/DELETE /api/exams/{itemID}` |
 | 体检套餐与上下架 | `GET/POST /api/packages`、`PATCH/DELETE /api/packages/{packageID}` |
@@ -42,14 +44,23 @@
 | 患者注册、登录、当前用户、退出 | `POST /api/patient/auth/register`、`POST /api/patient/auth/login`、`GET /api/patient/auth/me`、`POST /api/patient/auth/logout` |
 | 密码确认后注销患者账号 | `DELETE /api/patient/account` |
 | 个人资料与近期身体状态 | `PATCH /api/patient/profile` |
-| 医院和动态体检目录 | `GET /api/patient/hospitals`、`GET /api/patient/hospitals/{hospitalID}/catalog` |
+| 医院、院区、预约号源和动态体检目录 | `GET /api/patient/hospitals`、`GET /api/patient/hospitals/{hospitalID}/appointment-slots`、`GET /api/patient/hospitals/{hospitalID}/catalog` |
 | 创建、当前、历史和详情 | `POST /api/patient/plans`、`GET /api/patient/plans/current`、`GET /api/patient/plans`、`GET /api/patient/plans/{planID}` |
-| 开始、完成和动态重排 | `POST /api/patient/plans/{planID}/steps/{detailID}/start`、`POST /api/patient/plans/{planID}/steps/{detailID}/complete`、`POST /api/patient/plans/{planID}/replan` |
+| 开始、完成、中断、继续、结束和动态重排 | `POST /api/patient/plans/{planID}/steps/{detailID}/start`、`POST /api/patient/plans/{planID}/steps/{detailID}/complete`、`POST /api/patient/plans/{planID}/pause`、`POST /api/patient/plans/{planID}/resume`、`POST /api/patient/plans/{planID}/finish`、`POST /api/patient/plans/{planID}/replan` |
 | 院内导航信息与楼层 GIS 路线 | `GET /api/patient/plans/{planID}/navigation?detailID=...` |
+| 微信提醒能力与本人提醒记录 | `GET /api/patient/reminders/config`、`GET /api/patient/reminders` |
+| AI 助手模型状态与问答 | `GET /api/patient/agent/status`、`POST /api/patient/agent/chat` |
+| 受保护的到期提醒派发 | `POST /api/internal/reminders/dispatch`，请求头必须携带 `X-Reminder-Dispatch-Token` |
 
 计划接口会在 Backend/Adapter 中把数据库实体转换为 `checkup_scheduler` 领域模型。小程序不包含算法副本，也不直接访问数据库。
 
+AI 问答必须经过患者登录鉴权，并由后端使用部署环境中的模型密钥转发。小程序只提交最近 20 条会话消息和当前页面标识，不接收模型密钥；页面跳转使用客户端固定白名单操作卡片，模型回复本身不能执行预约、取消、修改数据或任意路由。
+
+预约创建请求只有在 `reminderSubscription.permission=accept`、模板 ID 与服务端一致，并且请求由微信云托管注入匹配 AppID 的 `x-wx-openid` 时才创建提醒。用户拒绝订阅时客户端不会提交该字段。提醒默认安排在预约前一天 20:00；如果已错过该时点，改为预约前 1 小时，仍已错过则立即进入待派发队列。派发失败会延迟重试，最多 3 次，所有结果均可从提醒记录接口审计。
+
 套餐由医院管理员在 Web 管理端组合本医院的检查项目，并保存为草稿或上架。患者目录只返回所选医院已上架、且包含项目均处于启用状态的套餐；套餐下架后立即从目录消失，也不能再用旧套餐 ID 创建新计划。历史计划仍保留原套餐关联。
+
+医院管理端的“医院设置”维护患者端实际读取的院区名称、地址、开放时间、图片与号源规则。医院名采用“机构名（院区名）”时，患者端会将同机构的多个医院账号组合为一个医院卡片，但每个院区仍保留独立 `hospitalID`、目录、号源和计划数据。预约页只展示服务端生成的真实时段；创建预约时服务端再次校验开放状态、时段边界与容量，不能通过伪造 `appointmentAt` 绕过。
 
 工作区导入、检查项目编辑、套餐创建或更新、演示患者池准备及患者自选项目共用同一组约束校验：前置关系必须无环，套餐或计划必须包含全部前置项目，并拒绝互斥项目组合。患者端不会再静默丢弃未选择的前置关系。
 

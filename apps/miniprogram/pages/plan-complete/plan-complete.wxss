@@ -1,0 +1,15 @@
+@import '../../app.wxss';
+
+page { background: linear-gradient(180deg, #F7FAFF 0%, #FFFFFF 100%); }
+.complete-page { min-height: 100vh; }
+.flow-nav { height: 128rpx; padding: 0 28rpx; display: flex; align-items: center; justify-content: space-between; }
+.nav-back { width: 64rpx; height: 64rpx; display: flex; align-items: center; color: #101827; font-size: 58rpx; }
+.nav-title { color: #111827; font-size: 31rpx; font-weight: 650; }
+.nav-space { width: 64rpx; }
+.complete-content { padding: 150rpx 32rpx 0; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.success-orb { width: 150rpx; height: 150rpx; display: block; }
+.complete-title { margin-top: 56rpx; color: #172033; font-size: 40rpx; font-weight: 650; }
+.complete-desc { margin-top: 22rpx; color: #718096; font-size: 25rpx; }
+.complete-actions { position: fixed; left: 0; right: 0; bottom: 0; padding: 20rpx 36rpx calc(env(safe-area-inset-bottom) + 32rpx); }
+.record-btn { width: 100%; margin: 0; }
+.home-link { height: 84rpx; display: flex; align-items: center; justify-content: center; color: #2F69EC; font-size: 27rpx; }

@@ -1,8 +1,18 @@
 @import '../../app.wxss';
-.choice-card { display:flex; align-items:flex-start; gap: 20rpx; }
-.choice-mark { width: 22rpx; height: 22rpx; border-radius: 50%; margin-top: 10rpx; flex-shrink:0; }
-.blue-mark { background:#4F83F1; }
-.green-mark { background:#27AE60; }
-.choice-main { flex:1; }
-.choice-title { font-size: 32rpx; font-weight: 700; color:#1F2A44; }
-.choice-desc { margin-top: 12rpx; font-size: 25rpx; color:#6B7280; line-height: 1.7; }
+
+page { background: linear-gradient(180deg, #F6F9FE 0%, #FFFFFF 100%); }
+.flow-page { min-height: 100vh; }
+.flow-nav { height: 128rpx; padding: 0 28rpx; display: flex; align-items: center; justify-content: space-between; }
+.nav-back { width: 64rpx; height: 64rpx; display: flex; align-items: center; color: #101827; font-size: 58rpx; font-weight: 300; }
+.nav-title { color: #111827; font-size: 31rpx; font-weight: 650; }
+.nav-space { width: 64rpx; }
+.flow-content { padding: 28rpx; }
+.page-hint { margin-bottom: 28rpx; display: flex; align-items: center; gap: 12rpx; color: #566378; font-size: 24rpx; }
+.hint-dot { width: 16rpx; height: 16rpx; background: #DCE8FA; border-radius: 50%; }
+
+.mode-card { min-height: 180rpx; margin-top: 22rpx; padding: 28rpx; display: flex; align-items: center; gap: 28rpx; background: rgba(255, 255, 255, 0.92); border: 2rpx solid rgba(217, 226, 240, 0.82); border-radius: 30rpx; box-shadow: 0 16rpx 40rpx rgba(50, 75, 118, 0.08); }
+.mode-icon { width: 108rpx; height: 108rpx; flex: none; display: block; }
+.mode-copy { flex: 1; min-width: 0; }
+.mode-title { color: #172033; font-size: 30rpx; font-weight: 600; }
+.mode-desc { margin-top: 12rpx; color: #6D798D; font-size: 23rpx; line-height: 1.55; }
+.mode-arrow { color: #93A0B3; font-size: 46rpx; }

@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import base64
+import binascii
 import re
+from datetime import datetime
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -9,6 +12,8 @@ from .exam_constraints import validate_exam_selection, validate_prerequisite_gra
 from .hospital_time import parse_open_time_ranges
 
 TIME_PATTERN = re.compile(r"^(?:[01]\d|2[0-3]):[0-5]\d$")
+COVER_DATA_PATTERN = re.compile(r"^data:image/(?:jpeg|png|webp);base64,([A-Za-z0-9+/=]+)$")
+MAX_COVER_IMAGE_BYTES = 1024 * 1024
 
 
 def validate_hospital_open_time(value: str) -> str:
@@ -31,9 +36,53 @@ def validate_allowed_time_slots(value: dict[str, Any]) -> dict[str, Any]:
     return {"start": start, "end": end}
 
 
+def validate_cover_image_url(value: str | None) -> str | None:
+    if value in {None, ""}:
+        return None
+    if value.startswith("https://"):
+        if len(value) > 1000:
+            raise ValueError("医院图片 URL 过长")
+        return value
+    match = COVER_DATA_PATTERN.fullmatch(value)
+    if match is None:
+        raise ValueError("医院图片必须为 HTTPS 地址或 JPEG、PNG、WebP 图片数据")
+    try:
+        decoded = base64.b64decode(match.group(1), validate=True)
+    except (binascii.Error, ValueError) as exc:
+        raise ValueError("医院图片数据无效") from exc
+    if len(decoded) > MAX_COVER_IMAGE_BYTES:
+        raise ValueError("医院图片不能超过 1 MB")
+    return value
+
+
+def validate_avatar_image_url(value: str | None) -> str | None:
+    try:
+        return validate_cover_image_url(value)
+    except ValueError as exc:
+        raise ValueError(str(exc).replace("医院图片", "头像")) from exc
+
+
 class LoginRequest(BaseModel):
     phone: str
     password: str
+
+
+class PatientAgentMessage(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str = Field(min_length=1, max_length=4000)
+
+    @field_validator("content")
+    @classmethod
+    def normalize_content(cls, value: str) -> str:
+        normalized = value.strip()
+        if not normalized:
+            raise ValueError("消息内容不能为空")
+        return normalized
+
+
+class PatientAgentChatRequest(BaseModel):
+    messages: list[PatientAgentMessage] = Field(min_length=1, max_length=20)
+    currentPage: str = Field(default="", max_length=200)
 
 
 class PatientRegister(BaseModel):
@@ -42,6 +91,8 @@ class PatientRegister(BaseModel):
     name: str = Field(min_length=1, max_length=100)
     gender: str | None = Field(default=None, max_length=16)
     age: int | None = Field(default=None, ge=1, le=120)
+    medicalHistory: str = Field(default="-", max_length=2000)
+    allergens: str = Field(default="-", max_length=2000)
     privacyConsent: Literal[True]
     privacyConsentVersion: Literal["v0.3.1-2026-08-31"]
 
@@ -62,13 +113,26 @@ class PatientProfileUpdate(BaseModel):
     booked: Literal["yes", "no"] | None = None
     medicalHistory: str | None = Field(default=None, max_length=2000)
     allergens: str | None = Field(default=None, max_length=2000)
+    avatarUrl: str | None = None
+
+    @field_validator("avatarUrl")
+    @classmethod
+    def validate_avatar(cls, value: str | None) -> str | None:
+        return validate_avatar_image_url(value)
+
+
+class PatientReminderSubscription(BaseModel):
+    templateID: str = Field(min_length=1, max_length=200)
+    permission: Literal["accept"]
 
 
 class PatientPlanCreate(BaseModel):
     hospitalID: str
     packageID: str | None = None
     selectedItemIDs: list[str] = Field(default_factory=list)
+    appointmentAt: datetime | None = None
     profile: dict[str, Any] = Field(default_factory=dict)
+    reminderSubscription: PatientReminderSubscription | None = None
 
     @model_validator(mode="after")
     def validate_selection(self):
@@ -82,6 +146,13 @@ class HospitalUpdate(BaseModel):
     address: str | None = Field(default=None, max_length=500)
     openTime: str | None = Field(default=None, max_length=100)
     floorMapUrl: str | None = Field(default=None, max_length=1000)
+    coverImageUrl: str | None = None
+    hospitalLevel: str | None = Field(default=None, min_length=1, max_length=50)
+    positioning: str | None = Field(default=None, min_length=1, max_length=100)
+    isAvailable: bool | None = None
+    appointmentSlotMinutes: int | None = Field(default=None, ge=15, le=240)
+    appointmentSlotCapacity: int | None = Field(default=None, ge=1, le=1000)
+    appointmentDaysAhead: int | None = Field(default=None, ge=1, le=60)
 
     @field_validator("openTime")
     @classmethod
@@ -89,6 +160,11 @@ class HospitalUpdate(BaseModel):
         if value is None:
             raise ValueError("openTime 不能为 null")
         return validate_hospital_open_time(value)
+
+    @field_validator("coverImageUrl")
+    @classmethod
+    def validate_cover(cls, value: str | None) -> str | None:
+        return validate_cover_image_url(value)
 
 
 class DepartmentCreate(BaseModel):
@@ -227,11 +303,23 @@ class WorkspaceHospital(BaseModel):
     address: str = Field(default="", max_length=500)
     openTime: str = Field(default="08:00-17:00", max_length=100)
     floorMapUrl: str | None = Field(default=None, max_length=1000)
+    coverImageUrl: str | None = None
+    hospitalLevel: str = Field(default="未定级", min_length=1, max_length=50)
+    positioning: str = Field(default="综合医疗机构", min_length=1, max_length=100)
+    isAvailable: bool = True
+    appointmentSlotMinutes: int = Field(default=30, ge=15, le=240)
+    appointmentSlotCapacity: int = Field(default=20, ge=1, le=1000)
+    appointmentDaysAhead: int = Field(default=7, ge=1, le=60)
 
     @field_validator("openTime")
     @classmethod
     def validate_open_time(cls, value: str) -> str:
         return validate_hospital_open_time(value)
+
+    @field_validator("coverImageUrl")
+    @classmethod
+    def validate_cover(cls, value: str | None) -> str | None:
+        return validate_cover_image_url(value)
 
 
 class WorkspaceExam(BaseModel):

@@ -1,50 +1,51 @@
-<view class="container" wx:if="{{pkg}}">
-  <view class="card detail-head">
-    <view class="package-name">{{pkg.name}}</view>
-    <view class="package-type">{{pkg.type}}</view>
-    <view class="detail-price">{{pkg.price > 0 ? '¥' + pkg.price : '价格以医院为准'}}</view>
-    <view class="detail-label">套餐定位</view>
-    <view class="detail-text">{{pkg.position}}</view>
-    <view class="detail-label mt-24">适合人群</view>
-    <view class="chips">
-      <block wx:for="{{pkg.suitable}}" wx:key="index">
-        <view class="tag chip">{{item}}</view>
-      </block>
-    </view>
-    <view class="tip mt-24">{{pkg.tip}}</view>
+<view class="flow-page safe-top">
+  <view class="flow-nav">
+    <view class="nav-back" bindtap="goBack" aria-label="返回">‹</view>
+    <view class="nav-title">确认已选项目</view>
+    <view class="nav-space"></view>
   </view>
 
-  <view class="card mt-24">
-    <view class="section-title">核心检查概览</view>
-    <view class="detail-text">{{pkg.description}}</view>
-  </view>
-
-  <view class="card mt-24">
-    <view class="section-title">全部检查项目</view>
-    <block wx:for="{{groupViews}}" wx:key="name">
-      <view class="accordion-item" data-index="{{index}}" bindtap="toggleGroup">
-        <view class="space-between accordion-head">
-          <view>
-            <view class="accordion-name">{{item.name}}</view>
-            <view class="accordion-count">{{item.countText}}</view>
-          </view>
-          <view class="accordion-arrow">{{item.open ? '－' : '＋'}}</view>
+  <view class="flow-content" wx:if="{{!loading}}">
+    <view class="summary-card">
+      <view class="summary-head">
+        <view>
+          <view class="summary-title">{{selectionName}}</view>
+          <view class="summary-count">已选项目（共 {{totalItems}} 项）</view>
         </view>
-        <view class="accordion-body" wx:if="{{item.open}}">
-          <block wx:for="{{item.items}}" wx:key="index">
-            <view class="accordion-line">• {{item}}</view>
-          </block>
+        <view class="detail-link" bindtap="toggleDetails">{{detailOpen ? '收起详情' : '查看详情'}}</view>
+      </view>
+
+      <view class="summary-row" wx:for="{{summaryGroups}}" wx:key="key">
+        <view>{{item.label}}</view><view class="summary-number">{{item.count}} 项</view>
+      </view>
+
+      <view wx:if="{{detailOpen}}" class="selected-detail">
+        <view class="selected-line" wx:for="{{selectedItems}}" wx:key="id">
+          <view>{{item.name}}</view><view>{{item.department}}</view>
         </view>
       </view>
-    </block>
+    </view>
+
+    <view class="duration-card">
+      <view>
+        <view class="card-label">预计总时长</view>
+        <view class="duration-value">{{durationLabel}}</view>
+        <view class="duration-note">实际时间以现场安排为准</view>
+      </view>
+      <image class="clock-graphic" src="../../addpicture/icons/icon-clock-art.png" mode="aspectFit"></image>
+    </view>
+
+    <view class="preparation-card">
+      <view class="card-label">检前准备要求</view>
+      <view class="preparation-row" wx:for="{{preparationItems}}" wx:key="key">
+        <view class="prep-dot"></view>
+        <view><text class="prep-label">{{item.label}}：</text>{{item.text}}</view>
+      </view>
+    </view>
   </view>
 
-  <view class="card mt-24">
-    <view class="section-title">注意事项</view>
-    <block wx:for="{{pkg.notice}}" wx:key="index">
-      <view class="accordion-line">• {{item}}</view>
-    </block>
+  <view class="flow-bottom-bar">
+    <button class="primary-btn continue-btn" bindtap="goNext">继续</button>
   </view>
-
-  <button class="primary-btn bottom-btn" bindtap="goProfile">生成我的体检路线</button>
 </view>
+<ai-agent />

@@ -12,3 +12,4 @@
     </view>
   </block>
 </view>
+<ai-agent />

@@ -1,5 +1,35 @@
-.hospital-card { margin-top: 20rpx; }
-.hospital-title { font-size: 34rpx; font-weight:700; line-height:1.5; }
-.hospital-meta { margin-top: 12rpx; color:#6B7280; font-size:26rpx; }
-.open { color:#16A34A; }
-.pick-btn { margin-top: 28rpx; }
+@import '../../app.wxss';
+
+page { background: linear-gradient(180deg, #F6F9FE 0%, #FFFFFF 100%); }
+.flow-page { min-height: 100vh; }
+.flow-nav { height: 128rpx; padding: 0 28rpx; display: flex; align-items: center; justify-content: space-between; }
+.nav-back { width: 64rpx; height: 64rpx; display: flex; align-items: center; color: #101827; font-size: 58rpx; font-weight: 300; }
+.nav-title { color: #111827; font-size: 31rpx; font-weight: 650; }
+.nav-space { width: 64rpx; }
+.flow-content { padding: 12rpx 28rpx 60rpx; }
+
+.search-box { height: 86rpx; padding: 0 24rpx; display: flex; align-items: center; gap: 16rpx; background: rgba(239, 243, 249, 0.82); border: 2rpx solid rgba(220, 228, 240, 0.72); border-radius: 24rpx; }
+.search-icon { width: 44rpx; height: 44rpx; display: block; }
+.search-input { flex: 1; color: #172033; font-size: 26rpx; }
+.search-placeholder { color: #A1ABBB; }
+.page-note { padding: 34rpx 8rpx; color: #7A879B; font-size: 25rpx; }
+
+.hospital-card { margin-top: 24rpx; padding: 22rpx; background: rgba(255, 255, 255, 0.92); border: 2rpx solid rgba(214, 225, 241, 0.82); border-radius: 28rpx; box-shadow: 0 14rpx 38rpx rgba(50, 75, 118, 0.08); }
+.hospital-overview { display: flex; align-items: flex-start; gap: 22rpx; }
+.hospital-cover { width: 170rpx; height: 120rpx; flex: none; border-radius: 20rpx; background: #EAF0F9; }
+.hospital-copy { flex: 1; min-width: 0; padding-top: 4rpx; }
+.hospital-name { color: #172033; font-size: 29rpx; font-weight: 600; line-height: 1.45; }
+.hospital-meta { margin-top: 13rpx; display: flex; align-items: center; gap: 12rpx; min-width: 0; }
+.hospital-level { flex: none; padding: 5rpx 11rpx; color: #176E54; background: rgba(221, 246, 236, .94); border: 2rpx solid rgba(79, 181, 134, .22); border-radius: 10rpx; font-size: 20rpx; }
+.hospital-positioning { min-width: 0; overflow: hidden; color: #7B8798; font-size: 21rpx; white-space: nowrap; text-overflow: ellipsis; }
+
+.campus-list { margin-top: 18rpx; border-top: 2rpx solid #EDF1F7; }
+.campus-row { min-height: 78rpx; display: flex; align-items: center; justify-content: space-between; border-bottom: 2rpx solid #F0F3F8; }
+.campus-row:last-child { border-bottom: none; }
+.campus-name { color: #273246; font-size: 25rpx; }
+.campus-right { display: flex; align-items: center; gap: 12rpx; }
+.campus-status { padding: 5rpx 11rpx; border-radius: 10rpx; font-size: 20rpx; }
+.campus-status-open { color: #176E54; background: rgba(221, 246, 236, .94); border: 2rpx solid rgba(79, 181, 134, .22); }
+.campus-status-closed { color: #7A8595; background: #EFF2F6; border: 2rpx solid #E2E7EE; }
+.campus-arrow { color: #8692A5; font-size: 38rpx; }
+.campus-disabled { opacity: 0.48; }

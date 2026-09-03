@@ -1,4 +1,5 @@
 const api = require('../../utils/api')
+const flowGuard = require('../../utils/flow-guard')
 const app = getApp()
 
 Page({
@@ -7,8 +8,16 @@ Page({
     form: { fasting: 'yes', specialNeed: 'none', bladder: 'normal', drinkingWater: 'adequate', booked: 'yes' }
   },
   onLoad() {
+    if (!flowGuard.requireSelection(app)) return
     const saved = app.globalData.profile || wx.getStorageSync('profile')
-    if (saved) this.setData({ form: { ...this.data.form, ...saved } })
+    const mode = app.globalData.selectedPlanMode
+    this.setData({
+      form: {
+        ...this.data.form,
+        ...(saved || {}),
+        ...(mode ? { planMode: mode, booked: mode === 'appointment' ? 'yes' : 'no' } : {})
+      }
+    })
   },
   setField(e) { this.setData({ [`form.${e.currentTarget.dataset.key}`]: e.currentTarget.dataset.value }) },
   async submitProfile() {

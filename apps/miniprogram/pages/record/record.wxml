@@ -1,29 +1,58 @@
-<view class="container">
-  <view class="card">
-    <view class="section-title">当前体检</view>
-    <view wx:if="{{currentPlan}}">
-      <view class="record-name">{{currentPlan.packageName}}</view>
-      <view class="record-meta">{{currentPlan.hospitalName}}</view>
-      <view class="record-meta">状态：{{currentPlan.finished ? '已完成' : '进行中'}}</view>
-      <view class="record-meta">完成进度：{{currentPlan.progress || 0}}%</view>
-      <button class="primary-btn mt-24" bindtap="goCurrentPlan">继续体检</button>
-    </view>
-    <view wx:else class="empty-text">暂无进行中的体检</view>
+<view class="record-page tab-page safe-top">
+  <view class="record-nav"><view class="record-title">体检</view></view>
+
+  <view class="record-tabs">
+    <view class="record-tab {{activeTab === 'appointments' ? 'record-tab-active' : ''}}" data-tab="appointments" bindtap="setTab">预约体检</view>
+    <view class="record-tab {{activeTab === 'history' ? 'record-tab-active' : ''}}" data-tab="history" bindtap="setTab">历史体检</view>
   </view>
 
-  <view class="card mt-24">
-    <view class="section-title">历史体检记录</view>
-    <block wx:if="{{records.length}}">
-      <block wx:for="{{records}}" wx:key="id">
-        <view class="history-item" data-id="{{item.id}}" bindtap="goRecordDetail">
-          <view class="record-name">{{item.date}}</view>
-          <view class="record-meta">{{item.packageName}}</view>
-          <view class="record-meta">{{item.packagePrice > 0 ? '¥' + item.packagePrice : '价格以医院为准'}}</view>
-          <view class="record-meta">体检结果：{{item.result || '敬请期待'}}</view>
-          <view class="done">{{item.status}}</view>
+  <view class="record-content {{!loading && contentEmpty ? 'record-content-empty' : ''}}">
+    <view wx:if="{{loading}}" class="record-note">正在读取体检安排</view>
+    <block wx:elif="{{activeTab === 'appointments'}}">
+      <view wx:if="{{!hasPlans}}" class="record-note">当前暂无体检</view>
+      <block wx:else>
+        <view wx:if="{{highlightPlan}}" class="focus-plan focus-{{highlightPlan.state}}">
+          <view class="focus-state"><image class="state-symbol" src="{{highlightPlan.stateIconPath}}" mode="aspectFit"></image><view>{{highlightPlan.stateLabel}}</view></view>
+          <view class="focus-hospital">{{highlightPlan.hospitalName}}</view>
+          <view class="focus-type">{{highlightPlan.examType}}</view>
+          <view class="plan-time"><image class="clock-icon" src="../../addpicture/icons/iconfont/clock.svg" mode="aspectFit"></image>{{highlightPlan.appointmentLabel}}</view>
+          <view class="focus-divider"></view>
+          <view class="focus-bottom">
+            <view class="focus-progress">{{highlightPlan.progressText}}</view>
+            <view class="focus-actions">
+              <view class="detail-pill" data-id="{{highlightPlan.id}}" bindtap="viewDetail" role="button">查看详情</view>
+              <view wx:if="{{highlightPlan.showPrimaryAction}}" class="primary-btn action-pill" data-id="{{highlightPlan.id}}" bindtap="openPlan" role="button">{{highlightPlan.actionText}}</view>
+            </view>
+          </view>
+        </view>
+        <view wx:if="{{showOtherHeading}}" class="other-heading">其他预约</view>
+        <view class="appointment-card" wx:for="{{otherPlans}}" wx:key="id">
+          <view class="appointment-hospital">{{item.hospitalName}}</view>
+          <view class="appointment-type">{{item.examType}}</view>
+          <view class="appointment-bottom">
+            <view class="plan-time appointment-time"><image class="clock-icon" src="../../addpicture/icons/iconfont/clock.svg" mode="aspectFit"></image>{{item.appointmentLabel}}</view>
+            <view class="detail-pill" data-id="{{item.id}}" bindtap="viewDetail" role="button">查看详情</view>
+          </view>
         </view>
       </block>
     </block>
-    <view wx:else class="empty-text">暂无历史记录</view>
+    <block wx:else>
+      <view wx:if="{{!hasHistory}}" class="record-note">暂无历史体检</view>
+      <view class="year-group" wx:for="{{historyGroups}}" wx:key="year">
+        <view class="year-title">{{item.year}}</view>
+        <view class="history-record-card" wx:for="{{item.items}}" wx:for-item="record" wx:key="id" data-id="{{record.id}}" bindtap="viewHistoryDetail">
+          <image class="hospital-photo" src="{{record.hospitalImage}}" mode="aspectFill"></image>
+          <view class="record-copy">
+            <view class="history-hospital-name">{{record.hospitalName}}</view>
+            <view class="history-package-name">{{record.packageName}}</view>
+            <view class="record-date">{{record.dateLabel}}</view>
+          </view>
+          <view class="status-badge status-{{record.statusTone}}">{{record.status}}</view>
+          <view class="record-arrow">›</view>
+        </view>
+      </view>
+    </block>
   </view>
+
 </view>
+<ai-agent with-tab-bar show-add bind:add="createPlan" />

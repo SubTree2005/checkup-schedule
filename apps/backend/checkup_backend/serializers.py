@@ -2,20 +2,49 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from .models import AnomalyReport, DepartmentInfo, ExamInfo, HospitalInfo, PackageInfo, QueueSnapshot
+from .models import (
+    AnomalyReport,
+    DepartmentInfo,
+    ExamInfo,
+    HospitalInfo,
+    HospitalSettings,
+    PackageInfo,
+    QueueSnapshot,
+)
 
 
 def iso(value: datetime | None) -> str | None:
     return value.isoformat(timespec="seconds") + "Z" if value else None
 
 
-def hospital_dict(row: HospitalInfo) -> dict:
+def hospital_dict(row: HospitalInfo, settings: HospitalSettings | None = None) -> dict:
+    cover_image_url = settings.cover_image_url if settings else None
+    is_available = settings.is_available if settings else True
+    slot_minutes = settings.appointment_slot_minutes if settings else 30
+    slot_capacity = settings.appointment_slot_capacity if settings else 20
+    days_ahead = settings.appointment_days_ahead if settings else 7
+    hospital_level = settings.hospital_level if settings else "未定级"
+    positioning = settings.positioning if settings else "综合医疗机构"
     return {
         "hospitalID": row.hospital_id,
         "hospitalName": row.hospital_name,
         "address": row.address,
         "openTime": row.open_time,
         "floorMapUrl": row.floor_map_url,
+        "coverImageUrl": cover_image_url,
+        "coverUrl": cover_image_url,
+        "hospitalLevel": hospital_level,
+        "positioning": positioning,
+        "isAvailable": is_available,
+        "status": "正常开放" if is_available else "暂停开放",
+        "appointmentSlotMinutes": slot_minutes,
+        "appointmentSlotCapacity": slot_capacity,
+        "appointmentDaysAhead": days_ahead,
+        "appointmentPolicy": {
+            "slotMinutes": slot_minutes,
+            "slotCapacity": slot_capacity,
+            "daysAhead": days_ahead,
+        },
     }
 
 

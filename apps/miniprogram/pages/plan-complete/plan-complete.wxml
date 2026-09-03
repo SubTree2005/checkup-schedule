@@ -1,0 +1,19 @@
+<view class="complete-page safe-top">
+  <view class="flow-nav">
+    <view class="nav-back" bindtap="goBack" aria-label="返回">‹</view>
+    <view class="nav-title">{{ended ? '体检已结束' : '体检完成'}}</view>
+    <view class="nav-space"></view>
+  </view>
+
+  <view class="complete-content">
+    <image class="success-orb" src="../../addpicture/icons/icon-success-circle.png" mode="aspectFit"></image>
+    <view class="complete-title">{{ended ? '本次体检已结束' : '本次体检已完成'}}</view>
+    <view class="complete-desc">{{ended ? '已为您保留本次体检记录。' : '感谢您的信任，祝您身体健康！'}}</view>
+  </view>
+
+  <view class="complete-actions">
+    <button class="primary-btn record-btn" style="width:100%;margin-left:0;margin-right:0;" bindtap="viewRecord">查看记录</button>
+    <view class="home-link" bindtap="goHome">返回首页</view>
+  </view>
+</view>
+<ai-agent />

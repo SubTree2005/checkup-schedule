@@ -9,12 +9,36 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy import inspect, text
 from sqlalchemy.engine import URL
 
 from . import models  # noqa: F401 - register SQLAlchemy metadata
+from .agent_api import router as patient_agent_router
 from .api import router
 from .database import Base, build_engine, build_session_factory
 from .patient_api import router as patient_router
+from .reminder_api import internal_reminder_router, patient_reminder_router
+
+
+def ensure_compatible_columns(engine) -> None:
+    """Add small, backward-compatible profile columns for existing deployments."""
+    inspector = inspect(engine)
+    tables = set(inspector.get_table_names())
+    with engine.begin() as connection:
+        if "hospital_settings" in tables:
+            existing = {column["name"] for column in inspector.get_columns("hospital_settings")}
+            additions = {
+                "hospitalLevel": "VARCHAR(50) NOT NULL DEFAULT '未定级'",
+                "positioning": "VARCHAR(100) NOT NULL DEFAULT '综合医疗机构'",
+            }
+            for name, declaration in additions.items():
+                if name not in existing:
+                    connection.execute(text(f"ALTER TABLE hospital_settings ADD COLUMN {name} {declaration}"))
+        if "user_info" in tables:
+            user_columns = {column["name"] for column in inspector.get_columns("user_info")}
+            if "avatarUrl" not in user_columns:
+                declaration = "LONGTEXT" if engine.dialect.name == "mysql" else "TEXT"
+                connection.execute(text(f"ALTER TABLE user_info ADD COLUMN avatarUrl {declaration}"))
 
 
 def resolve_database_url(explicit_url: str | None = None) -> str:
@@ -61,12 +85,13 @@ def create_app(database_url: str | None = None, static_dir: str | Path | None = 
     @asynccontextmanager
     async def lifespan(_app: FastAPI):
         Base.metadata.create_all(bind=engine)
+        ensure_compatible_columns(engine)
         yield
         engine.dispose()
 
     app = FastAPI(
         title="Checkup Schedule API",
-        version="0.3.1",
+        version="0.4.0",
         description="医院体检智能排序系统的多医院 Backend API",
         lifespan=lifespan,
     )
@@ -86,6 +111,9 @@ def create_app(database_url: str | None = None, static_dir: str | Path | None = 
 
     app.include_router(router)
     app.include_router(patient_router)
+    app.include_router(patient_agent_router)
+    app.include_router(patient_reminder_router)
+    app.include_router(internal_reminder_router)
     if (admin_dir / "assets").is_dir():
         app.mount("/assets", StaticFiles(directory=admin_dir / "assets"), name="admin-assets")
 

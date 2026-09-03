@@ -1,5 +1,83 @@
-.record-name { font-size: 30rpx; font-weight:700; }
-.record-meta { color:#6B7280; margin-top: 10rpx; }
-.empty-text { color:#9CA3AF; padding: 12rpx 0; }
-.history-item { padding: 20rpx 0; border-top: 1rpx solid #EEF2F7; }
-.done { color:#16A34A; margin-top: 10rpx; font-weight:700; }
+@import '../../app.wxss';
+
+page {
+  background:
+    radial-gradient(circle at 50% 6%, rgba(205, 225, 255, 0.72), rgba(247, 249, 253, 0) 32%),
+    linear-gradient(180deg, #F6F9FE 0%, #FFFFFF 100%);
+}
+
+.record-page { width: 100%; overflow-x: hidden; }
+.record-nav { height: 104rpx; padding-top: 36rpx; box-sizing: border-box; display: flex; align-items: center; justify-content: center; }
+.record-title { color: #111827; font-size: 40rpx; font-weight: 700; }
+.record-tabs { width: calc(100% - 56rpx); margin: 10rpx 28rpx 4rpx; padding: 6rpx; box-sizing: border-box; display: flex; background: #EAF0F8; border-radius: 22rpx; }
+.record-tab { flex: 1; padding: 17rpx 12rpx; color: #68758B; font-size: 25rpx; font-weight: 600; text-align: center; border-radius: 17rpx; }
+.record-tab-active { color: #1358C8; background: #FFFFFF; box-shadow: 0 5rpx 16rpx rgba(55,89,145,0.12); }
+.record-content { padding: 22rpx 28rpx 230rpx; }
+.record-content-empty { min-height: calc(100vh - env(safe-area-inset-top) - 330rpx); display: flex; align-items: center; justify-content: center; }
+.record-note { padding: 16rpx 6rpx; color: #7A879B; font-size: 25rpx; text-align: center; }
+
+.focus-plan,
+.appointment-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2rpx solid rgba(217, 226, 241, 0.72);
+  border-radius: 30rpx;
+  box-shadow: 0 16rpx 42rpx rgba(45, 71, 119, 0.09);
+}
+
+.focus-plan { padding: 30rpx; }
+.focus-paused { border-color: rgba(224, 80, 91, 0.54); background: rgba(255, 250, 250, 0.92); }
+.focus-active { border-color: rgba(70, 123, 241, 0.48); }
+.focus-scheduled { border-color: rgba(193, 139, 37, 0.44); }
+
+.focus-state { display: flex; align-items: center; gap: 14rpx; color: #2F69EC; font-size: 29rpx; font-weight: 600; }
+.focus-paused .focus-state { color: #D94C58; }
+.focus-scheduled .focus-state { color: #A56A06; }
+
+.state-symbol {
+  width: 50rpx;
+  height: 50rpx;
+  display: block;
+}
+
+.focus-hospital,
+.appointment-hospital { color: #172033; font-size: 31rpx; font-weight: 600; line-height: 1.45; }
+.focus-hospital { margin-top: 26rpx; }
+.focus-type,
+.appointment-type { margin-top: 10rpx; color: #68758B; font-size: 25rpx; }
+
+.plan-time { margin-top: 23rpx; display: flex; align-items: center; gap: 12rpx; color: #2F69EC; font-size: 26rpx; }
+.focus-paused .plan-time { color: #D94C58; }
+.focus-scheduled .plan-time { color: #A56A06; }
+
+.clock-icon { width: 38rpx; height: 38rpx; display: block; }
+
+.focus-divider { height: 2rpx; margin-top: 28rpx; background: #EDF1F7; }
+.focus-bottom { padding-top: 22rpx; display: flex; flex-direction: column; align-items: stretch; gap: 18rpx; }
+.focus-progress { color: #526078; font-size: 24rpx; }
+.focus-actions { width: 100%; display: flex; align-items: center; justify-content: flex-end; gap: 12rpx; }
+
+.detail-pill,
+.action-pill { width: auto; min-height: 70rpx; margin: 0; padding: 0 24rpx; border-radius: 22rpx; font-size: 24rpx; font-weight: 600; }
+.detail-pill { width: 184rpx; flex: none; display: flex; align-items: center; justify-content: center; color: #2F69EC; background: rgba(245, 248, 255, 0.9); border: 2rpx solid rgba(47, 105, 236, 0.42); }
+.detail-pill::after { border: none; }
+.action-pill { width: 210rpx; flex: none; }
+
+.other-heading { margin: 38rpx 6rpx 20rpx; color: #172033; font-size: 30rpx; font-weight: 600; }
+.appointment-card { margin-top: 22rpx; padding: 28rpx; }
+.appointment-bottom { margin-top: 24rpx; display: flex; align-items: flex-end; justify-content: space-between; gap: 20rpx; }
+.appointment-time { margin-top: 0; }
+
+.year-group + .year-group { margin-top: 32rpx; }
+.year-title { margin: 0 8rpx 16rpx; color: #58657A; font-size: 25rpx; font-weight: 600; }
+.history-record-card { min-height: 136rpx; padding: 22rpx; display: flex; align-items: center; gap: 18rpx; background: rgba(255,255,255,0.94); border: 2rpx solid #E0E7F1; border-radius: 26rpx; box-shadow: 0 14rpx 36rpx rgba(50,75,118,0.06); }
+.history-record-card + .history-record-card { margin-top: 16rpx; }
+.hospital-photo { width: 96rpx; height: 76rpx; flex: none; display: block; border-radius: 16rpx; background: #EEF3F8; }
+.record-copy { flex: 1; min-width: 0; }
+.history-hospital-name { overflow: hidden; color: #172033; font-size: 25rpx; font-weight: 600; line-height: 1.35; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.history-package-name { margin-top: 6rpx; color: #536178; font-size: 22rpx; }
+.record-date { margin-top: 6rpx; color: #8792A4; font-size: 21rpx; }
+.status-badge { flex: none; padding: 8rpx 12rpx; border-radius: 10rpx; font-size: 20rpx; font-weight: 600; }
+.status-reported { color: #23884B; background: #EAF8EF; }
+.status-interrupted { color: #B35C16; background: #FFF2E7; }
+.status-pending { color: #617087; background: #EFF3F8; }
+.record-arrow { color: #9CA7B7; font-size: 36rpx; }

@@ -1,0 +1,23 @@
+@import '../../app.wxss';
+
+page { background: linear-gradient(180deg, #F7FAFF 0%, #FFFFFF 100%); }
+.flow-page { min-height: 100vh; }
+.flow-nav { height: 128rpx; padding: 0 28rpx; display: flex; align-items: center; justify-content: space-between; }
+.nav-back { width: 64rpx; height: 64rpx; display: flex; align-items: center; color: #101827; font-size: 58rpx; }
+.nav-title { color: #111827; font-size: 31rpx; font-weight: 650; }
+.nav-space { width: 64rpx; }
+.flow-content { padding: 10rpx 24rpx 190rpx; }
+.info-banner { min-height: 78rpx; padding: 18rpx 22rpx; display: flex; align-items: center; gap: 14rpx; color: #2F69EC; background: rgba(230,239,255,0.82); border-radius: 22rpx; font-size: 23rpx; line-height: 1.55; }
+.info-icon { width: 42rpx; height: 42rpx; flex: none; display: block; }
+.arrangement-title { margin-top: 42rpx; color: #172033; font-size: 31rpx; font-weight: 600; }
+.arrangement-desc { margin-top: 14rpx; color: #66748A; font-size: 24rpx; }
+.choice-card { min-height: 184rpx; margin-top: 30rpx; padding: 28rpx; display: flex; align-items: center; gap: 28rpx; background: rgba(255,255,255,0.94); border: 2rpx solid #DFE6F1; border-radius: 28rpx; box-shadow: 0 14rpx 38rpx rgba(50,75,118,0.06); }
+.choice-selected { border-color: rgba(47,105,236,0.58); box-shadow: 0 15rpx 38rpx rgba(47,105,236,0.10); }
+.choice-icon { width: 108rpx; height: 108rpx; flex: none; display: block; filter: drop-shadow(0 8rpx 15rpx rgba(66, 95, 145, .10)); }
+.choice-copy { flex: 1; min-width: 0; }
+.choice-title { color: #172033; font-size: 31rpx; font-weight: 600; }
+.choice-desc { margin-top: 12rpx; color: #65738A; font-size: 23rpx; line-height: 1.55; }
+.choice-radio { width: 42rpx; height: 42rpx; flex: none; display: flex; align-items: center; justify-content: center; color: #FFFFFF; border: 4rpx solid #BBC5D5; border-radius: 50%; font-size: 23rpx; }
+.choice-selected .choice-radio { background: #2F69EC; border-color: #2F69EC; }
+.flow-bottom-bar { position: fixed; z-index: 20; left: 0; right: 0; bottom: 0; padding: 18rpx 24rpx calc(env(safe-area-inset-bottom) + 18rpx); background: rgba(250,252,255,0.92); }
+.continue-btn { width: 100%; margin: 0; }

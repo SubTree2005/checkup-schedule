@@ -1,27 +1,37 @@
-<view class="container">
-  <view class="card map-card">
-    <view class="map-heading">
-      <view class="section-title">院内步行导航</view>
-      <view wx:if="{{hasMap}}" class="floor-badge">{{map.floorKey}}</view>
-    </view>
-    <canvas wx:if="{{hasMap}}" id="indoorMap" canvas-id="indoorMap" class="nav-map-canvas"></canvas>
-    <view wx:else class="nav-map-placeholder">{{location || '请根据院内指引前往目标科室'}}</view>
-    <view wx:if="{{hasMap}}" class="map-legend">
-      <view><text class="legend-dot start-dot"></text>起点</view>
-      <view><text class="legend-line"></text>推荐路线</view>
-      <view><text class="legend-dot target-dot"></text>终点</view>
-    </view>
-    <view class="nav-meta mt-24">起点：{{fromName}}</view>
-    <view class="nav-meta">终点：{{toName}}</view>
-    <view class="nav-meta">位置：{{location || '以现场标识为准'}}</view>
-    <view class="nav-meta">距离：{{distance}}{{duration ? ' · ' + duration : ''}}</view>
+<view class="navigation-page safe-top">
+  <view class="flow-nav">
+    <view class="nav-back" bindtap="goBack" aria-label="返回">‹</view>
+    <view class="nav-title">体检导航</view>
+    <view class="nav-space"></view>
   </view>
 
-  <view class="card mt-24">
-    <view class="section-title">导航提示</view>
-    <view class="hint-line">{{floorInstruction}}</view>
-    <view class="hint-line secondary-hint">路线来自医院上传的 GIS；封路、楼梯或电梯调整时请以现场指引为准。</view>
-  </view>
+  <scroll-view class="navigation-scroll" scroll-y="true">
+    <view class="destination-card">
+      <image class="destination-pin" src="../../addpicture/icons/iconfont/location.svg" mode="aspectFit"></image>
+      <view class="destination-copy">当前目的地：<text>{{toName}}</text></view>
+    </view>
 
-  <button class="primary-btn mt-24" bindtap="goBackPlan">已到达</button>
+    <view class="map-card">
+      <canvas wx:if="{{hasMap}}" id="indoorMap" canvas-id="indoorMap" class="nav-map-canvas"></canvas>
+      <view wx:else class="nav-map-placeholder">{{location || '暂未提供楼层简图，请以现场标识为准'}}</view>
+    </view>
+
+    <view class="direction-card">
+      <image class="direction-icon" src="../../addpicture/icons/iconfont/direction.svg" mode="aspectFit"></image>
+      <view class="direction-copy">
+        <view class="direction-title">{{floorInstruction}}</view>
+        <view class="direction-meta">{{duration || '时间不可用'}}<text wx:if="{{distance !== '暂无路线数据'}}">　|　{{distance}}</text></view>
+      </view>
+    </view>
+
+    <button class="primary-btn main-btn" style="width:100%;margin-left:0;margin-right:0;" bindtap="completeNavigation">完成导航</button>
+    <view class="utility-actions">
+      <view class="utility-action" bindtap="goOverview">查看体检总览</view>
+      <view class="utility-divider"></view>
+      <view class="utility-action" bindtap="pausePlan">中断体检</view>
+      <view class="utility-divider"></view>
+      <view class="utility-action" bindtap="finishPlan">结束体检</view>
+    </view>
+  </scroll-view>
 </view>
+<ai-agent />

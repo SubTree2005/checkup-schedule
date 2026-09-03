@@ -1,9 +1,49 @@
-<view class="container">
-  <block wx:for="{{hospitals}}" wx:key="id">
-    <view class="card hospital-card">
-      <view class="hospital-title">{{item.name}}</view>
-      <view class="hospital-meta">状态：<text class="open">{{item.status}}</text></view>
-      <button class="primary-btn pick-btn" data-id="{{item.id}}" bindtap="selectHospital">选择医院</button>
+<view class="flow-page safe-top">
+  <view class="flow-nav">
+    <view class="nav-back" bindtap="goBack" aria-label="返回">‹</view>
+    <view class="nav-title">选择医院与院区</view>
+    <view class="nav-space"></view>
+  </view>
+
+  <view class="flow-content">
+    <view class="search-box">
+      <image class="search-icon" src="../../addpicture/icons/icon-search.png" mode="aspectFit"></image>
+      <input class="search-input" value="{{query}}" bindinput="onSearch" placeholder="搜索医院或院区" placeholder-class="search-placeholder" />
     </view>
-  </block>
+
+    <view wx:if="{{loading}}" class="page-note">正在读取医院信息</view>
+    <view wx:elif="{{!hasVisibleHospitals}}" class="page-note">没有找到匹配的医院</view>
+
+    <view class="hospital-card" wx:for="{{visibleHospitals}}" wx:key="id">
+      <view class="hospital-overview">
+        <image class="hospital-cover" src="{{item.coverUrl}}" mode="aspectFill"></image>
+        <view class="hospital-copy">
+          <view class="hospital-name">{{item.displayName}}</view>
+          <view class="hospital-meta">
+            <view class="hospital-level">{{item.hospitalLevel}}</view>
+            <view class="hospital-positioning">{{item.positioning}}</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="campus-list">
+        <view
+          class="campus-row {{campus.available ? '' : 'campus-disabled'}}"
+          wx:for="{{item.campuses}}"
+          wx:key="id"
+          wx:for-item="campus"
+          data-hospital-id="{{item.id}}"
+          data-campus-id="{{campus.id}}"
+          bindtap="selectCampus"
+        >
+          <view class="campus-name">{{campus.displayName}}</view>
+          <view class="campus-right">
+            <view class="campus-status {{campus.available ? 'campus-status-open' : 'campus-status-closed'}}">{{campus.available ? '开放' : '暂未开放'}}</view>
+            <view class="campus-arrow">›</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
 </view>
+<ai-agent />

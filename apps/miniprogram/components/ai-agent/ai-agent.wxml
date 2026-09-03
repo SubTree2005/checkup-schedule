@@ -1,0 +1,49 @@
+<view wx:if="{{opened}}" class="ai-stage">
+  <view class="ai-backdrop"></view>
+  <view class="ai-chat" style="padding-top: {{statusBarHeight}}px;">
+    <view class="ai-header">
+      <view class="ai-close" bindtap="closeChat" aria-label="关闭">‹</view>
+      <view class="ai-title">{{title}}</view>
+      <view class="ai-settings" bindtap="openSettings">设置</view>
+    </view>
+
+    <scroll-view class="ai-messages" scroll-y="true" scroll-with-animation="true" scroll-into-view="{{scrollIntoView}}">
+      <view wx:for="{{messages}}" wx:key="id" id="message-{{item.id}}" class="ai-message-row {{item.role === 'user' ? 'is-user' : 'is-assistant'}}">
+        <view wx:if="{{item.role !== 'user'}}" class="assistant-avatar"><image src="../../addpicture/logo.png" mode="aspectFit"></image></view>
+        <view class="ai-message-content">
+          <view class="ai-bubble">{{item.content}}</view>
+          <view wx:if="{{item.card && item.card.kind === 'navigation'}}" class="agent-action-card">
+            <view class="agent-action-copy">
+              <view class="agent-action-title">{{item.card.title}}</view>
+              <view class="agent-action-description">{{item.card.description}}</view>
+            </view>
+            <view class="agent-action-button" data-action-id="{{item.card.actionID}}" bindtap="handleMessageAction" role="button">{{item.card.buttonText}}<text>›</text></view>
+          </view>
+        </view>
+      </view>
+      <view wx:if="{{thinking}}" class="ai-message-row is-assistant">
+        <view class="assistant-avatar"><image src="../../addpicture/logo.png" mode="aspectFit"></image></view>
+        <view class="ai-bubble thinking-copy"><text></text><text></text><text></text></view>
+      </view>
+      <view class="message-tail"></view>
+    </scroll-view>
+
+    <view class="ai-composer" style="transform: translateY(-{{keyboardHeight}}px);">
+      <textarea class="ai-input" value="{{draft}}" auto-height="{{false}}" maxlength="1000" fixed="true" adjust-position="false" cursor-spacing="18" placeholder="问我体检安排、报告或页面操作" bindinput="onInput" bindfocus="onFocus" bindblur="onBlur" bindkeyboardheightchange="onKeyboardHeight" confirm-type="send" bindconfirm="sendMessage"></textarea>
+      <view class="ai-orb ai-orb-composer {{thinking ? 'is-thinking' : ''}}" bindtap="handleOrbTap" role="button" aria-label="{{thinking ? '停止生成' : '发送'}}">
+        <view class="ai-orb-color"></view>
+        <view wx:if="{{thinking}}" class="pause-symbol"><text></text><text></text></view>
+        <view wx:elif="{{inputFocused || draft}}" class="send-symbol">↵</view>
+        <image wx:else class="ai-mark-image" src="../../addpicture/icons/iconfont/ai.svg" mode="aspectFit"></image>
+      </view>
+    </view>
+  </view>
+</view>
+
+<view wx:else class="ai-float-stack {{withTabBar ? 'with-tabbar' : ''}}">
+  <view wx:if="{{showAdd}}" class="add-orb" bindtap="triggerAdd" role="button" aria-label="添加体检">＋</view>
+  <view class="ai-orb" bindtap="openChat" role="button" aria-label="打开检畅AI助手">
+    <view class="ai-orb-color"></view>
+    <image class="ai-mark-image" src="../../addpicture/icons/iconfont/ai.svg" mode="aspectFit"></image>
+  </view>
+</view>

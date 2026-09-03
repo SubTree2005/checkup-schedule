@@ -1,0 +1,36 @@
+<view class="overview-page safe-top" wx:if="{{plan}}">
+  <view class="flow-nav">
+    <view class="nav-back" bindtap="goBack" aria-label="返回">‹</view>
+    <view class="nav-title">体检总览</view>
+    <view class="nav-space"></view>
+  </view>
+
+  <scroll-view class="overview-scroll" scroll-y="true">
+    <view class="progress-card">
+      <view class="plan-hospital">{{plan.hospitalName}}</view>
+      <view class="plan-package">{{plan.packageName || '自选项目'}}</view>
+      <view class="progress-row">
+        <view><text class="progress-label">体检进度</text><text class="progress-strong">{{completedSteps}}</text><text class="progress-total"> / {{totalSteps}} 项</text></view>
+        <view class="progress-percent">{{progress}}%</view>
+      </view>
+      <view class="progress-track" aria-label="体检进度 {{progress}}%"><view class="progress-fill" style="width: {{progress}}%;"></view></view>
+    </view>
+
+    <view class="overview-tabs">
+      <view class="overview-tab {{activeTab === 'items' ? 'overview-tab-active' : ''}}" data-tab="items" bindtap="setTab">项目情况</view>
+      <view class="overview-tab {{activeTab === 'reports' ? 'overview-tab-active' : ''}}" data-tab="reports" bindtap="setTab">体检报告</view>
+    </view>
+
+    <view class="steps-card">
+      <view class="step-row step-{{item.status}}" wx:for="{{steps}}" wx:key="detailID" data-id="{{item.detailID}}" bindtap="openStep">
+        <image class="status-icon" src="{{item.iconPath}}" mode="aspectFit"></image>
+        <view class="step-title">{{item.title}}</view>
+        <view class="step-status step-status-{{item.statusTone}}">{{item.statusText}}</view>
+        <view class="step-arrow">›</view>
+      </view>
+    </view>
+
+    <button class="primary-btn current-btn" style="width:100%;margin-left:0;margin-right:0;" bindtap="goCurrent">返回当前操作</button>
+  </scroll-view>
+</view>
+<ai-agent />

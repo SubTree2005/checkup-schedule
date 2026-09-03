@@ -1,19 +1,67 @@
-<view class="container">
-  <block wx:for="{{packages}}" wx:key="id">
-    <view class="card package-card">
-      <view class="space-between">
-        <view>
-          <view class="package-name">{{item.name}}</view>
-          <view class="package-type">{{item.type}}</view>
-        </view>
-        <view class="package-price">{{item.price > 0 ? '¥' + item.price : '以医院为准'}}</view>
+<view class="flow-page safe-top">
+  <view class="flow-nav">
+    <view class="nav-back" bindtap="goBack" aria-label="返回">‹</view>
+    <view class="nav-title">选择套餐与项目</view>
+    <view class="nav-space"></view>
+  </view>
+
+  <view class="flow-content">
+    <view class="selected-hospital">
+      <view>
+        <view class="selected-label">已选医院</view>
+        <view class="selected-name">{{selectedHospitalName}}</view>
       </view>
-      <view class="tag mt-16">{{item.tag}}</view>
-      <view class="package-desc">{{item.description}}</view>
-      <view class="btn-row">
-        <button class="outline-btn mini-btn" data-id="{{item.id}}" bindtap="viewDetail">查看详情</button>
-        <button class="primary-btn mini-btn" data-id="{{item.id}}" bindtap="selectPackage">选择套餐</button>
-      </view>
+      <view class="change-link" bindtap="changeHospital">切换</view>
     </view>
-  </block>
+
+    <view class="mode-tabs">
+      <view class="mode-tab {{activeTab === 'package' ? 'mode-tab-active' : ''}}" data-tab="package" bindtap="switchTab">套餐推荐</view>
+      <view class="mode-tab {{activeTab === 'custom' ? 'mode-tab-active' : ''}}" data-tab="custom" bindtap="switchTab">自选项目</view>
+    </view>
+
+    <view wx:if="{{loading}}" class="page-note">正在读取体检项目</view>
+
+    <block wx:elif="{{activeTab === 'package'}}">
+      <view wx:if="{{!hasPackages}}" class="page-note">该医院暂未提供体检套餐</view>
+      <view class="package-card {{selectedPackageId === item.id ? 'package-selected' : ''}}" wx:for="{{packages}}" wx:key="id" data-id="{{item.id}}" bindtap="selectPackage">
+        <view class="package-head">
+          <view class="package-copy">
+            <view class="package-name">{{item.name}}</view>
+            <view class="package-desc">{{item.description}}</view>
+          </view>
+          <view class="radio-circle">{{selectedPackageId === item.id ? '✓' : ''}}</view>
+        </view>
+
+        <view class="preview-list" wx:if="{{item.hasPreviewItems}}">
+          <view class="preview-item" wx:for="{{item.previewItems}}" wx:key="id" wx:for-item="preview">
+            <image class="preview-icon" src="{{preview.iconPath}}" mode="aspectFit"></image>
+            <view class="preview-name">{{preview.name}}</view>
+          </view>
+        </view>
+
+        <view class="package-foot">
+          <view class="package-meta">{{item.durationLabel}} · {{item.itemCount}} 项检查</view>
+          <view class="package-price">{{item.price > 0 ? '¥' + item.price : '价格待确认'}}</view>
+        </view>
+      </view>
+    </block>
+
+    <checkbox-group wx:else bindchange="onCheckedChange">
+      <view class="department-card" wx:for="{{departments}}" wx:key="name" wx:for-item="department">
+        <view class="department-name">{{department.name}}</view>
+        <label class="project-row" wx:for="{{department.projects}}" wx:key="id" wx:for-item="project">
+          <view class="project-copy">
+            <view class="project-name">{{project.name}}</view>
+            <view class="project-duration">约 {{project.duration}} 分钟</view>
+          </view>
+          <checkbox value="{{project.id}}" checked="{{project.selected}}" color="#2F69EC" />
+        </label>
+      </view>
+    </checkbox-group>
+  </view>
+
+  <view class="flow-bottom-bar">
+    <button class="primary-btn continue-btn" bindtap="continueSelection">继续</button>
+  </view>
 </view>
+<ai-agent />

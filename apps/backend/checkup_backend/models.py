@@ -4,6 +4,7 @@ from datetime import UTC, datetime
 from uuid import uuid4
 
 from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Index, Integer, JSON, String, Text, UniqueConstraint
+from sqlalchemy.dialects.mysql import LONGTEXT
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .database import Base
@@ -26,6 +27,11 @@ class UserInfo(Base):
     name: Mapped[str] = mapped_column(String(100))
     gender: Mapped[str | None] = mapped_column(String(16), nullable=True)
     birth_date: Mapped[str | None] = mapped_column("birthDate", String(10), nullable=True)
+    avatar_url: Mapped[str | None] = mapped_column(
+        "avatarUrl",
+        Text().with_variant(LONGTEXT(), "mysql"),
+        nullable=True,
+    )
     role: Mapped[str] = mapped_column(String(20), default="普通用户")
     walk_speed: Mapped[float] = mapped_column("walkSpeed", Float, default=1.2)
     walk_version: Mapped[int] = mapped_column("walkVersion", Integer, default=1)
@@ -40,6 +46,28 @@ class HospitalInfo(Base):
     address: Mapped[str] = mapped_column(String(500), default="")
     open_time: Mapped[str] = mapped_column("openTime", String(100), default="08:00-17:00")
     floor_map_url: Mapped[str | None] = mapped_column("floorMapUrl", String(1000), nullable=True)
+
+
+class HospitalSettings(Base):
+    __tablename__ = "hospital_settings"
+
+    hospital_id: Mapped[str] = mapped_column(
+        "hospitalID",
+        ForeignKey("hospital_info.hospitalID", ondelete="CASCADE"),
+        primary_key=True,
+    )
+    cover_image_url: Mapped[str | None] = mapped_column(
+        "coverImageUrl",
+        Text().with_variant(LONGTEXT(), "mysql"),
+        nullable=True,
+    )
+    hospital_level: Mapped[str] = mapped_column("hospitalLevel", String(50), default="未定级")
+    positioning: Mapped[str] = mapped_column("positioning", String(100), default="综合医疗机构")
+    is_available: Mapped[bool] = mapped_column("isAvailable", Boolean, default=True)
+    appointment_slot_minutes: Mapped[int] = mapped_column("appointmentSlotMinutes", Integer, default=30)
+    appointment_slot_capacity: Mapped[int] = mapped_column("appointmentSlotCapacity", Integer, default=20)
+    appointment_days_ahead: Mapped[int] = mapped_column("appointmentDaysAhead", Integer, default=7)
+    update_time: Mapped[datetime] = mapped_column("updateTime", DateTime, default=utcnow, onupdate=utcnow)
 
 
 class HospitalAdmin(Base):
@@ -147,6 +175,35 @@ class ExamPlan(Base):
     total_duration: Mapped[int] = mapped_column("totalDuration", Integer, default=0)
     generate_time: Mapped[datetime] = mapped_column("generateTime", DateTime, default=utcnow)
     plan_status: Mapped[str] = mapped_column("planStatus", String(20), default="待执行")
+
+
+class WechatReminder(Base):
+    __tablename__ = "wechat_reminder"
+    __table_args__ = (
+        UniqueConstraint("planID", "templateID", name="uq_wechat_reminder_plan_template"),
+    )
+
+    reminder_id: Mapped[str] = mapped_column("reminderID", String(64), primary_key=True, default=new_id)
+    plan_id: Mapped[str] = mapped_column(
+        "planID", ForeignKey("exam_plan.planID", ondelete="CASCADE"), index=True
+    )
+    user_id: Mapped[str] = mapped_column(
+        "userID", ForeignKey("user_info.userID", ondelete="CASCADE"), index=True
+    )
+    open_id: Mapped[str] = mapped_column("openID", String(128))
+    app_id: Mapped[str] = mapped_column("appID", String(64))
+    template_id: Mapped[str] = mapped_column("templateID", String(200))
+    scheduled_at: Mapped[datetime] = mapped_column("scheduledAt", DateTime, index=True)
+    next_attempt_at: Mapped[datetime] = mapped_column("nextAttemptAt", DateTime, index=True)
+    message_data: Mapped[dict] = mapped_column("messageData", JSON, default=dict)
+    page: Mapped[str] = mapped_column(String(300), default="pages/record/record")
+    status: Mapped[str] = mapped_column(String(20), default="pending", index=True)
+    attempt_count: Mapped[int] = mapped_column("attemptCount", Integer, default=0)
+    last_error: Mapped[str | None] = mapped_column("lastError", String(1000), nullable=True)
+    last_attempt_at: Mapped[datetime | None] = mapped_column("lastAttemptAt", DateTime, nullable=True)
+    sent_at: Mapped[datetime | None] = mapped_column("sentAt", DateTime, nullable=True)
+    create_time: Mapped[datetime] = mapped_column("createTime", DateTime, default=utcnow)
+    update_time: Mapped[datetime] = mapped_column("updateTime", DateTime, default=utcnow, onupdate=utcnow)
 
 
 class DemoPatientProfile(Base):
@@ -305,3 +362,4 @@ class HospitalGIS(Base):
 
 Index("ix_plan_hospital_status", ExamPlan.hospital_id, ExamPlan.plan_status)
 Index("ix_resource_dept_date", DepartmentResourceCalendar.dept_id, DepartmentResourceCalendar.date)
+Index("ix_wechat_reminder_due", WechatReminder.status, WechatReminder.next_attempt_at)

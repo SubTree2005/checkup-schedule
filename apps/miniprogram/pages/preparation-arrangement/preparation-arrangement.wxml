@@ -1,0 +1,34 @@
+<view class="flow-page safe-top">
+  <view class="flow-nav">
+    <view class="nav-back" bindtap="goBack" aria-label="返回">‹</view>
+    <view class="nav-title">准备条件未满足</view>
+    <view class="nav-space"></view>
+  </view>
+
+  <view class="flow-content">
+    <view class="info-banner"><image class="info-icon" src="../../addpicture/icons/icon-info.png" mode="aspectFit"></image><view>当前存在未满足的准备要求，请选择后续安排。</view></view>
+    <view class="arrangement-title">请选择后续安排</view>
+    <view class="arrangement-desc">系统将根据您的选择安排本次体检。</view>
+
+    <view class="choice-card {{selected === 'today' ? 'choice-selected' : ''}}" data-value="today" bindtap="selectOption">
+      <image class="choice-icon" src="../../addpicture/icons/iconfont/clock.svg" mode="aspectFit"></image>
+      <view class="choice-copy">
+        <view class="choice-title">今天继续</view>
+        <view class="choice-desc">先完成无需准备的项目，其余项目稍后再做</view>
+      </view>
+      <view class="choice-radio">{{selected === 'today' ? '✓' : ''}}</view>
+    </view>
+
+    <view class="choice-card {{selected === 'split' ? 'choice-selected' : ''}}" data-value="split" bindtap="selectOption">
+      <image class="choice-icon" src="../../addpicture/icons/iconfont/calendar.svg" mode="aspectFit"></image>
+      <view class="choice-copy">
+        <view class="choice-title">分两天完成</view>
+        <view class="choice-desc">保留当前进度，下一段体检将重新选择预约日期和时间</view>
+      </view>
+      <view class="choice-radio">{{selected === 'split' ? '✓' : ''}}</view>
+    </view>
+  </view>
+
+  <view class="flow-bottom-bar"><button class="primary-btn continue-btn" loading="{{submitting}}" disabled="{{submitting}}" bindtap="confirmChoice">确认选择</button></view>
+</view>
+<ai-agent />

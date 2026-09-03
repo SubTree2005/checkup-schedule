@@ -1,66 +1,32 @@
-<view class="container home-page">
-  <view class="brand-panel card">
-    <view class="brand-top">
-      <image class="brand-logo" src="../../addpicture/logo.png" mode="widthFix"></image>
-    </view>
-    <view class="brand-title">少等一步，畅检全程</view>
-    <view class="brand-actions mt-24">
-      <button class="primary-btn hero-main-btn" bindtap="goStart">立即开始</button>
-      <button class="secondary-btn hero-sub-btn" wx:if="{{!isLoggedIn}}" bindtap="goLogin">登录 / 注册</button>
-    </view>
+<view class="home-page tab-page safe-top">
+  <view class="home-topbar"><image class="home-logo" src="../../addpicture/logo.png" mode="widthFix"></image></view>
+
+  <view wx:if="{{!hasHomeContent}}" class="empty-home">
+    <view class="plan-orb-wrap"><view class="plan-orb-halo"></view><view class="plan-orb" bindtap="goStart" role="button" aria-label="开始体检"><view class="plan-orb-label">开始体检</view></view></view>
   </view>
 
-  <view class="feature-grid mt-24">
-    <view class="feature-card card" bindtap="continuePlan">
-      <view class="feature-icon feature-icon-blue">◔</view>
-      <view class="feature-title">最近体检</view>
-      <view class="feature-desc">继续上次未完成的路线</view>
-      <view class="feature-meta" wx:if="{{currentPlan}}">当前进度 {{currentPlan.progress || 0}}%</view>
-      <view class="feature-meta" wx:else>暂无进行中的体检</view>
-    </view>
-    <view class="feature-card card" bindtap="goRecord">
-      <view class="feature-icon feature-icon-green">▤</view>
-      <view class="feature-title">体检记录</view>
-      <view class="feature-desc">查看历史记录与路线详情</view>
-      <view class="feature-meta">已完成与历史路线</view>
-    </view>
-  </view>
+  <view wx:else class="plan-home">
+    <view class="plan-heading"><view class="plan-heading-title">{{homeTitle}}</view><view class="plan-heading-subtitle">{{homeSubtitle}}</view></view>
 
-  <view class="card mt-24 tip-card">
-    <view class="section-title">体检小贴士</view>
-    <view class="tip-box">{{tips}}</view>
-  </view>
-
-  <view class="card mt-24">
-    <view class="section-title">服务流程</view>
-    <view class="mini-process-list">
-      <block wx:for="{{steps}}" wx:key="index">
-        <view class="mini-process-item">
-          <view class="mini-process-index">{{index + 1}}</view>
-          <view class="mini-process-text">{{item}}</view>
-        </view>
-      </block>
+    <view wx:if="{{currentPlan}}" class="plan-surface plan-{{planState}} home-highlight">
+      <view class="hospital-name">{{currentPlan.hospitalName}}</view>
+      <view class="package-name">{{currentPlan.packageName}}</view>
+      <view class="progress-row"><view><text class="progress-strong">{{completedSteps}}</text><text class="progress-total"> / {{totalSteps}} 项已完成</text></view><view class="progress-percent">{{progress}}%</view></view>
+      <view class="progress-track" aria-label="体检进度 {{progress}}%"><view class="progress-fill" style="width: {{progress}}%;"></view></view>
+      <scroll-view class="timeline-scroll" scroll-x="true" enable-flex="true" scroll-left="{{timelineScrollLeft}}" show-scrollbar="false">
+        <view class="timeline"><view class="timeline-line"></view><view class="timeline-step step-{{item.state}}" wx:for="{{timelineSteps}}" wx:key="detailID"><view class="step-dot"><image wx:if="{{item.state === 'done'}}" class="step-check" src="../../addpicture/icons/icon-check.png" mode="aspectFit"></image></view><view class="step-name"><view class="step-name-track {{item.scrollName ? 'is-scrolling' : ''}}"><text>{{item.title}}</text><text wx:if="{{item.scrollName}}" class="step-name-copy">{{item.title}}</text></view></view><view class="step-time">{{item.time}}</view></view></view>
+      </scroll-view>
+      <view wx:if="{{currentMessage}}" class="current-message">{{currentMessage}}</view>
+      <button class="primary-btn plan-primary" style="width: 100%; margin-left: 0; margin-right: 0;" bindtap="handlePrimary">{{primaryActionText}}</button>
+      <view class="overview-link" bindtap="goOverview" role="button">查看体检总览</view>
     </view>
-  </view>
 
-  <view class="card mt-24">
-    <view class="section-title">智能规划优势</view>
-    <view class="value-grid">
-      <block wx:for="{{values}}" wx:key="title">
-        <view class="value-item">
-          <view class="value-mark {{item.colorClass}}"></view>
-          <view class="value-title">{{item.title}}</view>
-          <view class="value-desc">{{item.desc}}</view>
-        </view>
-      </block>
+    <view class="feed-card feed-{{item.type}} {{item.highlighted ? 'feed-highlight' : ''}}" wx:for="{{feedCards}}" wx:key="id" data-id="{{item.id}}" bindtap="openFeedCard">
+      <view class="feed-top"><view class="feed-eyebrow">{{item.eyebrow}}</view><view class="feed-status status-{{item.type}}">{{item.statusText}}</view></view>
+      <view class="feed-hospital">{{item.hospitalName}}</view>
+      <view class="feed-package">{{item.packageName}}</view>
+      <view class="feed-bottom"><view class="feed-meta"><view>{{item.timeLabel}}</view><view wx:if="{{item.reportText}}" class="feed-report-count">{{item.reportText}}</view></view><view class="feed-action">{{item.actionText}}</view></view>
     </view>
-  </view>
-
-  <view class="card mt-24 staff-card">
-    <view>
-      <view class="section-title">医院工作人员入口</view>
-      <view class="section-subtitle">仅限医院内部人员使用</view>
-    </view>
-    <button class="secondary-btn staff-btn" bindtap="goStaff">我要管理</button>
   </view>
 </view>
+<ai-agent id="aiAgent" with-tab-bar />

@@ -1,6 +1,6 @@
 # Checkup Schedule
 
-Checkup Schedule 是体检检查智能排序项目的 Monorepo。当前项目发布版本为 **0.3.1**，其中 Scheduler 算法为 **V10（等待优先版）**：它保留硬时间窗、前置关系、Rolling Horizon、等待预测与双反馈边界，以预计等待、未来拥堵、长时间停滞、步行和路线稳定性为主要软目标。
+Checkup Schedule 是体检检查智能排序项目的 Monorepo。当前项目发布版本为 **0.4.0**，其中 Scheduler 算法为 **V10（等待优先版）**：它保留硬时间窗、前置关系、Rolling Horizon、等待预测与双反馈边界，以预计等待、未来拥堵、长时间停滞、步行和路线稳定性为主要软目标。
 
 当前仓库已经包含经过现有测试与正式仿真使用的 Scheduler V10、Ground Truth 隔离的整日离散事件仿真、多随机种子 paired experiment、回归测试，以及可运行的 Backend API、数据库模型、医院 Web 管理端和患者微信小程序。
 

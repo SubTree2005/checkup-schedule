@@ -1,0 +1,18 @@
+<view class="delete-page safe-top">
+  <view class="flow-nav">
+    <view class="nav-back" bindtap="goBack" aria-label="返回">‹</view>
+    <view class="nav-title">注销账号</view>
+    <view class="nav-space"></view>
+  </view>
+
+  <view class="delete-content">
+    <view class="warning-title">此操作无法撤销</view>
+    <view class="warning-copy">注销后将永久删除账号、健康信息、体检计划和执行记录。</view>
+    <view class="confirm-card">
+      <view class="field-label">验证当前密码</view>
+      <input class="password-input" password="true" value="{{password}}" bindinput="onPasswordInput" placeholder="请输入当前账号密码" placeholder-class="input-placeholder" />
+      <button class="delete-button" loading="{{deleting}}" disabled="{{deleting}}" bindtap="deleteAccount">永久注销账号</button>
+    </view>
+  </view>
+</view>
+<ai-agent />

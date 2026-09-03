@@ -1,8 +1,18 @@
 @import '../../app.wxss';
+.register-card { padding: 24rpx 26rpx 28rpx; }
+.health-card { margin-top: 20rpx; }
+.register-actions { padding: 0 4rpx; }
+.compact-form { padding: 0 24rpx; background: rgba(248, 251, 255, 0.74); border: 2rpx solid rgba(222, 232, 247, 0.84); border-radius: 24rpx; }
+.compact-row { min-height: 82rpx; display: flex; align-items: center; gap: 22rpx; border-bottom: 2rpx solid #E8EEF7; }
+.last-row { border-bottom: none; }
+.row-label { flex: none; color: #172033; font-size: 25rpx; font-weight: 600; }
+.row-input { flex: 1; min-width: 0; height: 74rpx; color: #37445A; font-size: 24rpx; text-align: right; }
+.input-placeholder { color: #A1AABA; }
+.segmented-control { margin-left: auto; display: flex; padding: 4rpx; background: #EFF3F8; border-radius: 18rpx; }
+.segment { min-width: 96rpx; padding: 13rpx 18rpx; color: #657287; font-size: 23rpx; text-align: center; border-radius: 15rpx; }
+.segment-active { color: #1358C8; background: rgba(255,255,255,0.92); box-shadow: inset 0 2rpx 2rpx rgba(255,255,255,0.9), 0 4rpx 14rpx rgba(55,89,145,0.12); }
 .policy-row { display:flex; align-items:flex-start; gap:16rpx; color:#64748B; font-size:24rpx; line-height:1.7; }
 .policy-check { width:32rpx; height:32rpx; flex:0 0 32rpx; margin-top:4rpx; border:2rpx solid #94A3B8; border-radius:8rpx; color:#FFFFFF; display:flex; align-items:center; justify-content:center; }
 .policy-check-active { background:#1350BE; border-color:#1350BE; }
 .policy-copy { flex:1; }
 .policy-link { color:#1350BE; }
-.field-card { background:#F8FBFF; border-radius: 22rpx; padding: 22rpx; border:2rpx solid #E8F0FF; }
-.field-card .input { display:block; width:100%; min-width:0; height: 84rpx; line-height: 84rpx; padding: 0; background: transparent; border:none; font-size: 26rpx; white-space: nowrap; overflow: visible; text-overflow: clip; }

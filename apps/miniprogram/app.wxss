@@ -1,23 +1,38 @@
 page {
-  background: #F6F8FC;
-  color: #1F2937;
+  background:
+    radial-gradient(circle at 50% 4%, rgba(207, 226, 255, 0.64), rgba(247, 249, 253, 0) 34%),
+    linear-gradient(180deg, #F6F9FE 0%, #FFFFFF 100%);
+  color: #172033;
   font-size: 28rpx;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
 }
 
 view, text, button, navigator, input, textarea, image {
   box-sizing: border-box;
 }
 
+view, text, button, navigator {
+  overflow-wrap: break-word;
+}
+
 .container {
-  padding: 28rpx 24rpx 40rpx;
+  padding: 28rpx 28rpx 48rpx;
 }
 
 .card {
-  background: linear-gradient(180deg, #FFFFFF 0%, #FCFDFF 100%);
-  border-radius: 28rpx;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.86), rgba(242, 247, 255, 0.68));
+  border-radius: 32rpx;
   padding: 28rpx;
-  box-shadow: 0 10rpx 30rpx rgba(79, 131, 241, 0.08);
-  border: 2rpx solid rgba(226, 235, 255, 0.9);
+  box-shadow: 0 16rpx 42rpx rgba(49, 76, 125, 0.08);
+  border: 2rpx solid rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(28rpx) saturate(175%);
+  -webkit-backdrop-filter: blur(28rpx) saturate(175%);
+}
+
+.liquid-icon {
+  display: block;
+  flex: none;
+  object-fit: contain;
 }
 
 .page-head {
@@ -26,8 +41,8 @@ view, text, button, navigator, input, textarea, image {
 
 .page-title {
   font-size: 42rpx;
-  font-weight: 800;
-  color: #1F2A44;
+  font-weight: 700;
+  color: #172033;
 }
 
 .page-desc {
@@ -38,8 +53,8 @@ view, text, button, navigator, input, textarea, image {
 }
 
 .section-title {
-  font-size: 38rpx;
-  font-weight: 700;
+  font-size: 34rpx;
+  font-weight: 600;
   margin-bottom: 20rpx;
   color: #1F2937;
 }
@@ -50,25 +65,34 @@ view, text, button, navigator, input, textarea, image {
 }
 
 .primary-btn {
-  background: linear-gradient(135deg, #4F83F1, #6AA8FF);
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #5B8EFF 0%, #2F69EC 100%);
   color: #FFFFFF;
-  border-radius: 999rpx;
-  font-size: 28rpx;
-  font-weight: 700;
-  border: none;
-  min-height: 88rpx;
+  border-radius: 28rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  border: 2rpx solid rgba(255, 255, 255, 0.42);
+  min-height: 96rpx;
   display:flex;
   align-items:center;
   justify-content:center;
+  box-shadow: inset 0 2rpx 2rpx rgba(255, 255, 255, 0.5), 0 14rpx 30rpx rgba(45, 104, 236, 0.24);
+}
+
+.primary-btn::after,
+.secondary-btn::after,
+.outline-btn::after {
+  border: none;
 }
 
 .secondary-btn {
-  background: #EEF4FF;
-  color: #4F83F1;
-  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.68);
+  color: #2F69EC;
+  border-radius: 28rpx;
   font-size: 26rpx;
-  font-weight: 700;
-  border: none;
+  font-weight: 600;
+  border: 2rpx solid rgba(197, 214, 248, 0.72);
   min-height: 84rpx;
   display:flex;
   align-items:center;
@@ -76,9 +100,9 @@ view, text, button, navigator, input, textarea, image {
 }
 
 .outline-btn {
-  background: #FFFFFF;
-  color: #4F83F1;
-  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.62);
+  color: #2F69EC;
+  border-radius: 28rpx;
   font-size: 26rpx;
   font-weight: 700;
   border: 2rpx solid #CFE0FF;
@@ -100,8 +124,8 @@ view, text, button, navigator, input, textarea, image {
 
 .input {
   width: 100%;
-  background: #F8FBFF;
-  border-radius: 18rpx;
+  background: rgba(255, 255, 255, 0.74);
+  border-radius: 24rpx;
   padding: 24rpx 22rpx;
   font-size: 26rpx;
   color: #1F2937;
@@ -166,3 +190,12 @@ view, text, button, navigator, input, textarea, image {
 .status-pending { color: #9CA3AF; }
 .status-active { color: #4F83F1; }
 .status-done { color: #16A34A; }
+
+.safe-top {
+  padding-top: calc(env(safe-area-inset-top) + 20rpx);
+}
+
+.tab-page {
+  min-height: 100vh;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 184rpx);
+}

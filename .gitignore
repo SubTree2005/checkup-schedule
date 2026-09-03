@@ -18,6 +18,7 @@ simulation/results/
 simulation/output/
 simulation/outputs/
 simulation/artifacts/
+artifacts/
 
 *.dump
 *.sql.gz

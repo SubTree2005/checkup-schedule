@@ -1,0 +1,20 @@
+<view class="ai-settings-page safe-top">
+  <view class="settings-nav"><view class="nav-back" bindtap="goBack">‹</view><view class="nav-title">AI 助手设置</view><view class="nav-space"></view></view>
+
+  <view class="settings-content">
+    <view class="section-label">模型服务</view>
+    <view class="settings-card api-entry" bindtap="openApiSettings" role="button">
+      <view><view class="entry-title">系统默认模型</view><view class="entry-subtitle">DeepSeek V4 Flash · 密钥由服务端保护</view></view>
+      <view class="entry-side"><text>{{apiStatusText}}</text><text class="entry-arrow">›</text></view>
+    </view>
+
+    <view class="section-label history-label">历史会话</view>
+    <view wx:if="{{!hasHistory}}" class="history-empty">暂无历史会话</view>
+    <view wx:for="{{history}}" wx:key="id" class="history-card" data-id="{{item.id}}" bindtap="openHistory" role="button">
+      <view class="history-head"><view class="history-title">{{item.title}}</view><view wx:if="{{item.active}}" class="active-tag">进行中</view></view>
+      <view class="history-preview">{{item.preview}}</view>
+      <view class="history-time">{{item.timeText}}</view>
+    </view>
+  </view>
+</view>
+<ai-agent id="aiAgent" />

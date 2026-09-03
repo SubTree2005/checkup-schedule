@@ -22,3 +22,4 @@
 
   <button class="primary-btn mt-24" bindtap="submitSelection">确认勾选</button>
 </view>
+<ai-agent />

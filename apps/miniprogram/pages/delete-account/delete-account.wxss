@@ -1,0 +1,18 @@
+@import '../../app.wxss';
+
+page { background: linear-gradient(180deg, #F8FAFD 0%, #FFFFFF 100%); }
+.delete-page { min-height: 100vh; }
+.flow-nav { height: 128rpx; padding: 0 28rpx; display: flex; align-items: center; justify-content: space-between; }
+.nav-back { width: 64rpx; height: 64rpx; display: flex; align-items: center; color: #101827; font-size: 58rpx; font-weight: 300; }
+.nav-title { color: #111827; font-size: 31rpx; font-weight: 650; }
+.nav-space { width: 64rpx; }
+.delete-content { padding: 48rpx 28rpx; }
+.warning-title { color: #FF3B30; font-size: 36rpx; font-weight: 700; }
+.warning-copy { margin-top: 18rpx; color: #657287; font-size: 25rpx; line-height: 1.65; }
+.confirm-card { margin-top: 44rpx; padding: 28rpx; background: #FFFFFF; border: 2rpx solid #F0D9DC; border-radius: 28rpx; box-shadow: 0 14rpx 36rpx rgba(74, 58, 66, .07); }
+.field-label { color: #273246; font-size: 25rpx; font-weight: 600; }
+.password-input { width: 100%; height: 90rpx; margin-top: 20rpx; padding: 0 22rpx; color: #37445A; background: #F8FAFC; border: 2rpx solid #E2E8F0; border-radius: 20rpx; font-size: 25rpx; }
+.input-placeholder { color: #A1AABA; }
+.delete-button { width: 100%; height: 92rpx; margin-top: 24rpx; display: flex; align-items: center; justify-content: center; color: #FFFFFF; background: #FF3B30; border: none; border-radius: 22rpx; font-size: 26rpx; font-weight: 650; }
+.delete-button::after { border: none; }
+.delete-button[disabled] { opacity: .56; }

@@ -1,0 +1,26 @@
+<view class="history-page safe-top">
+  <view class="flow-nav">
+    <view class="nav-back" bindtap="goBack" aria-label="返回">‹</view>
+    <view class="nav-title">历史体检</view>
+    <view class="nav-space"></view>
+  </view>
+
+  <scroll-view class="history-scroll" scroll-y="true">
+    <view class="year-group" wx:for="{{groups}}" wx:key="year">
+      <view class="year-title">{{item.year}}</view>
+      <view class="record-card" wx:for="{{item.items}}" wx:for-item="record" wx:key="id" data-id="{{record.id}}" bindtap="goRecordDetail">
+        <image class="hospital-photo" src="{{record.hospitalImage}}" mode="aspectFill"></image>
+        <view class="record-copy">
+          <view class="hospital-name">{{record.hospitalName}}</view>
+          <view class="package-name">{{record.packageName}}</view>
+          <view class="record-date">{{record.dateLabel}}</view>
+        </view>
+        <view class="status-badge status-{{record.statusTone}}">{{record.status}}</view>
+        <view class="record-arrow">›</view>
+      </view>
+    </view>
+
+    <view wx:if="{{!loading && !hasGroups}}" class="history-empty">暂无历史体检</view>
+  </scroll-view>
+</view>
+<ai-agent />

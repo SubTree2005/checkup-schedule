@@ -1,0 +1,24 @@
+@import '../../app.wxss';
+
+page { background: linear-gradient(180deg, #F7FAFF 0%, #FFFFFF 100%); }
+.history-page { min-height: 100vh; }
+.flow-nav { height: 128rpx; padding: 0 28rpx; display: flex; align-items: center; justify-content: space-between; }
+.nav-back { width: 64rpx; height: 64rpx; display: flex; align-items: center; color: #101827; font-size: 58rpx; }
+.nav-title { color: #111827; font-size: 31rpx; font-weight: 650; }
+.nav-space { width: 64rpx; }
+.history-scroll { width: 100%; height: calc(100vh - env(safe-area-inset-top) - 148rpx); padding: 8rpx 28rpx 48rpx; box-sizing: border-box; }
+.year-group + .year-group { margin-top: 32rpx; }
+.year-title { margin: 0 8rpx 16rpx; color: #58657A; font-size: 25rpx; font-weight: 600; }
+.record-card { min-height: 136rpx; padding: 22rpx 22rpx; display: flex; align-items: center; gap: 20rpx; background: rgba(255,255,255,0.94); border: 2rpx solid #E0E7F1; border-radius: 26rpx; box-shadow: 0 14rpx 36rpx rgba(50,75,118,0.06); }
+.record-card + .record-card { margin-top: 16rpx; }
+.hospital-photo { width: 96rpx; height: 76rpx; flex: none; display: block; border-radius: 16rpx; background: #EEF3F8; }
+.record-copy { flex: 1; min-width: 0; }
+.hospital-name { overflow: hidden; color: #172033; font-size: 25rpx; font-weight: 600; line-height: 1.4; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.package-name { margin-top: 7rpx; color: #536178; font-size: 22rpx; }
+.record-date { margin-top: 7rpx; color: #8792A4; font-size: 21rpx; }
+.status-badge { flex: none; padding: 8rpx 12rpx; border-radius: 10rpx; font-size: 20rpx; font-weight: 600; }
+.status-done { color: #23884B; background: #EAF8EF; }
+.status-interrupted { color: #B35C16; background: #FFF2E7; }
+.status-neutral { color: #617087; background: #EFF3F8; }
+.record-arrow { color: #9CA7B7; font-size: 36rpx; }
+.history-empty { padding-top: 260rpx; text-align: center; color: #8A96A9; font-size: 25rpx; }

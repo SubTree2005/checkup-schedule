@@ -4,22 +4,32 @@
     "pages/register/register",
     "pages/index/index",
     "pages/hospital/hospital",
-    "pages/campus/campus",
     "pages/select-mode/select-mode",
+    "pages/appointment-time/appointment-time",
+    "pages/preparation-confirm/preparation-confirm",
+    "pages/preparation-arrangement/preparation-arrangement",
+    "pages/preparation-reminder/preparation-reminder",
     "pages/package/package",
-    "pages/department-projects/department-projects",
     "pages/package-detail/package-detail",
-    "pages/profile/profile",
     "pages/plan/plan",
+    "pages/plan-overview/plan-overview",
+    "pages/plan-complete/plan-complete",
     "pages/navigation/navigation",
     "pages/record/record",
+    "pages/history/history",
     "pages/mine/mine",
     "pages/edit-profile/edit-profile",
     "pages/account-security/account-security",
+    "pages/delete-account/delete-account",
     "pages/legal/legal",
-    "pages/staff/staff",
-    "pages/record-detail/record-detail"
+    "pages/record-detail/record-detail",
+    "pages/exam-detail/exam-detail",
+    "pages/ai-settings/ai-settings",
+    "pages/ai-api-settings/ai-api-settings"
   ],
+  "usingComponents": {
+    "ai-agent": "/components/ai-agent/ai-agent"
+  },
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#ffffff",
@@ -28,6 +38,7 @@
     "backgroundColor": "#F7F9FC"
   },
   "tabBar": {
+    "custom": true,
     "color": "#7B8794",
     "selectedColor": "#1350BE",
     "backgroundColor": "#FFFFFF",
@@ -35,21 +46,15 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "首页",
-        "iconPath": "addpicture/tab-home.png",
-        "selectedIconPath": "addpicture/tab-home-active.png"
+        "text": "首页"
       },
       {
         "pagePath": "pages/record/record",
-        "text": "我的体检",
-        "iconPath": "addpicture/tab-record.png",
-        "selectedIconPath": "addpicture/tab-record-active.png"
+        "text": "体检"
       },
       {
         "pagePath": "pages/mine/mine",
-        "text": "我的",
-        "iconPath": "addpicture/tab-mine.png",
-        "selectedIconPath": "addpicture/tab-mine-active.png"
+        "text": "我的"
       }
     ]
   },

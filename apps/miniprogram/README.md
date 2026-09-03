@@ -42,6 +42,8 @@ const PRODUCTION_CLOUD_CONTAINER = {
 3. 在体验版真机验证注册授权、套餐读取、计划生成、GIS 导航和账号注销；
 4. 为审核人员准备长期有效的普通患者测试账号，不能使用后台演示患者池账号登录患者端。
 
+“准备与提醒”页会先读取 Backend 的微信订阅消息配置。配置完整时，用户点击“确认预约”会调用 `wx.requestSubscribeMessage`；只有微信返回 `accept` 才把模板授权与预约一并提交。模板、AppSecret、OpenID 绑定和定时派发全部在后端处理，客户端不保存密钥。部署项见 [`../../docs/deployment-cloudbase.md`](../../docs/deployment-cloudbase.md)。
+
 患者会话保存在本地并作为 Bearer Token 发送；客户端不直接访问数据库，也不包含 Scheduler 实现。注册时必须同意 `v0.3.1-2026-08-31` 版用户协议和隐私政策，Backend 会记录同意版本；“我的 → 账号与隐私”支持密码确认后注销账号。
 
 GIS 导航直接使用医院工作区中上传的 GeoJSON：同楼层时从 `corridor`/`route` 线计算最短路径，跨楼层时显示目标楼层图和换层提示。路网、科室点与现场不一致时必须先在医院工作区中修正数据。

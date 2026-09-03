@@ -1,17 +1,30 @@
-<view class="container">
-  <view class="card choice-card" bindtap="goPackage">
-    <view class="choice-mark blue-mark"></view>
-    <view class="choice-main">
-      <view class="choice-title">按体检套餐选择</view>
-      <view class="choice-desc">适合快速选择已有套餐内容，系统将继续为你规划最优路线。</view>
-    </view>
+<view class="flow-page safe-top">
+  <view class="flow-nav">
+    <view class="nav-back" bindtap="goBack" aria-label="返回">‹</view>
+    <view class="nav-title">选择体检方式</view>
+    <view class="nav-space"></view>
   </view>
 
-  <view class="card choice-card mt-24" bindtap="goDepartmentProjects">
-    <view class="choice-mark green-mark"></view>
-    <view class="choice-main">
-      <view class="choice-title">按科室选择检查项目</view>
-      <view class="choice-desc">先按科室勾选检查项目，后续将逐步完善定制化组合与规划能力。</view>
+  <view class="flow-content">
+    <view class="page-hint"><view class="hint-dot"></view>请选择一种体检方式</view>
+
+    <view class="mode-card" data-mode="appointment" bindtap="chooseMode">
+      <image class="mode-icon" src="../../addpicture/icons/iconfont/calendar.svg" mode="aspectFit"></image>
+      <view class="mode-copy">
+        <view class="mode-title">预约体检</view>
+        <view class="mode-desc">提前预约日期和时间，按时到院体检</view>
+      </view>
+      <view class="mode-arrow">›</view>
+    </view>
+
+    <view class="mode-card" data-mode="realtime" bindtap="chooseMode">
+      <image class="mode-icon" src="../../addpicture/icons/iconfont/clock.svg" mode="aspectFit"></image>
+      <view class="mode-copy">
+        <view class="mode-title">实时体检</view>
+        <view class="mode-desc">到院后根据现场情况，实时安排体检</view>
+      </view>
+      <view class="mode-arrow">›</view>
     </view>
   </view>
 </view>
+<ai-agent />

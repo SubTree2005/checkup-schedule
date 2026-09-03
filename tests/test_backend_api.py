@@ -1,7 +1,8 @@
 import json
+import os
 import tempfile
 import unittest
-from datetime import datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from unittest.mock import patch
 
@@ -13,12 +14,15 @@ from apps.backend.checkup_backend.main import create_app
 from apps.backend.checkup_backend.models import (
     DemoPatientProfile,
     ExamPlan,
+    HospitalSettings,
     UserConsent,
     UserInfo,
     UserSession,
     UserStatusInfo,
+    WechatReminder,
 )
 from apps.backend.checkup_backend.security import issue_session, session_digest
+from apps.backend.checkup_backend.wechat_reminders import WechatAPIError
 
 
 class BackendAPITest(unittest.TestCase):
@@ -156,6 +160,7 @@ class BackendAPITest(unittest.TestCase):
         expected = {
             "user_info",
             "hospital_info",
+            "hospital_settings",
             "department_info",
             "exam_info",
             "package_info",
@@ -171,8 +176,382 @@ class BackendAPITest(unittest.TestCase):
             "department_resource_calendar",
             "demo_patient_profile",
             "user_consent",
+            "wechat_reminder",
         }
         self.assertTrue(expected.issubset(Base.metadata.tables))
+
+    def test_patient_agent_uses_server_managed_model_configuration(self):
+        unauthenticated = self.client.get("/api/patient/agent/status")
+        self.assertEqual(unauthenticated.status_code, 401)
+
+        with TestClient(self.app) as patient_client:
+            registered = patient_client.post(
+                "/api/patient/auth/register",
+                json={
+                    "phone": "13900000661",
+                    "password": "patient-pass-123",
+                    "name": "AI 助手测试用户",
+                    "privacyConsent": True,
+                    "privacyConsentVersion": "v0.3.1-2026-08-31",
+                },
+            )
+            self.assertEqual(registered.status_code, 201, registered.text)
+
+            with patch.dict(os.environ, {"CHATANYWHERE_API_KEY": ""}, clear=False):
+                status_response = patient_client.get("/api/patient/agent/status")
+                self.assertEqual(status_response.status_code, 200, status_response.text)
+                self.assertFalse(status_response.json()["configured"])
+                missing_config = patient_client.post(
+                    "/api/patient/agent/chat",
+                    json={"messages": [{"role": "user", "content": "空腹检查要注意什么？"}]},
+                )
+                self.assertEqual(missing_config.status_code, 503, missing_config.text)
+
+            environment = {
+                "CHATANYWHERE_API_KEY": "server-only-test-key",
+                "CHATANYWHERE_MODEL": "deepseek-v4-flash",
+            }
+            with patch.dict(os.environ, environment, clear=False), patch(
+                "apps.backend.checkup_backend.agent_api._post_chatanywhere",
+                return_value={"choices": [{"message": {"content": "请按项目要求保持空腹。"}}]},
+            ) as upstream:
+                response = patient_client.post(
+                    "/api/patient/agent/chat",
+                    json={
+                        "messages": [{"role": "user", "content": "空腹检查要注意什么？"}],
+                        "currentPage": "pages/preparation-reminder/preparation-reminder",
+                    },
+                )
+
+            self.assertEqual(response.status_code, 200, response.text)
+            self.assertEqual(response.json(), {"reply": "请按项目要求保持空腹。", "model": "deepseek-v4-flash"})
+            api_url, api_key, request_payload = upstream.call_args.args
+            self.assertEqual(api_url, "https://api.chatanywhere.tech/v1/chat/completions")
+            self.assertEqual(api_key, "server-only-test-key")
+            self.assertEqual(request_payload["messages"][-1], {"role": "user", "content": "空腹检查要注意什么？"})
+            self.assertNotIn("server-only-test-key", response.text)
+
+    def test_patient_catalog_exposes_explicit_bladder_preparation_flag(self):
+        admin = self.register()
+        department = self.create_department("泌尿超声科")
+        exam = self.client.post(
+            "/api/exams",
+            json={
+                "deptID": department["deptID"],
+                "itemName": "泌尿系超声",
+                "duration": 12,
+                "prerequisites": {"bladderRequired": True},
+                "conflicts": [],
+                "priority": 6,
+                "allowedTimeSlots": {"start": "08:00", "end": "11:30"},
+                "isCritical": False,
+                "isActive": True,
+            },
+        )
+        self.assertEqual(exam.status_code, 201, exam.text)
+
+        with TestClient(self.app) as patient_client:
+            registered = patient_client.post(
+                "/api/patient/auth/register",
+                json={
+                    "phone": "13900000889",
+                    "password": "patient-pass-123",
+                    "name": "准备要求患者",
+                    "privacyConsent": True,
+                    "privacyConsentVersion": "v0.3.1-2026-08-31",
+                },
+            )
+            self.assertEqual(registered.status_code, 201, registered.text)
+            catalog = patient_client.get(
+                f"/api/patient/hospitals/{admin['hospital']['hospitalID']}/catalog"
+            )
+            self.assertEqual(catalog.status_code, 200, catalog.text)
+            projects = [
+                project
+                for department_row in catalog.json()["departments"]
+                for project in department_row["projects"]
+            ]
+            row = next(project for project in projects if project["itemID"] == exam.json()["itemID"])
+            self.assertTrue(row["bladderRequired"])
+
+    def test_wechat_reminder_requires_real_subscription_and_dispatches_with_audit_state(self):
+        admin = self.register(hospital="浙江大学校医院（紫金港院区）")
+        hospital_id = admin["hospital"]["hospitalID"]
+        environment = {
+            "WECHAT_APP_ID": "wx-test-app",
+            "WECHAT_APP_SECRET": "test-secret",
+            "WECHAT_REMINDER_TEMPLATE_ID": "template-checkup-reminder",
+            "WECHAT_REMINDER_DATA_TEMPLATE": json.dumps(
+                {
+                    "thing1": {"value": "{hospital}"},
+                    "time2": {"value": "{appointment}"},
+                    "thing3": {"value": "{package}"},
+                },
+                ensure_ascii=False,
+            ),
+            "WECHAT_TRUST_CLOUDBASE_IDENTITY": "true",
+            "REMINDER_DISPATCH_TOKEN": "dispatch-test-token",
+        }
+        with TestClient(self.app) as patient_client, patch.dict(os.environ, environment, clear=False):
+            registered = patient_client.post(
+                "/api/patient/auth/register",
+                json={
+                    "phone": "13900000888",
+                    "password": "patient-pass-123",
+                    "name": "微信提醒患者",
+                    "privacyConsent": True,
+                    "privacyConsentVersion": "v0.3.1-2026-08-31",
+                },
+            )
+            self.assertEqual(registered.status_code, 201, registered.text)
+            config = patient_client.get("/api/patient/reminders/config")
+            self.assertEqual(config.status_code, 200, config.text)
+            self.assertTrue(config.json()["available"])
+            self.assertEqual(config.json()["templateIDs"], ["template-checkup-reminder"])
+
+            package_id = patient_client.get(
+                f"/api/patient/hospitals/{hospital_id}/catalog"
+            ).json()["packages"][0]["packageID"]
+            availability = patient_client.get(
+                f"/api/patient/hospitals/{hospital_id}/appointment-slots"
+            ).json()
+            slot = next(
+                slot
+                for day in availability["dates"]
+                for slot in day["slots"]
+                if slot["available"]
+            )
+            missing_identity = patient_client.post(
+                "/api/patient/plans",
+                json={
+                    "hospitalID": hospital_id,
+                    "packageID": package_id,
+                    "appointmentAt": slot["appointmentAt"],
+                    "reminderSubscription": {
+                        "templateID": "template-checkup-reminder",
+                        "permission": "accept",
+                    },
+                },
+            )
+            self.assertEqual(missing_identity.status_code, 503, missing_identity.text)
+            self.assertIn("云托管", missing_identity.json()["detail"])
+
+            created = patient_client.post(
+                "/api/patient/plans",
+                headers={"X-WX-OPENID": "openid-patient", "X-WX-APPID": "wx-test-app"},
+                json={
+                    "hospitalID": hospital_id,
+                    "packageID": package_id,
+                    "appointmentAt": slot["appointmentAt"],
+                    "profile": {"booked": "yes"},
+                    "reminderSubscription": {
+                        "templateID": "template-checkup-reminder",
+                        "permission": "accept",
+                    },
+                },
+            )
+            self.assertEqual(created.status_code, 201, created.text)
+            plan_id = created.json()["planID"]
+            reminder_rows = patient_client.get("/api/patient/reminders")
+            self.assertEqual(reminder_rows.status_code, 200, reminder_rows.text)
+            self.assertEqual(reminder_rows.json()[0]["planID"], plan_id)
+            self.assertEqual(reminder_rows.json()[0]["status"], "pending")
+
+            with self.app.state.session_factory() as session:
+                reminder = session.scalar(
+                    select(WechatReminder).where(WechatReminder.plan_id == plan_id)
+                )
+                self.assertEqual(reminder.open_id, "openid-patient")
+                self.assertEqual(reminder.message_data["thing3"]["value"], "注册演示套餐")
+                reminder.next_attempt_at = datetime.now(UTC).replace(tzinfo=None) - timedelta(minutes=1)
+                session.commit()
+
+            unauthorized = patient_client.post("/api/internal/reminders/dispatch")
+            self.assertEqual(unauthorized.status_code, 401, unauthorized.text)
+            with patch(
+                "apps.backend.checkup_backend.wechat_reminders.send_subscription_message",
+                side_effect=WechatAPIError("temporary failure"),
+            ):
+                failed = patient_client.post(
+                    "/api/internal/reminders/dispatch",
+                    headers={"X-Reminder-Dispatch-Token": "dispatch-test-token"},
+                )
+            self.assertEqual(failed.status_code, 200, failed.text)
+            self.assertEqual(failed.json()["failed"], 1)
+            self.assertEqual(patient_client.get("/api/patient/reminders").json()[0]["status"], "failed")
+
+            with self.app.state.session_factory() as session:
+                reminder = session.scalar(
+                    select(WechatReminder).where(WechatReminder.plan_id == plan_id)
+                )
+                reminder.status = "pending"
+                reminder.next_attempt_at = datetime.now(UTC).replace(tzinfo=None) - timedelta(minutes=1)
+                session.commit()
+            with patch("apps.backend.checkup_backend.wechat_reminders.send_subscription_message") as sender:
+                dispatched = patient_client.post(
+                    "/api/internal/reminders/dispatch",
+                    headers={"X-Reminder-Dispatch-Token": "dispatch-test-token"},
+                )
+            self.assertEqual(dispatched.status_code, 200, dispatched.text)
+            self.assertEqual(dispatched.json()["sent"], 1)
+            sender.assert_called_once()
+            self.assertEqual(patient_client.get("/api/patient/reminders").json()[0]["status"], "sent")
+
+    def test_hospital_cover_campuses_and_appointment_capacity_share_one_contract(self):
+        first_admin = self.register(hospital="浙江大学校医院（紫金港院区）")
+        hospital_id = first_admin["hospital"]["hospitalID"]
+        invalid_cover = self.client.patch(
+            "/api/hospital",
+            json={"coverImageUrl": "data:text/plain;base64,SGVsbG8="},
+        )
+        self.assertEqual(invalid_cover.status_code, 422, invalid_cover.text)
+
+        cover = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
+        updated = self.client.patch(
+            "/api/hospital",
+            json={
+                "coverImageUrl": cover,
+                "hospitalLevel": "一级甲等",
+                "positioning": "校内医疗服务",
+                "isAvailable": True,
+                "appointmentSlotMinutes": 30,
+                "appointmentSlotCapacity": 1,
+                "appointmentDaysAhead": 3,
+            },
+        )
+        self.assertEqual(updated.status_code, 200, updated.text)
+        self.assertEqual(updated.json()["coverImageUrl"], cover)
+        self.assertEqual(updated.json()["hospitalLevel"], "一级甲等")
+        self.assertEqual(updated.json()["positioning"], "校内医疗服务")
+        self.assertEqual(updated.json()["appointmentPolicy"], {
+            "slotMinutes": 30,
+            "slotCapacity": 1,
+            "daysAhead": 3,
+        })
+        with self.app.state.session_factory() as session:
+            settings = session.get(HospitalSettings, hospital_id)
+            self.assertIsNotNone(settings)
+            self.assertEqual(settings.cover_image_url, cover)
+            self.assertEqual(settings.appointment_slot_capacity, 1)
+
+        with TestClient(self.app) as second_admin_client:
+            second_admin = self.register(
+                second_admin_client,
+                phone="13800000019",
+                hospital="浙江大学校医院（玉泉院区）",
+            )
+
+        with TestClient(self.app) as first_patient_client:
+            registered = first_patient_client.post(
+                "/api/patient/auth/register",
+                json={
+                    "phone": "13900000071",
+                    "password": "patient-pass-123",
+                    "name": "第一位预约患者",
+                    "privacyConsent": True,
+                    "privacyConsentVersion": "v0.3.1-2026-08-31",
+                },
+            )
+            self.assertEqual(registered.status_code, 201, registered.text)
+            hospitals = first_patient_client.get("/api/patient/hospitals")
+            self.assertEqual(hospitals.status_code, 200, hospitals.text)
+            institution = next(row for row in hospitals.json() if row["name"] == "浙江大学校医院")
+            self.assertEqual(institution["coverImageUrl"], cover)
+            self.assertEqual(institution["hospitalLevel"], "一级甲等")
+            self.assertEqual(institution["positioning"], "校内医疗服务")
+            self.assertEqual(
+                {campus["name"] for campus in institution["campuses"]},
+                {"紫金港院区", "玉泉院区"},
+            )
+            self.assertEqual(
+                {campus["hospitalID"] for campus in institution["campuses"]},
+                {hospital_id, second_admin["hospital"]["hospitalID"]},
+            )
+
+            fixed_now = datetime(2026, 8, 31, 0, 0)
+            with patch("apps.backend.checkup_backend.patient_api.utcnow", return_value=fixed_now):
+                availability = first_patient_client.get(
+                    f"/api/patient/hospitals/{hospital_id}/appointment-slots"
+                )
+                self.assertEqual(availability.status_code, 200, availability.text)
+                slot = next(
+                    slot
+                    for day in availability.json()["dates"]
+                    for slot in day["slots"]
+                    if slot["available"]
+                )
+                package_id = first_patient_client.get(
+                    f"/api/patient/hospitals/{hospital_id}/catalog"
+                ).json()["packages"][0]["packageID"]
+                created = first_patient_client.post(
+                    "/api/patient/plans",
+                    json={
+                        "hospitalID": hospital_id,
+                        "packageID": package_id,
+                        "appointmentAt": slot["appointmentAt"],
+                        "profile": {"booked": "yes"},
+                    },
+                )
+                self.assertEqual(created.status_code, 201, created.text)
+
+                with TestClient(self.app) as second_patient_client:
+                    registered_second = second_patient_client.post(
+                        "/api/patient/auth/register",
+                        json={
+                            "phone": "13900000072",
+                            "password": "patient-pass-123",
+                            "name": "第二位预约患者",
+                            "privacyConsent": True,
+                            "privacyConsentVersion": "v0.3.1-2026-08-31",
+                        },
+                    )
+                    self.assertEqual(registered_second.status_code, 201, registered_second.text)
+                    full = second_patient_client.get(
+                        f"/api/patient/hospitals/{hospital_id}/appointment-slots"
+                    )
+                    same_slot = next(
+                        candidate
+                        for day in full.json()["dates"]
+                        for candidate in day["slots"]
+                        if candidate["appointmentAt"] == slot["appointmentAt"]
+                    )
+                    self.assertEqual(same_slot["booked"], 1)
+                    self.assertFalse(same_slot["available"])
+                    rejected = second_patient_client.post(
+                        "/api/patient/plans",
+                        json={
+                            "hospitalID": hospital_id,
+                            "packageID": package_id,
+                            "appointmentAt": slot["appointmentAt"],
+                            "profile": {"booked": "yes"},
+                        },
+                    )
+                    self.assertEqual(rejected.status_code, 409, rejected.text)
+                    self.assertIn("号源已满", rejected.json()["detail"])
+
+                paused = self.client.patch("/api/hospital", json={"isAvailable": False})
+                self.assertEqual(paused.status_code, 200, paused.text)
+                self.assertFalse(paused.json()["isAvailable"])
+                refreshed = first_patient_client.get("/api/patient/hospitals").json()
+                campus = next(
+                    campus
+                    for row in refreshed
+                    if row["name"] == "浙江大学校医院"
+                    for campus in row["campuses"]
+                    if campus["hospitalID"] == hospital_id
+                )
+                self.assertFalse(campus["available"])
+                blocked = first_patient_client.post(
+                    "/api/patient/plans",
+                    json={
+                        "hospitalID": hospital_id,
+                        "packageID": package_id,
+                        "appointmentAt": slot["appointmentAt"],
+                        "profile": {"booked": "yes"},
+                    },
+                )
+                self.assertEqual(blocked.status_code, 409, blocked.text)
+                self.assertIn("暂停开放", blocked.json()["detail"])
 
     def test_patient_registration_records_privacy_consent_and_account_can_be_deleted(self):
         rejected = self.client.post(
@@ -192,17 +571,26 @@ class BackendAPITest(unittest.TestCase):
                     "phone": "13900000091",
                     "password": "patient-pass-123",
                     "name": "隐私测试用户",
+                    "medicalHistory": "高血压史",
+                    "allergens": "青霉素",
                     "privacyConsent": True,
                     "privacyConsentVersion": "v0.3.1-2026-08-31",
                 },
             )
             self.assertEqual(registered.status_code, 201, registered.text)
+            self.assertEqual(registered.json()["user"]["profile"]["medicalHistory"], "高血压史")
+            self.assertEqual(registered.json()["user"]["profile"]["allergens"], "青霉素")
             user_id = registered.json()["user"]["userID"]
             updated = patient_client.patch(
                 "/api/patient/profile",
-                json={"medicalHistory": "测试病史", "allergens": "测试过敏原"},
+                json={
+                    "medicalHistory": "测试病史",
+                    "allergens": "测试过敏原",
+                    "avatarUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+                },
             )
             self.assertEqual(updated.status_code, 200, updated.text)
+            self.assertTrue(updated.json()["avatarUrl"].startswith("data:image/png;base64,"))
             wrong_password = patient_client.request(
                 "DELETE",
                 "/api/patient/account",
@@ -876,6 +1264,7 @@ class BackendAPITest(unittest.TestCase):
                     },
                 )
             self.assertEqual(plan.status_code, 201, plan.text)
+            self.assertIn("hospitalCoverUrl", plan.json())
             first_step, second_step = plan.json()["steps"]
             completed = patient_client.post(
                 f"/api/patient/plans/{plan.json()['planID']}/steps/{first_step['detailID']}/complete"
@@ -1189,6 +1578,107 @@ class BackendAPITest(unittest.TestCase):
             self.assertEqual(stale_create.status_code, 404)
             protected_history = self.client.delete(f"/api/packages/{package_id}")
             self.assertEqual(protected_history.status_code, 409)
+
+    def test_patient_can_create_multiple_scheduled_appointments(self):
+        admin = self.register()
+        department = self.create_department()
+        exam = self.create_exam(department["deptID"], name="预约检查")
+        package = self.client.post(
+            "/api/packages",
+            json={
+                "packageName": "预约套餐",
+                "includedItemIDs": [exam["itemID"]],
+                "isPublished": True,
+            },
+        ).json()
+
+        with TestClient(self.app) as patient_client:
+            registered = patient_client.post(
+                "/api/patient/auth/register",
+                json={
+                    "phone": "13900000081",
+                    "password": "patient-pass-123",
+                    "name": "多预约患者",
+                    "privacyConsent": True,
+                    "privacyConsentVersion": "v0.3.1-2026-08-31",
+                },
+            )
+            self.assertEqual(registered.status_code, 201, registered.text)
+            created_plans = []
+            with patch("apps.backend.checkup_backend.patient_api.utcnow", return_value=datetime(2026, 8, 31, 0, 0)):
+                for appointment_at in ("2026-09-01T00:00:00Z", "2026-09-02T00:00:00Z"):
+                    created = patient_client.post(
+                        "/api/patient/plans",
+                        json={
+                            "hospitalID": admin["hospital"]["hospitalID"],
+                            "packageID": package["packageID"],
+                            "appointmentAt": appointment_at,
+                            "profile": {"booked": "yes"},
+                        },
+                    )
+                    self.assertEqual(created.status_code, 201, created.text)
+                    created_plans.append(created.json())
+
+            self.assertTrue(all(plan["planStatus"] == "待执行" for plan in created_plans))
+            self.assertTrue(all(plan["steps"][0]["status"] == "pending" for plan in created_plans))
+            self.assertEqual(len(patient_client.get("/api/patient/plans").json()), 2)
+
+    def test_patient_can_pause_resume_and_end_active_plan(self):
+        admin = self.register()
+        department = self.create_department()
+        exam = self.create_exam(department["deptID"], name="状态流转检查")
+        package = self.client.post(
+            "/api/packages",
+            json={
+                "packageName": "状态流转套餐",
+                "includedItemIDs": [exam["itemID"]],
+                "isPublished": True,
+            },
+        ).json()
+
+        with TestClient(self.app) as patient_client:
+            registered = patient_client.post(
+                "/api/patient/auth/register",
+                json={
+                    "phone": "13900000082",
+                    "password": "patient-pass-123",
+                    "name": "状态流转患者",
+                    "privacyConsent": True,
+                    "privacyConsentVersion": "v0.3.1-2026-08-31",
+                },
+            )
+            self.assertEqual(registered.status_code, 201, registered.text)
+            with patch("apps.backend.checkup_backend.patient_api.utcnow", return_value=datetime(2026, 8, 31, 0, 0)):
+                created = patient_client.post(
+                    "/api/patient/plans",
+                    json={
+                        "hospitalID": admin["hospital"]["hospitalID"],
+                        "packageID": package["packageID"],
+                        "profile": {},
+                    },
+                )
+            self.assertEqual(created.status_code, 201, created.text)
+            plan_id = created.json()["planID"]
+
+            paused = patient_client.post(f"/api/patient/plans/{plan_id}/pause")
+            self.assertEqual(paused.status_code, 200, paused.text)
+            self.assertEqual(paused.json()["planStatus"], "已中断")
+            self.assertEqual(patient_client.get("/api/patient/plans/current").json()["planID"], plan_id)
+
+            with patch("apps.backend.checkup_backend.patient_api.utcnow", return_value=datetime(2026, 8, 31, 0, 0)):
+                resumed = patient_client.post(f"/api/patient/plans/{plan_id}/resume")
+            self.assertEqual(resumed.status_code, 200, resumed.text)
+            self.assertEqual(resumed.json()["planStatus"], "进行中")
+            self.assertTrue(resumed.json()["replanNotice"])
+
+            ended = patient_client.post(f"/api/patient/plans/{plan_id}/finish")
+            self.assertEqual(ended.status_code, 200, ended.text)
+            self.assertEqual(ended.json()["planStatus"], "已结束")
+            self.assertTrue(ended.json()["completedAt"])
+            self.assertTrue(ended.json()["finished"])
+            self.assertTrue(ended.json()["ended"])
+            self.assertEqual(ended.json()["steps"][0]["status"], "skipped")
+            self.assertIsNone(patient_client.get("/api/patient/plans/current").json())
 
 
 if __name__ == "__main__":

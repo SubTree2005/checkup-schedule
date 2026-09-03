@@ -91,7 +91,7 @@ def create_app(database_url: str | None = None, static_dir: str | Path | None = 
 
     app = FastAPI(
         title="Checkup Schedule API",
-        version="0.4.0",
+        version="0.4.1",
         description="医院体检智能排序系统的多医院 Backend API",
         lifespan=lifespan,
     )

@@ -1,11 +1,14 @@
 const api = require('../../utils/api')
 const { planReportSummary } = require('../../utils/report')
+const { navigationMetrics } = require('../../utils/layout')
 const app = getApp()
+const navigation = navigationMetrics()
 
 function pad(value) { return String(value).padStart(2, '0') }
 
 Page({
   data: {
+    ...navigation,
     currentPlan: null,
     isLoggedIn: false,
     hasHomeContent: false,
@@ -24,7 +27,7 @@ Page({
 
   onShow() {
     const tabBar = typeof this.getTabBar === 'function' ? this.getTabBar() : null
-    if (tabBar) tabBar.setData({ selected: 0 })
+    if (tabBar && typeof tabBar.select === 'function') tabBar.select(0)
     const isLoggedIn = !!wx.getStorageSync('patientToken')
     this.setData({ isLoggedIn })
     if (!isLoggedIn) {

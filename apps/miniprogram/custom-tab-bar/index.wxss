@@ -4,11 +4,12 @@
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 10rpx 24rpx calc(env(safe-area-inset-bottom) + 14rpx);
+  padding: 10rpx 24rpx calc(env(safe-area-inset-bottom) + 34rpx);
   pointer-events: none;
 }
 
 .liquid-tabbar {
+  position: relative;
   height: 86rpx;
   padding: 8rpx;
   display: flex;
@@ -22,7 +23,30 @@
   pointer-events: auto;
 }
 
+.tab-indicator {
+  position: absolute;
+  z-index: 0;
+  top: 8rpx;
+  bottom: 8rpx;
+  left: 8rpx;
+  width: calc((100% - 16rpx) / 3);
+  opacity: 0;
+  background: rgba(255, 255, 255, 0.82);
+  border: 2rpx solid rgba(255, 255, 255, 0.96);
+  border-radius: 30rpx;
+  box-shadow: inset 0 2rpx 2rpx rgba(255, 255, 255, 0.96), 0 8rpx 22rpx rgba(46, 94, 190, 0.14);
+  transform: translate3d(0, 0, 0);
+  transition: transform 220ms cubic-bezier(.22, .75, .25, 1), opacity 120ms ease;
+  pointer-events: none;
+}
+
+.liquid-tabbar.is-ready .tab-indicator { opacity: 1; }
+.tab-indicator-1 { transform: translate3d(100%, 0, 0); }
+.tab-indicator-2 { transform: translate3d(200%, 0, 0); }
+
 .tab-item {
+  position: relative;
+  z-index: 1;
   flex: 1;
   min-width: 0;
   display: flex;
@@ -30,13 +54,11 @@
   justify-content: center;
   color: #8490A3;
   border-radius: 30rpx;
+  transition: color 180ms ease;
 }
 
 .tab-active {
   color: #245FDE;
-  background: rgba(255, 255, 255, 0.8);
-  border: 2rpx solid rgba(255, 255, 255, 0.96);
-  box-shadow: inset 0 2rpx 2rpx rgba(255, 255, 255, 0.96), 0 8rpx 22rpx rgba(46, 94, 190, 0.14);
 }
 
 .tab-text {

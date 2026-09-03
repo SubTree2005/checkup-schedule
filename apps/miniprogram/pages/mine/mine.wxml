@@ -1,5 +1,5 @@
-<view class="mine-page tab-page safe-top">
-  <view class="mine-nav">我的</view>
+<view class="mine-page tab-page safe-top" style="padding-top: {{statusBarHeight}}px;">
+  <view class="mine-nav" style="height: {{navigationBarHeight}}px;">我的</view>
 
   <view class="user-head">
     <image class="avatar-orb" src="{{avatarUrl}}" mode="aspectFill"></image>
@@ -14,7 +14,7 @@
     <view class="menu-row" bindtap="openAccount"><view class="menu-title">账号与隐私</view><view class="menu-arrow">›</view></view>
   </view>
   <view class="menu-card settings-card ai-settings-card">
-    <view class="menu-row" bindtap="openAiSettings"><view><view class="menu-title">AI 助手设置</view><view class="menu-subtitle">模型服务与历史会话</view></view><view class="menu-arrow">›</view></view>
+    <view class="menu-row" bindtap="openAiSettings"><view class="menu-title">AI 助手设置</view><view class="menu-arrow">›</view></view>
   </view>
 </view>
 <ai-agent with-tab-bar />

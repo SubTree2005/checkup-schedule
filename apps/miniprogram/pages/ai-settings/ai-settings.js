@@ -10,7 +10,7 @@ function timeText(value) {
 
 Page({
   data: {
-    apiStatusText: '已接入',
+    modelName: agent.DEFAULT_MODEL_LABEL,
     history: [],
     hasHistory: false
   },
@@ -35,8 +35,12 @@ Page({
       hasHistory: sessions.length > 0
     })
     api.agent.status().then(status => {
-      this.setData({ apiStatusText: status.configured ? '已接入' : '待配置' })
-    }).catch(() => this.setData({ apiStatusText: '不可用' }))
+      const preference = agent.getModelConfig()
+      this.setData({ modelName: preference.mode === 'custom' ? preference.model : (status.model || agent.DEFAULT_MODEL_LABEL) })
+    }).catch(() => {
+      const preference = agent.getModelConfig()
+      this.setData({ modelName: preference.mode === 'custom' ? preference.model : agent.DEFAULT_MODEL_LABEL })
+    })
   },
 
   openApiSettings() { wx.navigateTo({ url: '/pages/ai-api-settings/ai-api-settings' }) },

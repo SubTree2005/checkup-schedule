@@ -231,6 +231,26 @@ class BackendAPITest(unittest.TestCase):
             self.assertEqual(request_payload["messages"][-1], {"role": "user", "content": "空腹检查要注意什么？"})
             self.assertNotIn("server-only-test-key", response.text)
 
+            with patch.dict(os.environ, environment, clear=False), patch(
+                "apps.backend.checkup_backend.agent_api._post_chatanywhere",
+                return_value={"choices": [{"message": {"content": "自定义模型回复。"}}]},
+            ) as custom_upstream:
+                custom_response = patient_client.post(
+                    "/api/patient/agent/chat",
+                    json={
+                        "messages": [{"role": "user", "content": "请解释体检报告。"}],
+                        "model": "deepseek-v4-flash-preview",
+                        "apiKey": "patient-custom-test-key",
+                    },
+                )
+
+            self.assertEqual(custom_response.status_code, 200, custom_response.text)
+            self.assertEqual(custom_response.json()["model"], "deepseek-v4-flash-preview")
+            _, custom_key, custom_payload = custom_upstream.call_args.args
+            self.assertEqual(custom_key, "patient-custom-test-key")
+            self.assertEqual(custom_payload["model"], "deepseek-v4-flash-preview")
+            self.assertNotIn("patient-custom-test-key", custom_response.text)
+
     def test_patient_catalog_exposes_explicit_bladder_preparation_flag(self):
         admin = self.register()
         department = self.create_department("泌尿超声科")

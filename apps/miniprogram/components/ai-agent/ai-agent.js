@@ -1,5 +1,7 @@
 const agent = require('../../utils/ai-agent')
 
+const ORB_ANIMATION_DURATION = 5600
+
 Component({
   properties: {
     withTabBar: { type: Boolean, value: false },
@@ -15,13 +17,20 @@ Component({
     keyboardHeight: 0,
     thinking: false,
     scrollIntoView: '',
-    statusBarHeight: 44
+    statusBarHeight: 44,
+    orbAnimationDelay: 0
   },
 
   lifetimes: {
     attached() {
       const info = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync()
-      this.setData({ statusBarHeight: Number(info.statusBarHeight || 44) })
+      const app = getApp()
+      if (!Number(app.globalData.aiOrbEpoch)) app.globalData.aiOrbEpoch = Date.now()
+      const elapsed = Math.max(0, Date.now() - Number(app.globalData.aiOrbEpoch))
+      this.setData({
+        statusBarHeight: Number(info.statusBarHeight || 44),
+        orbAnimationDelay: -(elapsed % ORB_ANIMATION_DURATION)
+      })
     },
     detached() {
       if (this._request) this._request.abort()

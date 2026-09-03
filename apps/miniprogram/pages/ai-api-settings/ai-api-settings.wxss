@@ -7,6 +7,11 @@ page { background: linear-gradient(180deg, #F4F8FF 0%, #FFFFFF 72%); }
 .nav-title { color: #111827; font-size: 31rpx; font-weight: 650; }
 .nav-space { width: 70rpx; }
 .settings-content { padding: 14rpx 28rpx calc(env(safe-area-inset-bottom) + 150rpx); }
+.model-tabs { position: relative; margin-bottom: 34rpx; padding: 6rpx; display: flex; background: #EAF0F8; border-radius: 22rpx; }
+.model-tab-indicator { position: absolute; z-index: 0; top: 6rpx; bottom: 6rpx; left: 6rpx; width: calc((100% - 12rpx) / 2); background: #FFFFFF; border-radius: 17rpx; box-shadow: 0 5rpx 16rpx rgba(55,89,145,0.12); transition: transform 220ms cubic-bezier(.22,.75,.25,1); }
+.model-tab-indicator.is-custom { transform: translate3d(100%, 0, 0); }
+.model-tab { position: relative; z-index: 1; flex: 1; padding: 17rpx 12rpx; color: #68758B; font-size: 25rpx; font-weight: 600; text-align: center; transition: color 180ms ease; }
+.model-tab.is-active { color: #1358C8; }
 .section-label { margin: 0 6rpx 16rpx; color: #4F5E74; font-size: 24rpx; font-weight: 600; }
 .settings-card { padding: 0 26rpx; background: rgba(255,255,255,0.94); border: 2rpx solid #DFE7F2; border-radius: 28rpx; box-shadow: 0 14rpx 38rpx rgba(47,75,124,0.07); }
 .info-row { min-height: 104rpx; display: flex; align-items: center; justify-content: space-between; gap: 28rpx; border-bottom: 2rpx solid #EDF1F6; }
@@ -18,3 +23,12 @@ page { background: linear-gradient(180deg, #F4F8FF 0%, #FFFFFF 72%); }
 .status-value.is-offline { color: #8A6670; }
 .status-value.is-offline .status-dot { background: #B9A4AA; }
 .security-note { margin: 22rpx 8rpx 0; color: #7B879A; font-size: 21rpx; line-height: 1.6; }
+.field-row { padding: 23rpx 0; border-bottom: 2rpx solid #EDF1F6; }
+.field-row:last-child { border-bottom: none; }
+.field-label { margin-bottom: 14rpx; color: #263248; font-size: 24rpx; font-weight: 600; }
+.field-input { min-width: 0; height: 66rpx; color: #172033; font-size: 24rpx; line-height: 66rpx; }
+.password-field { display: flex; align-items: center; gap: 18rpx; }
+.password-field .field-input { flex: 1; }
+.password-toggle { flex: none; color: #2F69EC; font-size: 22rpx; }
+.save-button { height: 88rpx; margin-top: 38rpx; display: flex; align-items: center; justify-content: center; color: #FFFFFF; background: linear-gradient(145deg, #6293F8, #2865E7); border: none; border-radius: 44rpx; font-size: 27rpx; font-weight: 650; box-shadow: 0 14rpx 30rpx rgba(42,98,224,0.22); }
+.save-button::after { border: none; }

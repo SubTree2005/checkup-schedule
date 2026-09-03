@@ -1,12 +1,15 @@
 const api = require('../../utils/api')
 const { ICONS } = require('../../utils/icon-map')
 const { planReportSummary } = require('../../utils/report')
+const { navigationMetrics } = require('../../utils/layout')
 const app = getApp()
+const navigation = navigationMetrics()
 
 function pad(value) { return String(value).padStart(2, '0') }
 
 Page({
   data: {
+    ...navigation,
     loading: true,
     activeTab: 'appointments',
     hasPlans: false,
@@ -20,7 +23,7 @@ Page({
 
   onShow() {
     const tabBar = typeof this.getTabBar === 'function' ? this.getTabBar() : null
-    if (tabBar) tabBar.setData({ selected: 1 })
+    if (tabBar && typeof tabBar.select === 'function') tabBar.select(1)
     const requestedTab = wx.getStorageSync('recordInitialTab')
     if (requestedTab === 'appointments' || requestedTab === 'history') {
       wx.removeStorageSync('recordInitialTab')
@@ -30,12 +33,15 @@ Page({
       this.setData({ loading: false, hasPlans: false, hasHistory: false, contentEmpty: true, highlightPlan: null, otherPlans: [], historyGroups: [] })
       return
     }
-    this.loadPlans()
+    this.loadPlans({ silent: !!this._loaded })
   },
 
-  async loadPlans() {
-    this.setData({ loading: true })
-    try { this.applyPlans(await api.plans.list()) }
+  async loadPlans({ silent = false } = {}) {
+    if (!silent) this.setData({ loading: true })
+    try {
+      this.applyPlans(await api.plans.list())
+      this._loaded = true
+    }
     catch (error) { this.setData({ loading: false }); api.showError(error) }
   },
 

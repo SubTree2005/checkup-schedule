@@ -83,6 +83,16 @@ class PatientAgentMessage(BaseModel):
 class PatientAgentChatRequest(BaseModel):
     messages: list[PatientAgentMessage] = Field(min_length=1, max_length=20)
     currentPage: str = Field(default="", max_length=200)
+    model: str | None = Field(default=None, min_length=1, max_length=128, pattern=r"^[A-Za-z0-9._:/-]+$")
+    apiKey: str | None = Field(default=None, max_length=512)
+
+    @field_validator("model", "apiKey")
+    @classmethod
+    def normalize_optional_agent_value(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        normalized = value.strip()
+        return normalized or None
 
 
 class PatientRegister(BaseModel):

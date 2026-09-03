@@ -1,5 +1,7 @@
 const api = require('../../utils/api')
+const { navigationMetrics } = require('../../utils/layout')
 const app = getApp()
+const navigation = navigationMetrics()
 
 function maskPhone(value) {
   const phone = String(value || '')
@@ -7,11 +9,11 @@ function maskPhone(value) {
 }
 
 Page({
-  data: { hasUserInfo: false, displayName: '未登录用户', avatarUrl: '../../addpicture/icons/icon-user.png', maskedPhone: '' },
+  data: { ...navigation, hasUserInfo: false, displayName: '未登录用户', avatarUrl: '../../addpicture/icons/icon-user.png', maskedPhone: '' },
 
   onShow() {
     const tabBar = typeof this.getTabBar === 'function' ? this.getTabBar() : null
-    if (tabBar) tabBar.setData({ selected: 2 })
+    if (tabBar && typeof tabBar.select === 'function') tabBar.select(2)
     if (!wx.getStorageSync('patientToken')) return this.renderUser(null)
     api.auth.me().then(payload => {
       app.applyUser(payload)

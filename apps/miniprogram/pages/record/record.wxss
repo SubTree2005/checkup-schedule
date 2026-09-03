@@ -7,11 +7,13 @@ page {
 }
 
 .record-page { width: 100%; overflow-x: hidden; }
-.record-nav { height: 104rpx; padding-top: 36rpx; box-sizing: border-box; display: flex; align-items: center; justify-content: center; }
+.record-nav { height: 104rpx; box-sizing: border-box; display: flex; align-items: center; justify-content: center; }
 .record-title { color: #111827; font-size: 40rpx; font-weight: 700; }
-.record-tabs { width: calc(100% - 56rpx); margin: 10rpx 28rpx 4rpx; padding: 6rpx; box-sizing: border-box; display: flex; background: #EAF0F8; border-radius: 22rpx; }
-.record-tab { flex: 1; padding: 17rpx 12rpx; color: #68758B; font-size: 25rpx; font-weight: 600; text-align: center; border-radius: 17rpx; }
-.record-tab-active { color: #1358C8; background: #FFFFFF; box-shadow: 0 5rpx 16rpx rgba(55,89,145,0.12); }
+.record-tabs { position: relative; width: calc(100% - 56rpx); margin: 10rpx 28rpx 4rpx; padding: 6rpx; box-sizing: border-box; display: flex; background: #EAF0F8; border-radius: 22rpx; }
+.record-tab-indicator { position: absolute; z-index: 0; top: 6rpx; bottom: 6rpx; left: 6rpx; width: calc((100% - 12rpx) / 2); background: #FFFFFF; border-radius: 17rpx; box-shadow: 0 5rpx 16rpx rgba(55,89,145,0.12); transition: transform 220ms cubic-bezier(.22,.75,.25,1); }
+.record-tab-indicator.is-history { transform: translate3d(100%, 0, 0); }
+.record-tab { position: relative; z-index: 1; flex: 1; padding: 17rpx 12rpx; color: #68758B; font-size: 25rpx; font-weight: 600; text-align: center; border-radius: 17rpx; transition: color 180ms ease; }
+.record-tab-active { color: #1358C8; }
 .record-content { padding: 22rpx 28rpx 230rpx; }
 .record-content-empty { min-height: calc(100vh - env(safe-area-inset-top) - 330rpx); display: flex; align-items: center; justify-content: center; }
 .record-note { padding: 16rpx 6rpx; color: #7A879B; font-size: 25rpx; text-align: center; }

@@ -66,14 +66,14 @@ def chat_with_patient_agent(
     payload: PatientAgentChatRequest,
     _patient: PatientContext = Depends(get_current_patient),
 ) -> dict:
-    api_key = os.getenv("CHATANYWHERE_API_KEY", "").strip()
+    api_key = payload.apiKey or os.getenv("CHATANYWHERE_API_KEY", "").strip()
     if not api_key:
         raise HTTPException(status_code=503, detail="AI 服务尚未配置，请联系管理员")
 
     api_url = os.getenv("CHATANYWHERE_API_URL", DEFAULT_API_URL).strip()
     if not api_url.startswith("https://"):
         raise HTTPException(status_code=503, detail="AI 服务地址配置无效")
-    model = os.getenv("CHATANYWHERE_MODEL", DEFAULT_MODEL).strip() or DEFAULT_MODEL
+    model = payload.model or os.getenv("CHATANYWHERE_MODEL", DEFAULT_MODEL).strip() or DEFAULT_MODEL
     page_context = payload.currentPage.strip() or "未知页面"
     messages = [
         {"role": "system", "content": f"{SYSTEM_PROMPT}\n用户当前所在页面：{page_context}。"},

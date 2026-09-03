@@ -1,5 +1,5 @@
-<view class="home-page tab-page safe-top">
-  <view class="home-topbar"><image class="home-logo" src="../../addpicture/logo.png" mode="widthFix"></image></view>
+<view class="home-page tab-page safe-top" style="padding-top: {{statusBarHeight}}px;">
+  <view class="home-topbar" style="height: {{navigationBarHeight}}px;"><image class="home-logo" src="../../addpicture/logo.png" mode="widthFix"></image></view>
 
   <view wx:if="{{!hasHomeContent}}" class="empty-home">
     <view class="plan-orb-wrap"><view class="plan-orb-halo"></view><view class="plan-orb" bindtap="goStart" role="button" aria-label="开始体检"><view class="plan-orb-label">开始体检</view></view></view>

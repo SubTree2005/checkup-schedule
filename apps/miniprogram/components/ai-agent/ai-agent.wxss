@@ -11,7 +11,7 @@
   gap: 18rpx;
 }
 
-.ai-float-stack.with-tabbar { bottom: calc(env(safe-area-inset-bottom) + 132rpx); }
+.ai-float-stack.with-tabbar { bottom: calc(env(safe-area-inset-bottom) + 156rpx); }
 
 .ai-orb,
 .add-orb {
@@ -40,6 +40,7 @@
   inset: -25%;
   background: conic-gradient(from 30deg, #65C9FF, #4D6FFF, #2356D6, #33B8EE, #65C9FF);
   animation: ai-orb-spin 5.6s linear infinite;
+  will-change: transform;
 }
 
 .ai-orb::after {

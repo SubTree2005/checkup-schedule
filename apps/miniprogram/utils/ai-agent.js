@@ -3,7 +3,9 @@ const api = require('./api')
 const SESSION_KEY = 'aiAgentSession'
 const HISTORY_KEY = 'aiAgentHistory'
 const LEGACY_CONFIG_KEY = 'aiAgentConfig'
+const MODEL_CONFIG_KEY = 'aiAgentModelConfig'
 const SESSION_TTL = 30 * 60 * 1000
+const DEFAULT_MODEL_LABEL = 'DeepSeek V4 Flash'
 
 const INTRO = '你好，我是检畅 AI 助手。我可以帮你查找功能、打开体检页面、说明检查准备事项，也能解释体检报告中常见指标的一般含义。涉及诊断和治疗时，请以医生意见为准。'
 
@@ -210,13 +212,44 @@ function runAction(actionID) {
   return true
 }
 
+function getModelConfig() {
+  const stored = wx.getStorageSync(MODEL_CONFIG_KEY)
+  if (!stored || stored.mode !== 'custom') {
+    return { mode: 'default', model: '', apiKey: '' }
+  }
+  return {
+    mode: 'custom',
+    model: String(stored.model || '').trim(),
+    apiKey: String(stored.apiKey || '').trim()
+  }
+}
+
+function saveModelConfig(config = {}) {
+  const model = String(config.model || '').trim()
+  if (!model) throw new Error('请输入模型名称')
+  const next = { mode: 'custom', model, apiKey: String(config.apiKey || '').trim() }
+  wx.setStorageSync(MODEL_CONFIG_KEY, next)
+  return next
+}
+
+function restoreDefaultModel() {
+  wx.removeStorageSync(MODEL_CONFIG_KEY)
+  return { mode: 'default', model: '', apiKey: '' }
+}
+
 function startRequest(session, pageRoute) {
   let stopped = false
   const messages = (session.messages || [])
     .filter(item => (item.role === 'user' || item.role === 'assistant') && item.content)
     .slice(-20)
     .map(item => ({ role: item.role, content: item.content }))
-  const promise = api.agent.chat({ messages, currentPage: pageRoute || '' }).then(payload => {
+  const modelConfig = getModelConfig()
+  const requestData = { messages, currentPage: pageRoute || '' }
+  if (modelConfig.mode === 'custom') {
+    requestData.model = modelConfig.model
+    if (modelConfig.apiKey) requestData.apiKey = modelConfig.apiKey
+  }
+  const promise = api.agent.chat(requestData).then(payload => {
     if (stopped) throw new Error('已停止生成')
     const reply = payload && payload.reply
     if (!reply) throw new Error('AI 服务未返回可显示的内容')
@@ -235,10 +268,14 @@ module.exports = {
   completeRound,
   ensureSession,
   getHistory: history,
+  getModelConfig,
+  DEFAULT_MODEL_LABEL,
   localAction,
   makeMessage: message,
   resumeSession,
+  restoreDefaultModel,
   runAction,
+  saveModelConfig,
   saveSession,
   startRequest
 }

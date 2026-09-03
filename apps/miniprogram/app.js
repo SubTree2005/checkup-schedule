@@ -17,6 +17,8 @@ App({
     splitPlanDraft: null,
     catalog: null,
     viewingPlanRecord: null,
+    activeTabIndex: 0,
+    aiOrbEpoch: Date.now(),
     userInfo: null,
     userRole: 'user',
     isLoggedIn: false

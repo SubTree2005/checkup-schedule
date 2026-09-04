@@ -85,7 +85,7 @@ Page({
         title: this.data.wechatPush && !reminderSubscription ? '预约成功，未开启微信提醒' : '预约已创建',
         icon: reminderSubscription ? 'success' : 'none'
       })
-      setTimeout(() => wx.switchTab({ url: '/pages/record/record' }), 350)
+      wx.switchTab({ url: '/pages/record/record' })
     } catch (error) {
       api.showError(error)
     } finally {

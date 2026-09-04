@@ -51,6 +51,7 @@
         <div class="sidebar-brand"><span class="brand-mark small">智</span><span><b>智检云</b><small>医院管理端</small></span></div>
         <nav aria-label="主导航">
           <button class="nav-item active" data-page="dashboard"><span>⌂</span>运行总览</button>
+          <button class="nav-item" data-page="plans"><span>◎</span>体检计划</button>
           <button class="nav-item" data-page="hospital"><span>⚙</span>医院设置</button>
           <button class="nav-item" data-page="import"><span>⇧</span>一键导入</button>
           <button class="nav-item" data-page="gis"><span>⌖</span>院内 GIS</button>
@@ -91,6 +92,19 @@
                 <div id="flowList" class="flow-list"></div>
               </article>
             </div>
+          </section>
+
+          <section class="page" id="page-plans">
+            <div class="page-heading"><div><h1>体检计划</h1><p>查看系统内患者的预约、执行进度与当前检查环节</p></div><span id="planSummary" class="page-summary"></span></div>
+            <article class="panel table-panel">
+              <form id="planFilterForm" class="table-filters">
+                <label>日期范围<select name="date" id="planDate"><option value="today">今日体检</option><option value="all">全部记录</option></select></label>
+                <label>计划状态<select name="status" id="planStatus"><option value="all">全部状态</option><option>待执行</option><option>进行中</option><option>已中断</option><option>已完成</option><option>已结束</option></select></label>
+                <label>患者或计划<input name="query" id="planQuery" maxlength="100" placeholder="姓名、手机号或计划 ID" /></label>
+                <button class="secondary-button" type="submit">查询</button>
+              </form>
+              <div id="planTable"></div>
+            </article>
           </section>
 
           <section class="page" id="page-hospital">
@@ -183,7 +197,7 @@
           </section>
 
           <section class="page" id="page-adjustments">
-            <div class="page-heading"><div><h1>临时调整</h1><p>快速上报停诊、设备故障、拥挤与排队变化</p></div></div>
+            <div class="page-heading"><div><h1>临时调整</h1><p>快速上报停诊、设备故障与突发拥挤</p></div></div>
             <div class="split-grid adjustments-grid">
               <article class="panel form-panel">
                 <h3>上报现场异常</h3>
@@ -193,13 +207,7 @@
                   <label>情况说明<textarea name="description" rows="3" placeholder="说明预计恢复时间或现场情况"></textarea></label>
                   <button class="danger-button" type="submit">立即上报</button>
                 </form>
-                <hr />
-                <h3>更新排队快照</h3>
-                <form id="queueForm" class="stack-form compact">
-                  <label>检查项目<select name="itemID" id="queueExam" required></select></label>
-                  <div class="form-row"><label>排队人数<input name="queueCount" type="number" min="0" value="0" required /></label><label>预计等待（分钟）<input name="waitMinutes" type="number" min="0" value="0" required /></label></div>
-                  <button class="secondary-button" type="submit">更新排队信息</button>
-                </form>
+                <div class="hint-card"><b>排队数据自动计算</b><p>当前假设全部患者使用本系统，人数与等待时间由进行中的体检计划自动推导，无需人工重复录入。</p></div>
               </article>
               <article class="panel"><div class="panel-heading"><div><h3>异常记录</h3><p>未解决记录将持续显示在首页</p></div></div><div id="anomalyList" class="anomaly-list"></div></article>
             </div>

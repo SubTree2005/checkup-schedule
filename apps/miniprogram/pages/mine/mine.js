@@ -14,11 +14,15 @@ Page({
   onShow() {
     const tabBar = typeof this.getTabBar === 'function' ? this.getTabBar() : null
     if (tabBar && typeof tabBar.select === 'function') tabBar.select(2)
-    if (!wx.getStorageSync('patientToken')) return this.renderUser(null)
+    const token = wx.getStorageSync('patientToken')
+    if (!token) return this.renderUser(null)
+    this.renderUser(app.globalData.userInfo || wx.getStorageSync('userInfo') || null)
     api.auth.me().then(payload => {
+      if (wx.getStorageSync('patientToken') !== token) return
       app.applyUser(payload)
       this.renderUser(payload)
     }).catch(error => {
+      if (wx.getStorageSync('patientToken') !== token) return
       if (error && error.statusCode === 401) {
         app.clearLoginState()
         this.renderUser(null)
@@ -30,12 +34,19 @@ Page({
   },
 
   renderUser(payload) {
-    this.setData({
+    const next = {
       hasUserInfo: !!payload,
       displayName: payload ? payload.name : '未登录用户',
       avatarUrl: payload && payload.avatarUrl ? payload.avatarUrl : '../../addpicture/icons/icon-user.png',
       maskedPhone: payload ? maskPhone(payload.phone) : ''
-    })
+    }
+    if (
+      next.hasUserInfo === this.data.hasUserInfo
+      && next.displayName === this.data.displayName
+      && next.avatarUrl === this.data.avatarUrl
+      && next.maskedPhone === this.data.maskedPhone
+    ) return
+    this.setData(next)
   },
 
   requireLogin() {

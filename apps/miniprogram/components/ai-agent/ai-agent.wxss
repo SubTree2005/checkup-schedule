@@ -39,8 +39,6 @@
   position: absolute;
   inset: -25%;
   background: conic-gradient(from 30deg, #65C9FF, #4D6FFF, #2356D6, #33B8EE, #65C9FF);
-  animation: ai-orb-spin 5.6s linear infinite;
-  will-change: transform;
 }
 
 .ai-orb::after {
@@ -70,9 +68,7 @@
 .ai-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(242, 247, 255, 0.16);
-  backdrop-filter: blur(36rpx) saturate(112%);
-  -webkit-backdrop-filter: blur(36rpx) saturate(112%);
+  background: rgba(242, 247, 255, 0.98);
 }
 
 .ai-chat { position: absolute; inset: 0; }
@@ -134,7 +130,10 @@
   line-height: 46rpx;
 }
 .ai-orb-composer { width: 88rpx; height: 88rpx; flex: none; }
-.ai-orb.is-thinking .ai-orb-color { animation-duration: .8s; }
+.ai-orb.is-thinking .ai-orb-color {
+  animation: ai-orb-spin .8s linear infinite;
+  will-change: transform;
+}
 
 @keyframes ai-orb-spin { to { transform: rotate(360deg); } }
 @keyframes thinking-dot { 0%, 70%, 100% { transform: translateY(0); opacity: .35; } 35% { transform: translateY(-7rpx); opacity: 1; } }

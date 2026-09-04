@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const state = { me: null, departments: [], exams: [], packages: [], gis: [], dashboard: null, anomalies: [], demo: null };
+  const state = { me: null, departments: [], exams: [], packages: [], gis: [], plans: { items: [], total: 0 }, dashboard: null, anomalies: [], demo: null };
   const byId = (id) => document.getElementById(id);
   const authView = byId("authView");
   const appView = byId("appView");
@@ -13,6 +13,11 @@
   let pendingGisUpload = null;
   let hospitalCoverDataUrl = null;
   let hospitalCoverDirty = false;
+  let dashboardMapRequestId = 0;
+  let workspaceRequestId = 0;
+  let planRequestId = 0;
+  let authGeneration = 0;
+  const MAX_MAP_COORDINATES = 100000;
 
   function escapeHtml(value) {
     return String(value == null ? "" : value)
@@ -32,6 +37,7 @@
   }
 
   async function api(path, options) {
+    const requestAuthGeneration = authGeneration;
     const config = Object.assign({ credentials: "same-origin" }, options || {});
     if (config.body && typeof config.body !== "string") {
       config.headers = Object.assign({ "Content-Type": "application/json" }, config.headers || {});
@@ -39,7 +45,7 @@
     }
     const response = await fetch("/api" + path, config);
     if (response.status === 401) {
-      showAuth();
+      if (requestAuthGeneration === authGeneration) showAuth();
       throw new Error("登录已过期，请重新登录");
     }
     if (!response.ok) {
@@ -55,6 +61,10 @@
   }
 
   function showAuth() {
+    authGeneration += 1;
+    workspaceRequestId += 1;
+    dashboardMapRequestId += 1;
+    planRequestId += 1;
     state.me = null;
     authView.classList.remove("hidden");
     appView.classList.add("hidden");
@@ -119,7 +129,10 @@
   byId("loginForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     try {
-      state.me = await api("/auth/login", { method: "POST", body: formObject(event.currentTarget) });
+      const me = await api("/auth/login", { method: "POST", body: formObject(event.currentTarget) });
+      authGeneration += 1;
+      workspaceRequestId += 1;
+      state.me = me;
       showApp();
       await loadWorkspace();
       toast("登录成功");
@@ -170,7 +183,10 @@
     submitButton.disabled = true;
     submitButton.textContent = "正在创建并准备患者池…";
     try {
-      state.me = await api("/auth/register", { method: "POST", body: payload });
+      const me = await api("/auth/register", { method: "POST", body: payload });
+      authGeneration += 1;
+      workspaceRequestId += 1;
+      state.me = me;
       showApp();
       await loadWorkspace();
       registrationWorkspacePayload = null;
@@ -183,8 +199,15 @@
   });
 
   byId("logoutButton").addEventListener("click", async () => {
-    try { await api("/auth/logout", { method: "POST" }); } catch (_) {}
-    showAuth();
+    try {
+      await api("/auth/logout", { method: "POST" });
+      showAuth();
+    } catch (error) {
+      // A 401 already cleared the local view in api(). On transport/server
+      // errors the HttpOnly session cookie may still be valid, so keep the
+      // authenticated view instead of claiming the logout succeeded.
+      if (state.me) toast("退出失败：" + error.message, "error");
+    }
   });
 
   document.querySelectorAll(".nav-item").forEach((button) => {
@@ -202,27 +225,33 @@
   });
 
   async function loadWorkspace() {
-    state.me = await api("/auth/me");
-    byId("hospitalName").textContent = state.me.hospital.hospitalName;
-    byId("adminName").textContent = state.me.user.name;
-    byId("adminPhone").textContent = state.me.user.phone;
-    byId("avatar").textContent = state.me.user.name.slice(0, 1);
+    const requestId = ++workspaceRequestId;
+    const currentPlanRequestId = ++planRequestId;
+    const me = await api("/auth/me");
     const results = await Promise.all([
       api("/departments"),
       api("/exams"),
       api("/packages"),
       api("/gis"),
+      api(planQueryPath()),
       api("/dashboard/summary"),
       api("/anomalies"),
-      state.me.user.isOwner ? api("/demo-patients") : Promise.resolve(null)
+      me.user.isOwner ? api("/demo-patients") : Promise.resolve(null)
     ]);
+    if (requestId !== workspaceRequestId || currentPlanRequestId !== planRequestId) return;
+    state.me = me;
+    byId("hospitalName").textContent = me.hospital.hospitalName;
+    byId("adminName").textContent = me.user.name;
+    byId("adminPhone").textContent = me.user.phone;
+    byId("avatar").textContent = me.user.name.slice(0, 1);
     state.departments = results[0];
     state.exams = results[1];
     state.packages = results[2];
     state.gis = results[3];
-    state.dashboard = results[4];
-    state.anomalies = results[5];
-    state.demo = results[6];
+    state.plans = results[4];
+    state.dashboard = results[5];
+    state.anomalies = results[6];
+    state.demo = results[7];
     byId("demoPatientTrigger").classList.toggle(
       "hidden", !state.me.user.isOwner || !state.demo || state.demo.prepared !== 100
     );
@@ -232,6 +261,7 @@
   function renderEverything() {
     renderHospitalSettings();
     renderDashboard();
+    renderPlans();
     renderDepartments();
     renderExams();
     renderPackages();
@@ -239,6 +269,35 @@
     renderAdjustmentOptions();
     renderAnomalies();
   }
+
+  function planQueryPath() {
+    const date = byId("planDate").value || "today";
+    const status = byId("planStatus").value || "all";
+    const query = byId("planQuery").value.trim();
+    return "/plans?date=" + encodeURIComponent(date) + "&status=" + encodeURIComponent(status) +
+      "&query=" + encodeURIComponent(query) + "&limit=200";
+  }
+
+  async function loadPlans() {
+    const requestId = ++planRequestId;
+    const plans = await api(planQueryPath());
+    if (requestId !== planRequestId) return;
+    state.plans = plans;
+    renderPlans();
+  }
+
+  byId("planFilterForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const button = event.currentTarget.querySelector('[type="submit"]');
+    button.disabled = true;
+    try {
+      await loadPlans();
+    } catch (error) {
+      toast(error.message, "error");
+    } finally {
+      button.disabled = false;
+    }
+  });
 
   function renderHospitalCover(value) {
     const preview = byId("hospitalCoverPreview");
@@ -329,9 +388,8 @@
     const crowdedCount = flow.filter((item) =>
       item.peopleFlow >= 8 || formatMinutesFromSeconds(item.estimatedWaitTime) >= 30
     ).length;
-    const maxWait = flow.length
-      ? Math.max(...flow.map((item) => formatMinutesFromSeconds(item.estimatedWaitTime)))
-      : 0;
+    const maxWait = flow.reduce((current, item) =>
+      Math.max(current, formatMinutesFromSeconds(item.estimatedWaitTime)), 0);
 
     renderPriorityBoard(flow, closedCount, metrics.unresolvedAnomalies);
     byId("metricGrid").innerHTML =
@@ -339,7 +397,7 @@
       metricDetailButton("暂停开放", closedCount, metrics.openDepartments + "/" + metrics.departmentCount + " 科室开放", "closed", closedCount > 0) +
       metricDetailButton("未解决异常", metrics.unresolvedAnomalies, "来自现场异常上报", "anomalies", metrics.unresolvedAnomalies > 0) +
       metricDetailButton("今日体检", metrics.todayPlans, metrics.inProgressPlans + " 人正在体检", "plans") +
-      metricDetailButton("平均等待", formatMinutesFromSeconds(metrics.averageWaitSeconds) + " 分钟", "来自今日科室反馈", "averageWait") +
+      metricDetailButton("平均等待", formatMinutesFromSeconds(metrics.averageWaitSeconds) + " 分钟", "按系统内当前计划估算", "averageWait") +
       metricDetailButton("最长等待", maxWait + " 分钟", "按当前科室队列计算", "maxWait", maxWait >= 30);
     byId("generatedAt").textContent = "更新于 " + formatTime(state.dashboard.generatedAt);
     byId("metricGrid").querySelectorAll("[data-metric-detail]").forEach((button) => {
@@ -353,7 +411,10 @@
       : '<option value="">尚无地图</option>';
     if (state.gis.some((item) => item.floorKey === previous)) floorSelect.value = previous;
     if (floorSelect.value) loadDashboardMap(floorSelect.value);
-    else renderMapEmpty(byId("dashboardMap"), "尚未上传院内 GIS", "前往“院内 GIS”上传 GeoJSON 后，人流会自动显示在地图上。");
+    else {
+      dashboardMapRequestId += 1;
+      renderMapEmpty(byId("dashboardMap"), "尚未上传院内 GIS", "前往“院内 GIS”上传 GeoJSON 后，人流会自动显示在地图上。");
+    }
   }
 
   function renderPriorityBoard(flow, closedCount, unresolvedCount) {
@@ -410,7 +471,7 @@
     byId("dialogTitle").textContent = titleByKey[key] || "指标明细";
     const lines = linesByKey[key] && linesByKey[key].length ? linesByKey[key] : ["暂无关联明细。"];
     dialogBody.innerHTML = '<div class="validation-panel metric-detail-panel">' +
-      validationCard("数据来源", ["运行总览、有效排队快照与异常记录；更新时间 " +
+      validationCard("数据来源", ["运行总览、系统内计划状态与异常记录；更新时间 " +
         formatTime(state.dashboard.generatedAt)], "ok") +
       validationCard("关联明细", lines, key === "closed" || key === "anomalies" ? "warn" : "ok") +
       '</div><div class="dialog-actions"><button type="button" class="primary-button" id="cancelDialog">知道了</button></div>';
@@ -419,14 +480,15 @@
 
   function renderFlowList(flow) {
     const sorted = flow.slice().sort((a, b) => b.peopleFlow - a.peopleFlow);
-    const max = Math.max(1, ...sorted.map((item) => item.peopleFlow));
+    const max = sorted.reduce((current, item) => Math.max(current, Number(item.peopleFlow) || 0), 1);
     byId("flowList").innerHTML = sorted.length ? sorted.map((item) => {
       const wait = Math.round(item.estimatedWaitTime / 60);
+      const progress = Math.max(4, item.peopleFlow / max * 100);
       return '<div class="flow-row"><header><b>' + escapeHtml(item.deptName) + '</b><b>' + item.peopleFlow +
-        ' 人</b></header><div class="progress"><i style="width:' + Math.max(4, item.peopleFlow / max * 100) +
-        '%"></i></div><div class="flow-meta"><span>' + escapeHtml(item.location || "未设置位置") +
+        ' 人</b></header><progress class="progress" value="' + progress + '" max="100" aria-label="' +
+        escapeHtml(item.deptName) + '人流占比"></progress><div class="flow-meta"><span>' + escapeHtml(item.location || "未设置位置") +
         '</span><span>预计等待 ' + wait + ' 分钟</span></div></div>';
-    }).join("") : emptyState("暂无人流数据", "更新排队快照后将在这里显示");
+    }).join("") : emptyState("暂无人流数据", "患者开始体检后将在这里自动显示");
   }
 
   byId("dashboardFloor").addEventListener("change", (event) => {
@@ -434,10 +496,13 @@
   });
 
   async function loadDashboardMap(floor) {
+    const requestId = ++dashboardMapRequestId;
     try {
       const data = await api("/dashboard/map/" + encodeURIComponent(floor));
+      if (requestId !== dashboardMapRequestId || byId("dashboardFloor").value !== floor) return;
       renderMap(byId("dashboardMap"), data.geojson, data.flow);
     } catch (error) {
+      if (requestId !== dashboardMapRequestId || byId("dashboardFloor").value !== floor) return;
       renderMapEmpty(byId("dashboardMap"), "地图载入失败", error.message);
     }
   }
@@ -451,24 +516,40 @@
   }
 
   function allCoordinates(value, result) {
-    if (!Array.isArray(value)) return;
-    if (value.length >= 2 && typeof value[0] === "number" && typeof value[1] === "number") {
-      result.push([value[0], value[1]]);
-    } else {
-      value.forEach((item) => allCoordinates(item, result));
+    const pending = [value];
+    while (pending.length) {
+      const current = pending.pop();
+      if (!Array.isArray(current)) continue;
+      if (current.length >= 2 && Number.isFinite(current[0]) && Number.isFinite(current[1])) {
+        if (result.length >= MAX_MAP_COORDINATES) return false;
+        result.push([current[0], current[1]]);
+        continue;
+      }
+      for (let index = current.length - 1; index >= 0; index -= 1) pending.push(current[index]);
     }
+    return true;
   }
 
   function renderMap(container, geojson, flow) {
     const coordinates = [];
-    (geojson.features || []).forEach((feature) => allCoordinates(feature.geometry && feature.geometry.coordinates, coordinates));
+    const features = Array.isArray(geojson && geojson.features) ? geojson.features : [];
+    for (const feature of features) {
+      if (!allCoordinates(feature && feature.geometry && feature.geometry.coordinates, coordinates)) {
+        renderMapEmpty(container, "地图坐标过多", "单个楼层最多显示 100000 个坐标点。");
+        return;
+      }
+    }
     if (!coordinates.length) {
       renderMapEmpty(container, "地图没有可显示坐标", "请检查 GeoJSON geometry.coordinates。");
       return;
     }
-    const xs = coordinates.map((item) => item[0]);
-    const ys = coordinates.map((item) => item[1]);
-    const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys);
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    coordinates.forEach((point) => {
+      minX = Math.min(minX, point[0]);
+      maxX = Math.max(maxX, point[0]);
+      minY = Math.min(minY, point[1]);
+      maxY = Math.max(maxY, point[1]);
+    });
     const width = 1000, height = 600, pad = 55;
     const sx = (width - pad * 2) / Math.max(1e-6, maxX - minX);
     const sy = (height - pad * 2) / Math.max(1e-6, maxY - minY);
@@ -486,7 +567,7 @@
       }).join(" ") + (close ? " Z" : "");
     }
 
-    (geojson.features || []).forEach((feature) => {
+    features.forEach((feature) => {
       const geometry = feature.geometry || {};
       const props = feature.properties || {};
       if (geometry.type === "Polygon") {
@@ -516,6 +597,59 @@
       }
     });
     container.innerHTML = '<svg viewBox="0 0 1000 600" role="img" aria-label="医院楼层地图"><g>' + shapes + points + '</g></svg>';
+  }
+
+  function renderPlans() {
+    const payload = state.plans || { items: [], total: 0 };
+    const plans = Array.isArray(payload.items) ? payload.items : [];
+    const scopeText = byId("planDate").value === "all" ? "全部记录" : "今日体检";
+    byId("planSummary").textContent = scopeText + " · 共 " + Number(payload.total || 0) + " 人";
+    const target = byId("planTable");
+    if (!plans.length) {
+      target.innerHTML = emptyState("没有符合条件的体检计划", "可切换日期范围或状态后重新查询");
+      return;
+    }
+    target.innerHTML = '<table class="data-table"><thead><tr><th>患者</th><th>服务时间</th><th>套餐</th><th>当前环节</th><th>进度</th><th>状态</th><th>操作</th></tr></thead><tbody>' +
+      plans.map((plan) => {
+        const current = plan.currentStep;
+        const statusClass = plan.status === "已完成" ? "" :
+          (plan.status === "进行中" || plan.status === "待执行" ? " warn" : " off");
+        return '<tr><td><span class="patient-cell"><b>' + escapeHtml(plan.patient.name) + '</b><small>' +
+          escapeHtml(plan.patient.phone) + '</small></span></td><td>' + formatTime(plan.serviceAt) +
+          (plan.appointmentAt ? '<br><small>预约</small>' : '<br><small>现场</small>') + '</td><td>' +
+          escapeHtml(plan.packageName) + '</td><td>' + (current ? '<span class="step-cell"><b>' +
+          escapeHtml(current.itemName) + '</b><small>' + escapeHtml(current.department) + ' · ' +
+          escapeHtml(current.status) + '</small></span>' : '—') + '</td><td>' + Number(plan.completedSteps || 0) +
+          ' / ' + Number(plan.totalSteps || 0) + '（' + Number(plan.progress || 0) + '%）</td><td><span class="status-pill' +
+          statusClass + '">' + escapeHtml(plan.status) + '</span></td><td><div class="table-actions"><button data-plan-detail="' +
+          escapeHtml(plan.planID) + '">查看</button></div></td></tr>';
+      }).join("") + '</tbody></table>';
+    target.querySelectorAll("[data-plan-detail]").forEach((button) => button.addEventListener("click", () => {
+      openPlanDetail(plans.find((plan) => plan.planID === button.dataset.planDetail));
+    }));
+  }
+
+  function openPlanDetail(plan) {
+    if (!plan) return;
+    const current = plan.currentStep;
+    byId("dialogTitle").textContent = "体检计划详情";
+    const planLines = [
+      "计划 ID：" + plan.planID,
+      "套餐：" + plan.packageName,
+      "服务时间：" + formatTime(plan.serviceAt),
+      "状态：" + plan.status,
+      "完成进度：" + plan.completedSteps + " / " + plan.totalSteps
+    ];
+    const currentLines = current ? [
+      current.itemName + " · " + current.department,
+      "环节状态：" + current.status,
+      "预计开始：" + formatTime(current.estimatedStart)
+    ] : ["所有环节均已处理，当前没有待执行项目。"];
+    dialogBody.innerHTML = '<div class="validation-panel metric-detail-panel">' +
+      validationCard("患者", [plan.patient.name + " · " + plan.patient.phone], "ok") +
+      validationCard("计划", planLines, "ok") + validationCard("当前环节", currentLines, current ? "warn" : "ok") +
+      '</div><div class="dialog-actions"><button type="button" class="primary-button" id="cancelDialog">关闭</button></div>';
+    dialog.showModal();
   }
 
   function renderDepartments() {
@@ -1048,10 +1182,6 @@
   function renderAdjustmentOptions() {
     const deptOptions = state.departments.map((item) => '<option value="' + item.deptID + '">' + escapeHtml(item.deptName) + '</option>').join("");
     byId("anomalyDepartment").innerHTML = deptOptions || '<option value="">请先创建科室</option>';
-    const deptNames = Object.fromEntries(state.departments.map((item) => [item.deptID, item.deptName]));
-    byId("queueExam").innerHTML = state.exams.map((item) => '<option value="' + item.itemID + '">' +
-      escapeHtml(item.itemName) + ' · ' + escapeHtml(deptNames[item.deptID] || "") + '</option>').join("") ||
-      '<option value="">请先创建检查项目</option>';
   }
 
   byId("anomalyForm").addEventListener("submit", async (event) => {
@@ -1061,24 +1191,6 @@
       event.currentTarget.reset();
       await loadWorkspace();
       toast("现场异常已上报");
-    } catch (error) { toast(error.message, "error"); }
-  });
-
-  byId("queueForm").addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const data = formObject(event.currentTarget);
-    try {
-      await api("/queues", {
-        method: "POST",
-        body: {
-          itemID: data.itemID,
-          queueCount: Number(data.queueCount),
-          estimatedWaitTime: Math.round(Number(data.waitMinutes) * 60),
-          validMinutes: 30
-        }
-      });
-      await loadWorkspace();
-      toast("排队快照已更新");
     } catch (error) { toast(error.message, "error"); }
   });
 
@@ -1107,11 +1219,14 @@
 
   async function initialize() {
     try {
-      state.me = await api("/auth/me");
+      const me = await api("/auth/me");
+      authGeneration += 1;
+      workspaceRequestId += 1;
+      state.me = me;
       showApp();
       await loadWorkspace();
     } catch (_) {
-      showAuth();
+      if (!state.me) showAuth();
     }
   }
 

@@ -71,7 +71,7 @@ Page({
       })
       app.applyUser(payload)
       wx.showToast({ title: '保存成功', icon: 'success' })
-      setTimeout(() => wx.navigateBack(), 300)
+      wx.navigateBack({ delta: 1 })
     } catch (error) {
       api.showError(error)
     } finally {

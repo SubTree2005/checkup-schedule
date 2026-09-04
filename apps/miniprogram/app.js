@@ -1,4 +1,5 @@
 const api = require('./utils/api')
+const LEGACY_AI_STORAGE_KEYS = ['aiAgentSession', 'aiAgentHistory', 'aiAgentModelConfig', 'aiAgentConfig']
 
 App({
   globalData: {
@@ -18,7 +19,6 @@ App({
     catalog: null,
     viewingPlanRecord: null,
     activeTabIndex: 0,
-    aiOrbEpoch: Date.now(),
     userInfo: null,
     userRole: 'user',
     isLoggedIn: false
@@ -28,9 +28,13 @@ App({
     this.globalData.currentPlan = wx.getStorageSync('currentPlan') || null
     this.globalData.profile = wx.getStorageSync('profile') || null
     this.globalData.userInfo = wx.getStorageSync('userInfo') || null
-    this.globalData.isLoggedIn = !!wx.getStorageSync('patientToken')
+    const token = wx.getStorageSync('patientToken')
+    this.globalData.isLoggedIn = !!token
     if (this.globalData.isLoggedIn) {
-      api.auth.me().then(payload => this.applyUser(payload)).catch(error => {
+      api.auth.me().then(payload => {
+        if (wx.getStorageSync('patientToken') === token) this.applyUser(payload)
+      }).catch(error => {
+        if (wx.getStorageSync('patientToken') !== token) return
         if (error && error.statusCode === 401) this.clearLoginState()
       })
     }
@@ -54,11 +58,15 @@ App({
   },
 
   setAuthenticated(payload) {
+    api.clearCache()
     wx.setStorageSync('patientToken', payload.token)
     this.applyUser(payload.user)
   },
 
-  clearLoginState() {
+  clearLoginState(options = {}) {
+    api.clearCache()
+    const storedUser = this.globalData.userInfo || wx.getStorageSync('userInfo') || {}
+    const userID = String(storedUser.userID || storedUser.id || '')
     this.globalData.isLoggedIn = false
     this.globalData.userInfo = null
     this.globalData.profile = null
@@ -79,6 +87,10 @@ App({
     wx.removeStorageSync('userInfo')
     wx.removeStorageSync('profile')
     wx.removeStorageSync('currentPlan')
+    LEGACY_AI_STORAGE_KEYS.forEach(key => wx.removeStorageSync(key))
+    if (options.clearPrivateData && userID) {
+      LEGACY_AI_STORAGE_KEYS.forEach(key => wx.removeStorageSync(`${key}:${userID}`))
+    }
   },
 
   saveCurrentPlan(plan) {

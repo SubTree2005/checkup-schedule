@@ -71,22 +71,32 @@ def _validate_package_items(package: PackageInfo, exams: dict[str, ExamInfo]) ->
 
 
 def _ordered_package_items(package: PackageInfo, exams: dict[str, ExamInfo], rng: random.Random) -> list[str]:
-    remaining = set(_validate_package_items(package, exams))
+    item_ids = _validate_package_items(package, exams)
+    selected = set(item_ids)
+    indegree = {item_id: 0 for item_id in item_ids}
+    successors = {item_id: [] for item_id in item_ids}
+    for item_id in item_ids:
+        for prerequisite_id in prerequisite_item_ids(exams[item_id].prerequisites):
+            if prerequisite_id not in selected:
+                continue
+            indegree[item_id] += 1
+            successors[prerequisite_id].append(item_id)
+
+    ready = sorted(item_id for item_id, degree in indegree.items() if degree == 0)
     ordered: list[str] = []
-    while remaining:
-        ready = []
-        resolved = set(ordered)
-        for item_id in remaining:
-            prerequisite_ids = set(prerequisite_item_ids(exams[item_id].prerequisites))
-            if prerequisite_ids.issubset(resolved):
-                ready.append(item_id)
-        if not ready:
-            raise HTTPException(status_code=422, detail=f"套餐“{package.package_name}”的项目存在循环前置关系")
-        ready.sort()
-        rng.shuffle(ready)
-        item_id = ready[0]
+    while ready:
+        ready_index = rng.randrange(len(ready))
+        item_id = ready[ready_index]
+        ready[ready_index] = ready[-1]
+        ready.pop()
         ordered.append(item_id)
-        remaining.remove(item_id)
+        for successor_id in successors[item_id]:
+            indegree[successor_id] -= 1
+            if indegree[successor_id] == 0:
+                ready.append(successor_id)
+
+    if len(ordered) != len(item_ids):
+        raise HTTPException(status_code=422, detail=f"套餐“{package.package_name}”的项目存在循环前置关系")
     return ordered
 
 
@@ -187,8 +197,14 @@ def demo_pool_summary(db: Session, hospital_id: str, changed: int = 0) -> dict:
 
 
 def _deactivate_profiles(db: Session, profiles: list[DemoPatientProfile]) -> None:
-    plans = [db.get(ExamPlan, row.active_plan_id) for row in profiles if row.active_plan_id]
-    records = [db.get(UserStatusInfo, row.active_record_id) for row in profiles if row.active_record_id]
+    plan_ids = [row.active_plan_id for row in profiles if row.active_plan_id]
+    record_ids = [row.active_record_id for row in profiles if row.active_record_id]
+    plans = list(db.scalars(select(ExamPlan).where(ExamPlan.plan_id.in_(plan_ids)))) if plan_ids else []
+    records = (
+        list(db.scalars(select(UserStatusInfo).where(UserStatusInfo.record_id.in_(record_ids))))
+        if record_ids
+        else []
+    )
     for row in profiles:
         row.active_plan_id = None
         row.active_record_id = None
@@ -211,11 +227,21 @@ def _activate_profiles(db: Session, hospital_id: str, profiles: list[DemoPatient
         .where(DepartmentInfo.hospital_id == hospital_id, ExamInfo.is_active.is_(True))
     ).scalars().all()
     exams = {row.item_id: row for row in hospital_exam_rows}
+    package_ids = {profile.package_id for profile in profiles if profile.package_id}
+    packages = {
+        package.package_id: package
+        for package in db.scalars(
+            select(PackageInfo).where(
+                PackageInfo.hospital_id == hospital_id,
+                PackageInfo.package_id.in_(package_ids),
+            )
+        )
+    } if package_ids else {}
     now = utcnow()
     for profile in profiles:
         item_ids = list(profile.selected_item_ids or [])
-        package = db.get(PackageInfo, profile.package_id) if profile.package_id else None
-        if package is None or package.hospital_id != hospital_id or not item_ids or any(item_id not in exams for item_id in item_ids):
+        package = packages.get(profile.package_id)
+        if package is None or not item_ids or any(item_id not in exams for item_id in item_ids):
             raise HTTPException(status_code=409, detail="演示患者池与当前套餐项目不一致，请使用注册时上传的数据")
         record = UserStatusInfo(
             record_id=_stable_id(hospital_id, "active-record", profile.ordinal),

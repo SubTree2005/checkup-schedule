@@ -1,6 +1,8 @@
 const api = require('../../utils/api')
 const flowGuard = require('../../utils/flow-guard')
+const { backToRoute } = require('../../utils/navigation')
 const app = getApp()
+const MAX_MAP_POINTS = 100000
 
 function confirmAction(title, content, confirmText) {
   return new Promise(resolve => {
@@ -20,11 +22,17 @@ function validPoint(value) {
 }
 
 function collectPoints(value, output = []) {
-  if (validPoint(value)) {
-    output.push(value)
-    return output
+  const pending = [value]
+  while (pending.length) {
+    const current = pending.pop()
+    if (validPoint(current)) {
+      if (output.length >= MAX_MAP_POINTS) return null
+      output.push(current)
+      continue
+    }
+    if (!Array.isArray(current)) continue
+    for (let index = current.length - 1; index >= 0; index -= 1) pending.push(current[index])
   }
-  if (Array.isArray(value)) value.forEach(item => collectPoints(item, output))
   return output
 }
 
@@ -45,7 +53,6 @@ Page({
     location: '',
     floorInstruction: '请根据院内指引前往目标科室。',
     hasMap: false,
-    map: null,
     operating: false
   },
   onLoad(options) {
@@ -59,6 +66,7 @@ Page({
     api.plans.navigation(planID, detailID).then(data => this.applyNavigation(data)).catch(api.showError)
   },
   applyNavigation(data) {
+    this._map = data.map || null
     this.setData({
       fromName: data.fromName,
       toName: data.toName,
@@ -66,27 +74,38 @@ Page({
       duration: data.durationMinutes === null ? '' : `约 ${data.durationMinutes} 分钟`,
       location: data.location || '',
       floorInstruction: data.floorInstruction || '请根据院内指引前往目标科室。',
-      hasMap: !!data.map,
-      map: data.map || null
+      hasMap: !!data.map
     }, () => {
       if (data.map) wx.nextTick(() => this.drawIndoorMap())
     })
   },
   drawIndoorMap() {
-    const map = this.data.map
+    const map = this._map
     if (!map || !map.geojson) return
     this.createSelectorQuery().select('#indoorMap').boundingClientRect(rect => {
       if (!rect || !rect.width || !rect.height) return
       const features = map.geojson.features || []
-      const allPoints = features.reduce((rows, feature) => collectPoints((feature.geometry || {}).coordinates, rows), [])
-      collectPoints(map.routeCoordinates || [], allPoints)
+      const allPoints = []
+      const mapWithinLimit = features.every(feature => collectPoints((feature.geometry || {}).coordinates, allPoints))
+      const routeWithinLimit = mapWithinLimit && collectPoints(map.routeCoordinates || [], allPoints)
+      if (!routeWithinLimit) {
+        this.setData({
+          hasMap: false,
+          location: '地图数据过大，暂无法绘制，请以现场标识为准。'
+        })
+        return
+      }
       if (!allPoints.length) return
-      const xs = allPoints.map(point => point[0])
-      const ys = allPoints.map(point => point[1])
-      const minX = Math.min(...xs)
-      const maxX = Math.max(...xs)
-      const minY = Math.min(...ys)
-      const maxY = Math.max(...ys)
+      let minX = Infinity
+      let maxX = -Infinity
+      let minY = Infinity
+      let maxY = -Infinity
+      allPoints.forEach(point => {
+        minX = Math.min(minX, point[0])
+        maxX = Math.max(maxX, point[0])
+        minY = Math.min(minY, point[1])
+        maxY = Math.max(maxY, point[1])
+      })
       const padding = 18
       const xRange = Math.max(maxX - minX, 0.000001)
       const yRange = Math.max(maxY - minY, 0.000001)
@@ -167,7 +186,9 @@ Page({
       context.draw()
     }).exec()
   },
-  completeNavigation() { wx.redirectTo({ url: `/pages/plan/plan?planID=${this.data.planID}` }) },
+  completeNavigation() {
+    backToRoute('pages/plan/plan', `/pages/plan/plan?planID=${this.data.planID}`)
+  },
   goOverview() { wx.navigateTo({ url: `/pages/plan-overview/plan-overview?planID=${this.data.planID}` }) },
   async runAction(action) {
     if (this.data.operating) return null

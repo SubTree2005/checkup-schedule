@@ -24,6 +24,8 @@ DATABASE_URL=sqlite:///./checkup.db uvicorn apps.backend.checkup_backend.main:ap
 
 ```bash
 python -m compileall -q packages/scheduler apps/backend simulation tests
+python scripts/audit_miniprogram.py
+node scripts/test_miniprogram_runtime.js
 python -m unittest discover -s tests -v
 python -m simulation.run --v10 --patients 20 --replications 2 --seed 20260824 --scenarios normal_day --output simulation/output/smoke
 ```

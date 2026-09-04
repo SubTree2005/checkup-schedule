@@ -37,7 +37,9 @@ Page({
     this.setData({
       loading: false,
       step: {
-        ...step,
+        detailID: step.detailID,
+        title: step.title || '检查项目',
+        department: step.department || '检查科室',
         iconPath: examIcon(step.title),
         location: (step.navigationTarget && step.navigationTarget.locationText) || '请查看院内指引',
         durationText: step.duration ? `约 ${step.duration} 分钟` : '时长以现场安排为准',

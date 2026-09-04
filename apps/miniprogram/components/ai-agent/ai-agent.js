@@ -1,7 +1,5 @@
 const agent = require('../../utils/ai-agent')
 
-const ORB_ANIMATION_DURATION = 5600
-
 Component({
   properties: {
     withTabBar: { type: Boolean, value: false },
@@ -17,23 +15,17 @@ Component({
     keyboardHeight: 0,
     thinking: false,
     scrollIntoView: '',
-    statusBarHeight: 44,
-    orbAnimationDelay: 0
+    statusBarHeight: 44
   },
 
   lifetimes: {
     attached() {
       const info = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync()
-      const app = getApp()
-      if (!Number(app.globalData.aiOrbEpoch)) app.globalData.aiOrbEpoch = Date.now()
-      const elapsed = Math.max(0, Date.now() - Number(app.globalData.aiOrbEpoch))
-      this.setData({
-        statusBarHeight: Number(info.statusBarHeight || 44),
-        orbAnimationDelay: -(elapsed % ORB_ANIMATION_DURATION)
-      })
+      this.setData({ statusBarHeight: Number(info.statusBarHeight || 44) })
     },
     detached() {
       if (this._request) this._request.abort()
+      if (this._localResponseTimer) clearTimeout(this._localResponseTimer)
       this.setTabBarHidden(false)
     }
   },
@@ -102,6 +94,7 @@ Component({
     },
 
     async sendMessage() {
+      if (this.data.thinking) return
       const text = String(this.data.draft || '').trim()
       if (!text) {
         this.setData({ inputFocused: true })
@@ -122,7 +115,8 @@ Component({
       const action = agent.localAction(text)
       if (action) {
         const reply = `可以，从下面的卡片进入“${action.label}”。`
-        setTimeout(() => {
+        this._localResponseTimer = setTimeout(() => {
+          this._localResponseTimer = null
           if (!this.data.thinking) return
           this.finishResponse(text, reply, agent.actionCard(action))
         }, 320)
@@ -157,16 +151,17 @@ Component({
       if (this.data.thinking) return
       const actionID = event.currentTarget.dataset.actionId
       this.setTabBarHidden(false)
-      this.setData({ opened: false, inputFocused: false, keyboardHeight: 0 })
-      wx.hideKeyboard()
-      setTimeout(() => {
+      this.setData({ opened: false, inputFocused: false, keyboardHeight: 0 }, () => {
+        wx.hideKeyboard()
         if (!agent.runAction(actionID)) wx.showToast({ title: '该操作暂不可用', icon: 'none' })
-      }, 80)
+      })
     },
 
     stopThinking() {
       if (this._request) this._request.abort()
       this._request = null
+      if (this._localResponseTimer) clearTimeout(this._localResponseTimer)
+      this._localResponseTimer = null
       const stopMessage = agent.makeMessage('assistant', '已停止生成。')
       this._session = agent.saveSession({ ...this._session, messages: (this.data.messages || []).concat(stopMessage) })
       this.setData({ thinking: false, messages: this._session.messages, scrollIntoView: `message-${stopMessage.id}` })

@@ -213,11 +213,9 @@ page {
   font-size: 21rpx;
   line-height: 34rpx;
   white-space: nowrap;
+  text-align: center;
+  text-overflow: ellipsis;
 }
-
-.step-name-track { min-width: 100%; display: inline-flex; justify-content: center; white-space: nowrap; }
-.step-name-track.is-scrolling { justify-content: flex-start; animation: step-name-marquee 7s linear infinite; }
-.step-name-copy { margin-left: 46rpx; }
 
 .step-active .step-name { color: #172033; font-weight: 600; }
 
@@ -252,8 +250,3 @@ page {
 .feed-report-count { margin-top: 4rpx; color: #23884B; font-size: 21rpx; }
 .feed-action { flex: none; min-width: 142rpx; min-height: 62rpx; padding: 0 20rpx; display: flex; align-items: center; justify-content: center; color: #2F69EC; border: 2rpx solid #BFD4FF; border-radius: 999rpx; font-size: 23rpx; font-weight: 600; }
 .feed-card.feed-highlight { border-color: #79A6FF; box-shadow: 0 18rpx 52rpx rgba(47, 105, 236, 0.15); }
-
-@keyframes step-name-marquee {
-  0%, 18% { transform: translateX(0); }
-  82%, 100% { transform: translateX(calc(-50% - 23rpx)); }
-}

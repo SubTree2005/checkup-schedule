@@ -9,7 +9,6 @@ from .models import (
     HospitalInfo,
     HospitalSettings,
     PackageInfo,
-    QueueSnapshot,
 )
 
 
@@ -105,17 +104,4 @@ def anomaly_dict(row: AnomalyReport, department_name: str | None = None) -> dict
         "description": row.description,
         "reportTime": iso(row.report_time),
         "isResolved": row.is_resolved,
-    }
-
-
-def queue_dict(row: QueueSnapshot, item_name: str | None = None) -> dict:
-    return {
-        "snapshotID": row.snapshot_id,
-        "itemID": row.item_id,
-        "itemName": item_name,
-        "queueCount": row.queue_count,
-        "estimatedWaitTime": row.estimated_wait_time,
-        "dataSource": row.data_source,
-        "validUntil": iso(row.valid_until),
-        "createTime": iso(row.create_time),
     }

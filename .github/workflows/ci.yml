@@ -15,8 +15,14 @@ jobs:
           python-version: "3.11"
           cache: pip
       - name: Install package
-        run: python -m pip install -e ".[backend,test]"
+        run: python -m pip install -e ".[backend,test,optimization]"
       - name: Compile
         run: python -m compileall -q packages/scheduler apps/backend simulation tests
+      - name: Mini-program integrity audit
+        run: python scripts/audit_miniprogram.py
+      - name: Mini-program runtime checks
+        run: node scripts/test_miniprogram_runtime.js
+      - name: Admin Web runtime checks
+        run: node scripts/test_admin_web_runtime.js
       - name: Unit and regression tests
         run: python -m unittest discover -s tests -v

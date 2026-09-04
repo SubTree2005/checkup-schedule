@@ -1,4 +1,4 @@
-<view class="overview-page safe-top" wx:if="{{plan}}">
+<view class="overview-page safe-top" wx:if="{{hasPlan}}">
   <view class="flow-nav">
     <view class="nav-back" bindtap="goBack" aria-label="返回">‹</view>
     <view class="nav-title">体检总览</view>
@@ -7,8 +7,8 @@
 
   <scroll-view class="overview-scroll" scroll-y="true">
     <view class="progress-card">
-      <view class="plan-hospital">{{plan.hospitalName}}</view>
-      <view class="plan-package">{{plan.packageName || '自选项目'}}</view>
+      <view class="plan-hospital">{{hospitalName}}</view>
+      <view class="plan-package">{{packageName}}</view>
       <view class="progress-row">
         <view><text class="progress-label">体检进度</text><text class="progress-strong">{{completedSteps}}</text><text class="progress-total"> / {{totalSteps}} 项</text></view>
         <view class="progress-percent">{{progress}}%</view>

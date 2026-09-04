@@ -1,5 +1,5 @@
 <view wx:if="{{!hidden}}" class="tab-safe-area">
-  <view class="liquid-tabbar {{ready ? 'is-ready' : ''}}">
+  <view class="liquid-tabbar">
     <view class="tab-indicator tab-indicator-{{selected}}"></view>
     <view
       class="tab-item {{selected === index ? 'tab-active' : ''}}"

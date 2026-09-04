@@ -74,19 +74,22 @@ def main() -> int:
                     f"unregistered route: {source.relative_to(ROOT)} -> {route}"
                 )
 
-    for page in sorted(pages):
-        base = ROOT / page
+    component_bases = [ROOT / "custom-tab-bar" / "index"]
+    component_bases.extend(path.with_suffix("") for path in (ROOT / "components").rglob("*.wxml"))
+    handler_sources = [(page, ROOT / page) for page in sorted(pages)]
+    handler_sources.extend((str(base.relative_to(ROOT)), base) for base in component_bases)
+    for label, base in handler_sources:
         script = base.with_suffix(".js").read_text(encoding="utf-8")
         markup = base.with_suffix(".wxml").read_text(encoding="utf-8")
         handlers = set(
             re.findall(
-                r"(?:bind|catch)(?:tap|input|change|submit|confirm|blur|focus)=['\"]([A-Za-z_$][\w$]*)['\"]",
+                r"(?:bind|catch)(?::)?[A-Za-z][\w-]*=['\"]([A-Za-z_$][\w$]*)['\"]",
                 markup,
             )
         )
         for handler in sorted(handlers):
             if not re.search(rf"\b{re.escape(handler)}\s*\(", script):
-                errors.append(f"missing handler: {page}.wxml -> {handler}()")
+                errors.append(f"missing handler: {label}.wxml -> {handler}()")
 
     tab_pages = {
         item.get("pagePath") for item in config.get("tabBar", {}).get("list", [])

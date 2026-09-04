@@ -4,9 +4,9 @@
 
 数据库实现《需求分析说明书》第 4.4 节定义的 15 张业务表：
 
-`user_info`、`hospital_info`、`department_info`、`exam_info`、`package_info`、`user_status_info`、`exam_plan`、`plan_execution_detail`、`anomaly_report`、`department_distance`、`user_mobility_profile`、`walk_speed_preset`、`queue_snapshot`、`department_waiting_stats`、`department_resource_calendar`。支撑表另含 `hospital_admin`、`user_session`、`user_consent`、`hospital_gis`、`demo_patient_profile` 和 `wechat_reminder`。
+`user_info`、`hospital_info`、`department_info`、`exam_info`、`package_info`、`user_status_info`、`exam_plan`、`plan_execution_detail`、`anomaly_report`、`department_distance`、`user_mobility_profile`、`walk_speed_preset`、`queue_snapshot`、`department_waiting_stats`、`department_resource_calendar`。支撑表另含 `hospital_admin`、`hospital_settings`、`user_session`、`user_consent`、`hospital_gis`、`demo_patient_profile` 和 `wechat_reminder`。
 
-为管理、认证、隐私同意、患者端医院设置和 GIS 增加六张支撑表：
+为管理、认证、隐私同意、患者端医院设置、GIS、演示患者和提醒派发增加七张支撑表：
 
 - `hospital_admin`：管理员与医院的归属关系，是多医院隔离的服务端依据；
 - `hospital_settings`：保存患者端医院图片、开放状态以及预约时段、号源容量和可预约天数；
@@ -31,7 +31,8 @@
 | 工作区标准模板与一键导入 | `GET /api/imports/template`、`POST /api/imports/workspace` |
 | GIS | `GET /api/gis`、`GET/PUT /api/gis/{floorKey}` |
 | 异常 | `GET/POST /api/anomalies`、`POST /api/anomalies/{reportID}/resolve` |
-| 排队快照 | `GET/POST /api/queues` |
+| 医院患者计划 | `GET /api/plans?date=today|all&status=...&query=...` |
+| 系统内实时排队状态 | `GET /api/queues` |
 | 看板与人流地图 | `GET /api/dashboard/summary`、`GET /api/dashboard/map/{floorKey}` |
 | 演示患者池（仅创建者） | `GET /api/demo-patients`、`POST/DELETE /api/demo-patients/active` |
 
@@ -72,6 +73,10 @@ OpenAPI 交互文档在服务启动后的 `/docs`。
 
 普通患者创建计划时，服务端会在排程成功后创建 `user_status_info` 并写入该计划的 `recordID`。计划详情和历史列表中的 `profileSnapshot` 来自这条固定记录；患者之后修改资料或创建新计划，不会改变旧计划的状态快照。旧数据若没有 `recordID`，该字段返回空对象。
 
+预约时间同时写入 `exam_plan.appointmentAt`，医院端“今日体检”、患者列表和号源占用统一按预约服务时间统计；现场计划才回退到创建时间。旧库启动时会自动增加该列，并从状态快照中的 `appointmentAt` 尽力回填。
+
+当前部署假设全部候检患者都使用本系统。实时队列不再接受医院端手工快照：每个“进行中”计划只贡献一个当前环节，正在执行的环节计入检查中人数，没有执行中环节时最早的待开始项目计入候检人数；等待估算按当前剩余工作量和科室容量计算。未来预约与已中断计划在开始或恢复前不计入实时队列。
+
 医院 `openTime`、科室 `openTimeStart/openTimeEnd`、检查 `allowedTimeSlots` 和按日统计均按 `HOSPITAL_TIMEZONE` 解释，默认 `Asia/Shanghai`。服务端在进入 Scheduler 和写入数据库前转换为无时区 UTC 时间，API 的时间戳继续以 `Z` 输出。医院开放时间可包含多个 `HH:MM-HH:MM` 时段（例如 `工作日08:00-12:00,13:30-17:00`）；含“工作日”时，闭诊后生成的计划会自动跳到下一个工作日。患者排程会取医院、科室和检查三层时间窗的交集；交集不足以完成项目时返回不可排程，而不会越过午休或闭诊时间。
 
 ## GIS GeoJSON 约定
@@ -107,4 +112,4 @@ OpenAPI 交互文档在服务启动后的 `/docs`。
 }
 ```
 
-地图坐标既可使用真实投影坐标，也可使用院内平面图坐标；同一楼层必须保持同一坐标系。人流量由有效排队快照人数与当前检查中的人数相加得到。
+地图坐标既可使用真实投影坐标，也可使用院内平面图坐标；同一楼层必须保持同一坐标系。人流量由系统内当前候检人数与正在检查人数相加得到。

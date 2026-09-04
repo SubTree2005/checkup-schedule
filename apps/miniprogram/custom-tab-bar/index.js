@@ -2,8 +2,6 @@ Component({
   data: {
     hidden: false,
     selected: 0,
-    ready: false,
-    switching: false,
     list: [
       {
         pagePath: '/pages/index/index',
@@ -28,7 +26,7 @@ Component({
       const app = getApp()
       const selected = routeIndex >= 0 ? routeIndex : Number(app.globalData.activeTabIndex || 0)
       app.globalData.activeTabIndex = selected
-      this.setData({ selected, ready: true })
+      this.setData({ selected })
     }
   },
 
@@ -37,21 +35,19 @@ Component({
       const selected = Number(index)
       if (!Number.isInteger(selected) || !this.data.list[selected]) return
       getApp().globalData.activeTabIndex = selected
-      if (this.data.selected !== selected || !this.data.ready) this.setData({ selected, ready: true })
+      if (this.data.selected !== selected) this.setData({ selected })
     },
 
     switchTab(e) {
       const index = Number(e.currentTarget.dataset.index)
       const item = this.data.list[index]
-      if (!item || index === this.data.selected || this.data.switching) return
+      if (!item || index === this.data.selected || this._switching) return
+      this._switching = true
       getApp().globalData.activeTabIndex = index
-      this.setData({ selected: index, switching: true })
-      setTimeout(() => {
-        wx.switchTab({
-          url: item.pagePath,
-          complete: () => this.setData({ switching: false })
-        })
-      }, 140)
+      wx.switchTab({
+        url: item.pagePath,
+        complete: () => { this._switching = false }
+      })
     }
   }
 })

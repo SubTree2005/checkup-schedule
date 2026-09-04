@@ -53,7 +53,7 @@ Page({
       const payload = await api.auth.login({ phone: account, password })
       app.setAuthenticated(payload)
       wx.showToast({ title: '登录成功', icon: 'success' })
-      setTimeout(() => wx.switchTab({ url: '/pages/index/index' }), 300)
+      wx.switchTab({ url: '/pages/index/index' })
     } catch (error) {
       api.showError(error)
     } finally {

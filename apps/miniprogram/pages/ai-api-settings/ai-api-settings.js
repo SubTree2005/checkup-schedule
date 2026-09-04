@@ -37,12 +37,13 @@ Page({
     if (this.data.mode === 'default') {
       agent.restoreDefaultModel()
       wx.showToast({ title: '已恢复默认模型', icon: 'success' })
-      return setTimeout(() => wx.navigateBack({ delta: 1 }), 450)
+      wx.navigateBack({ delta: 1 })
+      return
     }
     try {
       agent.saveModelConfig({ model: this.data.customModel, apiKey: this.data.customApiKey })
       wx.showToast({ title: '模型设置已保存', icon: 'success' })
-      setTimeout(() => wx.navigateBack({ delta: 1 }), 450)
+      wx.navigateBack({ delta: 1 })
     } catch (error) {
       wx.showToast({ title: error.message || '请检查模型设置', icon: 'none' })
     }

@@ -1,24 +1,24 @@
 from __future__ import annotations
 
+import os
 from copy import deepcopy
-from datetime import timedelta
+from ipaddress import ip_address
 from math import isfinite
 from uuid import NAMESPACE_URL, uuid5
 
-from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Response, status
-from sqlalchemy import delete, func, select
+from fastapi import APIRouter, Cookie, Depends, Header, HTTPException, Query, Request, Response, status
+from sqlalchemy import delete, func, or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from .database import get_db
 from .demo_patients import demo_pool_summary, prepare_demo_patient_pool, set_demo_patient_count
 from .exam_constraints import prerequisite_item_ids, validate_exam_selection, validate_prerequisite_graph
-from .hospital_time import hospital_local_date, local_day_bounds_utc
+from .hospital_time import local_day_bounds_utc
 from .models import (
     AnomalyReport,
     DepartmentDistance,
     DepartmentInfo,
-    DepartmentWaitingStats,
     DemoPatientProfile,
     ExamInfo,
     ExamPlan,
@@ -28,7 +28,6 @@ from .models import (
     HospitalSettings,
     PackageInfo,
     PlanExecutionDetail,
-    QueueSnapshot,
     UserInfo,
     utcnow,
 )
@@ -46,7 +45,6 @@ from .schemas import (
     LoginRequest,
     PackageCreate,
     PackageUpdate,
-    QueueUpdate,
     WorkspaceImport,
 )
 from .security import (
@@ -58,18 +56,31 @@ from .security import (
     issue_session,
     revoke_session,
     set_session_cookie,
-    verify_password,
+    verify_login_password,
 )
-from .serializers import anomaly_dict, department_dict, exam_dict, hospital_dict, iso, package_dict, queue_dict
+from .queue_state import system_department_queues, system_item_queues
+from .serializers import anomaly_dict, department_dict, exam_dict, hospital_dict, iso, package_dict
 
 router = APIRouter(prefix="/api")
 
 
 def client_ip(request: Request) -> str | None:
+    direct = request.client.host[:64] if request.client else None
+    trust_proxy_headers = os.getenv("TRUST_PROXY_HEADERS", "false").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }
+    if not trust_proxy_headers:
+        return direct
     forwarded = request.headers.get("x-forwarded-for")
-    if forwarded:
-        return forwarded.split(",", 1)[0].strip()[:64]
-    return request.client.host[:64] if request.client else None
+    if not forwarded:
+        return direct
+    try:
+        return str(ip_address(forwarded.split(",", 1)[0].strip()))
+    except ValueError:
+        return direct
 
 
 def get_hospital_settings(db: Session, hospital_id: str, *, create: bool = False) -> HospitalSettings | None:
@@ -257,7 +268,8 @@ def login(
 ) -> dict:
     user = db.scalar(select(UserInfo).where(UserInfo.phone == payload.phone))
     membership = None if user is None else db.scalar(select(HospitalAdmin).where(HospitalAdmin.user_id == user.user_id))
-    if user is None or membership is None or not verify_password(payload.password, user.password):
+    eligible_password = user.password if user is not None and membership is not None else None
+    if not verify_login_password(payload.password, eligible_password):
         raise HTTPException(status_code=401, detail="手机号或密码错误")
     hospital = db.get(HospitalInfo, membership.hospital_id)
     settings = get_hospital_settings(db, membership.hospital_id)
@@ -274,9 +286,13 @@ def login(
 def logout(
     response: Response,
     token: str | None = Cookie(default=None, alias=SESSION_COOKIE),
+    authorization: str | None = Header(default=None),
     db: Session = Depends(get_db),
 ) -> Response:
-    revoke_session(db, token)
+    bearer_token = None
+    if authorization and authorization.lower().startswith("bearer "):
+        bearer_token = authorization[7:].strip()
+    revoke_session(db, bearer_token or token)
     db.commit()
     clear_session_cookie(response)
     response.status_code = status.HTTP_204_NO_CONTENT
@@ -314,6 +330,20 @@ def update_hospital(
     db: Session = Depends(get_db),
 ) -> dict:
     row = db.get(HospitalInfo, admin.hospital_id)
+    data = payload.model_dump(exclude_unset=True)
+    non_nullable = {
+        "hospitalName",
+        "address",
+        "openTime",
+        "hospitalLevel",
+        "positioning",
+        "isAvailable",
+        "appointmentSlotMinutes",
+        "appointmentSlotCapacity",
+        "appointmentDaysAhead",
+    }
+    if any(data.get(key) is None for key in non_nullable & data.keys()):
+        raise HTTPException(status_code=422, detail="医院必填字段不能设为空值")
     fields = {
         "hospitalName": "hospital_name",
         "address": "address",
@@ -330,7 +360,7 @@ def update_hospital(
         "appointmentDaysAhead": "appointment_days_ahead",
     }
     settings = get_hospital_settings(db, admin.hospital_id, create=True)
-    for key, value in payload.model_dump(exclude_unset=True).items():
+    for key, value in data.items():
         if key in fields:
             setattr(row, fields[key], value)
         else:
@@ -381,6 +411,9 @@ def update_department(
     db: Session = Depends(get_db),
 ) -> dict:
     row = require_department(db, admin.hospital_id, dept_id)
+    data = payload.model_dump(exclude_unset=True)
+    if any(value is None for value in data.values()):
+        raise HTTPException(status_code=422, detail="科室字段不能设为空值")
     fields = {
         "deptName": "dept_name",
         "location": "location",
@@ -389,7 +422,7 @@ def update_department(
         "capacity": "capacity",
         "isAvailable": "is_available",
     }
-    for key, value in payload.model_dump(exclude_unset=True).items():
+    for key, value in data.items():
         setattr(row, fields[key], value)
     if row.open_time_start >= row.open_time_end:
         raise HTTPException(status_code=422, detail="开放结束时间必须晚于开始时间")
@@ -561,6 +594,15 @@ def validate_package_items(
         .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
         .where(DepartmentInfo.hospital_id == hospital_id, ExamInfo.item_id.in_(set(item_ids)))
     ).all()
+    validate_package_item_rows(item_ids, rows, require_active=require_active)
+
+
+def validate_package_item_rows(
+    item_ids: list[str],
+    rows: list[ExamInfo],
+    *,
+    require_active: bool = False,
+) -> None:
     if {row.item_id for row in rows} != set(item_ids):
         raise HTTPException(status_code=422, detail="套餐包含本医院不存在的检查项目")
     if require_active and any(not row.is_active for row in rows):
@@ -719,18 +761,38 @@ def delete_package(
     return Response(status_code=204)
 
 
-def sync_distances(db: Session, hospital_id: str, geojson: dict) -> None:
+def _gis_route_distances(db: Session, hospital_id: str, geojson: dict) -> list[tuple[str, str, float]]:
     owned_departments = set(
         db.scalars(select(DepartmentInfo.dept_id).where(DepartmentInfo.hospital_id == hospital_id))
     )
+    routes: list[tuple[str, str, float]] = []
     for feature in geojson.get("features", []):
         props = feature.get("properties") or {}
+        if props.get("featureType") == "department":
+            if props.get("deptID") not in owned_departments:
+                raise HTTPException(status_code=422, detail="GIS 科室点位引用了本医院不存在的科室")
+            continue
         if props.get("featureType") != "route":
             continue
         from_id, to_id = props.get("fromDeptID"), props.get("toDeptID")
         distance = props.get("distanceMeters")
-        if from_id not in owned_departments or to_id not in owned_departments or not isinstance(distance, (int, float)):
-            continue
+        if from_id not in owned_departments or to_id not in owned_departments:
+            raise HTTPException(status_code=422, detail="GIS 路线引用了本医院不存在的科室")
+        if from_id == to_id:
+            raise HTTPException(status_code=422, detail="GIS 路线起点和终点不能相同")
+        if (
+            not isinstance(distance, (int, float))
+            or isinstance(distance, bool)
+            or not isfinite(distance)
+            or distance < 0
+        ):
+            raise HTTPException(status_code=422, detail="GIS 路线 distanceMeters 必须是非负有限数值")
+        routes.append((from_id, to_id, float(distance)))
+    return routes
+
+
+def sync_distances(db: Session, hospital_id: str, geojson: dict) -> None:
+    for from_id, to_id, distance in _gis_route_distances(db, hospital_id, geojson):
         row = db.scalar(
             select(DepartmentDistance).where(
                 DepartmentDistance.from_dept_id == from_id,
@@ -738,9 +800,9 @@ def sync_distances(db: Session, hospital_id: str, geojson: dict) -> None:
             )
         )
         if row is None:
-            db.add(DepartmentDistance(from_dept_id=from_id, to_dept_id=to_id, distance_meters=float(distance)))
+            db.add(DepartmentDistance(from_dept_id=from_id, to_dept_id=to_id, distance_meters=distance))
         else:
-            row.distance_meters = float(distance)
+            row.distance_meters = distance
 
 
 def workspace_import_id(hospital_id: str, resource: str, key: str) -> str:
@@ -1001,24 +1063,28 @@ def _apply_workspace_import(
             row.update_time = utcnow()
         db.flush()
 
-        active_item_ids = set(
-            db.scalars(
-                select(ExamInfo.item_id)
-                .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
-                .where(DepartmentInfo.hospital_id == admin.hospital_id, ExamInfo.is_active.is_(True))
-            )
-        )
+        hospital_exam_rows = db.scalars(
+            select(ExamInfo)
+            .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
+            .where(DepartmentInfo.hospital_id == admin.hospital_id)
+        ).all()
+        exams_by_id = {exam.item_id: exam for exam in hospital_exam_rows}
         for package in db.scalars(
-            select(PackageInfo).where(
-                PackageInfo.hospital_id == admin.hospital_id,
-                PackageInfo.is_published.is_(True),
-            )
+            select(PackageInfo).where(PackageInfo.hospital_id == admin.hospital_id)
         ):
-            if not set(package.included_item_ids or []).issubset(active_item_ids):
-                raise HTTPException(
-                    status_code=422,
-                    detail=f"已上架套餐“{package.package_name}”包含已停用或不存在的检查项目",
+            package_item_ids = list(package.included_item_ids or [])
+            package_exams = [exams_by_id[item_id] for item_id in package_item_ids if item_id in exams_by_id]
+            try:
+                validate_package_item_rows(
+                    package_item_ids,
+                    package_exams,
+                    require_active=package.is_published,
                 )
+            except HTTPException as exc:
+                raise HTTPException(
+                    status_code=exc.status_code,
+                    detail=f"套餐“{package.package_name}”的项目组合无效：{exc.detail}",
+                ) from exc
 
         department_names = {row.key: row.deptName for row in payload.departments}
         gis_versions: dict[str, int] = {}
@@ -1221,36 +1287,21 @@ def resolve_anomaly(
 @router.get("/queues")
 def list_queues(admin: AdminContext = Depends(get_current_admin), db: Session = Depends(get_db)) -> list[dict]:
     now = utcnow()
-    rows = db.execute(
-        select(QueueSnapshot, ExamInfo.item_name)
-        .join(ExamInfo, ExamInfo.item_id == QueueSnapshot.item_id)
-        .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
-        .where(DepartmentInfo.hospital_id == admin.hospital_id, QueueSnapshot.valid_until > now)
-        .order_by(QueueSnapshot.item_id, QueueSnapshot.create_time.desc())
-    ).all()
-    latest: dict[str, dict] = {}
-    for snapshot, item_name in rows:
-        latest.setdefault(snapshot.item_id, queue_dict(snapshot, item_name))
-    return list(latest.values())
-
-
-@router.post("/queues", status_code=status.HTTP_201_CREATED)
-def update_queue(
-    payload: QueueUpdate,
-    admin: AdminContext = Depends(get_current_admin),
-    db: Session = Depends(get_db),
-) -> dict:
-    exam = require_exam(db, admin.hospital_id, payload.itemID)
-    row = QueueSnapshot(
-        item_id=payload.itemID,
-        queue_count=payload.queueCount,
-        estimated_wait_time=payload.estimatedWaitTime,
-        data_source="manual",
-        valid_until=utcnow() + timedelta(minutes=payload.validMinutes),
-    )
-    db.add(row)
-    db.commit()
-    return queue_dict(row, exam.item_name)
+    rows = system_item_queues(db, admin.hospital_id, now=now)
+    return [
+        {
+            "snapshotID": None,
+            "itemID": row.item_id,
+            "itemName": row.item_name,
+            "queueCount": row.queue_count,
+            "activeCount": row.active_count,
+            "estimatedWaitTime": row.estimated_wait_time,
+            "dataSource": "system",
+            "validUntil": None,
+            "createTime": iso(now),
+        }
+        for row in sorted(rows.values(), key=lambda item: (item.item_name, item.item_id))
+    ]
 
 
 def current_flow(db: Session, hospital_id: str) -> list[dict]:
@@ -1270,43 +1321,126 @@ def current_flow(db: Session, hospital_id: str) -> list[dict]:
         }
         for row in departments
     }
-    now = utcnow()
-    queue_rows = db.execute(
-        select(QueueSnapshot, ExamInfo.dept_id)
-        .join(ExamInfo, ExamInfo.item_id == QueueSnapshot.item_id)
-        .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
-        .where(DepartmentInfo.hospital_id == hospital_id, QueueSnapshot.valid_until > now)
-        .order_by(QueueSnapshot.item_id, QueueSnapshot.create_time.desc())
-    ).all()
-    seen_items: set[str] = set()
-    for snapshot, dept_id in queue_rows:
-        if snapshot.item_id in seen_items:
-            continue
-        seen_items.add(snapshot.item_id)
-        by_id[dept_id]["queueCount"] += snapshot.queue_count
-        by_id[dept_id]["estimatedWaitTime"] = max(
-            by_id[dept_id]["estimatedWaitTime"], snapshot.estimated_wait_time
-        )
-    active_rows = db.execute(
-        select(ExamInfo.dept_id, func.count())
-        .select_from(PlanExecutionDetail)
-        .join(ExamPlan, ExamPlan.plan_id == PlanExecutionDetail.plan_id)
-        .join(ExamInfo, ExamInfo.item_id == PlanExecutionDetail.item_id)
-        .where(ExamPlan.hospital_id == hospital_id, PlanExecutionDetail.exec_status == "进行中")
-        .group_by(ExamInfo.dept_id)
-    ).all()
-    for dept_id, count in active_rows:
+    for dept_id, state in system_department_queues(db, hospital_id).items():
         if dept_id in by_id:
-            by_id[dept_id]["activeCount"] = count
+            by_id[dept_id]["queueCount"] = state.waiting_count
+            by_id[dept_id]["activeCount"] = state.active_count
+            by_id[dept_id]["estimatedWaitTime"] = state.estimated_wait_time
     for item in by_id.values():
         item["peopleFlow"] = item["queueCount"] + item["activeCount"]
     return list(by_id.values())
 
 
+@router.get("/plans")
+def list_hospital_plans(
+    date_scope: str = Query(default="today", alias="date", pattern="^(today|all)$"),
+    plan_status: str = Query(default="all", alias="status", max_length=20),
+    query: str = Query(default="", max_length=100),
+    limit: int = Query(default=200, ge=1, le=500),
+    offset: int = Query(default=0, ge=0),
+    admin: AdminContext = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+) -> dict:
+    allowed_statuses = {"all", "待执行", "进行中", "已中断", "已完成", "已结束"}
+    if plan_status not in allowed_statuses:
+        raise HTTPException(status_code=422, detail="计划状态筛选值无效")
+
+    service_time = func.coalesce(ExamPlan.appointment_at, ExamPlan.generate_time)
+    filters = [ExamPlan.hospital_id == admin.hospital_id]
+    if date_scope == "today":
+        start, end = local_day_bounds_utc(utcnow())
+        filters.extend([service_time >= start, service_time < end])
+    if plan_status != "all":
+        filters.append(ExamPlan.plan_status == plan_status)
+    clean_query = query.strip()
+    if clean_query:
+        filters.append(
+            or_(
+                ExamPlan.plan_id.contains(clean_query, autoescape=True),
+                UserInfo.name.contains(clean_query, autoescape=True),
+                UserInfo.phone.contains(clean_query, autoescape=True),
+            )
+        )
+
+    total = db.scalar(
+        select(func.count())
+        .select_from(ExamPlan)
+        .join(UserInfo, UserInfo.user_id == ExamPlan.user_id)
+        .where(*filters)
+    ) or 0
+    rows = db.execute(
+        select(ExamPlan, UserInfo, PackageInfo)
+        .join(UserInfo, UserInfo.user_id == ExamPlan.user_id)
+        .outerjoin(PackageInfo, PackageInfo.package_id == ExamPlan.package_id)
+        .where(*filters)
+        .order_by(service_time.desc(), ExamPlan.generate_time.desc(), ExamPlan.plan_id)
+        .limit(limit)
+        .offset(offset)
+    ).all()
+
+    plan_ids = [plan.plan_id for plan, _user, _package in rows]
+    details_by_plan: dict[str, list[tuple[PlanExecutionDetail, ExamInfo, DepartmentInfo]]] = {}
+    if plan_ids:
+        detail_rows = db.execute(
+            select(PlanExecutionDetail, ExamInfo, DepartmentInfo)
+            .join(ExamInfo, ExamInfo.item_id == PlanExecutionDetail.item_id)
+            .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
+            .where(PlanExecutionDetail.plan_id.in_(plan_ids))
+            .order_by(PlanExecutionDetail.plan_id, PlanExecutionDetail.step_order)
+        ).all()
+        for detail_row in detail_rows:
+            details_by_plan.setdefault(detail_row[0].plan_id, []).append(detail_row)
+
+    items = []
+    for plan, user, package in rows:
+        details = details_by_plan.get(plan.plan_id, [])
+        completed = sum(detail.exec_status == "已完成" for detail, _exam, _department in details)
+        current = next(
+            (row for row in details if row[0].exec_status == "进行中"),
+            next((row for row in details if row[0].exec_status == "待开始"), None),
+        )
+        items.append(
+            {
+                "planID": plan.plan_id,
+                "patient": {
+                    "userID": user.user_id,
+                    "name": user.name,
+                    "phone": user.phone,
+                },
+                "packageName": package.package_name if package else "自选项目",
+                "appointmentAt": iso(plan.appointment_at),
+                "serviceAt": iso(plan.appointment_at or plan.generate_time),
+                "generatedAt": iso(plan.generate_time),
+                "status": plan.plan_status,
+                "completedSteps": completed,
+                "totalSteps": len(details),
+                "progress": round(completed / len(details) * 100) if details else 0,
+                "currentStep": (
+                    {
+                        "detailID": current[0].detail_id,
+                        "itemID": current[1].item_id,
+                        "itemName": current[1].item_name,
+                        "department": current[2].dept_name,
+                        "status": current[0].exec_status,
+                        "estimatedStart": iso(current[0].estimated_start),
+                    }
+                    if current
+                    else None
+                ),
+            }
+        )
+    return {
+        "items": items,
+        "total": total,
+        "limit": limit,
+        "offset": offset,
+        "date": date_scope,
+    }
+
+
 @router.get("/dashboard/summary")
 def dashboard_summary(admin: AdminContext = Depends(get_current_admin), db: Session = Depends(get_db)) -> dict:
     now = utcnow()
-    today = hospital_local_date(now).isoformat()
     start, end = local_day_bounds_utc(now)
     departments = db.scalars(select(DepartmentInfo).where(DepartmentInfo.hospital_id == admin.hospital_id)).all()
     unresolved = db.scalar(
@@ -1315,22 +1449,30 @@ def dashboard_summary(admin: AdminContext = Depends(get_current_admin), db: Sess
         .join(DepartmentInfo, DepartmentInfo.dept_id == AnomalyReport.dept_id)
         .where(DepartmentInfo.hospital_id == admin.hospital_id, AnomalyReport.is_resolved.is_(False))
     ) or 0
+    service_time = func.coalesce(ExamPlan.appointment_at, ExamPlan.generate_time)
     plan_counts = dict(
         db.execute(
             select(ExamPlan.plan_status, func.count())
             .where(
                 ExamPlan.hospital_id == admin.hospital_id,
-                ExamPlan.generate_time >= start,
-                ExamPlan.generate_time < end,
+                service_time >= start,
+                service_time < end,
             )
             .group_by(ExamPlan.plan_status)
         ).all()
     )
-    wait_stats = db.execute(
-        select(func.avg(DepartmentWaitingStats.avg_wait_time), func.sum(DepartmentWaitingStats.total_served))
-        .join(DepartmentInfo, DepartmentInfo.dept_id == DepartmentWaitingStats.dept_id)
-        .where(DepartmentInfo.hospital_id == admin.hospital_id, DepartmentWaitingStats.stat_date == today)
-    ).one()
+    flow = current_flow(db, admin.hospital_id)
+    active_flow = [row for row in flow if row["peopleFlow"] > 0]
+    today_served = db.scalar(
+        select(func.count())
+        .select_from(PlanExecutionDetail)
+        .join(ExamPlan, ExamPlan.plan_id == PlanExecutionDetail.plan_id)
+        .where(
+            ExamPlan.hospital_id == admin.hospital_id,
+            PlanExecutionDetail.actual_end >= start,
+            PlanExecutionDetail.actual_end < end,
+        )
+    ) or 0
     return {
         "metrics": {
             "todayPlans": sum(plan_counts.values()),
@@ -1339,10 +1481,12 @@ def dashboard_summary(admin: AdminContext = Depends(get_current_admin), db: Sess
             "openDepartments": sum(1 for row in departments if row.is_available),
             "departmentCount": len(departments),
             "unresolvedAnomalies": unresolved,
-            "averageWaitSeconds": round(float(wait_stats[0] or 0)),
-            "todayServed": int(wait_stats[1] or 0),
+            "averageWaitSeconds": round(
+                sum(row["estimatedWaitTime"] for row in active_flow) / len(active_flow)
+            ) if active_flow else 0,
+            "todayServed": int(today_served),
         },
-        "flow": current_flow(db, admin.hospital_id),
+        "flow": flow,
         "generatedAt": iso(utcnow()),
     }
 

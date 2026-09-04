@@ -39,7 +39,9 @@ Page({
   async loadPlans({ silent = false } = {}) {
     if (!silent) this.setData({ loading: true })
     try {
-      this.applyPlans(await api.plans.list())
+      const plans = await api.plans.list()
+      if (plans !== this._sourcePlans) this.applyPlans(plans)
+      else if (this.data.loading) this.setData({ loading: false })
       this._loaded = true
     }
     catch (error) { this.setData({ loading: false }); api.showError(error) }
@@ -47,6 +49,7 @@ Page({
 
   applyPlans(rows) {
     const source = Array.isArray(rows) ? rows : []
+    this._sourcePlans = rows
     this._planByID = new Map(source.map(plan => [plan.planID || plan.id, plan]))
     const plans = source.filter(plan => !plan.finished && plan.planStatus !== '已完成').map(plan => this.normalizePlan(plan)).sort((a, b) => a.sortTime - b.sortTime)
     const history = source.filter(plan => plan.finished || ['已完成', '已结束'].includes(plan.planStatus)).map(plan => this.normalizeHistory(plan)).sort((a, b) => b.sortTime - a.sortTime)
@@ -74,7 +77,11 @@ Page({
   },
 
   setTab(e) {
-    const activeTab = e.currentTarget.dataset.tab
+    this.selectRecordTab(e.currentTarget.dataset.tab)
+  },
+
+  selectRecordTab(activeTab) {
+    if (activeTab !== 'appointments' && activeTab !== 'history') return
     this.setData({ activeTab, contentEmpty: activeTab === 'appointments' ? !this.data.hasPlans : !this.data.hasHistory })
   },
 

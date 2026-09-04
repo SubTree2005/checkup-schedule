@@ -11,6 +11,7 @@ from checkup_scheduler import (
     PatientState,
     PlannerConfig,
     QueueWaitUpdated,
+    TimeWindow,
     TravelTimeMatrix,
     build_schedule,
 )
@@ -178,6 +179,63 @@ class PlannerTests(unittest.TestCase):
                 departments(a=-1),
                 TravelTimeMatrix(),
             )
+
+    def test_respects_patient_department_and_exam_windows(self):
+        patient = PatientState(
+            "p1",
+            (
+                Exam(
+                    "a",
+                    "a",
+                    20,
+                    allowed_windows=(
+                        TimeWindow(NOW + timedelta(hours=1), NOW + timedelta(hours=3)),
+                    ),
+                ),
+            ),
+            NOW,
+            "lobby",
+            availability_windows=(
+                TimeWindow(NOW, NOW + timedelta(hours=2)),
+            ),
+        )
+        department = DepartmentState(
+            "a",
+            NOW,
+            service_windows=(
+                TimeWindow(
+                    NOW + timedelta(hours=1, minutes=30),
+                    NOW + timedelta(hours=4),
+                ),
+            ),
+        )
+
+        result = build_schedule(patient, {"a": department}, TravelTimeMatrix())
+
+        self.assertTrue(result.feasible)
+        self.assertEqual(result.steps[0].start_at, NOW + timedelta(hours=1, minutes=30))
+
+    def test_rejects_exam_when_configured_windows_do_not_overlap(self):
+        patient = PatientState(
+            "p1",
+            (
+                Exam(
+                    "a",
+                    "a",
+                    10,
+                    allowed_windows=(
+                        TimeWindow(NOW + timedelta(hours=2), NOW + timedelta(hours=3)),
+                    ),
+                ),
+            ),
+            NOW,
+            "lobby",
+            availability_windows=(TimeWindow(NOW, NOW + timedelta(hours=1)),),
+        )
+
+        result = build_schedule(patient, departments(a=0), TravelTimeMatrix())
+
+        self.assertFalse(result.feasible)
 
 
 class DynamicSchedulerTests(unittest.TestCase):

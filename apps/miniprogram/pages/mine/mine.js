@@ -1,5 +1,7 @@
 const api = require('../../utils/api')
+const { navigationMetrics } = require('../../utils/layout')
 const app = getApp()
+const navigation = navigationMetrics()
 
 function maskPhone(value) {
   const phone = String(value || '')
@@ -7,16 +9,20 @@ function maskPhone(value) {
 }
 
 Page({
-  data: { hasUserInfo: false, displayName: '未登录用户', avatarUrl: '../../addpicture/icons/icon-user.png', maskedPhone: '' },
+  data: { ...navigation, hasUserInfo: false, displayName: '未登录用户', avatarUrl: '../../addpicture/icons/icon-user.png', maskedPhone: '' },
 
   onShow() {
     const tabBar = typeof this.getTabBar === 'function' ? this.getTabBar() : null
-    if (tabBar) tabBar.setData({ selected: 2 })
-    if (!wx.getStorageSync('patientToken')) return this.renderUser(null)
+    if (tabBar && typeof tabBar.select === 'function') tabBar.select(2)
+    const token = wx.getStorageSync('patientToken')
+    if (!token) return this.renderUser(null)
+    this.renderUser(app.globalData.userInfo || wx.getStorageSync('userInfo') || null)
     api.auth.me().then(payload => {
+      if (wx.getStorageSync('patientToken') !== token) return
       app.applyUser(payload)
       this.renderUser(payload)
     }).catch(error => {
+      if (wx.getStorageSync('patientToken') !== token) return
       if (error && error.statusCode === 401) {
         app.clearLoginState()
         this.renderUser(null)
@@ -28,12 +34,19 @@ Page({
   },
 
   renderUser(payload) {
-    this.setData({
+    const next = {
       hasUserInfo: !!payload,
       displayName: payload ? payload.name : '未登录用户',
       avatarUrl: payload && payload.avatarUrl ? payload.avatarUrl : '../../addpicture/icons/icon-user.png',
       maskedPhone: payload ? maskPhone(payload.phone) : ''
-    })
+    }
+    if (
+      next.hasUserInfo === this.data.hasUserInfo
+      && next.displayName === this.data.displayName
+      && next.avatarUrl === this.data.avatarUrl
+      && next.maskedPhone === this.data.maskedPhone
+    ) return
+    this.setData(next)
   },
 
   requireLogin() {

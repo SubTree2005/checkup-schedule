@@ -173,6 +173,7 @@ class ExamPlan(Base):
     record_id: Mapped[str | None] = mapped_column("recordID", ForeignKey("user_status_info.recordID", ondelete="SET NULL"), nullable=True)
     selected_item_ids: Mapped[list] = mapped_column("selectedItemIDs", JSON, default=list)
     total_duration: Mapped[int] = mapped_column("totalDuration", Integer, default=0)
+    appointment_at: Mapped[datetime | None] = mapped_column("appointmentAt", DateTime, nullable=True)
     generate_time: Mapped[datetime] = mapped_column("generateTime", DateTime, default=utcnow)
     plan_status: Mapped[str] = mapped_column("planStatus", String(20), default="待执行")
 
@@ -361,5 +362,17 @@ class HospitalGIS(Base):
 
 
 Index("ix_plan_hospital_status", ExamPlan.hospital_id, ExamPlan.plan_status)
+Index(
+    "ix_plan_hospital_appointment_status",
+    ExamPlan.hospital_id,
+    ExamPlan.appointment_at,
+    ExamPlan.plan_status,
+)
 Index("ix_resource_dept_date", DepartmentResourceCalendar.dept_id, DepartmentResourceCalendar.date)
 Index("ix_wechat_reminder_due", WechatReminder.status, WechatReminder.next_attempt_at)
+Index(
+    "ix_queue_snapshot_item_valid_created",
+    QueueSnapshot.item_id,
+    QueueSnapshot.valid_until,
+    QueueSnapshot.create_time,
+)

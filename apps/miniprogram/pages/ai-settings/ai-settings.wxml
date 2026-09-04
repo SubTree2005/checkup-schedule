@@ -4,8 +4,8 @@
   <view class="settings-content">
     <view class="section-label">模型服务</view>
     <view class="settings-card api-entry" bindtap="openApiSettings" role="button">
-      <view><view class="entry-title">系统默认模型</view><view class="entry-subtitle">DeepSeek V4 Flash · 密钥由服务端保护</view></view>
-      <view class="entry-side"><text>{{apiStatusText}}</text><text class="entry-arrow">›</text></view>
+      <view class="entry-title">{{modelName}}</view>
+      <view class="entry-side"><text class="entry-arrow">›</text></view>
     </view>
 
     <view class="section-label history-label">历史会话</view>

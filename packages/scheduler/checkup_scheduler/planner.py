@@ -15,6 +15,7 @@ from .models import (
     PlanStep,
     ScheduleMetrics,
     ScheduleResult,
+    TimeWindow,
     TravelTimeMatrix,
 )
 
@@ -133,6 +134,7 @@ def build_schedule(
                 department=departments[exam.department_id],
                 travel_times=travel_times,
                 activity_prediction=activity_prediction,
+                patient_windows=patient.availability_windows,
             )
             if step is None:
                 continue
@@ -194,6 +196,7 @@ def _place_exam(
     department: DepartmentState,
     travel_times: TravelTimeMatrix,
     activity_prediction: PersonalActivityPrediction | None,
+    patient_windows: tuple[TimeWindow, ...],
 ) -> PlanStep | None:
     if not department.accepting_patients and department.available_from is None:
         return None
@@ -211,7 +214,25 @@ def _place_exam(
     start = max(arrival, ready_at)
     if exam.earliest_start is not None:
         start = max(start, exam.earliest_start)
-    finish = start + timedelta(minutes=exam.duration_minutes)
+    duration = timedelta(minutes=exam.duration_minutes)
+    windows = _effective_windows(
+        patient_windows,
+        department.service_windows,
+        exam.allowed_windows,
+    )
+    if windows is not None:
+        placement = next(
+            (
+                max(start, window.start)
+                for window in windows
+                if max(start, window.start) + duration <= window.end
+            ),
+            None,
+        )
+        if placement is None:
+            return None
+        start = placement
+    finish = start + duration
     if exam.latest_finish is not None and finish > exam.latest_finish:
         return None
 
@@ -224,6 +245,64 @@ def _place_exam(
         start_at=start,
         finish_at=finish,
     )
+
+
+def _effective_windows(
+    patient_windows: tuple[TimeWindow, ...],
+    department_windows: tuple[TimeWindow, ...],
+    exam_windows: tuple[TimeWindow, ...],
+) -> tuple[TimeWindow, ...] | None:
+    """Intersect every explicitly configured availability group.
+
+    An empty group means that layer imposes no extra restriction, matching the
+    batch scheduler contract.  An empty result after intersecting non-empty
+    groups means there is no feasible time for the examination.
+    """
+
+    configured = [
+        _normalize_windows(group)
+        for group in (patient_windows, department_windows, exam_windows)
+        if group
+    ]
+    if not configured:
+        return None
+    result = configured[0]
+    for group in configured[1:]:
+        result = _intersect_windows(result, group)
+        if not result:
+            break
+    return result
+
+
+def _normalize_windows(windows: tuple[TimeWindow, ...]) -> tuple[TimeWindow, ...]:
+    merged: list[TimeWindow] = []
+    for window in sorted(windows):
+        if not merged or merged[-1].end < window.start:
+            merged.append(window)
+        else:
+            merged[-1] = TimeWindow(
+                merged[-1].start,
+                max(merged[-1].end, window.end),
+            )
+    return tuple(merged)
+
+
+def _intersect_windows(
+    left: tuple[TimeWindow, ...],
+    right: tuple[TimeWindow, ...],
+) -> tuple[TimeWindow, ...]:
+    result: list[TimeWindow] = []
+    left_index = right_index = 0
+    while left_index < len(left) and right_index < len(right):
+        start = max(left[left_index].start, right[right_index].start)
+        end = min(left[left_index].end, right[right_index].end)
+        if start < end:
+            result.append(TimeWindow(start, end))
+        if left[left_index].end <= right[right_index].end:
+            left_index += 1
+        else:
+            right_index += 1
+    return tuple(result)
 
 
 def _validate(

@@ -1,5 +1,5 @@
-<view class="home-page tab-page safe-top">
-  <view class="home-topbar"><image class="home-logo" src="../../addpicture/logo.png" mode="widthFix"></image></view>
+<view class="home-page tab-page safe-top" style="padding-top: {{statusBarHeight}}px;">
+  <view class="home-topbar" style="height: {{navigationBarHeight}}px;"><image class="home-logo" src="../../addpicture/logo.png" mode="widthFix"></image></view>
 
   <view wx:if="{{!hasHomeContent}}" class="empty-home">
     <view class="plan-orb-wrap"><view class="plan-orb-halo"></view><view class="plan-orb" bindtap="goStart" role="button" aria-label="开始体检"><view class="plan-orb-label">开始体检</view></view></view>
@@ -14,7 +14,7 @@
       <view class="progress-row"><view><text class="progress-strong">{{completedSteps}}</text><text class="progress-total"> / {{totalSteps}} 项已完成</text></view><view class="progress-percent">{{progress}}%</view></view>
       <view class="progress-track" aria-label="体检进度 {{progress}}%"><view class="progress-fill" style="width: {{progress}}%;"></view></view>
       <scroll-view class="timeline-scroll" scroll-x="true" enable-flex="true" scroll-left="{{timelineScrollLeft}}" show-scrollbar="false">
-        <view class="timeline"><view class="timeline-line"></view><view class="timeline-step step-{{item.state}}" wx:for="{{timelineSteps}}" wx:key="detailID"><view class="step-dot"><image wx:if="{{item.state === 'done'}}" class="step-check" src="../../addpicture/icons/icon-check.png" mode="aspectFit"></image></view><view class="step-name"><view class="step-name-track {{item.scrollName ? 'is-scrolling' : ''}}"><text>{{item.title}}</text><text wx:if="{{item.scrollName}}" class="step-name-copy">{{item.title}}</text></view></view><view class="step-time">{{item.time}}</view></view></view>
+        <view class="timeline"><view class="timeline-line"></view><view class="timeline-step step-{{item.state}}" wx:for="{{timelineSteps}}" wx:key="detailID"><view class="step-dot"><image wx:if="{{item.state === 'done'}}" class="step-check" src="../../addpicture/icons/icon-check.png" mode="aspectFit"></image></view><view class="step-name">{{item.title}}</view><view class="step-time">{{item.time}}</view></view></view>
       </scroll-view>
       <view wx:if="{{currentMessage}}" class="current-message">{{currentMessage}}</view>
       <button class="primary-btn plan-primary" style="width: 100%; margin-left: 0; margin-right: 0;" bindtap="handlePrimary">{{primaryActionText}}</button>

@@ -16,6 +16,8 @@ from checkup_scheduler import (
     BatchPlannerConfig,
     DepartmentState,
     Exam,
+    MedicalEligibilityRule,
+    MedicalRuleContext,
     PatientState,
     TimeWindow,
     TravelTimeMatrix,
@@ -43,7 +45,6 @@ from .models import (
     HospitalSettings,
     PackageInfo,
     PlanExecutionDetail,
-    QueueSnapshot,
     UserConsent,
     UserInfo,
     UserMobilityProfile,
@@ -51,8 +52,16 @@ from .models import (
     UserStatusInfo,
     utcnow,
 )
+from .queue_state import ItemQueueState, system_department_queues
 from .schemas import LoginRequest, PatientAccountDelete, PatientPlanCreate, PatientProfileUpdate, PatientRegister
-from .security import hash_password, issue_session, revoke_session, session_digest, verify_password
+from .security import (
+    hash_password,
+    issue_session,
+    revoke_session,
+    session_digest,
+    verify_login_password,
+    verify_password,
+)
 from .serializers import hospital_dict, iso
 from .wechat_reminders import WechatConfigurationError, create_plan_reminder
 
@@ -67,6 +76,59 @@ class PatientContext:
     user_id: str
     name: str
     phone: str
+
+
+@dataclass(frozen=True)
+class PatientPreparationRule:
+    prerequisites_by_item: dict[str, dict]
+    profile: dict
+    reference_at: datetime | None = None
+    allow_future_fasting: bool = False
+    enforce_current_bladder: bool = True
+
+    def rejection_for(self, item_id: str, *, proposed_start: datetime | None = None) -> str | None:
+        prerequisites = self.prerequisites_by_item.get(item_id) or {}
+        reasons: list[str] = []
+        required_fasting = prerequisites.get("fastingHours", 0)
+        if (
+            isinstance(required_fasting, bool)
+            or not isinstance(required_fasting, (int, float))
+            or not math.isfinite(required_fasting)
+            or required_fasting < 0
+        ):
+            return "检查项目的空腹要求配置无效"
+        fasting_confirmed = self.profile.get("fasting") == "yes"
+        future_preparation_hours = 0.0
+        if self.allow_future_fasting and self.reference_at is not None and proposed_start is not None:
+            future_preparation_hours = max(0.0, (proposed_start - self.reference_at).total_seconds() / 3600)
+        if not fasting_confirmed and required_fasting > future_preparation_hours:
+            reasons.append(f"未确认已满足 {required_fasting:g} 小时空腹要求")
+        if self.enforce_current_bladder and (
+            prerequisites.get("bladderReady")
+            or prerequisites.get("bladderRequired")
+            or prerequisites.get("fullBladder")
+        ) and self.profile.get("bladder") != "normal":
+            reasons.append("未确认已完成饮水憋尿准备")
+        return "、".join(reasons) or None
+
+    def evaluate(self, context: MedicalRuleContext) -> str | None:
+        return self.rejection_for(context.exam.id, proposed_start=context.proposed_start)
+
+
+def _current_preparation_rule(
+    db: Session,
+    user_id: str,
+    exam_rows: list[tuple[ExamInfo, DepartmentInfo]],
+) -> PatientPreparationRule:
+    status_record = _latest_status(db, user_id)
+    profile = dict(status_record.profile_data or {}) if status_record else {}
+    if status_record:
+        profile["fasting"] = "yes" if status_record.fasting_hours >= 8 else "no"
+        profile["bladder"] = "normal" if status_record.is_bladder_ready else "recentUrination"
+    return PatientPreparationRule(
+        {exam.item_id: dict(exam.prerequisites or {}) for exam, _department in exam_rows},
+        profile,
+    )
 
 
 def _bearer_token(authorization: str | None, cookie_token: str | None = None) -> str | None:
@@ -181,25 +243,29 @@ def register_patient(
         role="普通用户",
     )
     db.add(user)
-    db.flush()
-    db.add(
-        UserConsent(
-            user_id=user.user_id,
-            policy_version=PRIVACY_POLICY_VERSION,
-            accepted_ip=client_ip(request),
+    try:
+        db.flush()
+        db.add(
+            UserConsent(
+                user_id=user.user_id,
+                policy_version=PRIVACY_POLICY_VERSION,
+                accepted_ip=client_ip(request),
+            )
         )
-    )
-    db.add(
-        UserStatusInfo(
-            user_id=user.user_id,
-            profile_data={
-                "medicalHistory": payload.medicalHistory.strip() or "-",
-                "allergens": payload.allergens.strip() or "-",
-            },
+        db.add(
+            UserStatusInfo(
+                user_id=user.user_id,
+                profile_data={
+                    "medicalHistory": payload.medicalHistory.strip() or "-",
+                    "allergens": payload.allergens.strip() or "-",
+                },
+            )
         )
-    )
-    token = issue_session(db, user.user_id, client_ip(request))
-    db.commit()
+        token = issue_session(db, user.user_id, client_ip(request))
+        db.commit()
+    except IntegrityError as exc:
+        db.rollback()
+        raise HTTPException(status_code=409, detail="该手机号已注册") from exc
     _set_patient_cookie(response, token)
     return {"token": token, "user": _profile_dict(db, user)}
 
@@ -213,7 +279,8 @@ def login_patient(
 ) -> dict:
     user = db.scalar(select(UserInfo).where(UserInfo.phone == payload.phone))
     is_admin = user and db.scalar(select(HospitalAdmin.user_id).where(HospitalAdmin.user_id == user.user_id))
-    if user is None or is_admin or user.role == "演示患者" or not verify_password(payload.password, user.password):
+    eligible_password = user.password if user is not None and not is_admin and user.role == "普通用户" else None
+    if not verify_login_password(payload.password, eligible_password):
         raise HTTPException(status_code=401, detail="手机号或密码错误")
     token = issue_session(db, user.user_id, client_ip(request))
     db.commit()
@@ -275,6 +342,8 @@ def update_profile(
 ) -> dict:
     user = db.get(UserInfo, patient.user_id)
     data = payload.model_dump(exclude_unset=True)
+    if data.get("name", "") is None or data.get("phone", "") is None:
+        raise HTTPException(status_code=422, detail="姓名和手机号不能设为空值")
     field_mapping = {"name": "name", "gender": "gender", "phone": "phone", "avatarUrl": "avatar_url"}
     for field, attribute in field_mapping.items():
         if field in data:
@@ -322,21 +391,18 @@ def _parse_appointment(value: object) -> datetime | None:
 
 
 def _appointment_counts(db: Session, hospital_id: str) -> dict[tuple[str, str], int]:
-    rows = db.execute(
-        select(ExamPlan, UserStatusInfo)
-        .outerjoin(UserStatusInfo, UserStatusInfo.record_id == ExamPlan.record_id)
+    appointments = db.scalars(
+        select(ExamPlan.appointment_at)
         .where(
             ExamPlan.hospital_id == hospital_id,
             ExamPlan.plan_status.notin_(["已完成", "已结束"]),
+            ExamPlan.appointment_at.is_not(None),
         )
     ).all()
     counts: dict[tuple[str, str], int] = {}
     timezone_local = hospital_timezone()
-    for _plan, status_record in rows:
-        appointment = _parse_appointment((status_record.profile_data or {}).get("appointmentAt") if status_record else None)
-        if appointment is None:
-            continue
-        local = appointment.astimezone(timezone_local)
+    for appointment in appointments:
+        local = appointment.replace(tzinfo=timezone.utc).astimezone(timezone_local)
         key = (local.strftime("%Y-%m-%d"), local.strftime("%H:%M"))
         counts[key] = counts.get(key, 0) + 1
     return counts
@@ -359,8 +425,11 @@ def _appointment_dates(
     now_local = utcnow().replace(tzinfo=timezone.utc).astimezone(timezone_local)
     counts = _appointment_counts(db, hospital.hospital_id)
     dates = []
+    weekdays_only = "工作日" in (hospital.open_time or "")
     for offset in range(days_ahead):
         local_day = now_local.date() + timedelta(days=offset)
+        if weekdays_only and local_day.weekday() >= 5:
+            continue
         slots = []
         for start_text, end_text in ranges:
             start_local = datetime.combine(local_day, time.fromisoformat(start_text), tzinfo=timezone_local)
@@ -425,9 +494,17 @@ def list_patient_hospitals(
     db: Session = Depends(get_db),
 ) -> list[dict]:
     hospitals = db.scalars(select(HospitalInfo).order_by(HospitalInfo.hospital_name)).all()
+    settings_by_hospital = {
+        settings.hospital_id: settings
+        for settings in db.scalars(
+            select(HospitalSettings).where(
+                HospitalSettings.hospital_id.in_([hospital.hospital_id for hospital in hospitals])
+            )
+        ).all()
+    } if hospitals else {}
     grouped: dict[str, dict] = {}
     for row in hospitals:
-        settings = get_hospital_settings(db, row.hospital_id)
+        settings = settings_by_hospital.get(row.hospital_id)
         institution_name, campus_name = _hospital_name_parts(row.hospital_name)
         available = settings.is_available if settings else True
         details = hospital_dict(row, settings)
@@ -495,7 +572,8 @@ def _exam_catalog_dict(exam: ExamInfo, department: DepartmentInfo) -> dict:
         "duration": exam.duration,
         "fastingRequired": bool(prerequisites.get("fastingHours", 0)),
         "bladderRequired": bool(
-            prerequisites.get("bladderRequired", False)
+            prerequisites.get("bladderReady", False)
+            or prerequisites.get("bladderRequired", False)
             or prerequisites.get("fullBladder", False)
         ),
         "isCritical": exam.is_critical,
@@ -619,21 +697,10 @@ def _department_windows(
 
 
 def _latest_department_waits(db: Session, hospital_id: str, now: datetime) -> dict[str, int]:
-    rows = db.execute(
-        select(QueueSnapshot, ExamInfo.dept_id)
-        .join(ExamInfo, ExamInfo.item_id == QueueSnapshot.item_id)
-        .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
-        .where(DepartmentInfo.hospital_id == hospital_id, QueueSnapshot.valid_until > now)
-        .order_by(QueueSnapshot.item_id, QueueSnapshot.create_time.desc())
-    ).all()
-    waits: dict[str, int] = {}
-    seen: set[str] = set()
-    for snapshot, department_id in rows:
-        if snapshot.item_id in seen:
-            continue
-        seen.add(snapshot.item_id)
-        waits[department_id] = max(waits.get(department_id, 0), math.ceil(snapshot.estimated_wait_time / 60))
-    return waits
+    return {
+        department_id: math.ceil(state.estimated_wait_time / 60)
+        for department_id, state in system_department_queues(db, hospital_id, now=now).items()
+    }
 
 
 def _travel_matrix(db: Session, hospital_id: str, walk_speed: float) -> TravelTimeMatrix:
@@ -658,6 +725,7 @@ def _run_scheduler(
     satisfied_item_ids: set[str] | None = None,
     available_at: datetime | None = None,
     location_id: str = "entrance",
+    medical_rules: tuple[MedicalEligibilityRule, ...] = (),
 ):
     now = utcnow()
     hospital_windows = _parse_open_windows(hospital, max(now, available_at or now))
@@ -715,53 +783,95 @@ def _run_scheduler(
         _travel_matrix(db, hospital.hospital_id, user.walk_speed),
         TimeWindow(planning_start, planning_end),
         config=BatchPlannerConfig(wait_oriented=True),
+        medical_rules=medical_rules,
     )
 
 
-def _require_owned_plan(db: Session, user_id: str, plan_id: str) -> ExamPlan:
-    plan = db.scalar(select(ExamPlan).where(ExamPlan.plan_id == plan_id, ExamPlan.user_id == user_id))
+def _require_owned_plan(
+    db: Session,
+    user_id: str,
+    plan_id: str,
+    *,
+    for_update: bool = False,
+) -> ExamPlan:
+    query = select(ExamPlan).where(ExamPlan.plan_id == plan_id, ExamPlan.user_id == user_id)
+    if for_update:
+        query = query.with_for_update()
+    plan = db.scalar(query)
     if plan is None:
         raise HTTPException(status_code=404, detail="体检计划不存在")
     return plan
 
 
-def _queue_by_item(db: Session, item_ids: list[str]) -> dict[str, QueueSnapshot]:
+def _queue_by_item(
+    db: Session,
+    item_ids: list[str],
+    detail_rows: list[tuple[PlanExecutionDetail, ExamInfo, DepartmentInfo]] | None = None,
+) -> dict[str, ItemQueueState]:
     if not item_ids:
         return {}
-    rows = db.scalars(
-        select(QueueSnapshot)
-        .where(QueueSnapshot.item_id.in_(item_ids), QueueSnapshot.valid_until > utcnow())
-        .order_by(QueueSnapshot.item_id, QueueSnapshot.create_time.desc())
-    ).all()
-    result: dict[str, QueueSnapshot] = {}
-    for row in rows:
-        result.setdefault(row.item_id, row)
+    requested_ids = set(item_ids)
+    metadata = {
+        exam.item_id: (exam, department)
+        for _detail, exam, department in (detail_rows or [])
+        if exam.item_id in requested_ids
+    }
+    missing_ids = requested_ids - metadata.keys()
+    if missing_ids:
+        missing_rows = db.execute(
+            select(ExamInfo, DepartmentInfo)
+            .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
+            .where(ExamInfo.item_id.in_(missing_ids))
+        ).all()
+        metadata.update({exam.item_id: (exam, department) for exam, department in missing_rows})
+    hospital_ids = {department.hospital_id for _exam, department in metadata.values()}
+    department_states = {
+        hospital_id: system_department_queues(db, hospital_id, now=utcnow())
+        for hospital_id in hospital_ids
+    }
+    result: dict[str, ItemQueueState] = {}
+    for item_id, (exam, department) in metadata.items():
+        state = department_states[department.hospital_id].get(department.dept_id)
+        result[item_id] = ItemQueueState(
+            item_id=item_id,
+            item_name=exam.item_name,
+            department_id=department.dept_id,
+            queue_count=state.waiting_count if state else 0,
+            active_count=state.active_count if state else 0,
+            estimated_wait_time=state.estimated_wait_time if state else 0,
+        )
     return result
 
 
-def _serialize_plan(db: Session, plan: ExamPlan, *, replanned: bool = False) -> dict:
-    rows = db.execute(
-        select(PlanExecutionDetail, ExamInfo, DepartmentInfo)
-        .join(ExamInfo, ExamInfo.item_id == PlanExecutionDetail.item_id)
-        .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
-        .where(PlanExecutionDetail.plan_id == plan.plan_id)
-        .order_by(PlanExecutionDetail.step_order)
-    ).all()
-    package = db.get(PackageInfo, plan.package_id) if plan.package_id else None
-    status_record = db.get(UserStatusInfo, plan.record_id) if plan.record_id else None
+def _serialize_plan_payload(
+    plan: ExamPlan,
+    rows: list[tuple[PlanExecutionDetail, ExamInfo, DepartmentInfo]],
+    package: PackageInfo | None,
+    status_record: UserStatusInfo | None,
+    queues: dict[str, ItemQueueState],
+    hospital: HospitalInfo | None,
+    hospital_settings: HospitalSettings | None,
+    *,
+    replanned: bool = False,
+) -> dict:
     profile_snapshot = dict(status_record.profile_data or {}) if status_record else {}
     if status_record:
         profile_snapshot.setdefault("fasting", "yes" if status_record.fasting_hours >= 8 else "no")
         profile_snapshot.setdefault("bladder", "normal" if status_record.is_bladder_ready else "recentUrination")
-    selected_ids = list(plan.selected_item_ids or [])
-    queues = _queue_by_item(db, selected_ids)
     completed_at = max((detail.actual_end for detail, _exam, _department in rows if detail.actual_end), default=plan.generate_time)
     completed = sum(detail.exec_status == "已完成" for detail, _exam, _department in rows)
     first_open = next((index for index, (detail, _exam, _department) in enumerate(rows) if detail.exec_status != "已完成"), len(rows))
     steps = []
-    for detail, exam, department in rows:
+    for row_index, (detail, exam, department) in enumerate(rows):
         queue = queues.get(exam.item_id)
         queue_wait = math.ceil(queue.estimated_wait_time / 60) if queue else 0
+        queue_ahead = queue.queue_count if queue else 0
+        if detail.exec_status == "进行中":
+            queue_wait = 0
+            queue_ahead = 0
+        elif plan.plan_status == "进行中" and row_index == first_open and queue:
+            queue_wait = max(0, queue_wait - math.ceil(exam.duration / max(1, department.capacity)))
+            queue_ahead = max(0, queue_ahead - 1)
         prerequisites = exam.prerequisites or {}
         state = (
             "done"
@@ -782,12 +892,13 @@ def _serialize_plan(db: Session, plan: ExamPlan, *, replanned: bool = False) -> 
                 "items": [{"id": exam.item_id, "name": exam.item_name}],
                 "duration": exam.duration,
                 "queueWait": queue_wait,
-                "queueAhead": queue.queue_count if queue else 0,
-                "queuePosition": f"前方约 {queue.queue_count} 人" if queue else "暂无实时数据",
+                "queueAhead": queue_ahead,
+                "queuePosition": f"前方约 {queue_ahead} 人" if queue_ahead else "当前无需排队",
                 "totalDuration": exam.duration + queue_wait,
                 "fasting": bool(prerequisites.get("fastingHours", 0)),
                 "bladderRequired": bool(
-                    prerequisites.get("bladderRequired", False)
+                    prerequisites.get("bladderReady", False)
+                    or prerequisites.get("bladderRequired", False)
                     or prerequisites.get("fullBladder", False)
                 ),
                 "note": "请遵循现场医护人员指引。",
@@ -799,8 +910,6 @@ def _serialize_plan(db: Session, plan: ExamPlan, *, replanned: bool = False) -> 
                 "navigationTarget": {"department": department.dept_name, "locationText": department.location or "请查看院内指引"},
             }
         )
-    hospital = db.get(HospitalInfo, plan.hospital_id)
-    hospital_settings = get_hospital_settings(db, plan.hospital_id) if hospital else None
     return {
         "id": plan.plan_id,
         "planID": plan.plan_id,
@@ -810,7 +919,7 @@ def _serialize_plan(db: Session, plan: ExamPlan, *, replanned: bool = False) -> 
         "hospitalName": hospital.hospital_name if hospital else "",
         "hospitalCoverUrl": hospital_settings.cover_image_url if hospital_settings else None,
         "date": profile_snapshot.get("appointmentDateLabel") or plan.generate_time.strftime("%Y年%m月%d日"),
-        "appointmentAt": profile_snapshot.get("appointmentAt"),
+        "appointmentAt": profile_snapshot.get("appointmentAt") or iso(plan.appointment_at),
         "completedAt": iso(completed_at),
         "generatedAt": iso(plan.generate_time),
         "totalDuration": plan.total_duration,
@@ -830,6 +939,81 @@ def _serialize_plan(db: Session, plan: ExamPlan, *, replanned: bool = False) -> 
     }
 
 
+def _serialize_plan(db: Session, plan: ExamPlan, *, replanned: bool = False) -> dict:
+    rows = db.execute(
+        select(PlanExecutionDetail, ExamInfo, DepartmentInfo)
+        .join(ExamInfo, ExamInfo.item_id == PlanExecutionDetail.item_id)
+        .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
+        .where(PlanExecutionDetail.plan_id == plan.plan_id)
+        .order_by(PlanExecutionDetail.step_order)
+    ).all()
+    package = db.get(PackageInfo, plan.package_id) if plan.package_id else None
+    status_record = db.get(UserStatusInfo, plan.record_id) if plan.record_id else None
+    queues = _queue_by_item(db, list(plan.selected_item_ids or []), rows)
+    hospital = db.get(HospitalInfo, plan.hospital_id)
+    hospital_settings = get_hospital_settings(db, plan.hospital_id) if hospital else None
+    return _serialize_plan_payload(
+        plan,
+        rows,
+        package,
+        status_record,
+        queues,
+        hospital,
+        hospital_settings,
+        replanned=replanned,
+    )
+
+
+def _serialize_plans(db: Session, plans: list[ExamPlan]) -> list[dict]:
+    if not plans:
+        return []
+    plan_ids = [plan.plan_id for plan in plans]
+    rows_by_plan: dict[str, list[tuple[PlanExecutionDetail, ExamInfo, DepartmentInfo]]] = {}
+    detail_rows = db.execute(
+        select(PlanExecutionDetail, ExamInfo, DepartmentInfo)
+        .join(ExamInfo, ExamInfo.item_id == PlanExecutionDetail.item_id)
+        .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
+        .where(PlanExecutionDetail.plan_id.in_(plan_ids))
+        .order_by(PlanExecutionDetail.plan_id, PlanExecutionDetail.step_order)
+    ).all()
+    for row in detail_rows:
+        rows_by_plan.setdefault(row[0].plan_id, []).append(row)
+
+    package_ids = {plan.package_id for plan in plans if plan.package_id}
+    packages = {
+        package.package_id: package
+        for package in db.scalars(select(PackageInfo).where(PackageInfo.package_id.in_(package_ids))).all()
+    } if package_ids else {}
+    record_ids = {plan.record_id for plan in plans if plan.record_id}
+    status_records = {
+        record.record_id: record
+        for record in db.scalars(select(UserStatusInfo).where(UserStatusInfo.record_id.in_(record_ids))).all()
+    } if record_ids else {}
+    hospital_ids = {plan.hospital_id for plan in plans}
+    hospitals = {
+        hospital.hospital_id: hospital
+        for hospital in db.scalars(select(HospitalInfo).where(HospitalInfo.hospital_id.in_(hospital_ids))).all()
+    }
+    hospital_settings = {
+        settings.hospital_id: settings
+        for settings in db.scalars(select(HospitalSettings).where(HospitalSettings.hospital_id.in_(hospital_ids))).all()
+    }
+    item_ids = list({item_id for plan in plans for item_id in (plan.selected_item_ids or [])})
+    queues = _queue_by_item(db, item_ids, detail_rows)
+    return [
+        _serialize_plan_payload(
+            plan,
+            rows_by_plan.get(plan.plan_id, []),
+            packages.get(plan.package_id),
+            status_records.get(plan.record_id),
+            queues,
+            hospitals.get(plan.hospital_id),
+            hospital_settings.get(plan.hospital_id),
+        )
+        for plan in plans
+    ]
+
+
 @router.post("/plans", status_code=status.HTTP_201_CREATED)
 def create_patient_plan(
     payload: PatientPlanCreate,
@@ -837,6 +1021,7 @@ def create_patient_plan(
     patient: PatientContext = Depends(get_current_patient),
     db: Session = Depends(get_db),
 ) -> dict:
+    requested_at = utcnow()
     hospital = db.get(HospitalInfo, payload.hospitalID)
     if hospital is None:
         raise HTTPException(status_code=404, detail="医院不存在")
@@ -850,7 +1035,7 @@ def create_patient_plan(
     appointment_at = payload.appointmentAt
     if appointment_at and appointment_at.tzinfo is not None:
         appointment_at = appointment_at.astimezone(timezone.utc).replace(tzinfo=None)
-    if appointment_at and appointment_at <= utcnow():
+    if appointment_at and appointment_at <= requested_at:
         raise HTTPException(status_code=422, detail="预约时间必须晚于当前时间")
     if appointment_at:
         # Serialize bookings per hospital on MySQL so two simultaneous requests
@@ -862,6 +1047,11 @@ def create_patient_plan(
             .with_for_update()
         )
         _require_available_appointment(db, hospital, settings, appointment_at)
+    user_query = select(UserInfo).where(UserInfo.user_id == patient.user_id)
+    if appointment_at is None:
+        # MySQL row locking serializes the active-plan uniqueness check for this patient.
+        user_query = user_query.with_for_update()
+    user = db.scalar(user_query)
     if appointment_at is None and db.scalar(
         select(ExamPlan.plan_id).where(
             ExamPlan.user_id == patient.user_id,
@@ -884,7 +1074,6 @@ def create_patient_plan(
     if not item_ids or any(item_id not in owned for item_id in item_ids):
         raise HTTPException(status_code=422, detail="检查项目不属于所选医院或已停用")
     selected_rows = [owned[item_id] for item_id in item_ids]
-    user = db.get(UserInfo, patient.user_id)
     previous_status = _latest_status(db, user.user_id)
     profile_updates = dict(payload.profile or {})
     if appointment_at:
@@ -893,7 +1082,36 @@ def create_patient_plan(
         **((previous_status.profile_data or {}) if previous_status else {}),
         **profile_updates,
     }
-    schedule = _run_scheduler(db, user, hospital, selected_rows, available_at=appointment_at)
+    preparation_rule = PatientPreparationRule(
+        {exam.item_id: dict(exam.prerequisites or {}) for exam, _department in selected_rows},
+        profile,
+        reference_at=requested_at,
+        allow_future_fasting=appointment_at is not None,
+        # The product does not define a bladder-preparation duration. Future appointments
+        # carry a reminder instead of inventing a medical lead-time requirement here.
+        enforce_current_bladder=appointment_at is None,
+    )
+    unmet = [
+        f"{exam.item_name}：{reason}"
+        for exam, _department in selected_rows
+        if (
+            reason := preparation_rule.rejection_for(
+                exam.item_id,
+                proposed_start=appointment_at,
+            )
+        )
+    ]
+    if unmet:
+        raise HTTPException(status_code=422, detail=f"体检准备条件未满足：{'；'.join(unmet)}")
+    medical_rules: tuple[MedicalEligibilityRule, ...] = (preparation_rule,)
+    schedule = _run_scheduler(
+        db,
+        user,
+        hospital,
+        selected_rows,
+        available_at=appointment_at,
+        medical_rules=medical_rules,
+    )
     if not schedule.feasible:
         reasons = "; ".join(item.reason for item in schedule.unscheduled[:3])
         raise HTTPException(status_code=422, detail=f"当前无法生成完整计划：{reasons}")
@@ -928,6 +1146,7 @@ def create_patient_plan(
         record_id=status_record.record_id,
         selected_item_ids=item_ids,
         total_duration=total_duration,
+        appointment_at=appointment_at,
         plan_status="待执行" if appointment_at else "进行中",
     )
     db.add(plan)
@@ -990,7 +1209,7 @@ def list_patient_plans(
     plans = db.scalars(
         select(ExamPlan).where(ExamPlan.user_id == patient.user_id).order_by(ExamPlan.generate_time.desc())
     ).all()
-    return [_serialize_plan(db, plan) for plan in plans]
+    return _serialize_plans(db, plans)
 
 
 @router.get("/plans/{plan_id}")
@@ -1021,10 +1240,27 @@ def start_patient_step(
     patient: PatientContext = Depends(get_current_patient),
     db: Session = Depends(get_db),
 ) -> dict:
-    plan = _require_owned_plan(db, patient.user_id, plan_id)
+    # Serialize starts for one patient so two booked plans cannot become active together.
+    db.scalar(select(UserInfo).where(UserInfo.user_id == patient.user_id).with_for_update())
+    plan = _require_owned_plan(db, patient.user_id, plan_id, for_update=True)
+    if plan.plan_status not in {"待执行", "进行中"}:
+        raise HTTPException(status_code=409, detail="当前体检状态不能开始项目")
+    other_active_plan = db.scalar(
+        select(ExamPlan.plan_id).where(
+            ExamPlan.user_id == patient.user_id,
+            ExamPlan.plan_status == "进行中",
+            ExamPlan.plan_id != plan.plan_id,
+        )
+    )
+    if other_active_plan:
+        raise HTTPException(status_code=409, detail="请先完成或结束当前进行中的体检计划")
     detail = _require_plan_detail(db, plan, detail_id)
     if detail.exec_status == "已完成":
         raise HTTPException(status_code=409, detail="该步骤已完成")
+    if detail.exec_status not in {"待开始", "进行中"}:
+        raise HTTPException(status_code=409, detail="该步骤当前不能开始")
+    if detail.exec_status == "进行中":
+        return _serialize_plan(db, plan)
     active = db.scalar(
         select(PlanExecutionDetail.detail_id).where(
             PlanExecutionDetail.plan_id == plan.plan_id,
@@ -1034,6 +1270,29 @@ def start_patient_step(
     )
     if active:
         raise HTTPException(status_code=409, detail="请先完成当前进行中的步骤")
+    next_detail_id = db.scalar(
+        select(PlanExecutionDetail.detail_id)
+        .where(
+            PlanExecutionDetail.plan_id == plan.plan_id,
+            PlanExecutionDetail.exec_status == "待开始",
+        )
+        .order_by(PlanExecutionDetail.step_order)
+    )
+    if detail.exec_status == "待开始" and next_detail_id != detail.detail_id:
+        raise HTTPException(status_code=409, detail="请按计划顺序开始下一个项目")
+    exam_row = db.execute(
+        select(ExamInfo, DepartmentInfo)
+        .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
+        .where(
+            ExamInfo.item_id == detail.item_id,
+            DepartmentInfo.hospital_id == plan.hospital_id,
+        )
+    ).one_or_none()
+    if exam_row is None or not exam_row[0].is_active or not exam_row[1].is_available:
+        raise HTTPException(status_code=409, detail="该检查项目已停用或所属科室暂停开放")
+    preparation_rule = _current_preparation_rule(db, patient.user_id, [exam_row])
+    if reason := preparation_rule.rejection_for(detail.item_id):
+        raise HTTPException(status_code=409, detail=f"当前准备条件未满足：{reason}")
     detail.exec_status = "进行中"
     detail.actual_start = detail.actual_start or utcnow()
     plan.plan_status = "进行中"
@@ -1048,7 +1307,9 @@ def complete_patient_step(
     patient: PatientContext = Depends(get_current_patient),
     db: Session = Depends(get_db),
 ) -> dict:
-    plan = _require_owned_plan(db, patient.user_id, plan_id)
+    plan = _require_owned_plan(db, patient.user_id, plan_id, for_update=True)
+    if plan.plan_status != "进行中":
+        raise HTTPException(status_code=409, detail="只有进行中的体检可以完成项目")
     detail = _require_plan_detail(db, plan, detail_id)
     if detail.exec_status == "已完成":
         return _serialize_plan(db, plan)
@@ -1063,9 +1324,7 @@ def complete_patient_step(
         .where(PlanExecutionDetail.plan_id == plan.plan_id, PlanExecutionDetail.exec_status == "待开始")
         .order_by(PlanExecutionDetail.step_order)
     )
-    if next_detail:
-        next_detail.exec_status = "进行中"
-    else:
+    if next_detail is None:
         plan.plan_status = "已完成"
     db.commit()
     return _serialize_plan(db, plan)
@@ -1077,7 +1336,7 @@ def pause_patient_plan(
     patient: PatientContext = Depends(get_current_patient),
     db: Session = Depends(get_db),
 ) -> dict:
-    plan = _require_owned_plan(db, patient.user_id, plan_id)
+    plan = _require_owned_plan(db, patient.user_id, plan_id, for_update=True)
     if plan.plan_status != "进行中":
         raise HTTPException(status_code=409, detail="只有进行中的体检可以中断")
     plan.plan_status = "已中断"
@@ -1091,11 +1350,10 @@ def resume_patient_plan(
     patient: PatientContext = Depends(get_current_patient),
     db: Session = Depends(get_db),
 ) -> dict:
-    plan = _require_owned_plan(db, patient.user_id, plan_id)
+    plan = _require_owned_plan(db, patient.user_id, plan_id, for_update=True)
     if plan.plan_status != "已中断":
         raise HTTPException(status_code=409, detail="该体检当前不需要继续")
     plan.plan_status = "进行中"
-    db.commit()
     return replan_patient_route(plan_id, patient, db)
 
 
@@ -1105,7 +1363,7 @@ def finish_patient_plan(
     patient: PatientContext = Depends(get_current_patient),
     db: Session = Depends(get_db),
 ) -> dict:
-    plan = _require_owned_plan(db, patient.user_id, plan_id)
+    plan = _require_owned_plan(db, patient.user_id, plan_id, for_update=True)
     if plan.plan_status in {"已完成", "已结束"}:
         return _serialize_plan(db, plan)
     if plan.plan_status not in {"进行中", "已中断"}:
@@ -1132,13 +1390,16 @@ def replan_patient_route(
     patient: PatientContext = Depends(get_current_patient),
     db: Session = Depends(get_db),
 ) -> dict:
-    plan = _require_owned_plan(db, patient.user_id, plan_id)
+    plan = _require_owned_plan(db, patient.user_id, plan_id, for_update=True)
+    if plan.plan_status not in {"待执行", "进行中", "已中断"}:
+        raise HTTPException(status_code=409, detail="当前体检状态不能重新排程")
     pending_details = db.scalars(
         select(PlanExecutionDetail)
         .where(PlanExecutionDetail.plan_id == plan.plan_id, PlanExecutionDetail.exec_status == "待开始")
         .order_by(PlanExecutionDetail.step_order)
     ).all()
     if not pending_details:
+        db.commit()
         return _serialize_plan(db, plan, replanned=True)
     pending_ids = [detail.item_id for detail in pending_details]
     fixed_rows = db.execute(
@@ -1168,7 +1429,24 @@ def replan_patient_route(
         .where(ExamInfo.item_id.in_(pending_ids), DepartmentInfo.hospital_id == plan.hospital_id)
     ).all()
     by_id = {exam.item_id: (exam, department) for exam, department in exam_rows}
+    if set(by_id) != set(pending_ids):
+        raise HTTPException(status_code=409, detail="计划中的检查项目已删除或不再属于当前医院")
     ordered_rows = [by_id[item_id] for item_id in pending_ids]
+    unavailable = [
+        exam.item_name
+        for exam, department in ordered_rows
+        if not exam.is_active or not department.is_available
+    ]
+    if unavailable:
+        raise HTTPException(status_code=409, detail=f"以下检查项目当前不可用：{'、'.join(unavailable)}")
+    preparation_rule = _current_preparation_rule(db, patient.user_id, ordered_rows)
+    unmet = [
+        f"{exam.item_name}：{reason}"
+        for exam, _department in ordered_rows
+        if (reason := preparation_rule.rejection_for(exam.item_id))
+    ]
+    if unmet:
+        raise HTTPException(status_code=409, detail=f"当前准备条件未满足：{'；'.join(unmet)}")
     schedule = _run_scheduler(
         db,
         db.get(UserInfo, patient.user_id),
@@ -1178,6 +1456,7 @@ def replan_patient_route(
         satisfied_item_ids=satisfied_ids,
         available_at=active_available_at,
         location_id=anchor_row[1].dept_id if anchor_row else "entrance",
+        medical_rules=(preparation_rule,),
     )
     if not schedule.feasible:
         raise HTTPException(status_code=422, detail="最新排队状态下无法生成完整后续路线")

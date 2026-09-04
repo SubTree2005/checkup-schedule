@@ -1,7 +1,8 @@
-<view class="record-page tab-page safe-top">
-  <view class="record-nav"><view class="record-title">体检</view></view>
+<view class="record-page tab-page safe-top" style="padding-top: {{statusBarHeight}}px;">
+  <view class="record-nav" style="height: {{navigationBarHeight}}px;"><view class="record-title">体检</view></view>
 
   <view class="record-tabs">
+    <view class="record-tab-indicator {{activeTab === 'history' ? 'is-history' : ''}}"></view>
     <view class="record-tab {{activeTab === 'appointments' ? 'record-tab-active' : ''}}" data-tab="appointments" bindtap="setTab">预约体检</view>
     <view class="record-tab {{activeTab === 'history' ? 'record-tab-active' : ''}}" data-tab="history" bindtap="setTab">历史体检</view>
   </view>

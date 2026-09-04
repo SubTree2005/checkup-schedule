@@ -45,5 +45,5 @@ page { background: linear-gradient(180deg, #F6F9FE 0%, #FFFFFF 100%); }
 .project-name { color: #2C374A; font-size: 25rpx; }
 .project-duration { margin-top: 6rpx; color: #8A96A8; font-size: 21rpx; }
 
-.flow-bottom-bar { position: fixed; z-index: 20; left: 0; right: 0; bottom: 0; padding: 18rpx 28rpx calc(env(safe-area-inset-bottom) + 18rpx); background: rgba(250, 252, 255, 0.9); border-top: 2rpx solid rgba(222, 229, 239, 0.72); backdrop-filter: blur(22rpx); }
+.flow-bottom-bar { position: fixed; z-index: 20; left: 0; right: 0; bottom: 0; padding: 18rpx 28rpx calc(env(safe-area-inset-bottom) + 18rpx); background: #FAFCFF; border-top: 2rpx solid rgba(222, 229, 239, 0.72); }
 .continue-btn { width: 100%; margin: 0; }

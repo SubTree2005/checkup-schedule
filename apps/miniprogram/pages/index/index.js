@@ -1,11 +1,14 @@
 const api = require('../../utils/api')
 const { planReportSummary } = require('../../utils/report')
+const { navigationMetrics } = require('../../utils/layout')
 const app = getApp()
+const navigation = navigationMetrics()
 
 function pad(value) { return String(value).padStart(2, '0') }
 
 Page({
   data: {
+    ...navigation,
     currentPlan: null,
     isLoggedIn: false,
     hasHomeContent: false,
@@ -24,18 +27,28 @@ Page({
 
   onShow() {
     const tabBar = typeof this.getTabBar === 'function' ? this.getTabBar() : null
-    if (tabBar) tabBar.setData({ selected: 0 })
+    if (tabBar && typeof tabBar.select === 'function') tabBar.select(0)
     const isLoggedIn = !!wx.getStorageSync('patientToken')
-    this.setData({ isLoggedIn })
+    if (this.data.isLoggedIn !== isLoggedIn) this.setData({ isLoggedIn })
     if (!isLoggedIn) {
-      this.setData({ feedCards: [], hasHomeContent: false })
-      this.clearPlanDisplay()
+      this._sourcePlans = null
+      if (this.data.feedCards.length || this.data.currentPlan || this.data.hasHomeContent) {
+        this.setData({ feedCards: [], hasHomeContent: false })
+        this.clearPlanDisplay()
+      }
       return
     }
     const cached = app.globalData.currentPlan
-    if (cached && ['active', 'paused'].includes(this.resolvePlanState(cached))) this.syncPlan(cached)
-    else this.syncPlan(null)
-    api.plans.list().then(plans => this.syncHome(plans)).catch(api.showError)
+    if (cached && ['active', 'paused'].includes(this.resolvePlanState(cached))) {
+      if (this._renderedPlan !== cached) this.syncPlan(cached)
+    } else if (this.data.currentPlan) {
+      this.syncPlan(null)
+    }
+    api.plans.list().then(plans => {
+      if (plans === this._sourcePlans) return
+      this._sourcePlans = plans
+      this.syncHome(plans)
+    }).catch(api.showError)
   },
 
   syncHome(rows) {
@@ -97,10 +110,12 @@ Page({
 
   syncPlan(plan) {
     if (!plan) {
+      this._renderedPlan = null
       this.clearPlanDisplay()
       this.setData({ hasHomeContent: this.data.feedCards.length > 0 })
       return
     }
+    this._renderedPlan = plan
     const steps = Array.isArray(plan.steps) ? plan.steps : []
     const totalSteps = Number(plan.totalSteps || steps.length || 0)
     const completedSteps = Number(plan.completedSteps || steps.filter(step => step.status === 'done').length)
@@ -114,13 +129,17 @@ Page({
     const timelineSteps = steps.map(step => ({
       detailID: step.detailID,
       title: step.title,
-      scrollName: String(step.title || '').length > 8,
       state: step.status === 'done' ? 'done' : step.status === 'active' ? 'active' : 'pending',
       time: this.formatClock(step.estimatedStart)
     }))
     const windowWidth = wx.getSystemInfoSync().windowWidth || 375
     this.setData({
-      currentPlan: plan,
+      currentPlan: {
+        id: plan.id || plan.planID,
+        planID: plan.planID || plan.id,
+        hospitalName: plan.hospitalName || '体检医院',
+        packageName: plan.packageName || '自选项目'
+      },
       hasHomeContent: true,
       planState,
       homeTitle: copy.title,
@@ -136,6 +155,7 @@ Page({
   },
 
   clearPlanDisplay() {
+    this._renderedPlan = null
     this.setData({ currentPlan: null, completedSteps: 0, totalSteps: 0, progress: 0, timelineSteps: [], currentMessage: '' })
   },
 

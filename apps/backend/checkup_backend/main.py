@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import json
 import os
 from contextlib import asynccontextmanager
+from datetime import UTC, datetime
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -16,6 +19,7 @@ from . import models  # noqa: F401 - register SQLAlchemy metadata
 from .agent_api import router as patient_agent_router
 from .api import router
 from .database import Base, build_engine, build_session_factory
+from .middleware import SecurityBoundaryMiddleware
 from .patient_api import router as patient_router
 from .reminder_api import internal_reminder_router, patient_reminder_router
 
@@ -39,6 +43,55 @@ def ensure_compatible_columns(engine) -> None:
             if "avatarUrl" not in user_columns:
                 declaration = "LONGTEXT" if engine.dialect.name == "mysql" else "TEXT"
                 connection.execute(text(f"ALTER TABLE user_info ADD COLUMN avatarUrl {declaration}"))
+        if "queue_snapshot" in tables:
+            queue_table = Base.metadata.tables["queue_snapshot"]
+            queue_index = next(
+                index
+                for index in queue_table.indexes
+                if index.name == "ix_queue_snapshot_item_valid_created"
+            )
+            queue_index.create(bind=connection, checkfirst=True)
+        if "exam_plan" in tables:
+            plan_columns = {column["name"] for column in inspector.get_columns("exam_plan")}
+            appointment_added = "appointmentAt" not in plan_columns
+            if appointment_added:
+                connection.execute(text("ALTER TABLE exam_plan ADD COLUMN appointmentAt DATETIME NULL"))
+            if appointment_added and "user_status_info" in tables and "recordID" in plan_columns:
+                legacy_rows = connection.execute(
+                    text(
+                        "SELECT p.planID, s.profileData FROM exam_plan AS p "
+                        "LEFT JOIN user_status_info AS s ON s.recordID = p.recordID "
+                        "WHERE p.appointmentAt IS NULL"
+                    )
+                ).mappings()
+                for row in legacy_rows:
+                    raw_profile = row["profileData"]
+                    if isinstance(raw_profile, (bytes, bytearray)):
+                        raw_profile = raw_profile.decode("utf-8", errors="replace")
+                    try:
+                        profile = json.loads(raw_profile) if isinstance(raw_profile, str) else raw_profile
+                    except (TypeError, ValueError):
+                        continue
+                    appointment_value = profile.get("appointmentAt") if isinstance(profile, dict) else None
+                    if not isinstance(appointment_value, str) or not appointment_value:
+                        continue
+                    try:
+                        appointment = datetime.fromisoformat(appointment_value.replace("Z", "+00:00"))
+                    except ValueError:
+                        continue
+                    if appointment.tzinfo is not None:
+                        appointment = appointment.astimezone(UTC).replace(tzinfo=None)
+                    connection.execute(
+                        text("UPDATE exam_plan SET appointmentAt = :appointment WHERE planID = :plan_id"),
+                        {"appointment": appointment, "plan_id": row["planID"]},
+                    )
+            plan_table = Base.metadata.tables["exam_plan"]
+            plan_index = next(
+                index
+                for index in plan_table.indexes
+                if index.name == "ix_plan_hospital_appointment_status"
+            )
+            plan_index.create(bind=connection, checkfirst=True)
 
 
 def resolve_database_url(explicit_url: str | None = None) -> str:
@@ -76,6 +129,30 @@ def resolve_database_url(explicit_url: str | None = None) -> str:
     return "sqlite:///./checkup.db"
 
 
+def resolve_allowed_origins(raw_value: str | None = None) -> list[str]:
+    raw = os.getenv("ALLOWED_ORIGINS", "") if raw_value is None else raw_value
+    result: list[str] = []
+    for item in raw.split(","):
+        origin = item.strip().rstrip("/")
+        if not origin:
+            continue
+        parsed = urlsplit(origin)
+        if (
+            origin == "*"
+            or parsed.scheme not in {"http", "https"}
+            or not parsed.netloc
+            or parsed.username is not None
+            or parsed.password is not None
+            or parsed.path
+            or parsed.query
+            or parsed.fragment
+        ):
+            raise RuntimeError("ALLOWED_ORIGINS must contain exact HTTP(S) origins without paths or wildcards")
+        if origin not in result:
+            result.append(origin)
+    return result
+
+
 def create_app(database_url: str | None = None, static_dir: str | Path | None = None) -> FastAPI:
     resolved_database_url = resolve_database_url(database_url)
     engine = build_engine(resolved_database_url)
@@ -91,15 +168,16 @@ def create_app(database_url: str | None = None, static_dir: str | Path | None = 
 
     app = FastAPI(
         title="Checkup Schedule API",
-        version="0.4.0",
+        version="0.4.2",
         description="医院体检智能排序系统的多医院 Backend API",
         lifespan=lifespan,
     )
     app.state.engine = engine
     app.state.session_factory = session_factory
     app.add_middleware(GZipMiddleware, minimum_size=1000)
+    app.add_middleware(SecurityBoundaryMiddleware)
 
-    allowed_origins = [item.strip() for item in os.getenv("ALLOWED_ORIGINS", "").split(",") if item.strip()]
+    allowed_origins = resolve_allowed_origins()
     if allowed_origins:
         app.add_middleware(
             CORSMiddleware,

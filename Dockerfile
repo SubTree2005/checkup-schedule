@@ -10,7 +10,10 @@ COPY pyproject.toml README.md ./
 COPY packages ./packages
 RUN python -m pip install --no-cache-dir ".[backend]"
 
-COPY apps ./apps
+RUN addgroup --system app && adduser --system --ingroup app app && chown app:app /app
+COPY --chown=app:app apps ./apps
+
+USER app
 
 EXPOSE 8080
 CMD uvicorn apps.backend.checkup_backend.main:app --host 0.0.0.0 --port "${PORT}"

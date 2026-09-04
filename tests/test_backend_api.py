@@ -7,7 +7,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from fastapi.testclient import TestClient
-from sqlalchemy import select
+from sqlalchemy import event, select
 
 from apps.backend.checkup_backend.database import Base
 from apps.backend.checkup_backend.main import create_app
@@ -15,6 +15,7 @@ from apps.backend.checkup_backend.models import (
     DemoPatientProfile,
     ExamPlan,
     HospitalSettings,
+    PlanExecutionDetail,
     UserConsent,
     UserInfo,
     UserSession,
@@ -22,7 +23,11 @@ from apps.backend.checkup_backend.models import (
     WechatReminder,
 )
 from apps.backend.checkup_backend.security import issue_session, session_digest
-from apps.backend.checkup_backend.wechat_reminders import WechatAPIError
+from apps.backend.checkup_backend.wechat_reminders import (
+    MAX_WECHAT_RESPONSE_BYTES,
+    WechatAPIError,
+    _post_json,
+)
 
 
 class BackendAPITest(unittest.TestCase):
@@ -231,6 +236,26 @@ class BackendAPITest(unittest.TestCase):
             self.assertEqual(request_payload["messages"][-1], {"role": "user", "content": "空腹检查要注意什么？"})
             self.assertNotIn("server-only-test-key", response.text)
 
+            with patch.dict(os.environ, environment, clear=False), patch(
+                "apps.backend.checkup_backend.agent_api._post_chatanywhere",
+                return_value={"choices": [{"message": {"content": "自定义模型回复。"}}]},
+            ) as custom_upstream:
+                custom_response = patient_client.post(
+                    "/api/patient/agent/chat",
+                    json={
+                        "messages": [{"role": "user", "content": "请解释体检报告。"}],
+                        "model": "deepseek-v4-flash-preview",
+                        "apiKey": "patient-custom-test-key",
+                    },
+                )
+
+            self.assertEqual(custom_response.status_code, 200, custom_response.text)
+            self.assertEqual(custom_response.json()["model"], "deepseek-v4-flash-preview")
+            _, custom_key, custom_payload = custom_upstream.call_args.args
+            self.assertEqual(custom_key, "patient-custom-test-key")
+            self.assertEqual(custom_payload["model"], "deepseek-v4-flash-preview")
+            self.assertNotIn("patient-custom-test-key", custom_response.text)
+
     def test_patient_catalog_exposes_explicit_bladder_preparation_flag(self):
         admin = self.register()
         department = self.create_department("泌尿超声科")
@@ -397,6 +422,37 @@ class BackendAPITest(unittest.TestCase):
             sender.assert_called_once()
             self.assertEqual(patient_client.get("/api/patient/reminders").json()[0]["status"], "sent")
 
+    def test_wechat_response_reader_is_bounded(self):
+        class Response:
+            def __init__(self, payload: bytes, declared: int | None = None):
+                self.payload = payload
+                self.headers = {} if declared is None else {"Content-Length": str(declared)}
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_args):
+                return False
+
+            def read(self, size: int) -> bytes:
+                return self.payload[:size]
+
+        with patch(
+            "apps.backend.checkup_backend.wechat_reminders.urllib.request.urlopen",
+            return_value=Response(b"{}", MAX_WECHAT_RESPONSE_BYTES + 1),
+        ), self.assertRaisesRegex(WechatAPIError, "响应过大"):
+            _post_json("https://example.invalid", {})
+        with patch(
+            "apps.backend.checkup_backend.wechat_reminders.urllib.request.urlopen",
+            return_value=Response(b"x" * (MAX_WECHAT_RESPONSE_BYTES + 1)),
+        ), self.assertRaisesRegex(WechatAPIError, "响应过大"):
+            _post_json("https://example.invalid", {})
+        with patch(
+            "apps.backend.checkup_backend.wechat_reminders.urllib.request.urlopen",
+            return_value=Response(b"\xff"),
+        ), self.assertRaisesRegex(WechatAPIError, "请求失败"):
+            _post_json("https://example.invalid", {})
+
     def test_hospital_cover_campuses_and_appointment_capacity_share_one_contract(self):
         first_admin = self.register(hospital="浙江大学校医院（紫金港院区）")
         hospital_id = first_admin["hospital"]["hospitalID"]
@@ -453,8 +509,18 @@ class BackendAPITest(unittest.TestCase):
                 },
             )
             self.assertEqual(registered.status_code, 201, registered.text)
-            hospitals = first_patient_client.get("/api/patient/hospitals")
+            statements = []
+
+            def count_hospital_statement(*_args):
+                statements.append(1)
+
+            event.listen(self.app.state.engine, "before_cursor_execute", count_hospital_statement)
+            try:
+                hospitals = first_patient_client.get("/api/patient/hospitals")
+            finally:
+                event.remove(self.app.state.engine, "before_cursor_execute", count_hospital_statement)
             self.assertEqual(hospitals.status_code, 200, hospitals.text)
+            self.assertLessEqual(len(statements), 4, "hospital listing must not add one query per campus")
             institution = next(row for row in hospitals.json() if row["name"] == "浙江大学校医院")
             self.assertEqual(institution["coverImageUrl"], cover)
             self.assertEqual(institution["hospitalLevel"], "一级甲等")
@@ -830,6 +896,7 @@ class BackendAPITest(unittest.TestCase):
                         "hospitalID": admin["hospital"]["hospitalID"],
                         "packageID": package.json()["packageID"],
                         "selectedItemIDs": [prerequisite["itemID"], follow_up["itemID"]],
+                        "profile": {"fasting": "yes", "bladder": "normal"},
                     },
                 )
                 self.assertEqual(valid_plan.status_code, 201, valid_plan.text)
@@ -847,6 +914,149 @@ class BackendAPITest(unittest.TestCase):
                 replanned_steps[follow_up["itemID"]]["estimatedStart"].removesuffix("Z")
             )
             self.assertGreaterEqual(pending_start, active_end)
+
+    def test_preparation_requirements_are_typed_and_enforced_by_the_server(self):
+        admin = self.register()
+        department = self.create_department()
+        base_exam = {
+            "deptID": department["deptID"],
+            "itemName": "准备边界检查",
+            "duration": 12,
+            "conflicts": [],
+            "priority": 6,
+            "allowedTimeSlots": {"start": "08:00", "end": "11:30"},
+            "isCritical": True,
+            "isActive": True,
+        }
+        invalid_prerequisites = (
+            {"fastingHours": "8"},
+            {"fastingHours": 25},
+            {"bladderReady": "yes"},
+            {"itemIDs": ["exam-a"], "requires": ["exam-b"]},
+        )
+        for prerequisites in invalid_prerequisites:
+            with self.subTest(prerequisites=prerequisites):
+                response = self.client.post(
+                    "/api/exams",
+                    json={**base_exam, "prerequisites": prerequisites},
+                )
+                self.assertEqual(response.status_code, 422, response.text)
+
+        created_exam = self.client.post(
+            "/api/exams",
+            json={**base_exam, "prerequisites": {"fastingHours": 12}},
+        )
+        self.assertEqual(created_exam.status_code, 201, created_exam.text)
+        item_id = created_exam.json()["itemID"]
+
+        with TestClient(self.app) as patient_client:
+            registered = patient_client.post(
+                "/api/patient/auth/register",
+                json={
+                    "phone": "13900000074",
+                    "password": "patient-pass-123",
+                    "name": "准备边界患者",
+                    "privacyConsent": True,
+                    "privacyConsentVersion": "v0.3.1-2026-08-31",
+                },
+            )
+            self.assertEqual(registered.status_code, 201, registered.text)
+            with patch(
+                "apps.backend.checkup_backend.patient_api.utcnow",
+                return_value=datetime(2026, 8, 31, 0, 0),
+            ):
+                confirmed_twelve_hours = patient_client.post(
+                    "/api/patient/plans",
+                    json={
+                        "hospitalID": admin["hospital"]["hospitalID"],
+                        "selectedItemIDs": [item_id],
+                        "profile": {"fasting": "yes", "bladder": "normal"},
+                    },
+                )
+            self.assertEqual(confirmed_twelve_hours.status_code, 201, confirmed_twelve_hours.text)
+            completed_twelve_hours = patient_client.post(
+                f"/api/patient/plans/{confirmed_twelve_hours.json()['planID']}/steps/"
+                f"{confirmed_twelve_hours.json()['steps'][0]['detailID']}/complete"
+            )
+            self.assertEqual(completed_twelve_hours.status_code, 200, completed_twelve_hours.text)
+            prepared_exam = self.client.patch(
+                f"/api/exams/{item_id}",
+                json={"prerequisites": {"fastingHours": 8, "bladderReady": True}},
+            )
+            self.assertEqual(prepared_exam.status_code, 200, prepared_exam.text)
+            with patch(
+                "apps.backend.checkup_backend.patient_api.utcnow",
+                return_value=datetime(2026, 8, 31, 0, 0),
+            ):
+                short_notice = patient_client.post(
+                    "/api/patient/plans",
+                    json={
+                        "hospitalID": admin["hospital"]["hospitalID"],
+                        "selectedItemIDs": [item_id],
+                        "appointmentAt": "2026-08-31T01:00:00Z",
+                        "profile": {"fasting": "no", "bladder": "recentUrination"},
+                    },
+                )
+                scheduled_prepared = patient_client.post(
+                    "/api/patient/plans",
+                    json={
+                        "hospitalID": admin["hospital"]["hospitalID"],
+                        "selectedItemIDs": [item_id],
+                        "appointmentAt": "2026-08-31T01:00:00Z",
+                        "profile": {"fasting": "yes", "bladder": "recentUrination"},
+                    },
+                )
+                scheduled_start_unprepared = patient_client.post(
+                    f"/api/patient/plans/{scheduled_prepared.json()['planID']}/steps/"
+                    f"{scheduled_prepared.json()['steps'][0]['detailID']}/start"
+                ) if scheduled_prepared.status_code == 201 else scheduled_prepared
+                profile_ready = patient_client.patch(
+                    "/api/patient/profile",
+                    json={"bladder": "normal"},
+                )
+                scheduled_started = patient_client.post(
+                    f"/api/patient/plans/{scheduled_prepared.json()['planID']}/steps/"
+                    f"{scheduled_prepared.json()['steps'][0]['detailID']}/start"
+                ) if profile_ready.status_code == 200 and scheduled_prepared.status_code == 201 else profile_ready
+                scheduled_finished = patient_client.post(
+                    f"/api/patient/plans/{scheduled_prepared.json()['planID']}/steps/"
+                    f"{scheduled_prepared.json()['steps'][0]['detailID']}/complete"
+                ) if scheduled_started.status_code == 200 else scheduled_started
+                unprepared_now = patient_client.post(
+                    "/api/patient/plans",
+                    json={
+                        "hospitalID": admin["hospital"]["hospitalID"],
+                        "selectedItemIDs": [item_id],
+                        "profile": {"fasting": "no", "bladder": "recentUrination"},
+                    },
+                )
+                prepared_now = patient_client.post(
+                    "/api/patient/plans",
+                    json={
+                        "hospitalID": admin["hospital"]["hospitalID"],
+                        "selectedItemIDs": [item_id],
+                        "profile": {"fasting": "yes", "bladder": "normal"},
+                    },
+                )
+            self.assertEqual(short_notice.status_code, 422, short_notice.text)
+            self.assertIn("8 小时空腹", short_notice.text)
+            self.assertEqual(scheduled_prepared.status_code, 201, scheduled_prepared.text)
+            self.assertEqual(scheduled_prepared.json()["planStatus"], "待执行")
+            with self.app.state.session_factory() as session:
+                stored_appointment = session.get(
+                    ExamPlan,
+                    scheduled_prepared.json()["planID"],
+                ).appointment_at
+            self.assertEqual(stored_appointment, datetime(2026, 8, 31, 1, 0))
+            self.assertEqual(scheduled_start_unprepared.status_code, 409, scheduled_start_unprepared.text)
+            self.assertIn("憋尿", scheduled_start_unprepared.text)
+            self.assertEqual(profile_ready.status_code, 200, profile_ready.text)
+            self.assertEqual(scheduled_started.status_code, 200, scheduled_started.text)
+            self.assertEqual(scheduled_finished.status_code, 200, scheduled_finished.text)
+            self.assertEqual(unprepared_now.status_code, 422, unprepared_now.text)
+            self.assertIn("空腹", unprepared_now.text)
+            self.assertIn("憋尿", unprepared_now.text)
+            self.assertEqual(prepared_now.status_code, 201, prepared_now.text)
 
     def test_time_fields_are_validated_at_api_boundaries(self):
         self.register()
@@ -957,7 +1167,9 @@ class BackendAPITest(unittest.TestCase):
         self.assertIn("智检云", admin_page)
         self.assertIn("一键导入", admin_page)
         self.assertIn("套餐管理", admin_page)
+        self.assertIn("体检计划", admin_page)
         self.assertIn("renderMap", self.client.get("/assets/app.js").text)
+        self.assertIn("renderPlans", self.client.get("/assets/app.js").text)
         self.assertIn("renderPackages", self.client.get("/assets/app.js").text)
         self.assertIn("workspaceImportForm", self.client.get("/assets/app.js").text)
         self.assertIn("demoPatientTrigger", admin_page)
@@ -965,6 +1177,26 @@ class BackendAPITest(unittest.TestCase):
         self.assertNotIn('<form method="dialog" class="dialog-frame">', admin_page)
         self.assertIn("workspaceFile", admin_page)
         self.register()
+        bearer_token = self.client.cookies.get("checkup_admin_session")
+        refreshed = self.client.post(
+            "/api/auth/login",
+            json={"phone": "13800000001", "password": "secure-pass-123"},
+        )
+        self.assertEqual(refreshed.status_code, 200, refreshed.text)
+        with TestClient(self.app) as bearer_client:
+            bearer_logout = bearer_client.post(
+                "/api/auth/logout",
+                headers={"Authorization": f"Bearer {bearer_token}"},
+            )
+            self.assertEqual(bearer_logout.status_code, 204)
+            self.assertEqual(
+                bearer_client.get(
+                    "/api/auth/me",
+                    headers={"Authorization": f"Bearer {bearer_token}"},
+                ).status_code,
+                401,
+            )
+        self.assertEqual(self.client.get("/api/auth/me").status_code, 200)
         logout = self.client.post("/api/auth/logout")
         self.assertEqual(logout.status_code, 204)
         self.assertEqual(self.client.get("/api/auth/me").status_code, 401)
@@ -1000,14 +1232,40 @@ class BackendAPITest(unittest.TestCase):
             )
 
     def test_gis_queue_and_dashboard_flow(self):
-        self.register()
+        admin = self.register()
         department = self.create_department()
         exam = self.create_exam(department["deptID"])
-        queue = self.client.post(
-            "/api/queues",
-            json={"itemID": exam["itemID"], "queueCount": 9, "estimatedWaitTime": 1200, "validMinutes": 30},
+        resized = self.client.patch(
+            f"/api/departments/{department['deptID']}",
+            json={"capacity": 1},
         )
-        self.assertEqual(queue.status_code, 201, queue.text)
+        self.assertEqual(resized.status_code, 200, resized.text)
+        with self.app.state.session_factory() as session:
+            plan = ExamPlan(
+                user_id=admin["user"]["userID"],
+                hospital_id=admin["hospital"]["hospitalID"],
+                selected_item_ids=[exam["itemID"]],
+                plan_status="进行中",
+            )
+            session.add(plan)
+            session.flush()
+            session.add(
+                PlanExecutionDetail(
+                    plan_id=plan.plan_id,
+                    item_id=exam["itemID"],
+                    step_order=1,
+                    exec_status="待开始",
+                )
+            )
+            session.commit()
+        queue = self.client.get("/api/queues")
+        self.assertEqual(queue.status_code, 200, queue.text)
+        queue_item = next(row for row in queue.json() if row["itemID"] == exam["itemID"])
+        self.assertEqual(queue_item["dataSource"], "system")
+        self.assertEqual(queue_item["queueCount"], 1)
+        self.assertEqual(queue_item["activeCount"], 0)
+        self.assertEqual(queue_item["estimatedWaitTime"], 720)
+        self.assertEqual(self.client.post("/api/queues", json={}).status_code, 405)
         geojson = {
             "type": "FeatureCollection",
             "features": [
@@ -1032,11 +1290,32 @@ class BackendAPITest(unittest.TestCase):
         }
         upload = self.client.put("/api/gis/1F", json={"geojson": geojson})
         self.assertEqual(upload.status_code, 200, upload.text)
+        invalid_geojson = json.loads(json.dumps(geojson))
+        invalid_geojson["features"].append(
+            {
+                "type": "Feature",
+                "properties": {
+                    "featureType": "route",
+                    "fromDeptID": department["deptID"],
+                    "toDeptID": "another-hospital-department",
+                    "distanceMeters": 10,
+                },
+                "geometry": {"type": "LineString", "coordinates": [[20, 30], [30, 30]]},
+            }
+        )
+        rejected = self.client.put("/api/gis/1F", json={"geojson": invalid_geojson})
+        self.assertEqual(rejected.status_code, 422, rejected.text)
+        self.assertIn("本医院不存在的科室", rejected.text)
+        stored_gis = self.client.get("/api/gis/1F")
+        self.assertEqual(len(stored_gis.json()["geojson"]["features"]), len(geojson["features"]))
         dashboard = self.client.get("/api/dashboard/map/1F")
         self.assertEqual(dashboard.status_code, 200, dashboard.text)
         flow = {item["deptID"]: item for item in dashboard.json()["flow"]}
-        self.assertEqual(flow[department["deptID"]]["peopleFlow"], 9)
-        self.assertEqual(flow[department["deptID"]]["estimatedWaitTime"], 1200)
+        self.assertEqual(flow[department["deptID"]]["peopleFlow"], 1)
+        self.assertEqual(flow[department["deptID"]]["estimatedWaitTime"], 720)
+        summary = self.client.get("/api/dashboard/summary")
+        self.assertEqual(summary.status_code, 200, summary.text)
+        self.assertEqual(summary.json()["metrics"]["averageWaitSeconds"], 720)
 
     def test_patient_schedule_uses_local_department_hours(self):
         admin = self.register()
@@ -1081,7 +1360,7 @@ class BackendAPITest(unittest.TestCase):
                     json={
                         "hospitalID": admin["hospital"]["hospitalID"],
                         "packageID": package.json()["packageID"],
-                        "profile": {},
+                        "profile": {"fasting": "yes", "bladder": "normal"},
                     },
                 )
             self.assertEqual(created.status_code, 201, created.text)
@@ -1166,15 +1445,45 @@ class BackendAPITest(unittest.TestCase):
                         generate_time=datetime(2026, 8, 31, 16, 30),
                         plan_status="进行中",
                     ),
+                    ExamPlan(
+                        user_id=admin["user"]["userID"],
+                        hospital_id=admin["hospital"]["hospitalID"],
+                        selected_item_ids=[],
+                        generate_time=datetime(2026, 8, 31, 17, 0),
+                        appointment_at=datetime(2026, 9, 1, 17, 30),
+                        plan_status="待执行",
+                    ),
+                    ExamPlan(
+                        user_id=admin["user"]["userID"],
+                        hospital_id=admin["hospital"]["hospitalID"],
+                        selected_item_ids=[],
+                        generate_time=datetime(2026, 8, 31, 15, 0),
+                        appointment_at=datetime(2026, 8, 31, 17, 30),
+                        plan_status="待执行",
+                    ),
                 ]
             )
             session.commit()
         with patch("apps.backend.checkup_backend.api.utcnow", return_value=datetime(2026, 8, 31, 17, 0)):
             dashboard = self.client.get("/api/dashboard/summary")
+            today_plans = self.client.get("/api/plans", params={"date": "today"})
         self.assertEqual(dashboard.status_code, 200, dashboard.text)
-        self.assertEqual(dashboard.json()["metrics"]["todayPlans"], 1)
+        self.assertEqual(dashboard.json()["metrics"]["todayPlans"], 2)
         self.assertEqual(dashboard.json()["metrics"]["inProgressPlans"], 1)
         self.assertEqual(dashboard.json()["metrics"]["completedPlans"], 0)
+        self.assertEqual(today_plans.status_code, 200, today_plans.text)
+        self.assertEqual(today_plans.json()["total"], 2)
+        self.assertEqual(
+            {row["status"] for row in today_plans.json()["items"]},
+            {"待执行", "进行中"},
+        )
+        all_plans = self.client.get("/api/plans", params={"date": "all", "query": "测试管理员"})
+        self.assertEqual(all_plans.status_code, 200, all_plans.text)
+        self.assertEqual(all_plans.json()["total"], 4)
+        self.assertEqual(
+            self.client.get("/api/plans", params={"status": "不存在"}).status_code,
+            422,
+        )
 
     def test_workspace_import_is_atomic_and_idempotent(self):
         admin = self.register()
@@ -1227,6 +1536,35 @@ class BackendAPITest(unittest.TestCase):
         self.assertEqual(rejected.status_code, 422, rejected.text)
         departments = {row["deptName"]: row for row in self.client.get("/api/departments").json()}
         self.assertEqual(departments["超声科"]["location"], "1F-A12")
+
+        invalidating_existing_package = {
+            "formatVersion": "1.0",
+            "mode": "upsert",
+            "departments": [self.registration_workspace()["departments"][0]],
+            "exams": [
+                {
+                    **self.registration_workspace()["exams"][0],
+                    "prerequisiteItemKeys": ["new-required-exam"],
+                },
+                {
+                    **self.registration_workspace()["exams"][0],
+                    "key": "new-required-exam",
+                    "itemName": "新增前置检查",
+                },
+            ],
+            "packages": [],
+            "gis": [],
+        }
+        rejected_existing_package = self.client.post(
+            "/api/imports/workspace",
+            json=invalidating_existing_package,
+        )
+        self.assertEqual(rejected_existing_package.status_code, 422, rejected_existing_package.text)
+        self.assertIn("注册演示套餐", rejected_existing_package.text)
+        registration_exam = next(
+            row for row in self.client.get("/api/exams").json() if row["itemName"] == "注册初始化项目"
+        )
+        self.assertEqual(registration_exam["prerequisites"], {})
 
         with TestClient(self.app) as patient_client:
             registered = patient_client.post(
@@ -1364,6 +1702,11 @@ class BackendAPITest(unittest.TestCase):
         admin = self.register()
         department = self.create_department()
         exam = self.create_exam(department["deptID"], name="状态快照检查")
+        cleared = self.client.patch(
+            f"/api/exams/{exam['itemID']}",
+            json={"prerequisites": {}},
+        )
+        self.assertEqual(cleared.status_code, 200, cleared.text)
         package = self.client.post(
             "/api/packages",
             json={
@@ -1533,6 +1876,19 @@ class BackendAPITest(unittest.TestCase):
             self.assertEqual(plan["packageName"], "基础套餐")
             self.assertEqual(plan["totalSteps"], 2)
             self.assertEqual(plan["steps"][0]["status"], "active")
+            self.assertEqual(plan["steps"][0]["queueWait"], 0)
+            self.assertEqual(plan["steps"][0]["queueAhead"], 0)
+            hospital_view = self.client.get(
+                "/api/plans",
+                params={"date": "all", "query": "13900000001"},
+            )
+            self.assertEqual(hospital_view.status_code, 200, hospital_view.text)
+            self.assertEqual(hospital_view.json()["total"], 1)
+            self.assertEqual(hospital_view.json()["items"][0]["patient"]["name"], "体检用户")
+            self.assertEqual(
+                hospital_view.json()["items"][0]["currentStep"]["detailID"],
+                plan["steps"][0]["detailID"],
+            )
             with self.app.state.session_factory() as session:
                 stored_plan = session.get(ExamPlan, plan["planID"])
                 self.assertEqual(stored_plan.package_id, package_id)
@@ -1544,7 +1900,7 @@ class BackendAPITest(unittest.TestCase):
             )
             self.assertEqual(completed.status_code, 200, completed.text)
             self.assertEqual(completed.json()["progress"], 50)
-            self.assertEqual(completed.json()["steps"][1]["status"], "active")
+            self.assertEqual(completed.json()["steps"][1]["status"], "pending")
             navigation = patient_client.get(
                 f"/api/patient/plans/{plan['planID']}/navigation",
                 params={"detailID": completed.json()["steps"][1]["detailID"]},
@@ -1553,6 +1909,11 @@ class BackendAPITest(unittest.TestCase):
             self.assertEqual(navigation.json()["toName"], "超声科")
 
             second = completed.json()["steps"][1]
+            started = patient_client.post(
+                f"/api/patient/plans/{plan['planID']}/steps/{second['detailID']}/start"
+            )
+            self.assertEqual(started.status_code, 200, started.text)
+            self.assertEqual(started.json()["steps"][1]["status"], "active")
             finished = patient_client.post(
                 f"/api/patient/plans/{plan['planID']}/steps/{second['detailID']}/complete"
             )
@@ -1621,7 +1982,18 @@ class BackendAPITest(unittest.TestCase):
 
             self.assertTrue(all(plan["planStatus"] == "待执行" for plan in created_plans))
             self.assertTrue(all(plan["steps"][0]["status"] == "pending" for plan in created_plans))
-            self.assertEqual(len(patient_client.get("/api/patient/plans").json()), 2)
+            statements = []
+
+            def count_statement(*_args):
+                statements.append(1)
+
+            event.listen(self.app.state.engine, "before_cursor_execute", count_statement)
+            try:
+                listed = patient_client.get("/api/patient/plans")
+            finally:
+                event.remove(self.app.state.engine, "before_cursor_execute", count_statement)
+            self.assertEqual(len(listed.json()), 2)
+            self.assertLessEqual(len(statements), 9, "plan listing must not add queries for every historical plan")
 
     def test_patient_can_pause_resume_and_end_active_plan(self):
         admin = self.register()
@@ -1654,7 +2026,7 @@ class BackendAPITest(unittest.TestCase):
                     json={
                         "hospitalID": admin["hospital"]["hospitalID"],
                         "packageID": package["packageID"],
-                        "profile": {},
+                        "profile": {"fasting": "yes", "bladder": "normal"},
                     },
                 )
             self.assertEqual(created.status_code, 201, created.text)
@@ -1679,6 +2051,106 @@ class BackendAPITest(unittest.TestCase):
             self.assertTrue(ended.json()["ended"])
             self.assertEqual(ended.json()["steps"][0]["status"], "skipped")
             self.assertIsNone(patient_client.get("/api/patient/plans/current").json())
+
+    def test_plan_transitions_are_ordered_and_resume_is_atomic(self):
+        admin = self.register()
+        department = self.create_department(name="状态原子性科室")
+        exam_ids = []
+        for name in ("第一项", "第二项"):
+            created_exam = self.client.post(
+                "/api/exams",
+                json={
+                    "deptID": department["deptID"],
+                    "itemName": name,
+                    "duration": 10,
+                    "prerequisites": {},
+                    "conflicts": [],
+                    "priority": 1,
+                    "allowedTimeSlots": {},
+                    "isCritical": False,
+                    "isActive": True,
+                },
+            )
+            self.assertEqual(created_exam.status_code, 201, created_exam.text)
+            exam_ids.append(created_exam.json()["itemID"])
+
+        with TestClient(self.app) as patient_client:
+            registered = patient_client.post(
+                "/api/patient/auth/register",
+                json={
+                    "phone": "13900000083",
+                    "password": "patient-pass-123",
+                    "name": "状态原子性患者",
+                    "privacyConsent": True,
+                    "privacyConsentVersion": "v0.3.1-2026-08-31",
+                },
+            )
+            self.assertEqual(registered.status_code, 201, registered.text)
+            with patch(
+                "apps.backend.checkup_backend.patient_api.utcnow",
+                return_value=datetime(2026, 8, 31, 0, 0),
+            ):
+                created = patient_client.post(
+                    "/api/patient/plans",
+                    json={
+                        "hospitalID": admin["hospital"]["hospitalID"],
+                        "selectedItemIDs": exam_ids,
+                    },
+                )
+            self.assertEqual(created.status_code, 201, created.text)
+            plan_id = created.json()["planID"]
+            paused = patient_client.post(f"/api/patient/plans/{plan_id}/pause")
+            self.assertEqual(paused.status_code, 200, paused.text)
+            closed = self.client.patch(
+                f"/api/departments/{department['deptID']}",
+                json={"isAvailable": False},
+            )
+            self.assertEqual(closed.status_code, 200, closed.text)
+            with patch(
+                "apps.backend.checkup_backend.patient_api.utcnow",
+                return_value=datetime(2026, 8, 31, 0, 0),
+            ):
+                failed_resume = patient_client.post(f"/api/patient/plans/{plan_id}/resume")
+            self.assertEqual(failed_resume.status_code, 409, failed_resume.text)
+            self.assertEqual(patient_client.get(f"/api/patient/plans/{plan_id}").json()["planStatus"], "已中断")
+
+            reopened = self.client.patch(
+                f"/api/departments/{department['deptID']}",
+                json={"isAvailable": True},
+            )
+            self.assertEqual(reopened.status_code, 200, reopened.text)
+            with patch(
+                "apps.backend.checkup_backend.patient_api.utcnow",
+                return_value=datetime(2026, 8, 31, 0, 0),
+            ):
+                resumed = patient_client.post(f"/api/patient/plans/{plan_id}/resume")
+            self.assertEqual(resumed.status_code, 200, resumed.text)
+            ended = patient_client.post(f"/api/patient/plans/{plan_id}/finish")
+            self.assertEqual(ended.status_code, 200, ended.text)
+            cannot_restart = patient_client.post(
+                f"/api/patient/plans/{plan_id}/steps/{ended.json()['steps'][1]['detailID']}/start"
+            )
+            self.assertEqual(cannot_restart.status_code, 409, cannot_restart.text)
+
+            with patch(
+                "apps.backend.checkup_backend.patient_api.utcnow",
+                return_value=datetime(2026, 8, 31, 0, 0),
+            ):
+                scheduled = patient_client.post(
+                    "/api/patient/plans",
+                    json={
+                        "hospitalID": admin["hospital"]["hospitalID"],
+                        "selectedItemIDs": exam_ids,
+                        "appointmentAt": "2026-09-01T00:00:00Z",
+                    },
+                )
+            self.assertEqual(scheduled.status_code, 201, scheduled.text)
+            out_of_order = patient_client.post(
+                f"/api/patient/plans/{scheduled.json()['planID']}/steps/"
+                f"{scheduled.json()['steps'][1]['detailID']}/start"
+            )
+            self.assertEqual(out_of_order.status_code, 409, out_of_order.text)
+            self.assertIn("按计划顺序", out_of_order.text)
 
 
 if __name__ == "__main__":

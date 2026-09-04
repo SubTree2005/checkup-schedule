@@ -11,7 +11,6 @@ page { background: linear-gradient(180deg, #F4F8FF 0%, #FFFFFF 72%); }
 .settings-card, .history-card { background: rgba(255,255,255,0.94); border: 2rpx solid #DFE7F2; border-radius: 28rpx; box-shadow: 0 14rpx 38rpx rgba(47,75,124,0.07); }
 .api-entry { min-height: 116rpx; padding: 0 26rpx; display: flex; align-items: center; justify-content: space-between; gap: 24rpx; }
 .entry-title { color: #172033; font-size: 26rpx; font-weight: 650; }
-.entry-subtitle { margin-top: 8rpx; color: #768399; font-size: 21rpx; }
 .entry-side { flex: none; display: flex; align-items: center; gap: 14rpx; color: #718096; font-size: 22rpx; }
 .entry-arrow { color: #99A4B5; font-size: 40rpx; font-weight: 300; line-height: 1; }
 .history-label { margin-top: 38rpx; }

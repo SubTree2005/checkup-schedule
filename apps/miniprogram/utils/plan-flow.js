@@ -114,6 +114,15 @@ function createPlan(app, updates = {}) {
   return createPlanWithSelection(app, updates)
 }
 
+function createSameDayPlan(app, updates = {}) {
+  const split = splitSelectedItems(app)
+  if (!split.deferredItemIDs.length) return createPlan(app, updates)
+  if (!split.readyItemIDs.length) {
+    return Promise.reject(new Error('所选项目均需完成检前准备，请改为预约后再体检'))
+  }
+  return createPlanForItems(app, split.readyItemIDs, updates)
+}
+
 function createPlanForItems(app, itemIDs, updates = {}, options = {}) {
   return createPlanWithSelection(app, updates, {
     packageID: options.packageID === undefined ? app.globalData.currentPackageId : options.packageID,
@@ -144,6 +153,7 @@ module.exports = {
   addSystemCalendar,
   createPlan,
   createPlanForItems,
+  createSameDayPlan,
   preparationRequirements,
   requestWeChatPush,
   selectedHospitalName,

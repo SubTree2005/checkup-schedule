@@ -2,13 +2,30 @@
   <view class="settings-nav"><view class="nav-back" bindtap="goBack">‹</view><view class="nav-title">模型服务</view><view class="nav-space"></view></view>
 
   <view class="settings-content">
-    <view class="section-label">当前接入</view>
-    <view class="settings-card">
-      <view class="info-row"><view class="info-label">接入方式</view><view class="info-value">系统统一接入</view></view>
-      <view class="info-row"><view class="info-label">默认模型</view><view class="info-value">{{modelName}}</view></view>
-      <view class="info-row"><view class="info-label">连接状态</view><view class="status-value {{configured ? '' : 'is-offline'}}"><text class="status-dot"></text>{{statusText}}</view></view>
+    <view class="model-tabs">
+      <view class="model-tab-indicator {{mode === 'custom' ? 'is-custom' : ''}}"></view>
+      <view class="model-tab {{mode === 'default' ? 'is-active' : ''}}" bindtap="chooseDefault">系统默认</view>
+      <view class="model-tab {{mode === 'custom' ? 'is-active' : ''}}" bindtap="chooseCustom">自定义模型</view>
     </view>
-    <view class="security-note">访问凭据仅保存在服务端，小程序不会读取或保存模型密钥。</view>
+
+    <block wx:if="{{mode === 'default'}}">
+      <view class="section-label">系统模型</view>
+      <view class="settings-card">
+        <view class="info-row"><view class="info-label">模型</view><view class="info-value">{{defaultModelName}}</view></view>
+        <view class="info-row"><view class="info-label">连接状态</view><view class="status-value {{configured ? '' : 'is-offline'}}"><text class="status-dot"></text>{{statusText}}</view></view>
+      </view>
+    </block>
+
+    <block wx:else>
+      <view class="section-label">自定义模型</view>
+      <view class="settings-card custom-card">
+        <view class="field-row"><view class="field-label">模型名称</view><input class="field-input" value="{{customModel}}" placeholder="例如 deepseek-v4-flash" bindinput="onModelInput" /></view>
+        <view class="field-row"><view class="field-label">访问密钥（选填）</view><view class="password-field"><input class="field-input" password="{{!showApiKey}}" value="{{customApiKey}}" placeholder="留空则使用系统接入" bindinput="onApiKeyInput" /><view class="password-toggle" bindtap="toggleApiKey">{{showApiKey ? '隐藏' : '显示'}}</view></view></view>
+      </view>
+      <view class="security-note">自定义密钥仅保存在当前设备；留空时继续使用系统统一接入。</view>
+    </block>
+
+    <button class="save-button" bindtap="save">{{mode === 'default' ? '恢复系统默认' : '保存设置'}}</button>
   </view>
 </view>
 <ai-agent />

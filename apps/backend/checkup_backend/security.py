@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import base64
+import binascii
 import hashlib
 import hmac
 import os
@@ -16,8 +17,14 @@ from .database import get_db
 from .models import HospitalAdmin, UserInfo, UserSession, utcnow
 
 PASSWORD_ITERATIONS = 310_000
+MIN_PASSWORD_ITERATIONS = 100_000
+MAX_PASSWORD_ITERATIONS = 2_000_000
 SESSION_DAYS = 7
 SESSION_COOKIE = "checkup_admin_session"
+_DUMMY_PASSWORD_HASH = (
+    "pbkdf2_sha256$310000$Y2hlY2t1cC1zY2hlZHVsZSE="
+    "$ghp95JJkHFz3_Sy6KXRiXf_vK-kPcGsFSqSNmQ2GqQw="
+)
 
 
 @dataclass(frozen=True)
@@ -46,10 +53,23 @@ def verify_password(password: str, encoded: str) -> bool:
             return False
         salt = base64.urlsafe_b64decode(salt_text.encode())
         expected = base64.urlsafe_b64decode(digest_text.encode())
-        actual = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, int(iterations))
+        iteration_count = int(iterations)
+        if not MIN_PASSWORD_ITERATIONS <= iteration_count <= MAX_PASSWORD_ITERATIONS:
+            return False
+        if not 16 <= len(salt) <= 64 or len(expected) != hashlib.sha256().digest_size:
+            return False
+        actual = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, iteration_count)
         return hmac.compare_digest(actual, expected)
-    except (ValueError, TypeError):
+    except (ValueError, TypeError, binascii.Error):
         return False
+
+
+def verify_login_password(password: str, encoded: str | None) -> bool:
+    """Perform one real-strength check even when an account is not eligible."""
+
+    candidate = encoded if encoded else _DUMMY_PASSWORD_HASH
+    matched = verify_password(password, candidate)
+    return encoded is not None and matched
 
 
 def issue_session(db: Session, user_id: str, login_ip: str | None) -> str:

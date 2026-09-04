@@ -44,7 +44,7 @@ Page({
       })
       app.setAuthenticated(payload)
       wx.showToast({ title: '注册成功', icon: 'success' })
-      setTimeout(() => wx.switchTab({ url: '/pages/mine/mine' }), 300)
+      wx.switchTab({ url: '/pages/mine/mine' })
     } catch (error) {
       api.showError(error)
     } finally {

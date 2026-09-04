@@ -1,6 +1,6 @@
 # Checkup Schedule
 
-Checkup Schedule 是体检检查智能排序项目的 Monorepo。当前项目发布版本为 **0.4.0**，其中 Scheduler 算法为 **V10（等待优先版）**：它保留硬时间窗、前置关系、Rolling Horizon、等待预测与双反馈边界，以预计等待、未来拥堵、长时间停滞、步行和路线稳定性为主要软目标。
+Checkup Schedule 是体检检查智能排序项目的 Monorepo。当前项目发布版本为 **0.4.2**，其中 Scheduler 算法为 **V10（等待优先版）**：它保留硬时间窗、前置关系、Rolling Horizon、等待预测与双反馈边界，以预计等待、未来拥堵、长时间停滞、步行和路线稳定性为主要软目标。
 
 当前仓库已经包含经过现有测试与正式仿真使用的 Scheduler V10、Ground Truth 隔离的整日离散事件仿真、多随机种子 paired experiment、回归测试，以及可运行的 Backend API、数据库模型、医院 Web 管理端和患者微信小程序。
 
@@ -73,7 +73,7 @@ DATABASE_URL=sqlite:///./checkup.db uvicorn apps.backend.checkup_backend.main:ap
 
 打开 `http://127.0.0.1:8000` 即可注册医院账号并进入管理后台。注册时必须选择一份包含医院、科室、项目、套餐和 GIS 的完整工作区 JSON；账号、医院数据和 100 人固定演示患者池在同一事务内创建。注册后仍可通过后台重复一键导入更新数据，格式见 [`docs/workspace-import.md`](docs/workspace-import.md)。API 文档位于 `/docs`；生产环境变量和微信云托管说明见 [`docs/deployment-cloudbase.md`](docs/deployment-cloudbase.md)，数据模型与 GIS 格式见 [`docs/backend-api.md`](docs/backend-api.md)。
 
-患者小程序位于 `apps/miniprogram`，使用微信开发者工具直接导入。体检套餐由医院在 Web 管理端上架，小程序按医院动态读取。开发环境默认请求 `http://127.0.0.1:8000`，体验版和正式版必须在 `apps/miniprogram/utils/runtime-config.js` 配置已加入微信公众平台白名单的 HTTPS API。注册会记录隐私政策版本，用户可在小程序内注销账号；院内导航会读取医院 GIS 并绘制楼层与同层推荐路线。配置方式和联调说明见 [`apps/miniprogram/README.md`](apps/miniprogram/README.md)。
+患者小程序位于 `apps/miniprogram`，使用微信开发者工具直接导入。体检套餐由医院在 Web 管理端上架，小程序按医院动态读取。开发者工具联调可在 `apps/miniprogram/utils/runtime-config.js` 显式启用本地 HTTP；体验版和正式版默认通过 `wx.cloud.callContainer` 访问云托管服务。注册会记录隐私政策版本，用户可在小程序内注销账号；院内导航会读取医院 GIS 并绘制楼层与同层推荐路线。配置方式和联调说明见 [`apps/miniprogram/README.md`](apps/miniprogram/README.md)。
 
 ### 一键导入数据
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field, replace
 from datetime import datetime
 from hashlib import blake2s
+from heapq import heapify, heappop, heappush
 from math import ceil, exp, isfinite, log, sqrt
 from random import Random
 from typing import Any, Mapping, Protocol, Sequence
@@ -626,11 +627,17 @@ def _fcfs_wait_minutes(
     operational_delay: float,
 ) -> float:
     server_ready = [float(value) for value in in_service_remaining]
-    server_ready.extend(0.0 for _ in range(capacity - len(server_ready)))
+    idle_servers = capacity - len(server_ready)
+    heapify(server_ready)
     for duration in queued_service:
-        server_index = min(range(capacity), key=server_ready.__getitem__)
-        server_ready[server_index] += duration
-    return min(server_ready) + operational_delay
+        if idle_servers:
+            heappush(server_ready, duration)
+            idle_servers -= 1
+            continue
+        earliest = heappop(server_ready)
+        heappush(server_ready, earliest + duration)
+    earliest_ready = 0.0 if idle_servers else server_ready[0]
+    return earliest_ready + operational_delay
 
 
 def _sample_positive_duration(

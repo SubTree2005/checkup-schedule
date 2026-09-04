@@ -16,6 +16,8 @@ from sqlalchemy.orm import Session
 from .hospital_time import hospital_timezone
 from .models import ExamPlan, HospitalInfo, PackageInfo, WechatReminder, utcnow
 
+MAX_WECHAT_RESPONSE_BYTES = 1024 * 1024
+
 
 class WechatConfigurationError(RuntimeError):
     pass
@@ -186,8 +188,21 @@ def _post_json(url: str, payload: dict[str, Any]) -> dict[str, Any]:
     )
     try:
         with urllib.request.urlopen(request, timeout=10) as response:
-            result = json.loads(response.read().decode("utf-8"))
-    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
+            declared = response.headers.get("Content-Length")
+            if declared:
+                try:
+                    declared_size = int(declared)
+                except (TypeError, ValueError):
+                    declared_size = None
+                if declared_size is not None and declared_size > MAX_WECHAT_RESPONSE_BYTES:
+                    raise WechatAPIError("微信接口响应过大")
+            raw = response.read(MAX_WECHAT_RESPONSE_BYTES + 1)
+            if len(raw) > MAX_WECHAT_RESPONSE_BYTES:
+                raise WechatAPIError("微信接口响应过大")
+            result = json.loads(raw.decode("utf-8"))
+    except WechatAPIError:
+        raise
+    except (urllib.error.URLError, TimeoutError, UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise WechatAPIError(f"微信接口请求失败：{exc}") from exc
     if not isinstance(result, dict):
         raise WechatAPIError("微信接口返回了无效响应")
@@ -259,6 +274,8 @@ def dispatch_due_reminders(db: Session, *, limit: int = 50, now: datetime | None
                 WechatReminder.last_attempt_at <= retry_cutoff,
                 WechatReminder.attempt_count < 3,
             )
+            .order_by(WechatReminder.last_attempt_at, WechatReminder.create_time)
+            .limit(limit)
         )
     )
     for reminder in stuck:

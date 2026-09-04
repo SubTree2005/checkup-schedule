@@ -23,9 +23,9 @@ Page({
     this.setData({ deleting: true })
     try {
       await api.auth.deleteAccount(this.data.password)
-      app.clearLoginState()
+      app.clearLoginState({ clearPrivateData: true })
       wx.showToast({ title: '账号已注销', icon: 'success' })
-      setTimeout(() => wx.reLaunch({ url: '/pages/login/login' }), 500)
+      wx.reLaunch({ url: '/pages/login/login' })
     } catch (error) {
       api.showError(error)
     } finally {

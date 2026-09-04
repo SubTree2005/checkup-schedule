@@ -14,6 +14,8 @@ router = APIRouter(prefix="/api/patient/agent", tags=["patient-agent"])
 
 DEFAULT_API_URL = "https://api.chatanywhere.tech/v1/chat/completions"
 DEFAULT_MODEL = "deepseek-v4-flash"
+DEFAULT_MAX_RESPONSE_BYTES = 1024 * 1024
+MAX_ASSISTANT_CONTENT_CHARS = 32_000
 SYSTEM_PROMPT = """你是“检畅 AI 助手”，服务于医院体检小程序。
 回答应简洁、明确、使用中文，并优先告诉用户下一步怎么做。
 你可以解释常见体检项目、检查前准备、报告指标的一般含义，也可以说明小程序页面用途；不能代替医生作出诊断、开药或治疗决定。
@@ -30,6 +32,33 @@ def _timeout_seconds() -> float:
     return min(90, max(5, configured))
 
 
+def _max_response_bytes() -> int:
+    try:
+        configured = int(os.getenv("CHATANYWHERE_MAX_RESPONSE_BYTES", str(DEFAULT_MAX_RESPONSE_BYTES)))
+    except ValueError:
+        configured = DEFAULT_MAX_RESPONSE_BYTES
+    return min(8 * 1024 * 1024, max(1024, configured))
+
+
+def _read_json_response(response) -> dict:
+    limit = _max_response_bytes()
+    declared = response.headers.get("Content-Length")
+    if declared:
+        try:
+            declared_size = int(declared)
+        except (TypeError, ValueError):
+            declared_size = None
+        if declared_size is not None and declared_size > limit:
+            raise ValueError("上游 AI 服务响应过大")
+    raw = response.read(limit + 1)
+    if len(raw) > limit:
+        raise ValueError("上游 AI 服务响应过大")
+    payload = json.loads(raw.decode("utf-8"))
+    if not isinstance(payload, dict):
+        raise ValueError("上游 AI 服务未返回有效 JSON 对象")
+    return payload
+
+
 def _post_chatanywhere(url: str, api_key: str, payload: dict) -> dict:
     request = Request(
         url,
@@ -42,7 +71,7 @@ def _post_chatanywhere(url: str, api_key: str, payload: dict) -> dict:
         method="POST",
     )
     with urlopen(request, timeout=_timeout_seconds()) as response:
-        return json.loads(response.read().decode("utf-8"))
+        return _read_json_response(response)
 
 
 def _assistant_content(payload: dict) -> str:
@@ -52,7 +81,10 @@ def _assistant_content(payload: dict) -> str:
         raise ValueError("上游 AI 服务未返回有效内容") from exc
     if not isinstance(content, str) or not content.strip():
         raise ValueError("上游 AI 服务未返回有效内容")
-    return content.strip()
+    normalized = content.strip()
+    if len(normalized) > MAX_ASSISTANT_CONTENT_CHARS:
+        raise ValueError("上游 AI 服务返回内容过长")
+    return normalized
 
 
 @router.get("/status")
@@ -66,14 +98,14 @@ def chat_with_patient_agent(
     payload: PatientAgentChatRequest,
     _patient: PatientContext = Depends(get_current_patient),
 ) -> dict:
-    api_key = os.getenv("CHATANYWHERE_API_KEY", "").strip()
+    api_key = payload.apiKey or os.getenv("CHATANYWHERE_API_KEY", "").strip()
     if not api_key:
         raise HTTPException(status_code=503, detail="AI 服务尚未配置，请联系管理员")
 
     api_url = os.getenv("CHATANYWHERE_API_URL", DEFAULT_API_URL).strip()
     if not api_url.startswith("https://"):
         raise HTTPException(status_code=503, detail="AI 服务地址配置无效")
-    model = os.getenv("CHATANYWHERE_MODEL", DEFAULT_MODEL).strip() or DEFAULT_MODEL
+    model = payload.model or os.getenv("CHATANYWHERE_MODEL", DEFAULT_MODEL).strip() or DEFAULT_MODEL
     page_context = payload.currentPage.strip() or "未知页面"
     messages = [
         {"role": "system", "content": f"{SYSTEM_PROMPT}\n用户当前所在页面：{page_context}。"},

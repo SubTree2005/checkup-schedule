@@ -40,7 +40,7 @@ Page({
           : rawStatus.includes('进行') ? '进行中' : '待开始'
     const statusTone = reports.hasReport ? 'reported' : interrupted ? 'interrupted' : finished ? 'pending' : rawStatus.includes('进行') ? 'active' : 'scheduled'
     const normalized = {
-      ...record,
+      hospitalName: record.hospitalName || '体检医院',
       hospitalImage: record.hospitalCoverUrl || record.coverImageUrl || '/addpicture/hospital-default.jpg',
       packageName: record.packageName || '自选项目',
       completionDate: formatDate(record.completedAt, record.date),

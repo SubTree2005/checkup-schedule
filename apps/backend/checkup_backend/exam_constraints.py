@@ -32,17 +32,25 @@ def validate_prerequisite_graph(
         if missing:
             raise ValueError(f"项目 {item_id} 缺少前置项目 {sorted(missing)}")
 
-    resolved: set[str] = set()
-    while len(resolved) < len(selected):
-        ready = {
-            item_id
-            for item_id in selected - resolved
-            if prerequisites[item_id].issubset(resolved)
-        }
-        if not ready:
-            cyclic = sorted(selected - resolved)
-            raise ValueError(f"项目前置关系存在循环 {cyclic}")
-        resolved.update(ready)
+    indegree = {item_id: len(prerequisites[item_id]) for item_id in selected}
+    successors = {item_id: [] for item_id in selected}
+    for item_id, prerequisite_ids in prerequisites.items():
+        for prerequisite_id in prerequisite_ids:
+            successors[prerequisite_id].append(item_id)
+
+    ready = [item_id for item_id, degree in indegree.items() if degree == 0]
+    resolved_count = 0
+    while ready:
+        item_id = ready.pop()
+        resolved_count += 1
+        for successor_id in successors[item_id]:
+            indegree[successor_id] -= 1
+            if indegree[successor_id] == 0:
+                ready.append(successor_id)
+
+    if resolved_count != len(selected):
+        cyclic = sorted(item_id for item_id, degree in indegree.items() if degree > 0)
+        raise ValueError(f"项目前置关系存在循环 {cyclic}")
 
 
 def validate_exam_selection(

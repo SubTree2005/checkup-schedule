@@ -33,7 +33,7 @@ REMINDER_DISPATCH_TOKEN=至少32字节的随机字符串
 
 `WECHAT_REMINDER_DATA_TEMPLATE` 的键必须与微信公众平台中该模板的字段完全一致；上面的 `thing1/time2/thing3` 仅为格式示例。可使用 `{hospital}`、`{appointment}`、`{package}` 和 `{preparation}` 占位符。AppSecret 与派发令牌只能放在后端环境变量，不能写入小程序代码或仓库。体验版使用 `trial`，正式版改为 `formal`。
 
-服务启动后，`GET /api/patient/reminders/config` 只有在上述发送配置和云托管身份透传都有效时才返回可用。小程序通过 `wx.cloud.callContainer` 访问时，网关会注入 `x-wx-openid` 与 `x-wx-appid`；普通 HTTP 请求不能代替这条可信身份链路。
+服务启动后，`GET /api/patient/reminders/config` 只有在上述发送配置和云托管身份透传都有效时才返回可用。小程序通过 `wx.cloud.callContainer` 访问时，网关会注入 `x-wx-openid` 与 `x-wx-appid`。应用代码本身无法证明这两个头来自 CloudBase，因此启用 `WECHAT_TRUST_CLOUDBASE_IDENTITY` 的前提是：容器不能绕过可信网关被公网直连，且网关必须先剔除客户端同名头再重写。若部署环境不能保证这一边界，必须保持该开关关闭，并改用 `wx.login` 的 code2session 结果在服务端绑定当前患者会话；否则普通 HTTP 客户端可伪造身份头。
 
 最后在 CloudBase 定时任务中每分钟调用一次：
 

@@ -37,7 +37,7 @@ Page({
     if (this.data.submitting) return
     this.setData({ submitting: true })
     try {
-      const plan = await planFlow.createPlan(app, {
+      const plan = await planFlow.createSameDayPlan(app, {
         planMode: 'realtime', booked: 'no', preparationDecision: 'continue-today'
       })
       app.globalData.preparationDecision = 'continue-today'

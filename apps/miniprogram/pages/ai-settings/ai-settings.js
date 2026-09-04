@@ -1,6 +1,5 @@
 const agent = require('../../utils/ai-agent')
 const api = require('../../utils/api')
-const app = getApp()
 
 function timeText(value) {
   const date = new Date(value || Date.now())
@@ -10,17 +9,16 @@ function timeText(value) {
 
 Page({
   data: {
-    apiStatusText: '已接入',
+    modelName: agent.DEFAULT_MODEL_LABEL,
     history: [],
     hasHistory: false
   },
 
   onLoad() {
     if (!wx.getStorageSync('patientToken')) return wx.redirectTo({ url: '/pages/login/login' })
-    this.refresh()
   },
 
-  onShow() { if (app.globalData.isLoggedIn || wx.getStorageSync('patientToken')) this.refresh() },
+  onShow() { if (wx.getStorageSync('patientToken')) this.refresh() },
 
   refresh() {
     const active = agent.ensureSession()
@@ -28,15 +26,21 @@ Page({
     const sessions = (active.messages || []).length > 1 ? [{ ...active, active: true }].concat(archived) : archived
     this.setData({
       history: sessions.map(item => ({
-        ...item,
+        id: item.id,
+        title: item.title || '未命名会话',
+        active: item.active === true,
         timeText: timeText(item.updatedAt || item.archivedAt),
         preview: ((item.messages || []).find(message => message.role === 'user') || {}).content || '暂无用户消息'
       })),
       hasHistory: sessions.length > 0
     })
     api.agent.status().then(status => {
-      this.setData({ apiStatusText: status.configured ? '已接入' : '待配置' })
-    }).catch(() => this.setData({ apiStatusText: '不可用' }))
+      const preference = agent.getModelConfig()
+      this.setData({ modelName: preference.mode === 'custom' ? preference.model : (status.model || agent.DEFAULT_MODEL_LABEL) })
+    }).catch(() => {
+      const preference = agent.getModelConfig()
+      this.setData({ modelName: preference.mode === 'custom' ? preference.model : agent.DEFAULT_MODEL_LABEL })
+    })
   },
 
   openApiSettings() { wx.navigateTo({ url: '/pages/ai-api-settings/ai-api-settings' }) },

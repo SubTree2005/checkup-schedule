@@ -3,9 +3,45 @@ const api = require('./api')
 const SESSION_KEY = 'aiAgentSession'
 const HISTORY_KEY = 'aiAgentHistory'
 const LEGACY_CONFIG_KEY = 'aiAgentConfig'
+const MODEL_CONFIG_KEY = 'aiAgentModelConfig'
 const SESSION_TTL = 30 * 60 * 1000
+const MAX_SESSION_MESSAGES = 20
+const MAX_HISTORY_SESSIONS = 20
+const DEFAULT_MODEL_LABEL = 'DeepSeek V4 Flash'
 
 const INTRO = '你好，我是检畅 AI 助手。我可以帮你查找功能、打开体检页面、说明检查准备事项，也能解释体检报告中常见指标的一般含义。涉及诊断和治疗时，请以医生意见为准。'
+
+function scopedStorageKey(baseKey) {
+  const user = wx.getStorageSync('userInfo') || {}
+  const userID = String(user.userID || user.id || 'anonymous')
+  return `${baseKey}:${userID}`
+}
+
+function readStorage(baseKey) {
+  const key = scopedStorageKey(baseKey)
+  const scoped = wx.getStorageSync(key)
+  if (scoped) return scoped
+  const legacy = wx.getStorageSync(baseKey)
+  if (!legacy) return legacy
+  wx.setStorageSync(key, legacy)
+  wx.removeStorageSync(baseKey)
+  return legacy
+}
+
+function writeStorage(baseKey, value) {
+  wx.setStorageSync(scopedStorageKey(baseKey), value)
+}
+
+function removeStorage(baseKey) {
+  wx.removeStorageSync(scopedStorageKey(baseKey))
+  wx.removeStorageSync(baseKey)
+}
+
+function trimMessages(messages) {
+  const rows = Array.isArray(messages) ? messages : []
+  if (rows.length <= MAX_SESSION_MESSAGES) return rows
+  return [rows[0]].concat(rows.slice(-(MAX_SESSION_MESSAGES - 1)))
+}
 
 function uid() {
   return `chat-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`
@@ -28,40 +64,52 @@ function newSession() {
 }
 
 function history() {
-  const rows = wx.getStorageSync(HISTORY_KEY)
-  return Array.isArray(rows) ? rows : []
+  const rows = readStorage(HISTORY_KEY)
+  if (!Array.isArray(rows)) return []
+  const normalized = rows.slice(0, MAX_HISTORY_SESSIONS).map(session => ({
+    ...session,
+    messages: trimMessages(session.messages)
+  }))
+  if (rows.length > MAX_HISTORY_SESSIONS || rows.some(session => Array.isArray(session.messages) && session.messages.length > MAX_SESSION_MESSAGES)) {
+    writeStorage(HISTORY_KEY, normalized)
+  }
+  return normalized
 }
 
 function archive(session) {
   if (!session || !Array.isArray(session.messages) || session.messages.length <= 1) return
   const rows = history().filter(item => item.id !== session.id)
-  rows.unshift({ ...session, archivedAt: Date.now() })
-  wx.setStorageSync(HISTORY_KEY, rows.slice(0, 30))
+  rows.unshift({ ...session, messages: trimMessages(session.messages), archivedAt: Date.now() })
+  writeStorage(HISTORY_KEY, rows.slice(0, MAX_HISTORY_SESSIONS))
 }
 
 function ensureSession() {
-  if (wx.getStorageSync(LEGACY_CONFIG_KEY)) wx.removeStorageSync(LEGACY_CONFIG_KEY)
-  const cached = wx.getStorageSync(SESSION_KEY)
-  if (cached && Array.isArray(cached.messages) && Number(cached.expiresAt || 0) > Date.now()) return cached
+  removeStorage(LEGACY_CONFIG_KEY)
+  const cached = readStorage(SESSION_KEY)
+  if (cached && Array.isArray(cached.messages) && Number(cached.expiresAt || 0) > Date.now()) {
+    return cached.messages.length > MAX_SESSION_MESSAGES
+      ? saveSession({ ...cached, messages: trimMessages(cached.messages) })
+      : cached
+  }
   if (cached) archive(cached)
   const session = newSession()
-  wx.setStorageSync(SESSION_KEY, session)
+  writeStorage(SESSION_KEY, session)
   return session
 }
 
 function saveSession(session) {
   const now = Date.now()
-  const next = { ...session, updatedAt: now, expiresAt: now + SESSION_TTL }
-  wx.setStorageSync(SESSION_KEY, next)
+  const next = { ...session, messages: trimMessages(session.messages), updatedAt: now, expiresAt: now + SESSION_TTL }
+  writeStorage(SESSION_KEY, next)
   return next
 }
 
 function resumeSession(sessionID) {
   const selected = history().find(item => item.id === sessionID)
   if (!selected) return ensureSession()
-  const current = wx.getStorageSync(SESSION_KEY)
+  const current = readStorage(SESSION_KEY)
   if (current && current.id !== selected.id) archive(current)
-  wx.setStorageSync(HISTORY_KEY, history().filter(item => item.id !== selected.id))
+  writeStorage(HISTORY_KEY, history().filter(item => item.id !== selected.id))
   return saveSession({ ...selected, archivedAt: undefined })
 }
 
@@ -84,6 +132,13 @@ function completeRound(session, userText, assistantText, assistantExtras = {}) {
 }
 
 function setRecordTab(tab) {
+  const pages = typeof getCurrentPages === 'function' ? getCurrentPages() : []
+  const page = pages.length ? pages[pages.length - 1] : null
+  if (page && page.route === 'pages/record/record' && typeof page.selectRecordTab === 'function') {
+    wx.removeStorageSync('recordInitialTab')
+    page.selectRecordTab(tab)
+    return
+  }
   wx.setStorageSync('recordInitialTab', tab)
   wx.switchTab({ url: '/pages/record/record' })
 }
@@ -210,13 +265,44 @@ function runAction(actionID) {
   return true
 }
 
+function getModelConfig() {
+  const stored = readStorage(MODEL_CONFIG_KEY)
+  if (!stored || stored.mode !== 'custom') {
+    return { mode: 'default', model: '', apiKey: '' }
+  }
+  return {
+    mode: 'custom',
+    model: String(stored.model || '').trim(),
+    apiKey: String(stored.apiKey || '').trim()
+  }
+}
+
+function saveModelConfig(config = {}) {
+  const model = String(config.model || '').trim()
+  if (!model) throw new Error('请输入模型名称')
+  const next = { mode: 'custom', model, apiKey: String(config.apiKey || '').trim() }
+  writeStorage(MODEL_CONFIG_KEY, next)
+  return next
+}
+
+function restoreDefaultModel() {
+  removeStorage(MODEL_CONFIG_KEY)
+  return { mode: 'default', model: '', apiKey: '' }
+}
+
 function startRequest(session, pageRoute) {
   let stopped = false
   const messages = (session.messages || [])
     .filter(item => (item.role === 'user' || item.role === 'assistant') && item.content)
     .slice(-20)
     .map(item => ({ role: item.role, content: item.content }))
-  const promise = api.agent.chat({ messages, currentPage: pageRoute || '' }).then(payload => {
+  const modelConfig = getModelConfig()
+  const requestData = { messages, currentPage: pageRoute || '' }
+  if (modelConfig.mode === 'custom') {
+    requestData.model = modelConfig.model
+    if (modelConfig.apiKey) requestData.apiKey = modelConfig.apiKey
+  }
+  const promise = api.agent.chat(requestData).then(payload => {
     if (stopped) throw new Error('已停止生成')
     const reply = payload && payload.reply
     if (!reply) throw new Error('AI 服务未返回可显示的内容')
@@ -235,10 +321,14 @@ module.exports = {
   completeRound,
   ensureSession,
   getHistory: history,
+  getModelConfig,
+  DEFAULT_MODEL_LABEL,
   localAction,
   makeMessage: message,
   resumeSession,
+  restoreDefaultModel,
   runAction,
+  saveModelConfig,
   saveSession,
   startRequest
 }

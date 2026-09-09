@@ -14,7 +14,7 @@ jobs:
           POSTGRES_PASSWORD: gis_test_only
         ports: ['5432:5432']
         options: >-
-          --health-cmd pg_isready
+          --health-cmd "pg_isready -U postgres"
           --health-interval 10s --health-timeout 5s --health-retries 5
     env:
       GIS_TEST_DSN: postgresql://postgres:gis_test_only@127.0.0.1:5432/postgres

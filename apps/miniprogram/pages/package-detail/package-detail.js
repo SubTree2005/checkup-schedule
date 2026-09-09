@@ -1,9 +1,11 @@
+const { navigationMetrics } = require('../../utils/layout')
 const api = require('../../utils/api')
 const flowGuard = require('../../utils/flow-guard')
 const app = getApp()
 
 Page({
   data: {
+    ...navigationMetrics(),
     loading: true,
     selectionName: '',
     totalItems: 0,

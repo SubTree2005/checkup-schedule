@@ -1,7 +1,9 @@
+const { navigationMetrics } = require('../../utils/layout')
 const app = getApp()
 const flowGuard = require('../../utils/flow-guard')
 
 Page({
+  data: { ...navigationMetrics() },
   onLoad() { flowGuard.requireSelection(app) },
 
   chooseMode(e) {
@@ -10,6 +12,7 @@ Page({
     app.globalData.appointmentDraft = null
     app.globalData.preparationDecision = null
     app.globalData.splitPlanDraft = null
+    app.globalData.followUpPlanDraft = null
     app.globalData.profile = {
       ...(app.globalData.profile || {}),
       booked: mode === 'appointment' ? 'yes' : 'no',

@@ -1,8 +1,10 @@
+const { navigationMetrics } = require('../../utils/layout')
 const api = require('../../utils/api')
 const app = getApp()
 
 Page({
   data: {
+    ...navigationMetrics(),
     submitting: false,
     agreed: false,
     showPassword: false,
@@ -34,6 +36,7 @@ Page({
   },
 
   async submitLogin() {
+    if (this.data.submitting) return
     const account = String(this.data.form.account || '').trim()
     const password = String(this.data.form.password || '')
     if (!account || !password) {

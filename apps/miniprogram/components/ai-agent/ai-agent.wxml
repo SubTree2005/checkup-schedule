@@ -1,10 +1,9 @@
-<view wx:if="{{opened}}" class="ai-stage">
+<view wx:if="{{opened}}" class="ai-stage {{keyboardHeight > 0 ? 'keyboard-open' : ''}}" style="height: {{viewportHeight - keyboardHeight}}px;" catchtouchmove="noop">
   <view class="ai-backdrop"></view>
-  <view class="ai-chat" style="padding-top: {{statusBarHeight}}px;">
-    <view class="ai-header">
+  <view class="ai-chat" style="padding-top: {{headerTop}}px;">
+    <view class="ai-header" style="height: {{headerHeight}}px; padding-right: {{headerRight}}px;">
       <view class="ai-close" bindtap="closeChat" aria-label="关闭">‹</view>
       <view class="ai-title">{{title}}</view>
-      <view class="ai-settings" bindtap="openSettings">设置</view>
     </view>
 
     <scroll-view class="ai-messages" scroll-y="true" scroll-with-animation="true" scroll-into-view="{{scrollIntoView}}">
@@ -28,8 +27,11 @@
       <view class="message-tail"></view>
     </scroll-view>
 
-    <view class="ai-composer" style="transform: translateY(-{{keyboardHeight}}px);">
-      <textarea class="ai-input" value="{{draft}}" auto-height="{{false}}" maxlength="1000" fixed="true" adjust-position="false" cursor-spacing="18" placeholder="问我体检安排、报告或页面操作" bindinput="onInput" bindfocus="onFocus" bindblur="onBlur" bindkeyboardheightchange="onKeyboardHeight" confirm-type="send" bindconfirm="sendMessage"></textarea>
+    <view class="ai-new-conversation" bindtap="startNewConversation" role="button">开启新对话</view>
+    <view class="ai-composer">
+      <view class="ai-input-shell">
+        <textarea class="ai-input" value="{{draft}}" focus="{{inputFocused}}" auto-height="{{true}}" maxlength="1000" fixed="{{true}}" adjust-position="{{false}}" cursor-spacing="0" placeholder="问我体检安排、报告或页面操作" placeholder-class="ai-input-placeholder" bindinput="onInput" bindfocus="onFocus" bindblur="onBlur" bindkeyboardheightchange="onKeyboardHeight" confirm-type="send" bindconfirm="sendMessage"></textarea>
+      </view>
       <view class="ai-orb ai-orb-composer {{thinking ? 'is-thinking' : ''}}" bindtap="handleOrbTap" role="button" aria-label="{{thinking ? '停止生成' : '发送'}}">
         <view class="ai-orb-color"></view>
         <view wx:if="{{thinking}}" class="pause-symbol"><text></text><text></text></view>

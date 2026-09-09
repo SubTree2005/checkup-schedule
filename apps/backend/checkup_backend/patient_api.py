@@ -26,6 +26,7 @@ from checkup_scheduler import (
 
 from .api import client_ip, get_hospital_settings
 from .database import get_db
+from .demo_restrictions import demo_unrestricted
 from .exam_constraints import prerequisite_item_ids, validate_exam_selection
 from .hospital_time import (
     daily_intersections_utc,
@@ -62,7 +63,19 @@ from .security import (
     verify_login_password,
     verify_password,
 )
-from .serializers import hospital_dict, iso
+from .serializers import hospital_dict as full_hospital_dict, iso
+from .patient_images import patient_image
+
+
+def hospital_dict(row, settings=None):
+    result = full_hospital_dict(row, settings)
+    unrestricted = demo_unrestricted(settings, utcnow())
+    result.update(demoUnrestricted=unrestricted, demoUnrestrictedUntil=iso(settings.demo_unrestricted_until) if unrestricted else None)
+    if unrestricted:
+        result.update(isAvailable=True, status="正常开放")
+    for key in ('coverImageUrl', 'coverUrl', 'floorMapUrl'):
+        result[key] = patient_image(result.get(key))
+    return result
 from .wechat_reminders import WechatConfigurationError, create_plan_reminder
 
 router = APIRouter(prefix="/api/patient", tags=["patient-miniprogram"])
@@ -120,6 +133,8 @@ def _current_preparation_rule(
     user_id: str,
     exam_rows: list[tuple[ExamInfo, DepartmentInfo]],
 ) -> PatientPreparationRule:
+    if exam_rows and demo_unrestricted(get_hospital_settings(db, exam_rows[0][1].hospital_id), utcnow()):
+        return PatientPreparationRule({}, {})
     status_record = _latest_status(db, user_id)
     profile = dict(status_record.profile_data or {}) if status_record else {}
     if status_record:
@@ -219,7 +234,7 @@ def _profile_dict(db: Session, user: UserInfo) -> dict:
         "phone": user.phone,
         "gender": user.gender or "",
         "age": _age_from_birth_date(user.birth_date),
-        "avatarUrl": user.avatar_url,
+        "avatarUrl": patient_image(user.avatar_url),
         "role": "user",
         "profile": health,
     }
@@ -417,6 +432,7 @@ def _appointment_dates(
     slot_capacity = settings.appointment_slot_capacity if settings else 20
     days_ahead = settings.appointment_days_ahead if settings else 7
     is_available = settings.is_available if settings else True
+    unrestricted = demo_unrestricted(settings, utcnow())
     try:
         ranges = parse_open_time_ranges(hospital.open_time)
     except ValueError:
@@ -425,7 +441,10 @@ def _appointment_dates(
     now_local = utcnow().replace(tzinfo=timezone.utc).astimezone(timezone_local)
     counts = _appointment_counts(db, hospital.hospital_id)
     dates = []
-    weekdays_only = "工作日" in (hospital.open_time or "")
+    if unrestricted:
+        ranges = (("00:00", "00:00"),)
+        days_ahead = max(2, days_ahead)
+    weekdays_only = not unrestricted and "工作日" in (hospital.open_time or "")
     for offset in range(days_ahead):
         local_day = now_local.date() + timedelta(days=offset)
         if weekdays_only and local_day.weekday() >= 5:
@@ -451,7 +470,7 @@ def _appointment_dates(
                             "appointmentAt": iso(cursor.astimezone(timezone.utc).replace(tzinfo=None)),
                             "booked": booked,
                             "capacity": slot_capacity,
-                            "available": is_available and booked < slot_capacity,
+                            "available": unrestricted or (is_available and booked < slot_capacity),
                         }
                     )
                 cursor = slot_end
@@ -506,8 +525,8 @@ def list_patient_hospitals(
     for row in hospitals:
         settings = settings_by_hospital.get(row.hospital_id)
         institution_name, campus_name = _hospital_name_parts(row.hospital_name)
-        available = settings.is_available if settings else True
         details = hospital_dict(row, settings)
+        available = details["isAvailable"]
         group = grouped.setdefault(
             institution_name,
             {
@@ -581,10 +600,11 @@ def _exam_catalog_dict(exam: ExamInfo, department: DepartmentInfo) -> dict:
 
 
 def _hospital_exam_rows(db: Session, hospital_id: str) -> list[tuple[ExamInfo, DepartmentInfo]]:
+    unrestricted = demo_unrestricted(get_hospital_settings(db, hospital_id), utcnow())
     return db.execute(
         select(ExamInfo, DepartmentInfo)
         .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
-        .where(DepartmentInfo.hospital_id == hospital_id, ExamInfo.is_active.is_(True))
+        .where(DepartmentInfo.hospital_id == hospital_id, True if unrestricted else ExamInfo.is_active.is_(True))
         .order_by(DepartmentInfo.dept_name, ExamInfo.item_name)
     ).all()
 
@@ -726,30 +746,38 @@ def _run_scheduler(
     available_at: datetime | None = None,
     location_id: str = "entrance",
     medical_rules: tuple[MedicalEligibilityRule, ...] = (),
+    future_booking: bool = False,
 ):
     now = utcnow()
-    hospital_windows = _parse_open_windows(hospital, max(now, available_at or now))
+    unrestricted = demo_unrestricted(get_hospital_settings(db, hospital.hospital_id), now)
+    planning_anchor = max(now, available_at or now)
+    waits = _latest_department_waits(db, hospital.hospital_id, now)
+    # Continuous demo horizon leaves room for every exam and its live queue, even at midnight.
+    demo_minutes = sum(exam.duration + waits.get(dept.dept_id, 0) + 60 for exam, dept in exam_rows)
+    hospital_windows = (
+        (TimeWindow(planning_anchor, planning_anchor + timedelta(minutes=max(1440, demo_minutes))),)
+        if unrestricted else _parse_open_windows(hospital, planning_anchor)
+    )
     planning_start, planning_end = hospital_windows[0].start, hospital_windows[-1].end
     selected_ids = {exam.item_id for exam, _department in exam_rows}
     satisfied_ids = satisfied_item_ids or set()
     try:
         validate_exam_selection(
             selected_ids,
-            {exam.item_id: prerequisite_item_ids(exam.prerequisites) for exam, _department in exam_rows},
-            {exam.item_id: exam.conflicts or [] for exam, _department in exam_rows},
+            {} if unrestricted else {exam.item_id: prerequisite_item_ids(exam.prerequisites) for exam, _department in exam_rows},
+            {} if unrestricted else {exam.item_id: exam.conflicts or [] for exam, _department in exam_rows},
             satisfied_item_ids=satisfied_ids,
         )
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=f"检查项目组合无效：{exc}") from exc
-    waits = _latest_department_waits(db, hospital.hospital_id, now)
     departments: dict[str, DepartmentState] = {}
     for _exam, department in exam_rows:
-        service_windows = _department_windows(department, planning_start, planning_end)
+        service_windows = hospital_windows if unrestricted else _department_windows(department, planning_start, planning_end)
         departments[department.dept_id] = DepartmentState(
             id=department.dept_id,
             observed_at=planning_start,
             expected_wait_minutes=waits.get(department.dept_id, 0),
-            accepting_patients=department.is_available and bool(service_windows),
+            accepting_patients=(unrestricted or future_booking or department.is_available) and bool(service_windows),
             service_windows=service_windows,
             capacity=department.capacity,
         )
@@ -758,11 +786,11 @@ def _run_scheduler(
             id=exam.item_id,
             department_id=exam.dept_id,
             duration_minutes=exam.duration,
-            prerequisites=tuple(
+            prerequisites=() if unrestricted else tuple(
                 item_id for item_id in prerequisite_item_ids(exam.prerequisites) if item_id in selected_ids
             ),
             delay_cost_per_minute=float(exam.priority),
-            allowed_windows=_allowed_windows(exam, planning_start, planning_end),
+            allowed_windows=() if unrestricted else _allowed_windows(exam, planning_start, planning_end),
             is_critical=exam.is_critical,
         )
         for exam, _department in exam_rows
@@ -783,7 +811,7 @@ def _run_scheduler(
         _travel_matrix(db, hospital.hospital_id, user.walk_speed),
         TimeWindow(planning_start, planning_end),
         config=BatchPlannerConfig(wait_oriented=True),
-        medical_rules=medical_rules,
+        medical_rules=() if unrestricted else medical_rules,
     )
 
 
@@ -855,12 +883,13 @@ def _serialize_plan_payload(
     replanned: bool = False,
 ) -> dict:
     profile_snapshot = dict(status_record.profile_data or {}) if status_record else {}
+    unrestricted = demo_unrestricted(hospital_settings, utcnow())
     if status_record:
         profile_snapshot.setdefault("fasting", "yes" if status_record.fasting_hours >= 8 else "no")
         profile_snapshot.setdefault("bladder", "normal" if status_record.is_bladder_ready else "recentUrination")
     completed_at = max((detail.actual_end for detail, _exam, _department in rows if detail.actual_end), default=plan.generate_time)
     completed = sum(detail.exec_status == "已完成" for detail, _exam, _department in rows)
-    first_open = next((index for index, (detail, _exam, _department) in enumerate(rows) if detail.exec_status != "已完成"), len(rows))
+    first_open = next((index for index, (detail, _exam, _department) in enumerate(rows) if detail.exec_status in {"待开始", "进行中"}), len(rows))
     steps = []
     for row_index, (detail, exam, department) in enumerate(rows):
         queue = queues.get(exam.item_id)
@@ -879,7 +908,7 @@ def _serialize_plan_payload(
             else "active"
             if detail.exec_status == "进行中"
             else "skipped"
-            if detail.exec_status in {"已结束", "已取消"}
+            if detail.exec_status in {"已结束", "已取消", "已跳过"}
             else "pending"
         )
         steps.append(
@@ -907,23 +936,32 @@ def _serialize_plan_payload(
                 "completed": state == "done",
                 "estimatedStart": iso(detail.estimated_start),
                 "estimatedEnd": iso(detail.estimated_end),
+                "actualStart": iso(detail.actual_start),
+                "actualEnd": iso(detail.actual_end),
+                "report": detail.exam_report,
+                "reportAvailable": bool(detail.exam_report),
                 "navigationTarget": {"department": department.dept_name, "locationText": department.location or "请查看院内指引"},
             }
         )
     return {
         "id": plan.plan_id,
         "planID": plan.plan_id,
+        "hospitalID": plan.hospital_id,
+        "demoUnrestricted": unrestricted,
+        "demoUnrestrictedUntil": iso(hospital_settings.demo_unrestricted_until) if unrestricted else None,
         "packageId": package.package_id if package else None,
-        "packageName": package.package_name if package else "自选项目",
+        "packageName": ("[演示] " + str(profile_snapshot.get("demoVisitTitle") or "历史体检")) if profile_snapshot.get("demoImport") else (package.package_name if package else "自选项目"),
+        "isDemo": bool(profile_snapshot.get("demoImport")),
         "packagePrice": package.price if package else 0,
         "hospitalName": hospital.hospital_name if hospital else "",
-        "hospitalCoverUrl": hospital_settings.cover_image_url if hospital_settings else None,
+        "hospitalCoverUrl": patient_image(hospital_settings.cover_image_url) if hospital_settings else None,
         "date": profile_snapshot.get("appointmentDateLabel") or plan.generate_time.strftime("%Y年%m月%d日"),
         "appointmentAt": profile_snapshot.get("appointmentAt") or iso(plan.appointment_at),
         "completedAt": iso(completed_at),
         "generatedAt": iso(plan.generate_time),
         "totalDuration": plan.total_duration,
-        "remainingDuration": sum(step["totalDuration"] for step in steps if step["status"] != "done"),
+        "remainingDuration": sum(step["totalDuration"] for step in steps if step["status"] in {"active", "pending"}),
+        "unfinishedItemIDs": [step["itemID"] for step in steps if not step["completed"]],
         "totalSteps": len(steps),
         "completedSteps": completed,
         "currentStepIndex": first_open,
@@ -1030,7 +1068,8 @@ def create_patient_plan(
         hospital.hospital_id,
         create=payload.appointmentAt is not None,
     )
-    if settings and not settings.is_available:
+    unrestricted = demo_unrestricted(settings, requested_at)
+    if settings and not settings.is_available and not unrestricted:
         raise HTTPException(status_code=409, detail="该院区当前暂停开放")
     appointment_at = payload.appointmentAt
     if appointment_at and appointment_at.tzinfo is not None:
@@ -1074,16 +1113,32 @@ def create_patient_plan(
     if not item_ids or any(item_id not in owned for item_id in item_ids):
         raise HTTPException(status_code=422, detail="检查项目不属于所选医院或已停用")
     selected_rows = [owned[item_id] for item_id in item_ids]
+    satisfied_ids = set()
+    if payload.followUpPlanID:
+        source = _require_owned_plan(db, patient.user_id, payload.followUpPlanID)
+        if not appointment_at or source.hospital_id != hospital.hospital_id or source.plan_status not in {"已完成", "已结束"}:
+            raise HTTPException(status_code=422, detail="补约需选择已结束体检的原医院和预约时间")
+        source_details = db.scalars(select(PlanExecutionDetail).where(PlanExecutionDetail.plan_id == source.plan_id)).all()
+        unfinished_ids = {detail.item_id for detail in source_details if detail.exec_status != "已完成"}
+        if not set(item_ids).issubset(unfinished_ids):
+            raise HTTPException(status_code=422, detail="补约只能选择原体检未完成的项目")
+        satisfied_ids = {detail.item_id for detail in source_details if detail.exec_status == "已完成"}
     previous_status = _latest_status(db, user.user_id)
     profile_updates = dict(payload.profile or {})
+    # Only a validated source plan can grant completed prerequisite credit.
+    profile_updates.pop("followUpPlanID", None)
+    if payload.followUpPlanID:
+        profile_updates["followUpPlanID"] = payload.followUpPlanID
     if appointment_at:
         profile_updates["appointmentAt"] = iso(appointment_at)
     profile = {
         **((previous_status.profile_data or {}) if previous_status else {}),
         **profile_updates,
     }
+    if not payload.followUpPlanID:
+        profile.pop("followUpPlanID", None)
     preparation_rule = PatientPreparationRule(
-        {exam.item_id: dict(exam.prerequisites or {}) for exam, _department in selected_rows},
+        {} if unrestricted else {exam.item_id: dict(exam.prerequisites or {}) for exam, _department in selected_rows},
         profile,
         reference_at=requested_at,
         allow_future_fasting=appointment_at is not None,
@@ -1110,7 +1165,9 @@ def create_patient_plan(
         hospital,
         selected_rows,
         available_at=appointment_at,
-        medical_rules=medical_rules,
+        medical_rules=() if unrestricted else medical_rules,
+        satisfied_item_ids=satisfied_ids,
+        future_booking=appointment_at is not None,
     )
     if not schedule.feasible:
         reasons = "; ".join(item.reason for item in schedule.unscheduled[:3])
@@ -1198,7 +1255,7 @@ def current_patient_plan(
             ExamPlan.generate_time.desc(),
         )
     )
-    return _serialize_plan(db, plan) if plan else None
+    return _refresh_patient_route(db, plan, patient) if plan else None
 
 
 @router.get("/plans")
@@ -1218,7 +1275,26 @@ def get_patient_plan(
     patient: PatientContext = Depends(get_current_patient),
     db: Session = Depends(get_db),
 ) -> dict:
-    return _serialize_plan(db, _require_owned_plan(db, patient.user_id, plan_id))
+    return _refresh_patient_route(db, _require_owned_plan(db, patient.user_id, plan_id), patient)
+
+
+def _refresh_patient_route(db: Session, plan: ExamPlan, patient: PatientContext) -> dict:
+    # Reconcile live closures while a patient is following a route. Future bookings
+    # and historical records must retain their selections until execution starts.
+    if plan.plan_status == "进行中" and not demo_unrestricted(get_hospital_settings(db, plan.hospital_id), utcnow()):
+        unavailable = db.scalar(
+            select(PlanExecutionDetail.detail_id)
+            .join(ExamInfo, ExamInfo.item_id == PlanExecutionDetail.item_id)
+            .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
+            .where(
+                PlanExecutionDetail.plan_id == plan.plan_id,
+                PlanExecutionDetail.exec_status.in_(["待开始", "进行中"]),
+                (ExamInfo.is_active.is_(False) | DepartmentInfo.is_available.is_(False)),
+            )
+        )
+        if unavailable:
+            return replan_patient_route(plan.plan_id, patient, db)
+    return _serialize_plan(db, plan)
 
 
 def _require_plan_detail(db: Session, plan: ExamPlan, detail_id: str) -> PlanExecutionDetail:
@@ -1255,6 +1331,9 @@ def start_patient_step(
     if other_active_plan:
         raise HTTPException(status_code=409, detail="请先完成或结束当前进行中的体检计划")
     detail = _require_plan_detail(db, plan, detail_id)
+    refreshed = _refresh_patient_route(db, plan, patient)
+    if refreshed["replanNotice"]:
+        return refreshed
     if detail.exec_status == "已完成":
         raise HTTPException(status_code=409, detail="该步骤已完成")
     if detail.exec_status not in {"待开始", "进行中"}:
@@ -1288,8 +1367,9 @@ def start_patient_step(
             DepartmentInfo.hospital_id == plan.hospital_id,
         )
     ).one_or_none()
-    if exam_row is None or not exam_row[0].is_active or not exam_row[1].is_available:
-        raise HTTPException(status_code=409, detail="该检查项目已停用或所属科室暂停开放")
+    unrestricted = demo_unrestricted(get_hospital_settings(db, plan.hospital_id), utcnow())
+    if exam_row is None or (not unrestricted and (not exam_row[0].is_active or not exam_row[1].is_available)):
+        return replan_patient_route(plan_id, patient, db)
     preparation_rule = _current_preparation_rule(db, patient.user_id, [exam_row])
     if reason := preparation_rule.rejection_for(detail.item_id):
         raise HTTPException(status_code=409, detail=f"当前准备条件未满足：{reason}")
@@ -1313,6 +1393,9 @@ def complete_patient_step(
     detail = _require_plan_detail(db, plan, detail_id)
     if detail.exec_status == "已完成":
         return _serialize_plan(db, plan)
+    refreshed = _refresh_patient_route(db, plan, patient)
+    if refreshed["replanNotice"] and detail.exec_status != "进行中":
+        return refreshed
     if detail.exec_status != "进行中":
         raise HTTPException(status_code=409, detail="该步骤尚未开始")
     now = utcnow()
@@ -1325,7 +1408,11 @@ def complete_patient_step(
         .order_by(PlanExecutionDetail.step_order)
     )
     if next_detail is None:
-        plan.plan_status = "已完成"
+        unfinished = db.scalar(select(PlanExecutionDetail.detail_id).where(
+            PlanExecutionDetail.plan_id == plan.plan_id,
+            PlanExecutionDetail.exec_status != "已完成",
+        ))
+        plan.plan_status = "已结束" if unfinished else "已完成"
     db.commit()
     return _serialize_plan(db, plan)
 
@@ -1378,40 +1465,56 @@ def finish_patient_plan(
     for detail in details:
         if detail.exec_status == "进行中":
             detail.actual_end = now
-        detail.exec_status = "已结束"
+        if detail.exec_status != "已跳过":
+            detail.exec_status = "已结束"
     plan.plan_status = "已结束"
     db.commit()
     return _serialize_plan(db, plan)
 
 
-@router.post("/plans/{plan_id}/replan")
-def replan_patient_route(
-    plan_id: str,
-    patient: PatientContext = Depends(get_current_patient),
-    db: Session = Depends(get_db),
-) -> dict:
-    plan = _require_owned_plan(db, patient.user_id, plan_id, for_update=True)
+def _replan_patient_route(db: Session, plan: ExamPlan, *, skip_detail_id: str | None = None) -> dict:
     if plan.plan_status not in {"待执行", "进行中", "已中断"}:
         raise HTTPException(status_code=409, detail="当前体检状态不能重新排程")
-    pending_details = db.scalars(
-        select(PlanExecutionDetail)
-        .where(PlanExecutionDetail.plan_id == plan.plan_id, PlanExecutionDetail.exec_status == "待开始")
-        .order_by(PlanExecutionDetail.step_order)
-    ).all()
-    if not pending_details:
-        db.commit()
-        return _serialize_plan(db, plan, replanned=True)
-    pending_ids = [detail.item_id for detail in pending_details]
-    fixed_rows = db.execute(
-        select(PlanExecutionDetail, ExamInfo)
+    rows = db.execute(
+        select(PlanExecutionDetail, ExamInfo, DepartmentInfo)
         .join(ExamInfo, ExamInfo.item_id == PlanExecutionDetail.item_id)
-        .where(
-            PlanExecutionDetail.plan_id == plan.plan_id,
-            PlanExecutionDetail.exec_status != "待开始",
-        )
+        .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
+        .where(PlanExecutionDetail.plan_id == plan.plan_id)
         .order_by(PlanExecutionDetail.step_order)
     ).all()
+    unrestricted = demo_unrestricted(get_hospital_settings(db, plan.hospital_id), utcnow())
+    skipped_names = []
+    for detail, exam, department in rows:
+        if detail.exec_status in {"待开始", "进行中"} and (
+            detail.detail_id == skip_detail_id or (not unrestricted and (not exam.is_active or not department.is_available))
+        ):
+            detail.exec_status = "已跳过"
+            skipped_names.append(exam.item_name)
+    # A skipped prerequisite is not a completed prerequisite. Defer its dependents
+    # too, including transitive dependencies, so the remaining route stays valid.
+    deferred_ids = {detail.item_id for detail, _exam, _department in rows if detail.exec_status == "已跳过"}
+    changed = True
+    while changed and not unrestricted:
+        changed = False
+        for detail, exam, _department in rows:
+            if detail.exec_status in {"待开始", "进行中"} and deferred_ids.intersection(prerequisite_item_ids(exam.prerequisites)):
+                detail.exec_status = "已跳过"
+                deferred_ids.add(detail.item_id)
+                skipped_names.append(exam.item_name)
+                changed = True
+    fixed_rows = [(detail, exam) for detail, exam, _department in rows if detail.exec_status in {"已完成", "进行中"}]
+    pending_rows = [(detail, exam, department) for detail, exam, department in rows if detail.exec_status == "待开始"]
+    skipped_rows = [(detail, exam) for detail, exam, _department in rows if detail.exec_status not in {"已完成", "进行中", "待开始"}]
     satisfied_ids = {detail.item_id for detail, _exam in fixed_rows}
+    status_record = db.get(UserStatusInfo, plan.record_id) if plan.record_id else None
+    source_id = (status_record.profile_data or {}).get("followUpPlanID") if status_record else None
+    if source_id:
+        source = _require_owned_plan(db, plan.user_id, source_id)
+        if source.hospital_id == plan.hospital_id and source.plan_status in {"已完成", "已结束"}:
+            satisfied_ids.update(db.scalars(select(PlanExecutionDetail.item_id).where(
+                PlanExecutionDetail.plan_id == source.plan_id,
+                PlanExecutionDetail.exec_status == "已完成",
+            )).all())
     active_row = next(
         ((detail, exam) for detail, exam in fixed_rows if detail.exec_status == "进行中"),
         None,
@@ -1423,23 +1526,9 @@ def replan_patient_route(
         active_available_at = active_detail.estimated_end or (
             (active_detail.actual_start or utcnow()) + timedelta(minutes=active_exam.duration)
         )
-    exam_rows = db.execute(
-        select(ExamInfo, DepartmentInfo)
-        .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
-        .where(ExamInfo.item_id.in_(pending_ids), DepartmentInfo.hospital_id == plan.hospital_id)
-    ).all()
-    by_id = {exam.item_id: (exam, department) for exam, department in exam_rows}
-    if set(by_id) != set(pending_ids):
-        raise HTTPException(status_code=409, detail="计划中的检查项目已删除或不再属于当前医院")
-    ordered_rows = [by_id[item_id] for item_id in pending_ids]
-    unavailable = [
-        exam.item_name
-        for exam, department in ordered_rows
-        if not exam.is_active or not department.is_available
-    ]
-    if unavailable:
-        raise HTTPException(status_code=409, detail=f"以下检查项目当前不可用：{'、'.join(unavailable)}")
-    preparation_rule = _current_preparation_rule(db, patient.user_id, ordered_rows)
+    ordered_rows = [(exam, department) for _detail, exam, department in pending_rows]
+    pending_ids = [detail.item_id for detail, _exam, _department in pending_rows]
+    preparation_rule = _current_preparation_rule(db, plan.user_id, ordered_rows)
     unmet = [
         f"{exam.item_name}：{reason}"
         for exam, _department in ordered_rows
@@ -1447,33 +1536,70 @@ def replan_patient_route(
     ]
     if unmet:
         raise HTTPException(status_code=409, detail=f"当前准备条件未满足：{'；'.join(unmet)}")
-    schedule = _run_scheduler(
-        db,
-        db.get(UserInfo, patient.user_id),
-        db.get(HospitalInfo, plan.hospital_id),
-        ordered_rows,
-        previous_order=tuple(pending_ids),
-        satisfied_item_ids=satisfied_ids,
-        available_at=active_available_at,
-        location_id=anchor_row[1].dept_id if anchor_row else "entrance",
-        medical_rules=(preparation_rule,),
-    )
-    if not schedule.feasible:
-        raise HTTPException(status_code=422, detail="最新排队状态下无法生成完整后续路线")
-    fixed_count = db.scalar(
-        select(func.count()).select_from(PlanExecutionDetail).where(
-            PlanExecutionDetail.plan_id == plan.plan_id,
-            PlanExecutionDetail.exec_status != "待开始",
+    scheduled_steps = []
+    if pending_rows:
+        schedule = _run_scheduler(
+            db,
+            db.get(UserInfo, plan.user_id),
+            db.get(HospitalInfo, plan.hospital_id),
+            ordered_rows,
+            previous_order=tuple(pending_ids),
+            satisfied_item_ids=satisfied_ids,
+            available_at=active_available_at,
+            location_id=anchor_row[1].dept_id if anchor_row else "entrance",
+            medical_rules=(preparation_rule,),
         )
-    ) or 0
-    detail_by_item = {detail.item_id: detail for detail in pending_details}
-    for index, step in enumerate(sorted(schedule.steps, key=lambda item: item.start_at), fixed_count + 1):
+        if not schedule.feasible:
+            raise HTTPException(status_code=422, detail="最新排队状态下无法生成完整后续路线")
+        scheduled_steps = sorted(schedule.steps, key=lambda item: item.start_at)
+    for index, (detail, _exam) in enumerate(fixed_rows, 1):
+        detail.step_order = index
+    detail_by_item = {detail.item_id: detail for detail, _exam, _department in pending_rows}
+    for index, step in enumerate(scheduled_steps, len(fixed_rows) + 1):
         detail = detail_by_item[step.exam_id]
         detail.step_order = index
         detail.estimated_start = step.start_at
         detail.estimated_end = step.finish_at
+    for index, (detail, _exam) in enumerate(skipped_rows, len(fixed_rows) + len(pending_rows) + 1):
+        detail.step_order = index
+    if not pending_rows and not active_row:
+        plan.plan_status = "已结束" if skipped_rows else "已完成"
     db.commit()
-    return _serialize_plan(db, plan, replanned=True)
+    result = _serialize_plan(db, plan, replanned=True)
+    if skipped_names:
+        result["replanNotice"] = f"已跳过{'、'.join(skipped_names)}，并重新安排后续路线。未完成项目可在结束后预约。"
+    return result
+
+
+@router.post("/plans/{plan_id}/replan")
+def replan_patient_route(
+    plan_id: str,
+    patient: PatientContext = Depends(get_current_patient),
+    db: Session = Depends(get_db),
+) -> dict:
+    return _replan_patient_route(db, _require_owned_plan(db, patient.user_id, plan_id, for_update=True))
+
+
+@router.post("/plans/{plan_id}/steps/{detail_id}/skip")
+def skip_patient_step(
+    plan_id: str,
+    detail_id: str,
+    patient: PatientContext = Depends(get_current_patient),
+    db: Session = Depends(get_db),
+) -> dict:
+    plan = _require_owned_plan(db, patient.user_id, plan_id, for_update=True)
+    detail = _require_plan_detail(db, plan, detail_id)
+    if detail.exec_status == "已跳过":
+        return _serialize_plan(db, plan)
+    if plan.plan_status != "进行中":
+        raise HTTPException(status_code=409, detail="只有进行中的体检可以跳过项目")
+    current = db.scalar(select(PlanExecutionDetail).where(
+        PlanExecutionDetail.plan_id == plan.plan_id,
+        PlanExecutionDetail.exec_status.in_(["进行中", "待开始"]),
+    ).order_by(case((PlanExecutionDetail.exec_status == "进行中", 0), else_=1), PlanExecutionDetail.step_order))
+    if current is None or current.detail_id != detail_id:
+        raise HTTPException(status_code=409, detail="只能跳过当前项目")
+    return _replan_patient_route(db, plan, skip_detail_id=detail_id)
 
 
 @router.get("/plans/{plan_id}/navigation")
@@ -1555,13 +1681,45 @@ def _navigation_map(
         .order_by(HospitalGIS.floor_key)
     ).all()
     locations: dict[str, tuple[HospitalGIS, list[float]]] = {}
+    departments = db.scalars(
+        select(DepartmentInfo).where(DepartmentInfo.hospital_id == hospital_id)
+    ).all()
+    department_ids = {department.dept_id for department in departments}
+    candidates: dict[str, list[tuple[HospitalGIS, list[float]]]] = {}
     for floor in floors:
         for feature in floor.geojson.get("features", []):
             properties = feature.get("properties") or {}
             geometry = feature.get("geometry") or {}
             point = _coordinate_pair(geometry.get("coordinates"))
-            if properties.get("featureType") == "department" and geometry.get("type") == "Point" and point:
-                locations[properties.get("deptID")] = (floor, point)
+            if geometry.get("type") != "Point" or point is None:
+                continue
+            explicit_id = properties.get("deptID")
+            if explicit_id:
+                if explicit_id in department_ids:
+                    locations[explicit_id] = (floor, point)
+                continue
+            # GIS-only uploads identify physical rooms without business deptIDs.
+            # Match explicit addresses uniquely; do not invent a walking route
+            # from a room centre to the nearest corridor through possible walls.
+            room = str(properties.get("room_ref") or "").strip().upper()
+            matches = []
+            for department in departments:
+                address = (department.location or "").strip().upper()
+                if room:
+                    parts = re.match(r"^(\d+F)\s+([A-Z0-9-]+)(?=$|[\s（(；;，,])", address)
+                    matched = parts and parts[1] == floor.floor_key.upper() and parts[2] == room
+                else:
+                    parts = re.match(r"^(\d+F)(?=$|[^A-Z0-9])", address)
+                    matched = parts and parts[1] == floor.floor_key.upper() and properties.get("name") == department.dept_name
+                if matched:
+                    matches.append(department.dept_id)
+            if len(matches) == 1:
+                candidates.setdefault(matches[0], []).append((floor, point))
+
+    explicit_locations = set(locations)
+    for department_id, points in candidates.items():
+        if department_id not in locations and len(points) == 1:
+            locations[department_id] = points[0]
 
     target_location = locations.get(to_department_id)
     if target_location is None:
@@ -1578,7 +1736,8 @@ def _navigation_map(
             "floorKey": source_floor.floor_key,
             "coordinates": source_coordinates,
         }
-        if source_floor.floor_key == target_floor.floor_key:
+        if (source_floor.floor_key == target_floor.floor_key
+                and from_department_id in explicit_locations and to_department_id in explicit_locations):
             route_coordinates = _shortest_geojson_route(
                 target_floor.geojson,
                 source_coordinates,

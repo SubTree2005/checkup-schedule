@@ -14,3 +14,5 @@ DATABASE_URL=sqlite:///./checkup.db uvicorn apps.backend.checkup_backend.main:ap
 小程序 AI 助手统一通过后端代理访问模型服务。部署时以密钥型环境变量设置 `CHATANYWHERE_API_KEY`，不要把真实密钥写进小程序、源码或镜像；服务地址与模型默认分别为 `https://api.chatanywhere.tech/v1/chat/completions` 和 `deepseek-v4-flash`，可通过 `.env.example` 中的同名变量覆盖。患者可在当前设备选择自定义模型，并可选填自己的访问密钥；该密钥只随 HTTPS 请求转发，不写入服务端数据库或响应内容。
 
 管理后台由同一进程从 `apps/admin-web` 提供，客户端始终只访问 Backend API。
+
+本地开发时，Agent 自动读取 `apps/backend/.env` 中的 `CHATANYWHERE_*` 配置，进程环境变量优先；该文件已排除在 Git 和 Docker 构建之外。可从 `.env.example` 复制所需的 AI 配置后填入密钥，无需额外密码。修改本地配置后下一次 Agent 请求即可读取，首次更新代码仍需重启后端。云托管使用平台密钥环境变量，不会携带本地 `.env`。

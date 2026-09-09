@@ -1,9 +1,11 @@
+const { navigationMetrics } = require('../../utils/layout')
 const api = require('../../utils/api')
 const flowGuard = require('../../utils/flow-guard')
 const app = getApp()
 
 Page({
-  data: {},
+  data: {
+    ...navigationMetrics(),},
   onLoad() { flowGuard.requireLogin(app) },
   goBack() { wx.navigateBack({ delta: 1 }) },
   openTerms() { wx.navigateTo({ url: '/pages/legal/legal?type=terms' }) },

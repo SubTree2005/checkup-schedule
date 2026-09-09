@@ -1,0 +1,304 @@
+{
+  "status": "navigation_draft_not_survey",
+  "source_image": "images/2F.jpg",
+  "registration": {
+    "target_floor": "1F",
+    "method": "affine",
+    "anchors": [
+      {
+        "id": "NW",
+        "source": [
+          490,
+          64
+        ],
+        "target": [
+          579,
+          39
+        ],
+        "evidence": "building1_outer_wall_corner"
+      },
+      {
+        "id": "NE",
+        "source": [
+          697,
+          64
+        ],
+        "target": [
+          816,
+          39
+        ],
+        "evidence": "building1_outer_wall_corner"
+      },
+      {
+        "id": "SW",
+        "source": [
+          490,
+          649
+        ],
+        "target": [
+          579,
+          715
+        ],
+        "evidence": "building1_outer_wall_corner"
+      },
+      {
+        "id": "SE",
+        "source": [
+          697,
+          649
+        ],
+        "target": [
+          816,
+          708
+        ],
+        "evidence": "building1_outer_wall_corner"
+      }
+    ],
+    "checks": [
+      {
+        "id": "north_stair_core",
+        "source": [
+          517,
+          147
+        ],
+        "target": [
+          630,
+          126
+        ],
+        "predicted_target_px": [
+          609.9130434782609,
+          135.7080081753995
+        ],
+        "residual_m": 1.3844077282438192
+      },
+      {
+        "id": "south_stair_core",
+        "source": [
+          515,
+          559
+        ],
+        "target": [
+          618,
+          608
+        ],
+        "predicted_target_px": [
+          607.6231884057971,
+          609.365756224452
+        ],
+        "residual_m": 0.6363125170276268
+      },
+      {
+        "id": "b2_south_stair_core",
+        "source": [
+          80,
+          584
+        ],
+        "target": [
+          101,
+          619
+        ],
+        "predicted_target_px": [
+          109.57971014492759,
+          645.4601449275364
+        ],
+        "residual_m": 1.792344158642444
+      }
+    ],
+    "confidence": "medium",
+    "note": "以同一号楼可见外墙角点拟合；楼梯核为独立语义检查点（不同楼层梯段形状不同）；二号楼点仅作外推检查",
+    "matrix": [
+      [
+        1.144927536231884,
+        -0.016908212560386472
+      ],
+      [
+        0.0,
+        1.1495726495726497
+      ],
+      [
+        17.98550724637687,
+        -24.537625418060202
+      ]
+    ],
+    "residuals": [
+      1.7500000000000142,
+      1.749999999999993,
+      1.7499999999998863,
+      1.7500000000001137
+    ],
+    "fit_rmse": 1.7500000000000018,
+    "max_residual": 1.7500000000001137,
+    "leave_one_out_residuals": [
+      7.000000000000057,
+      6.9999999999999645,
+      7.000000000000455,
+      6.999999999999886
+    ],
+    "axis_scale_ratio": 1.0154013685172085,
+    "residual_unit": "target_floor_pixels",
+    "similarity_comparison": {
+      "matrix": [
+        [
+          1.1490557659047351,
+          -0.0018814565512083393
+        ],
+        [
+          0.0018814565512083393,
+          1.1490557659047351
+        ],
+        [
+          14.864663675033853,
+          -33.27173608189588
+        ]
+      ],
+      "residuals": [
+        1.0369945002773675,
+        0.13053077625877,
+        3.4586474700747334,
+        3.3021088734626245
+      ],
+      "fit_rmse": 2.4473741648760607,
+      "max_residual": 3.4586474700747334,
+      "leave_one_out_residuals": [
+        7.000000000000057,
+        6.9999999999999645,
+        7.000000000000455,
+        6.999999999999886
+      ],
+      "axis_scale_ratio": 1.0
+    },
+    "check_rmse_m": 1.3581821135089527,
+    "pixel_to_utm51n_matrix": [
+      [
+        0.0017128620028548894,
+        -0.06929060069346174
+      ],
+      [
+        -0.0750712703694347,
+        0.0011608458803325644
+      ],
+      [
+        219579.57953473902,
+        3356947.258145325
+      ]
+    ],
+    "absolute_accuracy_m": null,
+    "absolute_confidence": "low",
+    "uncertainty_note": "inherits missing control annotation and approximate CRS conversion; semantic stair checks are not surveyed checkpoints"
+  },
+  "validation": {
+    "floor": "2F",
+    "components": [
+      [
+        "n_2f_110_542",
+        "n_2f_110_552",
+        "n_2f_117_144",
+        "n_2f_117_145",
+        "n_2f_117_159",
+        "n_2f_117_189",
+        "n_2f_117_211",
+        "n_2f_117_239",
+        "n_2f_117_266",
+        "n_2f_117_284",
+        "n_2f_117_290",
+        "n_2f_117_338",
+        "n_2f_117_339",
+        "n_2f_117_390",
+        "n_2f_117_443",
+        "n_2f_117_479",
+        "n_2f_117_514",
+        "n_2f_117_552",
+        "n_2f_117_608",
+        "n_2f_580_129",
+        "n_2f_580_145",
+        "n_2f_580_167",
+        "n_2f_580_189",
+        "n_2f_580_205",
+        "n_2f_580_233",
+        "n_2f_580_266",
+        "n_2f_580_285",
+        "n_2f_580_313",
+        "n_2f_580_341",
+        "n_2f_580_367",
+        "n_2f_580_395",
+        "n_2f_580_413",
+        "n_2f_580_443",
+        "n_2f_580_484",
+        "n_2f_580_492",
+        "n_2f_580_496",
+        "n_2f_580_535",
+        "n_2f_580_558",
+        "n_2f_580_589",
+        "n_2f_580_592",
+        "n_2f_580_615",
+        "n_2f_580_624",
+        "n_2f_580_80",
+        "n_2f_580_88",
+        "n_2f_630_492",
+        "n_2f_98_542",
+        "n_o_2f_b1_201",
+        "n_o_2f_b1_202",
+        "n_o_2f_b1_203",
+        "n_o_2f_b1_204",
+        "n_o_2f_b1_205",
+        "n_o_2f_b1_206",
+        "n_o_2f_b1_207",
+        "n_o_2f_b1_209",
+        "n_o_2f_b1_210",
+        "n_o_2f_b1_211",
+        "n_o_2f_b1_212",
+        "n_o_2f_b1_214",
+        "n_o_2f_b1_216",
+        "n_o_2f_b1_218",
+        "n_o_2f_b1_220",
+        "n_o_2f_b1_222",
+        "n_o_2f_b1_224",
+        "n_o_2f_b1_226",
+        "n_o_2f_b1_228",
+        "n_o_2f_b1_230",
+        "n_o_2f_b1_stair_n",
+        "n_o_2f_b1_stair_s",
+        "n_o_2f_b2_201",
+        "n_o_2f_b2_202",
+        "n_o_2f_b2_203",
+        "n_o_2f_b2_205",
+        "n_o_2f_b2_206",
+        "n_o_2f_b2_207",
+        "n_o_2f_b2_208",
+        "n_o_2f_b2_209",
+        "n_o_2f_b2_210",
+        "n_o_2f_b2_212",
+        "n_o_2f_b2_216",
+        "n_o_2f_b2_218",
+        "n_o_2f_b2_220",
+        "n_o_2f_b2_stair_n",
+        "n_o_2f_b2_stair_s"
+      ]
+    ],
+    "errors": [],
+    "passage_tolerance_px": 2,
+    "room_intrusion_tolerance_px": 0.3,
+    "unresolved": [
+      {
+        "object_id": "2f_b1_208",
+        "issue": "door_not_confirmed",
+        "action": "核验门位后再接入路线；房号不等于科室证据"
+      },
+      {
+        "object_id": "2f_east_roof",
+        "issue": "roof_or_void_not_patient_floor",
+        "action": "右侧屋面/外梯不加入患者通道；楼栋及出入口待核"
+      },
+      {
+        "object_id": "2f_b2_stair_n",
+        "issue": "no_confirmed_1f_counterpart",
+        "action": "保留楼梯门口节点，不连到 1F 西北出口"
+      }
+    ],
+    "unrouted_pois": [
+      "poi_2f_b1_208",
+      "poi_2f_b1_unlabelled_shaft",
+      "poi_2f_b1_toilets"
+    ]
+  }
+}

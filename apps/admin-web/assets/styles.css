@@ -347,3 +347,4 @@ input:focus, select:focus, textarea:focus { border-color: var(--primary); box-sh
   .page-heading { display: grid; }
   .form-row, .check-grid { grid-template-columns: 1fr; }
 }
+.demo-tool-tabs { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }

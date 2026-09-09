@@ -1,0 +1,1070 @@
+{
+  "type": "FeatureCollection",
+  "status": "navigation_draft_not_survey",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_301",
+      "properties": {
+        "id": "poi_3f_b1_301",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_301",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼301",
+        "category": "room",
+        "room_ref": "301",
+        "route_node_id": "n_o_3f_b1_301",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            90.5,
+            184.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.0838320870671,
+          30.31153957754376
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_303",
+      "properties": {
+        "id": "poi_3f_b1_303",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_303",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼303",
+        "category": "room",
+        "room_ref": "303",
+        "route_node_id": "n_o_3f_b1_303",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            90.5,
+            251.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08378100163142,
+          30.31153912353999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_305",
+      "properties": {
+        "id": "poi_3f_b1_305",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_305",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼305",
+        "category": "room",
+        "room_ref": "305",
+        "route_node_id": "n_o_3f_b1_305",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            90.5,
+            298.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08374580944367,
+          30.311538810770234
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_307",
+      "properties": {
+        "id": "poi_3f_b1_307",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_307",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼307",
+        "category": "room",
+        "room_ref": "307",
+        "route_node_id": "n_o_3f_b1_307",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            90.5,
+            345.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08370986043579,
+          30.311538491264468
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_309",
+      "properties": {
+        "id": "poi_3f_b1_309",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_309",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼309",
+        "category": "room",
+        "room_ref": "309",
+        "route_node_id": "n_o_3f_b1_309",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            90.5,
+            396.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08367126255484,
+          30.311538148205177
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_311",
+      "properties": {
+        "id": "poi_3f_b1_311",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_311",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼311",
+        "category": "room",
+        "room_ref": "311",
+        "route_node_id": "n_o_3f_b1_311",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            90.5,
+            452.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08362925897995,
+          30.311537774862998
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_302",
+      "properties": {
+        "id": "poi_3f_b1_302",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_302",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼302",
+        "category": "room",
+        "room_ref": "302",
+        "route_node_id": "n_o_3f_b1_302",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            238.5,
+            63.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08392848020311,
+          30.311451045178337
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_304",
+      "properties": {
+        "id": "poi_3f_b1_304",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_304",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼304",
+        "category": "room",
+        "room_ref": "304",
+        "route_node_id": "n_o_3f_b1_304",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            238.5,
+            108.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08389442327393,
+          30.311450742538497
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_306",
+      "properties": {
+        "id": "poi_3f_b1_306",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_306",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼306",
+        "category": "room",
+        "room_ref": "306",
+        "route_node_id": "n_o_3f_b1_306",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            199.5,
+            148.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08386315958509,
+          30.311474019913426
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_308",
+      "properties": {
+        "id": "poi_3f_b1_308",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_308",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼308",
+        "category": "room",
+        "room_ref": "308",
+        "route_node_id": "n_o_3f_b1_308",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            243.5,
+            172.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08384654071283,
+          30.31144729712749
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_310",
+      "properties": {
+        "id": "poi_3f_b1_310",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_310",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼310",
+        "category": "room",
+        "room_ref": "310",
+        "route_node_id": "n_o_3f_b1_310",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            193.5,
+            228.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08380202485247,
+          30.311477100491533
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_312",
+      "properties": {
+        "id": "poi_3f_b1_312",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_312",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼312",
+        "category": "room",
+        "room_ref": "312",
+        "route_node_id": "n_o_3f_b1_312",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            242.5,
+            228.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08380374524066,
+          30.311447520785702
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_316",
+      "properties": {
+        "id": "poi_3f_b1_316",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_316",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼316",
+        "category": "room",
+        "room_ref": "316",
+        "route_node_id": "n_o_3f_b1_316",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            193.5,
+            283.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08376039970987,
+          30.311476730556183
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_314",
+      "properties": {
+        "id": "poi_3f_b1_314",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_314",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼314",
+        "category": "room",
+        "room_ref": "314",
+        "route_node_id": "n_o_3f_b1_314",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            242.5,
+            283.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08376212011055,
+          30.31144715085173
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_318",
+      "properties": {
+        "id": "poi_3f_b1_318",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_318",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼318",
+        "category": "room",
+        "room_ref": "318",
+        "route_node_id": "n_o_3f_b1_318",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            193.5,
+            319.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.0837331541628,
+          30.311476488409514
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_320",
+      "properties": {
+        "id": "poi_3f_b1_320",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_320",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼320",
+        "category": "room",
+        "room_ref": "320",
+        "route_node_id": "n_o_3f_b1_320",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            242.5,
+            319.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08373487457162,
+          30.31144690870595
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_324",
+      "properties": {
+        "id": "poi_3f_b1_324",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_324",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼324",
+        "category": "room",
+        "room_ref": "324",
+        "route_node_id": "n_o_3f_b1_324",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            193.5,
+            370.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08369455630549,
+          30.311476145358704
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_322",
+      "properties": {
+        "id": "poi_3f_b1_322",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_322",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼322",
+        "category": "room",
+        "room_ref": "322",
+        "route_node_id": "n_o_3f_b1_322",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            242.5,
+            370.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08369627672586,
+          30.311446565656404
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_326",
+      "properties": {
+        "id": "poi_3f_b1_326",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_326",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼326",
+        "category": "room",
+        "room_ref": "326",
+        "route_node_id": "n_o_3f_b1_326",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            193.5,
+            412.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08366276983574,
+          30.31147586283769
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_328",
+      "properties": {
+        "id": "poi_3f_b1_328",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_328",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼328",
+        "category": "room",
+        "room_ref": "328",
+        "route_node_id": "n_o_3f_b1_328",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            242.5,
+            412.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08366449026563,
+          30.31144628313644
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_330",
+      "properties": {
+        "id": "poi_3f_b1_330",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_330",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼330",
+        "category": "room",
+        "room_ref": "330",
+        "route_node_id": "n_o_3f_b1_330",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            239.0,
+            507.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08359284784386,
+          30.311447760273946
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_332",
+      "properties": {
+        "id": "poi_3f_b1_332",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_332",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼332",
+        "category": "room",
+        "room_ref": "332",
+        "route_node_id": "n_o_3f_b1_332",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            190.0,
+            507.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08359112739245,
+          30.311477339972836
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_336",
+      "properties": {
+        "id": "poi_3f_b1_336",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_336",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼336",
+        "category": "room",
+        "room_ref": "336",
+        "route_node_id": "n_o_3f_b1_336",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            239.0,
+            561.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08355160113047,
+          30.311447393636502
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_338",
+      "properties": {
+        "id": "poi_3f_b1_338",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_338",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼338",
+        "category": "room",
+        "room_ref": "338",
+        "route_node_id": "n_o_3f_b1_338",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            239.0,
+            611.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08351376011029,
+          30.31144705726043
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_stair_n",
+      "properties": {
+        "id": "poi_3f_b1_stair_n",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_stair_n",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼图上侧楼梯",
+        "category": "stairs",
+        "room_ref": null,
+        "route_node_id": "n_o_3f_b1_stair_n",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            75.0,
+            129.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08387278962896,
+          30.311549300941522
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_stair_s",
+      "properties": {
+        "id": "poi_3f_b1_stair_s",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_stair_s",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "一号楼图下侧楼梯",
+        "category": "stairs",
+        "room_ref": null,
+        "route_node_id": "n_o_3f_b1_stair_s",
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            73.0,
+            551.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.0835533408251,
+          30.311547669681648
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_toilets",
+      "properties": {
+        "id": "poi_3f_b1_toilets",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_toilets",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "toilets",
+        "category": "restroom",
+        "room_ref": null,
+        "route_node_id": null,
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            79.5,
+            70.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08391760008345,
+          30.31154698124059
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_3f_b1_unknown_shaft_s",
+      "properties": {
+        "id": "poi_3f_b1_unknown_shaft_s",
+        "status": "navigation_draft_not_survey",
+        "space_id": "3f_b1_unknown_shaft_s",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "name": "未标注方框（用途待核）",
+        "category": "unknown",
+        "room_ref": null,
+        "route_node_id": null,
+        "scheduler_location_id": null,
+        "confidence": "high",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "evidence_ids": [
+          "plan_3f",
+          "user_building_statement"
+        ],
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            80.0,
+            508.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08358650832677,
+          30.31154373665048
+        ]
+      }
+    }
+  ]
+}

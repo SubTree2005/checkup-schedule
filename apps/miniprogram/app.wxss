@@ -190,8 +190,28 @@ view, text, button, navigator {
 .status-done { color: #16A34A; }
 
 .safe-top {
-  padding-top: calc(env(safe-area-inset-top) + 20rpx);
+  padding-top: var(--status-bar-height, env(safe-area-inset-top));
 }
+
+.flow-nav, .settings-nav { height: var(--navigation-bar-height, 44px); position: relative; }
+.flow-nav .nav-title, .settings-nav .nav-title { position: absolute; left: var(--navigation-side-width, 100px); right: var(--navigation-side-width, 100px); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nav-back { line-height: 1; }
+
+/* Mini buttons have native sizing/font defaults; keep all route pills identical. */
+.route-pill { flex: none; min-height: 72rpx; display: flex; align-items: center; justify-content: center; color: #263248; background: #FFFFFF; border: 2rpx solid #BFD3FA; border-radius: 999rpx; font-size: 25rpx; font-weight: 400; line-height: 1.4; white-space: nowrap; }
+.route-pill::after { border: none; }
+
+.indicator-row { min-height: 110rpx; padding: 20rpx 0; display: flex; align-items: center; gap: 18rpx; border-bottom: 2rpx solid #EDF1F6; }
+.indicator-row:last-child { border-bottom: none; }
+.indicator-copy { flex: 1; min-width: 0; }
+.indicator-label { color: #263248; font-size: 25rpx; line-height: 1.4; }
+.indicator-project { margin-top: 8rpx; color: #8792A4; font-size: 20rpx; }
+.indicator-result { max-width: 48%; text-align: right; color: #172033; font-size: 27rpx; font-weight: 600; }
+.indicator-unit, .indicator-status { font-size: 20rpx; font-weight: 400; }
+.indicator-status { margin-top: 8rpx; }
+.indicator-arrow { flex: none; color: #A0AABA; font-size: 34rpx; }
+.indicators-empty { padding: 70rpx 20rpx; color: #8792A4; font-size: 24rpx; text-align: center; }
+.result-abnormal { color: #BD4C32; }
 
 .tab-page {
   min-height: 100vh;

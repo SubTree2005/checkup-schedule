@@ -1,0 +1,218 @@
+{
+  "status": "navigation_draft_not_survey",
+  "source_image": "images/1F.jpg",
+  "registration": {
+    "matrix": [
+      [
+        0.0005316443849293649,
+        -0.060504725826832265
+      ],
+      [
+        -0.06530363296077218,
+        0.0010098064535234946
+      ],
+      [
+        219577.96757676106,
+        3356948.3711317624
+      ]
+    ],
+    "residuals": [
+      2.3585125520142647,
+      3.0635798816379634,
+      1.7068492734364786,
+      1.4235278906395414,
+      1.4839711472729533,
+      1.2290026861389156
+    ],
+    "fit_rmse": 1.9832837759349304,
+    "max_residual": 3.0635798816379634,
+    "leave_one_out_residuals": [
+      5.232812013920469,
+      5.9363776459228434,
+      11.38738359158777,
+      2.2163305204321633,
+      2.5099777054741055,
+      1.8913370962499167
+    ],
+    "axis_scale_ratio": 1.0834717548269657,
+    "residual_unit": "metres",
+    "confidence": "low",
+    "absolute_accuracy_m": null,
+    "annotation_transfer": {
+      "source_size": [
+        2136,
+        1197
+      ],
+      "target_size": [
+        1330,
+        746
+      ],
+      "method": "pixel-centre resize assumption; no crop or padding assumed",
+      "verified": false
+    },
+    "fit_is_not_independent_accuracy": true
+  },
+  "validation": {
+    "floor": "1F",
+    "components": [
+      [
+        "n_1f_1025_477",
+        "n_1f_1097_550",
+        "n_1f_113_558",
+        "n_1f_1154_510",
+        "n_1f_1178_499",
+        "n_1f_126_414",
+        "n_1f_152_100",
+        "n_1f_152_387",
+        "n_1f_152_414",
+        "n_1f_152_558",
+        "n_1f_152_568",
+        "n_1f_294_180",
+        "n_1f_294_202",
+        "n_1f_294_228",
+        "n_1f_294_293",
+        "n_1f_294_387",
+        "n_1f_347p5_387",
+        "n_1f_380p5_202",
+        "n_1f_427p5_387",
+        "n_1f_490_202",
+        "n_1f_509p5_387",
+        "n_1f_563_173",
+        "n_1f_563_202",
+        "n_1f_563_387",
+        "n_1f_687_130",
+        "n_1f_687_209",
+        "n_1f_687_251",
+        "n_1f_687_325",
+        "n_1f_687_361",
+        "n_1f_687_69",
+        "n_1f_688_566",
+        "n_1f_688_610",
+        "n_1f_688_611",
+        "n_1f_688_615",
+        "n_1f_880_361",
+        "n_1f_917_361",
+        "n_1f_917_387",
+        "n_1f_917_460",
+        "n_1f_917_566",
+        "n_1f_917_623",
+        "n_1f_984_438",
+        "n_1f_994_460",
+        "n_o_1f_b1_125",
+        "n_o_1f_b1_127",
+        "n_o_1f_b1_129",
+        "n_o_1f_b1_emergency_a",
+        "n_o_1f_b1_entrance",
+        "n_o_1f_b1_infusion",
+        "n_o_1f_b1_laboratory",
+        "n_o_1f_b1_observation",
+        "n_o_1f_b1_stair_n",
+        "n_o_1f_b1_stair_s",
+        "n_o_1f_b2_101",
+        "n_o_1f_b2_102",
+        "n_o_1f_b2_103",
+        "n_o_1f_b2_electrical",
+        "n_o_1f_b2_machine_1",
+        "n_o_1f_b2_machine_2",
+        "n_o_1f_b2_machine_3",
+        "n_o_1f_b2_mri",
+        "n_o_1f_b2_stair_s",
+        "n_o_1f_b2_surgery"
+      ]
+    ],
+    "errors": [],
+    "passage_tolerance_px": 2,
+    "room_intrusion_tolerance_px": 0.3,
+    "unresolved": [
+      {
+        "object_id": "1f_b2_courtyard",
+        "issue": "door_not_confirmed",
+        "action": "标注功能区，暂不映射为可达的调度位置"
+      },
+      {
+        "object_id": "1f_b1_pharmacy",
+        "issue": "door_not_confirmed",
+        "action": "标注功能区，暂不映射为可达的调度位置"
+      },
+      {
+        "object_id": "1f_b1_107",
+        "issue": "door_not_confirmed",
+        "action": "核验门位后再接入路线；房号不等于科室证据"
+      },
+      {
+        "object_id": "1f_b1_guard",
+        "issue": "door_not_confirmed",
+        "action": "标注功能区，暂不映射为可达的调度位置"
+      },
+      {
+        "object_id": "1f_b1_service",
+        "issue": "door_not_confirmed",
+        "action": "标注功能区，暂不映射为可达的调度位置"
+      },
+      {
+        "object_id": "1f_b2_radiology",
+        "issue": "door_not_confirmed",
+        "action": "标注功能区，暂不映射为可达的调度位置"
+      },
+      {
+        "object_id": "1f_b2_archive",
+        "issue": "door_not_confirmed",
+        "action": "标注功能区，暂不映射为可达的调度位置"
+      },
+      {
+        "object_id": "1f_b2_clinic_n1",
+        "issue": "door_not_confirmed",
+        "action": "标注功能区，暂不映射为可达的调度位置"
+      },
+      {
+        "object_id": "1f_b2_clinic_n2",
+        "issue": "door_not_confirmed",
+        "action": "标注功能区，暂不映射为可达的调度位置"
+      },
+      {
+        "object_id": "1f_b2_clinic_n3",
+        "issue": "door_not_confirmed",
+        "action": "标注功能区，暂不映射为可达的调度位置"
+      },
+      {
+        "object_id": "1f_b2_clinic_n0",
+        "issue": "door_not_confirmed",
+        "action": "标注功能区，暂不映射为可达的调度位置"
+      },
+      {
+        "object_id": "1f_b2_restroom_nw",
+        "issue": "door_not_confirmed",
+        "action": "标注功能区，暂不映射为可达的调度位置"
+      },
+      {
+        "object_id": "1f_b1_restroom_n",
+        "issue": "door_not_confirmed",
+        "action": "标注功能区，暂不映射为可达的调度位置"
+      },
+      {
+        "object_id": "1f_nw_exit",
+        "issue": "no_stair_symbol",
+        "action": "西北出口不作为楼梯节点；1F↔2F 二号楼北梯不启用"
+      },
+      {
+        "object_id": "1f_building_boundary",
+        "issue": "inferred_from_registered_2f",
+        "action": "1F 楼栋范围来自 2F 投影与结构分组；连廊共享、翼部归属待现场核验"
+      }
+    ],
+    "unrouted_pois": [
+      "poi_1f_b1_pharmacy",
+      "poi_1f_b1_107",
+      "poi_1f_b1_guard",
+      "poi_1f_b1_service",
+      "poi_1f_b2_radiology",
+      "poi_1f_b2_archive",
+      "poi_1f_b2_clinic_n1",
+      "poi_1f_b2_clinic_n2",
+      "poi_1f_b2_clinic_n3",
+      "poi_1f_b2_clinic_n0",
+      "poi_1f_b2_restroom_nw",
+      "poi_1f_b1_restroom_n"
+    ]
+  }
+}

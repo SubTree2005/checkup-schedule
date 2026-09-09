@@ -1,12 +1,15 @@
+import base64
 import json
 import os
 import tempfile
 import unittest
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
+from io import BytesIO
 from unittest.mock import patch
 
 from fastapi.testclient import TestClient
+from PIL import Image
 from sqlalchemy import event, select
 
 from apps.backend.checkup_backend.database import Base
@@ -522,7 +525,9 @@ class BackendAPITest(unittest.TestCase):
             self.assertEqual(hospitals.status_code, 200, hospitals.text)
             self.assertLessEqual(len(statements), 4, "hospital listing must not add one query per campus")
             institution = next(row for row in hospitals.json() if row["name"] == "浙江大学校医院")
-            self.assertEqual(institution["coverImageUrl"], cover)
+            self.assertTrue(institution["coverImageUrl"].startswith("data:image/jpeg;base64,"))
+            with Image.open(BytesIO(base64.b64decode(institution["coverImageUrl"].split(",", 1)[1]))) as image:
+                self.assertEqual(image.size, (1, 1))
             self.assertEqual(institution["hospitalLevel"], "一级甲等")
             self.assertEqual(institution["positioning"], "校内医疗服务")
             self.assertEqual(
@@ -656,7 +661,9 @@ class BackendAPITest(unittest.TestCase):
                 },
             )
             self.assertEqual(updated.status_code, 200, updated.text)
-            self.assertTrue(updated.json()["avatarUrl"].startswith("data:image/png;base64,"))
+            self.assertTrue(updated.json()["avatarUrl"].startswith("data:image/jpeg;base64,"))
+            with Image.open(BytesIO(base64.b64decode(updated.json()["avatarUrl"].split(",", 1)[1]))) as image:
+                self.assertEqual(image.size, (1, 1))
             wrong_password = patient_client.request(
                 "DELETE",
                 "/api/patient/account",
@@ -1680,6 +1687,47 @@ class BackendAPITest(unittest.TestCase):
             self.assertEqual(catalog.status_code, 200, catalog.text)
             self.assertEqual(len(catalog.json()["packages"]), 7)
 
+    def test_zijingang_demo_afternoon_booking_keeps_saved_preparation(self):
+        payload = json.loads((
+            Path(__file__).resolve().parents[1]
+            / "examples/hospitals/zijingang-campus-hospital/workspace.json"
+        ).read_text(encoding="utf-8"))
+        for key in ("lab-package-1", "general-measurements"):
+            exam = next(row for row in payload["exams"] if row["key"] == key)
+            self.assertEqual(exam["allowedTimeSlots"], {})
+        admin = self.register(workspace=payload)
+        hospital_id = admin["hospital"]["hospitalID"]
+        package = next(row for row in self.client.get("/api/packages").json() if row["price"] == 80)
+        with TestClient(self.app) as patient_client:
+            registered = patient_client.post("/api/patient/auth/register", json={
+                "phone": "13900000009", "password": "patient-pass-123", "name": "演示测试",
+                "privacyConsent": True, "privacyConsentVersion": "v0.3.1-2026-08-31",
+            })
+            self.assertEqual(registered.status_code, 201, registered.text)
+            booking = {
+                "hospitalID": hospital_id, "packageID": package["packageID"],
+                "appointmentAt": "2026-09-07T13:30:00+08:00",
+            }
+            with patch("apps.backend.checkup_backend.patient_api.utcnow", return_value=datetime(2026, 9, 7, 4, 45)):
+                unconfirmed = patient_client.post("/api/patient/plans", json=booking)
+                self.assertEqual(unconfirmed.status_code, 422, unconfirmed.text)
+                self.assertIn("空腹", unconfirmed.json()["detail"])
+                saved = patient_client.patch("/api/patient/profile", json={"fasting": "yes"})
+                self.assertEqual(saved.status_code, 200, saved.text)
+                late = patient_client.post("/api/patient/plans", json={
+                    **booking, "appointmentAt": "2026-09-07T16:30:00+08:00",
+                })
+                self.assertEqual(late.status_code, 422, late.text)
+                self.assertIn("无法生成完整计划", late.json()["detail"])
+                # No fasting value in this request: it must survive the failed plan in the DB.
+                afternoon = patient_client.post("/api/patient/plans", json=booking)
+                self.assertEqual(afternoon.status_code, 201, afternoon.text)
+                self.assertEqual(len(afternoon.json()["steps"]), 8)
+                for step in afternoon.json()["steps"]:
+                    start = datetime.fromisoformat(step["estimatedStart"].replace("Z", "+00:00"))
+                    self.assertGreaterEqual(start.hour * 60 + start.minute, 5 * 60 + 30)
+                    self.assertLess(start.hour, 9)
+
     def test_anomaly_closes_and_reopens_department(self):
         self.register()
         department = self.create_department()
@@ -2052,7 +2100,7 @@ class BackendAPITest(unittest.TestCase):
             self.assertEqual(ended.json()["steps"][0]["status"], "skipped")
             self.assertIsNone(patient_client.get("/api/patient/plans/current").json())
 
-    def test_plan_transitions_are_ordered_and_resume_is_atomic(self):
+    def test_plan_transitions_are_ordered_and_closed_department_is_skipped_on_resume(self):
         admin = self.register()
         department = self.create_department(name="状态原子性科室")
         exam_ids = []
@@ -2110,21 +2158,17 @@ class BackendAPITest(unittest.TestCase):
                 "apps.backend.checkup_backend.patient_api.utcnow",
                 return_value=datetime(2026, 8, 31, 0, 0),
             ):
-                failed_resume = patient_client.post(f"/api/patient/plans/{plan_id}/resume")
-            self.assertEqual(failed_resume.status_code, 409, failed_resume.text)
-            self.assertEqual(patient_client.get(f"/api/patient/plans/{plan_id}").json()["planStatus"], "已中断")
+                closed_resume = patient_client.post(f"/api/patient/plans/{plan_id}/resume")
+            self.assertEqual(closed_resume.status_code, 200, closed_resume.text)
+            self.assertEqual(closed_resume.json()["planStatus"], "已结束")
+            self.assertTrue(all(step["status"] == "skipped" for step in closed_resume.json()["steps"]))
+            self.assertEqual(set(closed_resume.json()["unfinishedItemIDs"]), set(exam_ids))
 
             reopened = self.client.patch(
                 f"/api/departments/{department['deptID']}",
                 json={"isAvailable": True},
             )
             self.assertEqual(reopened.status_code, 200, reopened.text)
-            with patch(
-                "apps.backend.checkup_backend.patient_api.utcnow",
-                return_value=datetime(2026, 8, 31, 0, 0),
-            ):
-                resumed = patient_client.post(f"/api/patient/plans/{plan_id}/resume")
-            self.assertEqual(resumed.status_code, 200, resumed.text)
             ended = patient_client.post(f"/api/patient/plans/{plan_id}/finish")
             self.assertEqual(ended.status_code, 200, ended.text)
             cannot_restart = patient_client.post(

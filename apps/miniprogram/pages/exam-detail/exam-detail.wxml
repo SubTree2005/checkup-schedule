@@ -1,24 +1,25 @@
-<view class="exam-page safe-top">
-  <view class="flow-nav"><view class="nav-back" bindtap="goBack" aria-label="返回">‹</view><view class="nav-title">项目详情</view><view class="nav-space"></view></view>
+<view class="exam-page safe-top" style="{{navigationStyle}}">
+  <view class="flow-nav"><view class="nav-back" bindtap="goBack" aria-label="返回">‹</view><view class="nav-title">{{reportFirst ? '指标详情' : '项目详情'}}</view><view class="nav-space"></view></view>
 
   <scroll-view class="exam-scroll" scroll-y="true" wx:if="{{step}}">
-    <view class="project-head">
+    <view class="project-head" wx:if="{{!reportFirst}}">
       <image class="project-icon" src="{{step.iconPath}}" mode="aspectFit"></image>
       <view class="project-copy"><view class="project-title">{{step.title}}</view><view class="project-status status-{{step.statusTone}}">{{step.statusText}}</view></view>
     </view>
 
     <view wx:if="{{reportFirst}}" class="report-card detail-card">
-      <view class="card-title">体检报告</view>
+      <view class="card-title">{{indicator ? indicator.label : '体检报告'}}</view>
       <view wx:if="{{!report.available}}" class="report-empty">暂无</view>
       <block wx:else>
-        <view wx:if="{{report.conclusion}}" class="report-conclusion">{{report.conclusion}}</view>
-        <view class="result-row" wx:for="{{report.rows}}" wx:key="id"><view class="result-label">{{item.label}}</view><view class="result-copy"><view class="result-value">{{item.value}} {{item.unit}}</view><view wx:if="{{item.reference}}" class="result-reference">参考 {{item.reference}}</view></view></view>
+        <view class="result-row" wx:for="{{report.rows}}" wx:key="id"><view class="result-label">{{item.label}}</view><view class="result-copy"><view class="result-value result-{{item.statusTone}}">{{item.value === '' ? '—' : item.value}} {{item.unit}}</view><view wx:if="{{item.statusText}}" class="result-reference result-{{item.statusTone}}">{{item.statusText}}</view><view wx:if="{{item.reference}}" class="result-reference">参考 {{item.reference}}</view></view></view>
+        <view wx:if="{{report.conclusion}}" class="report-conclusion">项目结论：{{report.conclusion}}</view>
         <view wx:if="{{report.reportedAtText}}" class="report-time">报告时间 {{report.reportedAtText}}</view>
       </block>
     </view>
 
     <view class="department-card detail-card">
       <view class="card-title">项目信息</view>
+      <view class="info-row"><view class="info-label">项目</view><view class="info-value">{{step.title}}</view></view>
       <view class="info-row"><view class="info-label">科室</view><view class="info-value">{{step.department}}</view></view>
       <view wx:if="{{step.showDuration}}" class="info-row"><view class="info-label">预计用时</view><view class="info-value">{{step.durationText}}</view></view>
       <view class="info-row location-row">

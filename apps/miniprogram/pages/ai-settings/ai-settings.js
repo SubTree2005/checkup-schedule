@@ -1,3 +1,4 @@
+const { navigationMetrics } = require('../../utils/layout')
 const agent = require('../../utils/ai-agent')
 const api = require('../../utils/api')
 
@@ -9,6 +10,7 @@ function timeText(value) {
 
 Page({
   data: {
+    ...navigationMetrics(),
     modelName: agent.DEFAULT_MODEL_LABEL,
     history: [],
     hasHistory: false

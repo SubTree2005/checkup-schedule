@@ -1,3 +1,5 @@
+const { navigationMetrics } = require('../../utils/layout')
+const { isDemoUnrestricted } = require('../../utils/demo-mode')
 const api = require('../../utils/api')
 const { ICONS, examIcon } = require('../../utils/icon-map')
 const flowGuard = require('../../utils/flow-guard')
@@ -31,6 +33,7 @@ function confirmPreparationReady() {
 
 Page({
   data: {
+    ...navigationMetrics(),
     selectedPlanID: '',
     hasPlan: false,
     currentStep: null,
@@ -39,6 +42,7 @@ Page({
     queueAhead: 0,
     mainActionText: '完成本项',
     reminder: null,
+    replanNotice: '',
     operating: false
   },
 
@@ -46,23 +50,39 @@ Page({
 
   onShow() {
     if (!flowGuard.requireLogin(app)) return
+    this._visible = true
     const cached = app.globalData.currentPlan
     const cachedID = cached && (cached.planID || cached.id)
     if (cached && (!this.data.selectedPlanID || cachedID === this.data.selectedPlanID) && cached !== this._plan) {
       this.syncPlan(cached)
     }
-    const request = this.data.selectedPlanID ? api.plans.get(this.data.selectedPlanID) : api.plans.current()
-    request.then(plan => {
+    this.refreshPlan()
+  },
+
+  onHide() { this._visible = false; clearTimeout(this._refreshTimer) },
+  onUnload() { this.onHide() },
+
+  async refreshPlan() {
+    clearTimeout(this._refreshTimer)
+    const revision = this._actionRevision || 0
+    try {
+      if (this.data.operating) return
+      const plan = await (this.data.selectedPlanID ? api.plans.get(this.data.selectedPlanID) : api.plans.current())
+      if (!this._visible || this.data.operating || revision !== (this._actionRevision || 0)) return
       if (!plan) {
         if (!this.data.selectedPlanID) app.saveCurrentPlan(null)
         this.syncPlan(null)
         return
       }
+      if (plan.finished) return this.showCompletion(plan)
       app.saveCurrentPlan(plan)
+      if (!this.data.selectedPlanID) this.setData({ selectedPlanID: plan.planID })
       if (plan !== this._plan) this.syncPlan(plan)
-    }).catch(error => {
+    } catch (error) {
       if (!this._plan) api.showError(error)
-    })
+    } finally {
+      if (this._visible && !this._completionShown) this._refreshTimer = setTimeout(() => this.refreshPlan(), 15000)
+    }
   },
 
   syncPlan(plan) {
@@ -84,13 +104,15 @@ Page({
       currentStepNumber: currentStep ? currentStepIndex + 1 : steps.length,
       totalSteps: Number(plan.totalSteps || steps.length),
       queueAhead: Math.max(0, Number((currentStep && currentStep.queueAhead) || 0)),
-      mainActionText: paused ? '继续体检' : scheduled ? '开始体检' : '完成本项',
+      mainActionText: paused ? '继续体检' : scheduled ? '开始体检' : currentStep && currentStep.status === 'pending' ? '开始本项' : '完成本项',
+      canSkip: plan.planStatus === '进行中',
+      replanNotice: plan.replanNotice || this.data.replanNotice,
       reminder: this.resolveReminder(currentStep)
     })
   },
 
   resolveReminder(step) {
-    if (!step) return null
+    if (!step || isDemoUnrestricted(this._plan)) return null
     const text = `${step.title || ''} ${step.department || ''} ${step.note || ''}`
     if (step.bladderRequired || /膀胱|泌尿|前列腺|憋尿/.test(text)) {
       return { iconPath: ICONS.water, title: '请开始饮水并保持憋尿', detail: '请尽快饮水 500–800ml，完成后请勿排尿，以确保检查结果准确。' }
@@ -100,6 +122,7 @@ Page({
   },
 
   async confirmCurrentPreparation() {
+    if (isDemoUnrestricted(this._plan)) return true
     if (this._readinessConfirming) return false
     this._readinessConfirming = true
     try {
@@ -112,10 +135,12 @@ Page({
   async runAction(action) {
     if (this.data.operating) return null
     this.setData({ operating: true })
+    this._actionRevision = (this._actionRevision || 0) + 1
     try {
       const updated = await action()
       app.saveCurrentPlan(updated.finished ? null : updated)
       this.syncPlan(updated)
+      if (updated.finished) this.showCompletion(updated)
       return updated
     } catch (error) {
       api.showError(error)
@@ -125,15 +150,25 @@ Page({
     }
   },
 
+  showCompletion(plan) {
+    if (this._completionShown) return
+    this._completionShown = true
+    clearTimeout(this._refreshTimer)
+    app.saveCurrentPlan(null)
+    app.globalData.viewingPlanRecord = plan
+    wx.redirectTo({ url: `/pages/plan-complete/plan-complete?id=${plan.planID}${plan.ended ? '&ended=1' : ''}` })
+  },
+
   async handleMainAction() {
     const plan = this._plan
     const step = this.data.currentStep
     if (!plan || !step) return
+    const unrestricted = isDemoUnrestricted(plan)
     if (plan.planStatus === '已中断') {
       const prepared = await this.confirmCurrentPreparation()
       if (!prepared) return
       const updated = await this.runAction(async () => {
-        await api.profile.update({ fasting: 'yes', bladder: 'normal', drinkingWater: 'adequate' })
+        if (!unrestricted) await api.profile.update({ fasting: 'yes', bladder: 'normal', drinkingWater: 'adequate' })
         return api.plans.resume(plan.planID)
       })
       if (updated) this.openNavigation(updated)
@@ -143,8 +178,9 @@ Page({
       const prepared = await this.confirmCurrentPreparation()
       if (!prepared) return
       const updated = await this.runAction(async () => {
-        await api.profile.update({ fasting: 'yes', bladder: 'normal', drinkingWater: 'adequate' })
+        if (!unrestricted) await api.profile.update({ fasting: 'yes', bladder: 'normal', drinkingWater: 'adequate' })
         const replanned = await api.plans.replan(plan.planID)
+        if (replanned.finished) return replanned
         const first = (replanned.steps || []).find(item => item.status === 'pending')
         if (!first) throw new Error('当前没有可开始的体检项目')
         return api.plans.start(plan.planID, first.detailID)
@@ -160,7 +196,6 @@ Page({
     const updated = await this.runAction(() => api.plans.complete(plan.planID, step.detailID))
     if (!updated) return
     if (updated.finished) {
-      wx.redirectTo({ url: `/pages/plan-complete/plan-complete?id=${updated.planID}` })
       return
     }
     this.openNavigation(updated)
@@ -168,13 +203,21 @@ Page({
 
   openNavigation(plan) {
     const currentPlan = plan || this._plan
-    if (!currentPlan) return
+    if (!currentPlan || currentPlan.finished) return
     const step = (currentPlan.steps || []).find(item => item.status === 'active') || (currentPlan.steps || []).find(item => item.status === 'pending')
     if (!step) return
-    wx.navigateTo({ url: `/pages/navigation/navigation?planID=${currentPlan.planID}&detailID=${step.detailID}` })
+    wx.navigateTo({ url: `/pages/navigation/navigation?planID=${currentPlan.planID}&detailID=${step.detailID}&followRoute=1` })
   },
 
   onReplan() { if (this._plan) this.runAction(() => api.plans.replan(this._plan.planID)) },
+
+  async skipCurrent() {
+    if (!this._plan || !this.data.currentStep || this.data.operating) return
+    const detailID = this.data.currentStep.detailID
+    const confirmed = await confirmAction('跳过此项', '此项将保留为未完成，并重新安排后续路线。结束体检后可预约未完成项目。', '确认跳过')
+    if (!confirmed) return
+    await this.runAction(() => api.plans.skip(this._plan.planID, detailID))
+  },
 
   goOverview() {
     if (this._plan) wx.navigateTo({ url: `/pages/plan-overview/plan-overview?planID=${this._plan.planID}` })
@@ -188,10 +231,9 @@ Page({
   },
 
   async finishPlan() {
-    const confirmed = await confirmAction('结束体检', '未完成的项目将保留为未完成，本次体检结束后不可继续。', '确认结束')
+    const confirmed = await confirmAction('结束体检', '将保留当前记录，未完成项目可在结束后另行预约。', '确认结束')
     if (!confirmed) return
-    const updated = await this.runAction(() => api.plans.finish(this._plan.planID))
-    if (updated) wx.redirectTo({ url: `/pages/plan-complete/plan-complete?id=${updated.planID}&ended=1` })
+    await this.runAction(() => api.plans.finish(this._plan.planID))
   },
 
   goBack() { wx.navigateBack({ delta: 1 }) },

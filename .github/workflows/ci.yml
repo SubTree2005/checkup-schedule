@@ -21,7 +21,12 @@ jobs:
       - name: Mini-program integrity audit
         run: python scripts/audit_miniprogram.py
       - name: Mini-program runtime checks
-        run: node scripts/test_miniprogram_runtime.js
+        run: |
+          node scripts/test_miniprogram_runtime.js
+          node scripts/test_patient_flow.js
+          node scripts/test_agent_polling.js
+          node scripts/test_network_errors.js
+          node scripts/test_request_transport.js
       - name: Admin Web runtime checks
         run: node scripts/test_admin_web_runtime.js
       - name: Unit and regression tests

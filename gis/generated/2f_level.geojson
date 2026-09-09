@@ -1,0 +1,315 @@
+{
+  "type": "FeatureCollection",
+  "status": "navigation_draft_not_survey",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "zju2_zijingang_b1_2f",
+      "properties": {
+        "id": "zju2_zijingang_b1_2f",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "facility_id": "zju2_zijingang",
+        "building_id": "zju2_zijingang_b1",
+        "name": "2F",
+        "ordinal": 2,
+        "height_m": null,
+        "geometry_role": "generalized_occupied_floor_extent_not_wall_survey",
+        "absolute_accuracy_m": null,
+        "building_confidence": "high",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                490.0,
+                64.0
+              ],
+              [
+                538.0,
+                64.0
+              ],
+              [
+                538.0,
+                43.0
+              ],
+              [
+                574.0,
+                43.0
+              ],
+              [
+                574.0,
+                64.0
+              ],
+              [
+                697.0,
+                64.0
+              ],
+              [
+                697.0,
+                649.0
+              ],
+              [
+                490.0,
+                649.0
+              ],
+              [
+                490.0,
+                582.0
+              ],
+              [
+                462.0,
+                582.0
+              ],
+              [
+                462.0,
+                537.0
+              ],
+              [
+                490.0,
+                537.0
+              ],
+              [
+                490.0,
+                64.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08393978785138,
+              30.31156257988397
+            ],
+            [
+              120.08357079666405,
+              30.31155930045571
+            ],
+            [
+              120.08356978029695,
+              30.311576774728422
+            ],
+            [
+              120.0835346754269,
+              30.311576462677166
+            ],
+            [
+              120.08353569180024,
+              30.31155898840513
+            ],
+            [
+              120.08348342456046,
+              30.311558523779038
+            ],
+            [
+              120.08349093851194,
+              30.3114293389874
+            ],
+            [
+              120.08394730120618,
+              30.311433395026924
+            ],
+            [
+              120.08394283675312,
+              30.311510157043895
+            ],
+            [
+              120.0839592190197,
+              30.31151030261711
+            ],
+            [
+              120.08395791235193,
+              30.311532769549054
+            ],
+            [
+              120.08394153008165,
+              30.31153262397544
+            ],
+            [
+              120.08393978785138,
+              30.31156257988397
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zju2_zijingang_b2_2f",
+      "properties": {
+        "id": "zju2_zijingang_b2_2f",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "facility_id": "zju2_zijingang",
+        "building_id": "zju2_zijingang_b2",
+        "name": "2F",
+        "ordinal": 2,
+        "height_m": null,
+        "geometry_role": "generalized_occupied_floor_extent_not_wall_survey",
+        "absolute_accuracy_m": null,
+        "building_confidence": "high",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                24.0,
+                94.0
+              ],
+              [
+                196.0,
+                94.0
+              ],
+              [
+                196.0,
+                168.0
+              ],
+              [
+                223.0,
+                168.0
+              ],
+              [
+                223.0,
+                627.0
+              ],
+              [
+                60.0,
+                627.0
+              ],
+              [
+                60.0,
+                542.0
+              ],
+              [
+                23.0,
+                542.0
+              ],
+              [
+                24.0,
+                94.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083899470284,
+              30.311853193844055
+            ],
+            [
+              120.08354994447828,
+              30.311850711678986
+            ],
+            [
+              120.08355128754866,
+              30.311827620677317
+            ],
+            [
+              120.08348497818244,
+              30.31182703121882
+            ],
+            [
+              120.08349089500706,
+              30.311725306001268
+            ],
+            [
+              120.08384896526027,
+              30.31172848863736
+            ],
+            [
+              120.0838479852353,
+              30.311745338833628
+            ],
+            [
+              120.0839057133571,
+              30.311745851847668
+            ],
+            [
+              120.083899470284,
+              30.311853193844055
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zju2_zijingang_shared_2f",
+      "properties": {
+        "id": "zju2_zijingang_shared_2f",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_shared_2f",
+        "facility_id": "zju2_zijingang",
+        "building_id": null,
+        "name": "2F",
+        "ordinal": 2,
+        "height_m": null,
+        "geometry_role": "generalized_occupied_floor_extent_not_wall_survey",
+        "absolute_accuracy_m": null,
+        "building_confidence": "high",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                138.0,
+                175.0
+              ],
+              [
+                560.0,
+                175.0
+              ],
+              [
+                560.0,
+                203.0
+              ],
+              [
+                138.0,
+                203.0
+              ],
+              [
+                138.0,
+                175.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08384041922433,
+              30.311781487021427
+            ],
+            [
+              120.08381857614404,
+              30.311781292899575
+            ],
+            [
+              120.08383389359686,
+              30.31151793057517
+            ],
+            [
+              120.08385573661891,
+              30.31151812469065
+            ],
+            [
+              120.08384041922433,
+              30.311781487021427
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

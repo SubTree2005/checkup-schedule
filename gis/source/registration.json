@@ -1,0 +1,289 @@
+{
+  "source_crs": "BD-09LL",
+  "output_crs": "WGS84_approximate",
+  "metric_crs": "EPSG:32651",
+  "absolute_accuracy_m": null,
+  "annotation_transfer": {
+    "source_size": [
+      2136,
+      1197
+    ],
+    "target_size": [
+      1330,
+      746
+    ],
+    "method": "pixel-centre resize assumption; no crop or padding assumed",
+    "verified": false
+  },
+  "control_points": [
+    {
+      "id": 1,
+      "bd09ll": [
+        120.09479530834602,
+        30.315105942964294
+      ],
+      "annotation_pixel": [
+        1313.5,
+        1144.5
+      ],
+      "pixel_1f": [
+        817.6741573033707,
+        713.0923141186299
+      ],
+      "pixel_status": "inherited_unverified_annotation_missing"
+    },
+    {
+      "id": 2,
+      "bd09ll": [
+        120.09524895262855,
+        30.31510984002251
+      ],
+      "annotation_pixel": [
+        1315.0,
+        73.5
+      ],
+      "pixel_1f": [
+        818.6081460674158,
+        45.61862990810359
+      ],
+      "pixel_status": "inherited_unverified_annotation_missing"
+    },
+    {
+      "id": 3,
+      "bd09ll": [
+        120.095244461101,
+        30.31555800067346
+      ],
+      "annotation_pixel": [
+        111.5,
+        89.0
+      ],
+      "pixel_1f": [
+        69.2378277153558,
+        55.278613199665834
+      ],
+      "pixel_status": "inherited_unverified_annotation_missing"
+    },
+    {
+      "id": 4,
+      "bd09ll": [
+        120.09490759653477,
+        30.314883810387073
+      ],
+      "annotation_pixel": [
+        2065.5,
+        939.5
+      ],
+      "pixel_1f": [
+        1285.9138576779026,
+        585.3312447786132
+      ],
+      "pixel_status": "inherited_unverified_annotation_missing"
+    },
+    {
+      "id": 5,
+      "bd09ll": [
+        120.09515013902245,
+        30.315004619395676
+      ],
+      "annotation_pixel": [
+        1730.477,
+        357.5
+      ],
+      "pixel_1f": [
+        1077.3087125468167,
+        222.61445279866334
+      ],
+      "pixel_status": "inherited_unverified_annotation_missing"
+    },
+    {
+      "id": 6,
+      "bd09ll": [
+        120.09484920667661,
+        30.314957854635992
+      ],
+      "annotation_pixel": [
+        1815.5,
+        1094.5
+      ],
+      "pixel_1f": [
+        1130.249063670412,
+        681.9310776942356
+      ],
+      "pixel_status": "inherited_unverified_annotation_missing"
+    }
+  ],
+  "upper_floors": {
+    "2F": {
+      "target_floor": "1F",
+      "method": "affine",
+      "anchors": [
+        {
+          "id": "NW",
+          "source": [
+            490,
+            64
+          ],
+          "target": [
+            579,
+            39
+          ],
+          "evidence": "building1_outer_wall_corner"
+        },
+        {
+          "id": "NE",
+          "source": [
+            697,
+            64
+          ],
+          "target": [
+            816,
+            39
+          ],
+          "evidence": "building1_outer_wall_corner"
+        },
+        {
+          "id": "SW",
+          "source": [
+            490,
+            649
+          ],
+          "target": [
+            579,
+            715
+          ],
+          "evidence": "building1_outer_wall_corner"
+        },
+        {
+          "id": "SE",
+          "source": [
+            697,
+            649
+          ],
+          "target": [
+            816,
+            708
+          ],
+          "evidence": "building1_outer_wall_corner"
+        }
+      ],
+      "checks": [
+        {
+          "id": "north_stair_core",
+          "source": [
+            517,
+            147
+          ],
+          "target": [
+            630,
+            126
+          ]
+        },
+        {
+          "id": "south_stair_core",
+          "source": [
+            515,
+            559
+          ],
+          "target": [
+            618,
+            608
+          ]
+        },
+        {
+          "id": "b2_south_stair_core",
+          "source": [
+            80,
+            584
+          ],
+          "target": [
+            101,
+            619
+          ]
+        }
+      ],
+      "confidence": "medium",
+      "note": "以同一号楼可见外墙角点拟合；楼梯核为独立语义检查点（不同楼层梯段形状不同）；二号楼点仅作外推检查"
+    },
+    "3F": {
+      "target_floor": "2F",
+      "method": "affine",
+      "anchors": [
+        {
+          "id": "NW",
+          "source": [
+            54,
+            40
+          ],
+          "target": [
+            490,
+            64
+          ],
+          "evidence": "building1_outer_wall_corner"
+        },
+        {
+          "id": "NE",
+          "source": [
+            268,
+            40
+          ],
+          "target": [
+            697,
+            64
+          ],
+          "evidence": "building1_outer_wall_corner"
+        },
+        {
+          "id": "SW",
+          "source": [
+            54,
+            643
+          ],
+          "target": [
+            490,
+            649
+          ],
+          "evidence": "building1_outer_wall_corner"
+        },
+        {
+          "id": "SE",
+          "source": [
+            268,
+            643
+          ],
+          "target": [
+            697,
+            649
+          ],
+          "evidence": "building1_outer_wall_corner"
+        }
+      ],
+      "checks": [
+        {
+          "id": "north_stair_core",
+          "source": [
+            79,
+            125
+          ],
+          "target": [
+            517,
+            147
+          ]
+        },
+        {
+          "id": "south_stair_core",
+          "source": [
+            78,
+            551
+          ],
+          "target": [
+            515,
+            559
+          ]
+        }
+      ],
+      "confidence": "medium",
+      "note": "外墙配准后用两处梯段核检查；所有房间属于一号楼，禁止复制二号楼3F"
+    }
+  }
+}

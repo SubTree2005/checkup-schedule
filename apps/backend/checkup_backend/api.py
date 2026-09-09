@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 from copy import deepcopy
+from datetime import timedelta
 from ipaddress import ip_address
 from math import isfinite
 from uuid import NAMESPACE_URL, uuid5
@@ -37,6 +38,7 @@ from .schemas import (
     DepartmentCreate,
     DepartmentUpdate,
     DemoPatientTarget,
+    DemoRestrictionUpdate,
     ExamCreate,
     ExamUpdate,
     GISUpload,
@@ -703,6 +705,19 @@ def require_owner(admin: AdminContext) -> None:
 @router.get("/demo-patients")
 def get_demo_patients(admin: AdminContext = Depends(get_current_admin), db: Session = Depends(get_db)) -> dict:
     require_owner(admin)
+    return demo_pool_summary(db, admin.hospital_id)
+
+
+@router.put("/demo-patients/restrictions")
+def update_demo_restrictions(
+    payload: DemoRestrictionUpdate,
+    admin: AdminContext = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+) -> dict:
+    require_owner(admin)
+    settings = get_hospital_settings(db, admin.hospital_id, create=True)
+    settings.demo_unrestricted_until = utcnow() + timedelta(hours=2) if payload.enabled else None
+    db.commit()
     return demo_pool_summary(db, admin.hospital_id)
 
 

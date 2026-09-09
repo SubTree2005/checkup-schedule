@@ -1,0 +1,707 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "n_entrance",
+      "properties": {
+        "id": "n_entrance",
+        "name": "门诊入口",
+        "kind": "entrance",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          1420,
+          920
+        ],
+        "local_m": [
+          10.563,
+          -1.753
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083585090962,
+          30.311393098442
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_lobby",
+      "properties": {
+        "id": "n_lobby",
+        "name": "门诊大厅",
+        "kind": "junction",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          1250,
+          760
+        ],
+        "local_m": [
+          16.81,
+          4.878
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083650463512,
+          30.311451407757
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_main_e",
+      "properties": {
+        "id": "n_main_e",
+        "name": "主走廊东",
+        "kind": "junction",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          1420,
+          610
+        ],
+        "local_m": [
+          23.101,
+          -1.341
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083716196951,
+          30.311394263837
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_main_c",
+      "properties": {
+        "id": "n_main_c",
+        "name": "主走廊中",
+        "kind": "junction",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          870,
+          610
+        ],
+        "local_m": [
+          22.376,
+          19.424
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083708771926,
+          30.311580965307
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_main_w",
+      "properties": {
+        "id": "n_main_w",
+        "name": "主走廊西",
+        "kind": "junction",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          230,
+          610
+        ],
+        "local_m": [
+          21.533,
+          43.587
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083700130812,
+          30.311798217616
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_west_south",
+      "properties": {
+        "id": "n_west_south",
+        "name": "西侧走廊南",
+        "kind": "junction",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          230,
+          875
+        ],
+        "local_m": [
+          10.815,
+          43.235
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083588056416,
+          30.311797221374
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_west_north",
+      "properties": {
+        "id": "n_west_north",
+        "name": "西侧走廊北",
+        "kind": "junction",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          230,
+          250
+        ],
+        "local_m": [
+          36.093,
+          44.066
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083852384242,
+          30.311799570393
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_room_hall",
+      "properties": {
+        "id": "n_room_hall",
+        "name": "101-103走廊",
+        "kind": "junction",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          430,
+          350
+        ],
+        "local_m": [
+          32.312,
+          36.382
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083812791961,
+          30.311731303366
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_upper_c",
+      "properties": {
+        "id": "n_upper_c",
+        "name": "北侧走廊中",
+        "kind": "junction",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          870,
+          350
+        ],
+        "local_m": [
+          32.892,
+          19.77
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083818732654,
+          30.311581942351
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_upper_e",
+      "properties": {
+        "id": "n_upper_e",
+        "name": "北侧走廊东",
+        "kind": "junction",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          1080,
+          350
+        ],
+        "local_m": [
+          33.168,
+          11.841
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083821567791,
+          30.311510656356
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_emergency_a",
+      "properties": {
+        "id": "n_emergency_a",
+        "name": "急诊A区通道",
+        "kind": "destination",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          1340,
+          540
+        ],
+        "local_m": [
+          25.827,
+          1.772
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083744721744,
+          30.311421683508
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_infusion",
+      "properties": {
+        "id": "n_infusion",
+        "name": "输液区通道",
+        "kind": "destination",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          1530,
+          540
+        ],
+        "local_m": [
+          26.077,
+          -5.401
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083747286604,
+          30.31135718659
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_east",
+      "properties": {
+        "id": "n_east",
+        "name": "东翼通道",
+        "kind": "junction",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          1690,
+          650
+        ],
+        "local_m": [
+          21.839,
+          -11.588
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083702924677,
+          30.311302459958
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_107",
+      "properties": {
+        "id": "n_107",
+        "name": "107急诊室",
+        "kind": "destination",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          1840,
+          850
+        ],
+        "local_m": [
+          13.948,
+          -17.517
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083620364833,
+          30.311250789468
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_guard",
+      "properties": {
+        "id": "n_guard",
+        "name": "门卫消控",
+        "kind": "destination",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          1690,
+          840
+        ],
+        "local_m": [
+          14.154,
+          -11.841
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08362256932,
+          30.311301745717
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_lab",
+      "properties": {
+        "id": "n_lab",
+        "name": "检验科",
+        "kind": "destination",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          1100,
+          920
+        ],
+        "local_m": [
+          10.142,
+          10.328
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.0835807711,
+          30.311501724765
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_service",
+      "properties": {
+        "id": "n_service",
+        "name": "综合服务中心",
+        "kind": "destination",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          950,
+          700
+        ],
+        "local_m": [
+          18.842,
+          16.284
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083671788848,
+          30.311553470456
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_radiology",
+      "properties": {
+        "id": "n_radiology",
+        "name": "放射科",
+        "kind": "destination",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          700,
+          780
+        ],
+        "local_m": [
+          15.277,
+          25.616
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08363457982,
+          30.311638033948
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_machines",
+      "properties": {
+        "id": "n_machines",
+        "name": "机房区",
+        "kind": "destination",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          650,
+          690
+        ],
+        "local_m": [
+          18.851,
+          27.624
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083671967785,
+          30.311655345124
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_clinics",
+      "properties": {
+        "id": "n_clinics",
+        "name": "西侧门诊区",
+        "kind": "destination",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          430,
+          830
+        ],
+        "local_m": [
+          12.899,
+          35.744
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083609788307,
+          30.311729499275
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_mri",
+      "properties": {
+        "id": "n_mri",
+        "name": "MRI",
+        "kind": "destination",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          520,
+          250
+        ],
+        "local_m": [
+          36.475,
+          33.117
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083856299943,
+          30.311701127968
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_rooms",
+      "properties": {
+        "id": "n_rooms",
+        "name": "101-103",
+        "kind": "destination",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          330,
+          350
+        ],
+        "local_m": [
+          32.18,
+          40.157
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083811441725,
+          30.311765249029
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_125",
+      "properties": {
+        "id": "n_125",
+        "name": "125-129",
+        "kind": "destination",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          930,
+          480
+        ],
+        "local_m": [
+          27.713,
+          17.332
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083764562232,
+          30.311561086449
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_pharmacy",
+      "properties": {
+        "id": "n_pharmacy",
+        "name": "药剂科",
+        "kind": "destination",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          1160,
+          540
+        ],
+        "local_m": [
+          25.589,
+          8.568
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083742291783,
+          30.311482785825
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_stair_1",
+      "properties": {
+        "id": "n_stair_1",
+        "name": "楼梯1#",
+        "kind": "vertical_connector",
+        "accessible": false,
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          950,
+          930
+        ],
+        "local_m": [
+          9.54,
+          15.978
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083574516862,
+          30.31155260572
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_stair_2",
+      "properties": {
+        "id": "n_stair_2",
+        "name": "楼梯2#",
+        "kind": "vertical_connector",
+        "accessible": false,
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          980,
+          200
+        ],
+        "local_m": [
+          39.103,
+          15.816
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083883657013,
+          30.311545165608
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_west_room",
+      "properties": {
+        "id": "n_west_room",
+        "name": "西侧大房间",
+        "kind": "destination",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          130,
+          440
+        ],
+        "local_m": [
+          28.277,
+          47.589
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083770677774,
+          30.311832802151
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_restroom_nw",
+      "properties": {
+        "id": "n_restroom_nw",
+        "name": "卫生间（西北）",
+        "kind": "destination",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          150,
+          160
+        ],
+        "local_m": [
+          39.628,
+          47.206
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08388936761,
+          30.311827065015
+        ]
+      }
+    }
+  ]
+}

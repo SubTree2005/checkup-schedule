@@ -1,5 +1,17 @@
 const api = require('./api')
 const { ICONS } = require('./icon-map')
+const { isDemoUnrestricted } = require('./demo-mode')
+
+function demoUnrestricted(app, now = Date.now()) {
+  const hospital = app.globalData.demoRestrictionHospital || (app.globalData.catalog || {}).hospital
+  return !!hospital && hospital.hospitalID === app.globalData.selectedHospitalId && isDemoUnrestricted(hospital, now)
+}
+
+async function refreshRestrictions(app) {
+  const catalog = await api.hospitals.catalog(app.globalData.selectedHospitalId)
+  app.globalData.catalog = catalog
+  app.globalData.demoRestrictionHospital = catalog.hospital
+}
 
 function packageItems(catalog, packageId) {
   const pkg = (catalog.packages || []).find(item => (item.id || item.packageID) === packageId)
@@ -17,6 +29,7 @@ function customItems(catalog, itemIds) {
 }
 
 function selectedItems(app) {
+  if (app.globalData.followUpPlanDraft) return app.globalData.followUpPlanDraft.items
   const catalog = app.globalData.catalog || {}
   if (!app.globalData.currentPackageId) return customItems(catalog, app.globalData.selectedItemIDs)
   const items = packageItems(catalog, app.globalData.currentPackageId)
@@ -26,7 +39,7 @@ function selectedItems(app) {
 
 function itemNeedsPreparation(item) {
   const text = `${item.name || item.itemName || ''} ${item.department || ''} ${item.note || ''}`
-  return !!item.fastingRequired || /空腹|膀胱|泌尿|前列腺|憋尿/.test(text)
+  return !!item.fastingRequired || !!item.bladderRequired || /空腹|膀胱|泌尿|前列腺|憋尿/.test(text)
 }
 
 function splitSelectedItems(app) {
@@ -35,7 +48,7 @@ function splitSelectedItems(app) {
   selectedItems(app).forEach(item => {
     const id = item.id || item.itemID
     if (!id) return
-    if (itemNeedsPreparation(item)) deferredItemIDs.push(id)
+    if (!demoUnrestricted(app) && itemNeedsPreparation(item)) deferredItemIDs.push(id)
     else readyItemIDs.push(id)
   })
   return { readyItemIDs, deferredItemIDs }
@@ -48,6 +61,7 @@ function packageNotice(app) {
 }
 
 function preparationRequirements(app, compact = false) {
+  if (demoUnrestricted(app)) return []
   const items = selectedItems(app)
   const text = `${items.map(item => `${item.name || item.itemName || ''}${item.department || ''}`).join(' ')} ${packageNotice(app)}`
   const rows = []
@@ -55,7 +69,7 @@ function preparationRequirements(app, compact = false) {
     rows.push({ key: 'fasting', iconPath: ICONS.stomachColor, title: '空腹', detail: '体检前 8–12 小时禁止进食，可少量饮水。' })
   }
   rows.push({ key: 'identity', iconPath: ICONS.identityColor, title: '携带身份证件', detail: '体检当日请携带本人有效身份证件。' })
-  if (/膀胱|泌尿|前列腺|憋尿/.test(text)) {
+  if (items.some(item => item.bladderRequired) || /膀胱|泌尿|前列腺|憋尿/.test(text)) {
     rows.push({ key: 'water', iconPath: ICONS.waterColor, title: '请先饮水并保持憋尿', detail: '体检前 1 小时请饮水约 500ml，并憋尿。' })
   }
   if (!compact && /药|服用|停药/.test(text)) {
@@ -66,6 +80,7 @@ function preparationRequirements(app, compact = false) {
 }
 
 function selectedPackageName(app) {
+  if (app.globalData.followUpPlanDraft) return '未完成项目补约'
   const catalog = app.globalData.catalog || {}
   const pkg = (catalog.packages || []).find(item => (item.id || item.packageID) === app.globalData.currentPackageId)
   return pkg ? (pkg.name || pkg.packageName) : '自选项目'
@@ -91,6 +106,19 @@ function profileForPlan(app, updates, includeAppointmentDraft = true) {
   return profile
 }
 
+async function savePreparation(app, updates) {
+  await api.profile.update(updates)
+  app.saveProfile({ ...(app.globalData.profile || {}), ...updates })
+}
+
+function needsAppointmentFastingConfirmation(app, now = Date.now()) {
+  if (demoUnrestricted(app, now)) return false
+  const draft = app.globalData.appointmentDraft
+  const start = draft && new Date(draft.appointmentAt).getTime()
+  return Number.isFinite(start) && start > now && start - now < 8 * 60 * 60 * 1000 &&
+    selectedItems(app).some(item => item.fastingRequired)
+}
+
 async function createPlanWithSelection(app, updates = {}, selection = null) {
   const profileUpdates = { ...updates }
   const reminderSubscription = profileUpdates.reminderSubscription || null
@@ -102,6 +130,7 @@ async function createPlanWithSelection(app, updates = {}, selection = null) {
     packageID: selection ? selection.packageID : app.globalData.currentPackageId,
     selectedItemIDs: selection ? selection.selectedItemIDs : (app.globalData.selectedItemIDs || []),
     appointmentAt: includeAppointmentDraft ? (profile.appointmentAt || null) : null,
+    followUpPlanID: app.globalData.followUpPlanDraft ? app.globalData.followUpPlanDraft.planID : null,
     reminderSubscription,
     profile
   })
@@ -112,6 +141,33 @@ async function createPlanWithSelection(app, updates = {}, selection = null) {
 
 function createPlan(app, updates = {}) {
   return createPlanWithSelection(app, updates)
+}
+
+function prepareFollowUpAppointment(app, plan) {
+  const items = (plan.steps || []).filter(step => step.status !== 'done' && !step.completed).map(step => ({
+    id: step.itemID,
+    name: step.title,
+    department: step.department,
+    fastingRequired: !!step.fasting,
+    bladderRequired: !!step.bladderRequired
+  }))
+  if (!plan.finished || !plan.hospitalID || !items.length || items.some(item => !item.id)) {
+    throw new Error('未找到可补约的项目，请刷新体检记录后重试')
+  }
+  app.globalData.selectedHospitalId = plan.hospitalID
+  app.globalData.selectedHospital = { id: plan.hospitalID, name: plan.hospitalName }
+  app.globalData.demoRestrictionHospital = {
+    hospitalID: plan.hospitalID, demoUnrestricted: plan.demoUnrestricted, demoUnrestrictedUntil: plan.demoUnrestrictedUntil
+  }
+  app.globalData.selectedCampusId = null
+  app.globalData.selectedCampus = null
+  app.globalData.currentPackageId = null
+  app.globalData.selectedItemIDs = [...new Set(items.map(item => item.id))]
+  app.globalData.selectedPlanMode = 'appointment'
+  app.globalData.appointmentDraft = null
+  app.globalData.preparationDecision = null
+  app.globalData.splitPlanDraft = null
+  app.globalData.followUpPlanDraft = { planID: plan.planID || plan.id, items }
 }
 
 function createSameDayPlan(app, updates = {}) {
@@ -150,11 +206,16 @@ function addSystemCalendar(app) {
 }
 
 module.exports = {
+  demoUnrestricted,
+  refreshRestrictions,
+  savePreparation,
+  needsAppointmentFastingConfirmation,
   addSystemCalendar,
   createPlan,
   createPlanForItems,
   createSameDayPlan,
   preparationRequirements,
+  prepareFollowUpAppointment,
   requestWeChatPush,
   selectedHospitalName,
   selectedPackageName,

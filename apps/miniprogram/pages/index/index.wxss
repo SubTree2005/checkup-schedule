@@ -191,18 +191,12 @@ page {
   overflow: hidden;
 }
 
-.step-check { width: 32rpx; height: 32rpx; }
+.step-check { width: 100%; height: 100%; display: block; flex: none; }
 
-.step-done .step-dot,
 .step-active .step-dot { border-color: #2F69EC; }
-.step-done .step-dot { background: #2F69EC; }
-.plan-paused .step-done .step-dot,
+.step-done .step-dot { background: #20A862; border: 0; }
 .plan-paused .step-active .step-dot { border-color: #D64C58; }
-.plan-paused .step-done .step-dot { background: #D64C58; }
-.plan-scheduled .step-done .step-dot,
 .plan-scheduled .step-active .step-dot { border-color: #B27A13; }
-.plan-scheduled .step-done .step-dot { background: #B27A13; }
-.plan-complete .step-done .step-dot { background: #189568; border-color: #189568; }
 
 .step-name {
   width: 174rpx;

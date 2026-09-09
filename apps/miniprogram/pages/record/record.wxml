@@ -1,4 +1,4 @@
-<view class="record-page tab-page safe-top" style="padding-top: {{statusBarHeight}}px;">
+<view class="record-page tab-page safe-top" style="{{navigationStyle}}padding-top: {{statusBarHeight}}px;">
   <view class="record-nav" style="height: {{navigationBarHeight}}px;"><view class="record-title">体检</view></view>
 
   <view class="record-tabs">

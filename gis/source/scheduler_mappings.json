@@ -1,0 +1,81 @@
+{
+  "policy": "只有图签可确认且存在可见门位和连续门外路径的业务科室进入矩阵；原示例业务 key 只作为命名契约",
+  "walking_speed_mps": 1.15,
+  "walking_speed_status": "assumed_not_measured",
+  "profile": "ambulatory_draft",
+  "mappings": [
+    {
+      "location_id": "laboratory-1f",
+      "poi_id": "poi_1f_b1_laboratory",
+      "department_key": "laboratory-1f",
+      "evidence_ids": [
+        "plan_1f",
+        "current_workspace_key_contract"
+      ],
+      "status": "evidenced_label",
+      "note": "图签检验科；不拆分 BLOOD/URINE",
+      "role": "department"
+    },
+    {
+      "location_id": "infusion-1f",
+      "poi_id": "poi_1f_b1_infusion",
+      "department_key": "infusion-1f",
+      "evidence_ids": [
+        "plan_1f",
+        "current_workspace_key_contract"
+      ],
+      "status": "evidenced_label",
+      "note": "图签输液；不扩展为急诊抢救或 B 区",
+      "role": "department"
+    },
+    {
+      "location_id": "ENTRANCE",
+      "poi_id": "poi_1f_b1_entrance",
+      "department_key": null,
+      "role": "navigation_origin",
+      "status": "evidenced_label",
+      "evidence_ids": [
+        "plan_1f"
+      ],
+      "note": "原图门诊入口；提供可选起点 ID ENTRANCE，不自动替换应用患者位置"
+    }
+  ],
+  "excluded": [
+    {
+      "location_id": "BLOOD",
+      "reason": "未见独立采血位置"
+    },
+    {
+      "location_id": "URINE",
+      "reason": "未见独立尿检位置"
+    },
+    {
+      "location_id": "XRAY",
+      "reason": "仅见放射科，未确认 X 光检查室"
+    },
+    {
+      "location_id": "radiology-1f",
+      "reason": "独立患者入口未确认；不经检查机房制造路径"
+    },
+    {
+      "location_id": "endoscopy-1f",
+      "reason": "原图为内院，旧 GIS 误读为内镜"
+    },
+    {
+      "location_id": "pharmacy-1f",
+      "reason": "科室图签可见，但门/服务窗口未确认"
+    },
+    {
+      "location_id": "emergency-rescue-1f",
+      "reason": "原图急诊 A 区与示例 B 区抢救不等价"
+    },
+    {
+      "location_id": "2f_departments",
+      "reason": "只有房号，未取得有哈希的科室位置表"
+    },
+    {
+      "location_id": "3f_departments",
+      "reason": "只有房号，未取得有哈希的科室位置表"
+    }
+  ]
+}

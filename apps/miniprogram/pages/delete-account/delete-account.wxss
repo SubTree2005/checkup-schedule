@@ -2,7 +2,7 @@
 
 page { background: linear-gradient(180deg, #F8FAFD 0%, #FFFFFF 100%); }
 .delete-page { min-height: 100vh; }
-.flow-nav { height: 128rpx; padding: 0 28rpx; display: flex; align-items: center; justify-content: space-between; }
+.flow-nav { height: var(--navigation-bar-height, 44px); padding: 0 28rpx; display: flex; align-items: center; justify-content: space-between; }
 .nav-back { width: 64rpx; height: 64rpx; display: flex; align-items: center; color: #101827; font-size: 58rpx; font-weight: 300; }
 .nav-title { color: #111827; font-size: 31rpx; font-weight: 650; }
 .nav-space { width: 64rpx; }

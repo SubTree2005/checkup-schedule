@@ -1,0 +1,113 @@
+{
+  "dataset_id": "zju2_zijingang_2f_draft_v1",
+  "facility": {
+    "id": "zju2_zijingang",
+    "name": "浙大二院浙大院区（紫金港）",
+    "level_id": "zju2_zijingang_2f",
+    "level_name": "2F",
+    "ordinal": 2,
+    "height_m": 4.2
+  },
+  "source": {
+    "floorplan_filename": "2F.jpg",
+    "floorplan_sha256": "489DB39FA8425D92A692796373502511E14463B258C3CAD20F2A615DAB75DC49",
+    "floorplan_width": 1164,
+    "floorplan_height": 686,
+    "building_assignment_evidence_filename": "0ec513de2bbb1bda8a9d45079198176f.jpg",
+    "building_assignment_evidence_sha256": "AAB281C3E10E713E19DB86C823D54CD1D57D6AE794992F58C04F440A051BE9A2",
+    "building_assignment_note": "user-marked circle identifies Building 1; uncircled west block is Building 2",
+    "coordinate_crs": "derived_from_1f",
+    "registration_method": "two-point similarity using central stair cores; western stair cores used as low-confidence checks",
+    "geometry_method": "manual coarse digitization from labelled raster floor plan",
+    "status": "draft_unverified"
+  },
+  "registration": {
+    "anchors": [
+      {
+        "id": "central_north_stair",
+        "pixel_2f": [
+          528,
+          143
+        ],
+        "pixel_1f_control_image": [
+          980,
+          200
+        ],
+        "target_node_id": "n_stair_2"
+      },
+      {
+        "id": "central_south_stair",
+        "pixel_2f": [
+          528,
+          576
+        ],
+        "pixel_1f_control_image": [
+          950,
+          930
+        ],
+        "target_node_id": "n_stair_1"
+      }
+    ],
+    "checks": [
+      {
+        "id": "west_north_stair",
+        "pixel_2f": [
+          75,
+          143
+        ],
+        "pixel_1f_control_image": [
+          230,
+          160
+        ],
+        "target_node_id": "n_west_north",
+        "confidence": "low"
+      },
+      {
+        "id": "west_south_stair",
+        "pixel_2f": [
+          75,
+          590
+        ],
+        "pixel_1f_control_image": [
+          130,
+          950
+        ],
+        "target_node_id": "n_west_south",
+        "confidence": "low"
+      }
+    ]
+  },
+  "georeferencing": {
+    "origin_bd09": [
+      120.09479530834602,
+      30.315105942964294
+    ],
+    "mean_latitude": 30.315103344679837,
+    "meters_per_degree_longitude": 96098.38434635242,
+    "residual_m_by_control_point": {
+      "1": 2.383,
+      "2": 3.092,
+      "3": 1.724,
+      "4": 1.432,
+      "5": 1.496,
+      "6": 1.231
+    },
+    "rmse_m": 2.001,
+    "max_residual_m": 3.092,
+    "registration_method": "two-point similarity using central stair cores; western stair cores used as low-confidence checks",
+    "similarity_2f_to_1f": {
+      "a": 1.6859122401847575,
+      "b": 0.06928406466512702,
+      "c": 99.74595842956123,
+      "d": -77.66743648960738,
+      "scale": 1.687335284767467
+    },
+    "check_error_m": {
+      "west_north_stair": 0.625,
+      "west_south_stair": 2.375
+    },
+    "alignment_check_rmse_m": 1.737,
+    "estimated_absolute_accuracy_m": 2.649,
+    "accuracy_note": "western stair checks are low-confidence visual correspondences"
+  }
+}

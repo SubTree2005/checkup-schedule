@@ -1,0 +1,132 @@
+[
+  {
+    "id": "vc_1f_2f_b1_n",
+    "from_opening": "o_1f_b1_stair_n",
+    "to_opening": "o_2f_b1_stair_n",
+    "mode": "stairs",
+    "confidence": "medium",
+    "status": "inferred_correspondence",
+    "routing_status": "draft_enabled",
+    "walk_seconds": 60,
+    "cost_status": "assumed_not_measured",
+    "cost_range_seconds": [
+      40,
+      90
+    ],
+    "accessible": "no",
+    "access_control": "unknown",
+    "evidence_ids": [
+      "plan_1f",
+      "plan_2f",
+      "user_building_statement"
+    ],
+    "note": "同一建筑、同侧可见楼梯核对应；停层与门禁待现场核验",
+    "from_node_id": "n_o_1f_b1_stair_n",
+    "to_node_id": "n_o_2f_b1_stair_n",
+    "horizontal_offset_m": 0.9022127112989916
+  },
+  {
+    "id": "vc_1f_2f_b1_s",
+    "from_opening": "o_1f_b1_stair_s",
+    "to_opening": "o_2f_b1_stair_s",
+    "mode": "stairs",
+    "confidence": "medium",
+    "status": "inferred_correspondence",
+    "routing_status": "draft_enabled",
+    "walk_seconds": 60,
+    "cost_status": "assumed_not_measured",
+    "cost_range_seconds": [
+      40,
+      90
+    ],
+    "accessible": "no",
+    "access_control": "unknown",
+    "evidence_ids": [
+      "plan_1f",
+      "plan_2f",
+      "user_building_statement"
+    ],
+    "note": "同一建筑、同侧可见楼梯核对应；停层与门禁待现场核验",
+    "from_node_id": "n_o_1f_b1_stair_s",
+    "to_node_id": "n_o_2f_b1_stair_s",
+    "horizontal_offset_m": 0.8840652278931668
+  },
+  {
+    "id": "vc_1f_2f_b2_s",
+    "from_opening": "o_1f_b2_stair_s",
+    "to_opening": "o_2f_b2_stair_s",
+    "mode": "stairs",
+    "confidence": "medium",
+    "status": "inferred_correspondence",
+    "routing_status": "draft_enabled",
+    "walk_seconds": 60,
+    "cost_status": "assumed_not_measured",
+    "cost_range_seconds": [
+      40,
+      90
+    ],
+    "accessible": "no",
+    "access_control": "unknown",
+    "evidence_ids": [
+      "plan_1f",
+      "plan_2f",
+      "user_building_statement"
+    ],
+    "note": "同一建筑、同侧可见楼梯核对应；停层与门禁待现场核验",
+    "from_node_id": "n_o_1f_b2_stair_s",
+    "to_node_id": "n_o_2f_b2_stair_s",
+    "horizontal_offset_m": 2.2636342542149728
+  },
+  {
+    "id": "vc_2f_3f_b1_n",
+    "from_opening": "o_2f_b1_stair_n",
+    "to_opening": "o_3f_b1_stair_n",
+    "mode": "stairs",
+    "confidence": "medium",
+    "status": "inferred_correspondence",
+    "routing_status": "draft_enabled",
+    "walk_seconds": 60,
+    "cost_status": "assumed_not_measured",
+    "cost_range_seconds": [
+      40,
+      90
+    ],
+    "accessible": "no",
+    "access_control": "unknown",
+    "evidence_ids": [
+      "plan_2f",
+      "plan_3f",
+      "user_building_statement"
+    ],
+    "note": "同一建筑、同侧可见楼梯核对应；停层与门禁待现场核验",
+    "from_node_id": "n_o_2f_b1_stair_n",
+    "to_node_id": "n_o_3f_b1_stair_n",
+    "horizontal_offset_m": 0.10443479444849459
+  },
+  {
+    "id": "vc_2f_3f_b1_s",
+    "from_opening": "o_2f_b1_stair_s",
+    "to_opening": "o_3f_b1_stair_s",
+    "mode": "stairs",
+    "confidence": "medium",
+    "status": "inferred_correspondence",
+    "routing_status": "draft_enabled",
+    "walk_seconds": 60,
+    "cost_status": "assumed_not_measured",
+    "cost_range_seconds": [
+      40,
+      90
+    ],
+    "accessible": "no",
+    "access_control": "unknown",
+    "evidence_ids": [
+      "plan_2f",
+      "plan_3f",
+      "user_building_statement"
+    ],
+    "note": "同一建筑、同侧可见楼梯核对应；停层与门禁待现场核验",
+    "from_node_id": "n_o_2f_b1_stair_s",
+    "to_node_id": "n_o_3f_b1_stair_s",
+    "horizontal_offset_m": 0.6799128971229895
+  }
+]

@@ -1,0 +1,47 @@
+{
+  "schema_version": 2,
+  "tables": [
+    {
+      "table": "facility",
+      "rows": 1
+    },
+    {
+      "table": "building",
+      "rows": 2
+    },
+    {
+      "table": "level",
+      "rows": 7
+    },
+    {
+      "table": "source_document",
+      "rows": 8
+    },
+    {
+      "table": "space",
+      "rows": 120
+    },
+    {
+      "table": "path_node",
+      "rows": 204
+    },
+    {
+      "table": "opening",
+      "rows": 83
+    },
+    {
+      "table": "path_edge",
+      "rows": 202
+    },
+    {
+      "table": "poi",
+      "rows": 100
+    },
+    {
+      "table": "vertical_connection",
+      "rows": 5
+    }
+  ],
+  "transactional": true,
+  "facility_snapshot": "zju2_zijingang"
+}

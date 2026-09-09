@@ -1,10 +1,12 @@
+const { navigationMetrics } = require('../../utils/layout')
 const app = getApp()
 const api = require('../../utils/api')
 const planFlow = require('../../utils/plan-flow')
 const flowGuard = require('../../utils/flow-guard')
 
 Page({
-  data: { selected: 'today', submitting: false },
+  data: {
+    ...navigationMetrics(), selected: 'today', submitting: false },
 
   onLoad() { flowGuard.requireSelection(app) },
 

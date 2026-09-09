@@ -1,3 +1,4 @@
+const { navigationMetrics } = require('../../utils/layout')
 const app = getApp()
 const api = require('../../utils/api')
 const planFlow = require('../../utils/plan-flow')
@@ -5,6 +6,7 @@ const flowGuard = require('../../utils/flow-guard')
 
 Page({
   data: {
+    ...navigationMetrics(),
     requirements: [],
     wechatPush: false,
     wechatPushAvailable: false,
@@ -48,6 +50,22 @@ Page({
     if (this.data.submitting) return
     this.setData({ submitting: true })
     try {
+      await planFlow.refreshRestrictions(app)
+      if (planFlow.needsAppointmentFastingConfirmation(app)) {
+        const result = await new Promise((resolve, reject) => wx.showModal({
+          title: '确认空腹准备',
+          content: '距离预约不足 8 小时，所选项目需要空腹。您是否已经连续空腹至少 8 小时？',
+          confirmText: '已空腹8小时',
+          cancelText: '尚未满足',
+          success: resolve,
+          fail: reject
+        }))
+        await planFlow.savePreparation(app, { fasting: result.confirm ? 'yes' : 'no' })
+        if (!result.confirm) {
+          wx.showToast({ title: '请返回上一步，选择留有充足准备时间的预约时段', icon: 'none' })
+          return
+        }
+      }
       const splitDraft = app.globalData.splitPlanDraft
       let reminderSubscription = null
       if (this.data.wechatPush) {
@@ -81,6 +99,7 @@ Page({
       if (activePlan) app.saveCurrentPlan(activePlan)
       else app.saveCurrentPlan(plan)
       app.globalData.splitPlanDraft = null
+      app.globalData.followUpPlanDraft = null
       wx.showToast({
         title: this.data.wechatPush && !reminderSubscription ? '预约成功，未开启微信提醒' : '预约已创建',
         icon: reminderSubscription ? 'success' : 'none'

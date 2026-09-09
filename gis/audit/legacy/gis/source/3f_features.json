@@ -1,0 +1,93 @@
+{
+  "dataset_id": "zju2_zijingang_3f_draft_v1",
+  "facility": {
+    "id": "zju2_zijingang",
+    "name": "浙大二院浙大院区（紫金港）",
+    "building_id": "zju2_zijingang_b1",
+    "building_name": "一号楼",
+    "level_id": "zju2_zijingang_3f",
+    "level_name": "3F",
+    "ordinal": 3,
+    "height_m": 8.4
+  },
+  "source": {
+    "floorplan_filename": "3F.jpg",
+    "floorplan_sha256": "3FCCC49C756BC59B1E48E9524D29C23B5C851D8B30C38E87AC5C32D4474E3E70",
+    "floorplan_width": 309,
+    "floorplan_height": 675,
+    "building_assignment_evidence_filename": "0ec513de2bbb1bda8a9d45079198176f.jpg",
+    "building_assignment_evidence_sha256": "AAB281C3E10E713E19DB86C823D54CD1D57D6AE794992F58C04F440A051BE9A2",
+    "coordinate_crs": "derived_from_2f_and_1f",
+    "registration_method": "two-point similarity using Building 1 north and south stair cores",
+    "geometry_method": "manual coarse digitization from labelled raster floor plan",
+    "status": "draft_unverified"
+  },
+  "registration": {
+    "anchors": [
+      {"id":"building1_north_stair","pixel_3f":[86,115],"pixel_2f":[528,143],"target_node_id":"n2_stair_en"},
+      {"id":"building1_south_stair","pixel_3f":[86,560],"pixel_2f":[528,576],"target_node_id":"n2_stair_es"}
+    ],
+    "checks": [
+      {"id":"northeast_outer_corner","pixel_3f":[270,38],"pixel_2f":[705,62],"confidence":"medium"},
+      {"id":"southeast_outer_corner","pixel_3f":[270,650],"pixel_2f":[705,650],"confidence":"medium"}
+    ]
+  },
+  "level_footprint_px": [[50,38],[270,38],[270,650],[50,650],[50,560],[20,560],[20,510],[50,510],[50,145],[20,145],[20,100],[50,100]],
+  "corridor_nodes": [
+    {"id":"n3_c_115","name":"一号楼3F北端","pixel":[145,115],"kind":"junction"},
+    {"id":"n3_c_170","name":"一号楼3F走廊170","pixel":[145,170],"kind":"junction"},
+    {"id":"n3_c_225","name":"一号楼3F走廊225","pixel":[145,225],"kind":"junction"},
+    {"id":"n3_c_290","name":"一号楼3F走廊290","pixel":[145,290],"kind":"junction"},
+    {"id":"n3_c_335","name":"一号楼3F走廊335","pixel":[145,335],"kind":"junction"},
+    {"id":"n3_c_390","name":"一号楼3F走廊390","pixel":[145,390],"kind":"junction"},
+    {"id":"n3_c_450","name":"一号楼3F走廊450","pixel":[145,450],"kind":"junction"},
+    {"id":"n3_c_510","name":"一号楼3F走廊510","pixel":[145,510],"kind":"junction"},
+    {"id":"n3_c_555","name":"一号楼3F走廊555","pixel":[145,555],"kind":"junction"},
+    {"id":"n3_c_615","name":"一号楼3F南端","pixel":[145,615],"kind":"junction"},
+    {"id":"n3_stair_n","name":"一号楼3F北楼梯","pixel":[86,115],"kind":"vertical_connector","accessible":false},
+    {"id":"n3_stair_s","name":"一号楼3F南楼梯","pixel":[86,560],"kind":"vertical_connector","accessible":false}
+  ],
+  "corridor_edges": [
+    {"id":"e3_c01","source":"n3_c_115","target":"n3_c_170"},
+    {"id":"e3_c02","source":"n3_c_170","target":"n3_c_225"},
+    {"id":"e3_c03","source":"n3_c_225","target":"n3_c_290"},
+    {"id":"e3_c04","source":"n3_c_290","target":"n3_c_335"},
+    {"id":"e3_c05","source":"n3_c_335","target":"n3_c_390"},
+    {"id":"e3_c06","source":"n3_c_390","target":"n3_c_450"},
+    {"id":"e3_c07","source":"n3_c_450","target":"n3_c_510"},
+    {"id":"e3_c08","source":"n3_c_510","target":"n3_c_555"},
+    {"id":"e3_c09","source":"n3_c_555","target":"n3_c_615"},
+    {"id":"e3_stair_n","source":"n3_stair_n","target":"n3_c_115","accessible":false},
+    {"id":"e3_stair_s","source":"n3_stair_s","target":"n3_c_555","accessible":false}
+  ],
+  "rooms": [
+    {"id":"3f_b1_301","name":"一号楼301","room_ref":"301","polygon_px":[[50,145],[130,145],[130,225],[50,225]],"door_px":[130,185],"corridor_node":"n3_c_170"},
+    {"id":"3f_b1_303","name":"一号楼303","room_ref":"303","polygon_px":[[50,225],[130,225],[130,290],[50,290]],"door_px":[130,257],"corridor_node":"n3_c_225"},
+    {"id":"3f_b1_305","name":"一号楼305","room_ref":"305","polygon_px":[[50,290],[130,290],[130,335],[50,335]],"door_px":[130,312],"corridor_node":"n3_c_290"},
+    {"id":"3f_b1_307","name":"一号楼307","room_ref":"307","polygon_px":[[50,335],[130,335],[130,400],[50,400]],"door_px":[130,367],"corridor_node":"n3_c_335"},
+    {"id":"3f_b1_309","name":"一号楼309","room_ref":"309","polygon_px":[[50,400],[130,400],[130,465],[50,465]],"door_px":[130,432],"corridor_node":"n3_c_450"},
+    {"id":"3f_b1_311","name":"一号楼311","room_ref":"311","polygon_px":[[50,465],[130,465],[130,530],[50,530]],"door_px":[130,497],"corridor_node":"n3_c_510"},
+    {"id":"3f_b1_302","name":"一号楼302","room_ref":"302","polygon_px":[[210,38],[270,38],[270,95],[210,95]],"door_px":[210,67],"corridor_node":"n3_c_115"},
+    {"id":"3f_b1_304","name":"一号楼304","room_ref":"304","polygon_px":[[210,95],[270,95],[270,135],[210,135]],"door_px":[210,115],"corridor_node":"n3_c_115"},
+    {"id":"3f_b1_306","name":"一号楼306","room_ref":"306","polygon_px":[[170,135],[220,135],[220,210],[170,210]],"door_px":[170,172],"corridor_node":"n3_c_170"},
+    {"id":"3f_b1_308","name":"一号楼308","room_ref":"308","polygon_px":[[220,135],[270,135],[270,210],[220,210]],"door_px":[220,172],"corridor_node":"n3_c_170"},
+    {"id":"3f_b1_310","name":"一号楼310","room_ref":"310","polygon_px":[[170,210],[220,210],[220,260],[170,260]],"door_px":[170,235],"corridor_node":"n3_c_225"},
+    {"id":"3f_b1_312","name":"一号楼312","room_ref":"312","polygon_px":[[220,210],[270,210],[270,260],[220,260]],"door_px":[220,235],"corridor_node":"n3_c_225"},
+    {"id":"3f_b1_316","name":"一号楼316","room_ref":"316","polygon_px":[[170,260],[220,260],[220,305],[170,305]],"door_px":[170,282],"corridor_node":"n3_c_290"},
+    {"id":"3f_b1_314","name":"一号楼314","room_ref":"314","polygon_px":[[220,260],[270,260],[270,305],[220,305]],"door_px":[220,282],"corridor_node":"n3_c_290"},
+    {"id":"3f_b1_318","name":"一号楼318","room_ref":"318","polygon_px":[[170,305],[220,305],[220,345],[170,345]],"door_px":[170,325],"corridor_node":"n3_c_335"},
+    {"id":"3f_b1_320","name":"一号楼320","room_ref":"320","polygon_px":[[220,305],[270,305],[270,345],[220,345]],"door_px":[220,325],"corridor_node":"n3_c_335"},
+    {"id":"3f_b1_324","name":"一号楼324","room_ref":"324","polygon_px":[[170,345],[220,345],[220,390],[170,390]],"door_px":[170,367],"corridor_node":"n3_c_390"},
+    {"id":"3f_b1_322","name":"一号楼322","room_ref":"322","polygon_px":[[220,345],[270,345],[270,390],[220,390]],"door_px":[220,367],"corridor_node":"n3_c_390"},
+    {"id":"3f_b1_326","name":"一号楼326","room_ref":"326","polygon_px":[[170,390],[220,390],[220,450],[170,450]],"door_px":[170,420],"corridor_node":"n3_c_390"},
+    {"id":"3f_b1_328","name":"一号楼328","room_ref":"328","polygon_px":[[220,390],[270,390],[270,450],[220,450]],"door_px":[220,420],"corridor_node":"n3_c_390"},
+    {"id":"3f_b1_330","name":"一号楼330","room_ref":"330","polygon_px":[[170,450],[270,450],[270,510],[170,510]],"door_px":[170,480],"corridor_node":"n3_c_450"},
+    {"id":"3f_b1_332","name":"一号楼332","room_ref":"332","polygon_px":[[170,510],[270,510],[270,555],[170,555]],"door_px":[170,532],"corridor_node":"n3_c_510"},
+    {"id":"3f_b1_336","name":"一号楼336","room_ref":"336","polygon_px":[[205,555],[270,555],[270,615],[205,615]],"door_px":[205,585],"corridor_node":"n3_c_555"},
+    {"id":"3f_b1_338","name":"一号楼338","room_ref":"338","polygon_px":[[205,615],[270,615],[270,660],[205,660]],"door_px":[205,637],"corridor_node":"n3_c_615"}
+  ],
+  "vertical_connections": [
+    {"id":"vc_2f_3f_b1_n","from_node_id":"n2_stair_en","to_node_id":"n3_stair_n","mode":"stairs","walk_seconds":75,"accessible":false,"confidence":"high"},
+    {"id":"vc_2f_3f_b1_s","from_node_id":"n2_stair_es","to_node_id":"n3_stair_s","mode":"stairs","walk_seconds":75,"accessible":false,"confidence":"high"}
+  ]
+}

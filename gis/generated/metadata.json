@@ -1,0 +1,615 @@
+{
+  "schema_version": 2,
+  "status": "navigation_draft_not_survey",
+  "facility_id": "zju2_zijingang",
+  "output_crs": "EPSG:4326 approximate WGS84",
+  "conversion_chain": [
+    "BD-09LL raw user coordinates",
+    "GCJ-02 approximate inverse",
+    "WGS84 approximate inverse",
+    "EPSG:32651 metric fit",
+    "original floor pixels via audited affine registration",
+    "EPSG:4326 export"
+  ],
+  "conversion_note": "Numerical inverse of engineering formula, not official Baidu inverse; no surveyed accuracy claim",
+  "source_bundle_sha256": "f61cdd87af3cf723e92b8cce86d74dd9f59c12d7ddf66c939eafb375c810c203",
+  "source_files_sha256": {
+    "1f_features.json": "ed5b28c2dfb250bcdaa4c91a782f6d4e78cd2786c2a641f87cb8fdd6e43fe89c",
+    "2f_features.json": "47ff5650b8ef7987e6c236a65461aefe871bb96dd2145648b025ebf0a13e7f64",
+    "3f_features.json": "7a288acfcae8a6ae69914dea89db9d76292a66e261bb2c718070605ed42c9128",
+    "department_key_contract.py": "bc2d8b9c63ab24b9e531f5ba58dc0677b88b0cec15fce22b11b735f74a1825d1",
+    "evidence.json": "38d4dc181abce1463b8210f128add31688cf439c959b056e71a416e82ca53da5",
+    "images/1F.jpg": "fc5df6aabd58785c0753b27b3efdbd4c8433a92f0e57256c40fbb7b315cfaf95",
+    "images/2F.jpg": "489db39fa8425d92a692796373502511e14463b258c3cad20f2a615dab75dc49",
+    "images/3F.jpg": "3fccc49c756bc59b1e48e9524d29c23b5c851d8b30c38e87ac5c32d4474e3e70",
+    "registration.json": "3234483b9b54fbb1c2595260e64a5faea2a54a39f5a11f86c9b2fc840918b400",
+    "scheduler_mappings.json": "b667e194be2648db0916c8f4123ccc4655bc450cc9ccbe7aa1d660dcb25f9c9c",
+    "user_building_statement.txt": "88229c955a01a21e7560a24200886d01eb23674e8ac6b2b07853835d72f5a3c7",
+    "vertical_connections.json": "7c0a6f9d1284fbb2a590b38cbf692c93f9b732ebdf5a6a5a903a0d538a4dd046"
+  },
+  "generation_code_sha256": {
+    "build_indoor_gis.py": "dc845351c64761235021fe213913e798725acaa5009d7cfd86216094485ee998",
+    "gis_coordinates.py": "6955dcc68ed72c625d6d653b423c4d9676543b0ac5328871556fe38fcec2e108"
+  },
+  "registration": {
+    "1F": {
+      "matrix": [
+        [
+          0.0005316443849293649,
+          -0.060504725826832265
+        ],
+        [
+          -0.06530363296077218,
+          0.0010098064535234946
+        ],
+        [
+          219577.96757676106,
+          3356948.3711317624
+        ]
+      ],
+      "residuals": [
+        2.3585125520142647,
+        3.0635798816379634,
+        1.7068492734364786,
+        1.4235278906395414,
+        1.4839711472729533,
+        1.2290026861389156
+      ],
+      "fit_rmse": 1.9832837759349304,
+      "max_residual": 3.0635798816379634,
+      "leave_one_out_residuals": [
+        5.232812013920469,
+        5.9363776459228434,
+        11.38738359158777,
+        2.2163305204321633,
+        2.5099777054741055,
+        1.8913370962499167
+      ],
+      "axis_scale_ratio": 1.0834717548269657,
+      "residual_unit": "metres",
+      "confidence": "low",
+      "absolute_accuracy_m": null,
+      "annotation_transfer": {
+        "source_size": [
+          2136,
+          1197
+        ],
+        "target_size": [
+          1330,
+          746
+        ],
+        "method": "pixel-centre resize assumption; no crop or padding assumed",
+        "verified": false
+      },
+      "fit_is_not_independent_accuracy": true
+    },
+    "2F": {
+      "target_floor": "1F",
+      "method": "affine",
+      "anchors": [
+        {
+          "id": "NW",
+          "source": [
+            490,
+            64
+          ],
+          "target": [
+            579,
+            39
+          ],
+          "evidence": "building1_outer_wall_corner"
+        },
+        {
+          "id": "NE",
+          "source": [
+            697,
+            64
+          ],
+          "target": [
+            816,
+            39
+          ],
+          "evidence": "building1_outer_wall_corner"
+        },
+        {
+          "id": "SW",
+          "source": [
+            490,
+            649
+          ],
+          "target": [
+            579,
+            715
+          ],
+          "evidence": "building1_outer_wall_corner"
+        },
+        {
+          "id": "SE",
+          "source": [
+            697,
+            649
+          ],
+          "target": [
+            816,
+            708
+          ],
+          "evidence": "building1_outer_wall_corner"
+        }
+      ],
+      "checks": [
+        {
+          "id": "north_stair_core",
+          "source": [
+            517,
+            147
+          ],
+          "target": [
+            630,
+            126
+          ],
+          "predicted_target_px": [
+            609.9130434782609,
+            135.7080081753995
+          ],
+          "residual_m": 1.3844077282438192
+        },
+        {
+          "id": "south_stair_core",
+          "source": [
+            515,
+            559
+          ],
+          "target": [
+            618,
+            608
+          ],
+          "predicted_target_px": [
+            607.6231884057971,
+            609.365756224452
+          ],
+          "residual_m": 0.6363125170276268
+        },
+        {
+          "id": "b2_south_stair_core",
+          "source": [
+            80,
+            584
+          ],
+          "target": [
+            101,
+            619
+          ],
+          "predicted_target_px": [
+            109.57971014492759,
+            645.4601449275364
+          ],
+          "residual_m": 1.792344158642444
+        }
+      ],
+      "confidence": "medium",
+      "note": "以同一号楼可见外墙角点拟合；楼梯核为独立语义检查点（不同楼层梯段形状不同）；二号楼点仅作外推检查",
+      "matrix": [
+        [
+          1.144927536231884,
+          -0.016908212560386472
+        ],
+        [
+          0.0,
+          1.1495726495726497
+        ],
+        [
+          17.98550724637687,
+          -24.537625418060202
+        ]
+      ],
+      "residuals": [
+        1.7500000000000142,
+        1.749999999999993,
+        1.7499999999998863,
+        1.7500000000001137
+      ],
+      "fit_rmse": 1.7500000000000018,
+      "max_residual": 1.7500000000001137,
+      "leave_one_out_residuals": [
+        7.000000000000057,
+        6.9999999999999645,
+        7.000000000000455,
+        6.999999999999886
+      ],
+      "axis_scale_ratio": 1.0154013685172085,
+      "residual_unit": "target_floor_pixels",
+      "similarity_comparison": {
+        "matrix": [
+          [
+            1.1490557659047351,
+            -0.0018814565512083393
+          ],
+          [
+            0.0018814565512083393,
+            1.1490557659047351
+          ],
+          [
+            14.864663675033853,
+            -33.27173608189588
+          ]
+        ],
+        "residuals": [
+          1.0369945002773675,
+          0.13053077625877,
+          3.4586474700747334,
+          3.3021088734626245
+        ],
+        "fit_rmse": 2.4473741648760607,
+        "max_residual": 3.4586474700747334,
+        "leave_one_out_residuals": [
+          7.000000000000057,
+          6.9999999999999645,
+          7.000000000000455,
+          6.999999999999886
+        ],
+        "axis_scale_ratio": 1.0
+      },
+      "check_rmse_m": 1.3581821135089527,
+      "pixel_to_utm51n_matrix": [
+        [
+          0.0017128620028548894,
+          -0.06929060069346174
+        ],
+        [
+          -0.0750712703694347,
+          0.0011608458803325644
+        ],
+        [
+          219579.57953473902,
+          3356947.258145325
+        ]
+      ],
+      "absolute_accuracy_m": null,
+      "absolute_confidence": "low",
+      "uncertainty_note": "inherits missing control annotation and approximate CRS conversion; semantic stair checks are not surveyed checkpoints"
+    },
+    "3F": {
+      "target_floor": "2F",
+      "method": "affine",
+      "anchors": [
+        {
+          "id": "NW",
+          "source": [
+            54,
+            40
+          ],
+          "target": [
+            490,
+            64
+          ],
+          "evidence": "building1_outer_wall_corner"
+        },
+        {
+          "id": "NE",
+          "source": [
+            268,
+            40
+          ],
+          "target": [
+            697,
+            64
+          ],
+          "evidence": "building1_outer_wall_corner"
+        },
+        {
+          "id": "SW",
+          "source": [
+            54,
+            643
+          ],
+          "target": [
+            490,
+            649
+          ],
+          "evidence": "building1_outer_wall_corner"
+        },
+        {
+          "id": "SE",
+          "source": [
+            268,
+            643
+          ],
+          "target": [
+            697,
+            649
+          ],
+          "evidence": "building1_outer_wall_corner"
+        }
+      ],
+      "checks": [
+        {
+          "id": "north_stair_core",
+          "source": [
+            79,
+            125
+          ],
+          "target": [
+            517,
+            147
+          ],
+          "predicted_target_px": [
+            514.1822429906542,
+            146.46268656716416
+          ],
+          "residual_m": 0.19783342104934162
+        },
+        {
+          "id": "south_stair_core",
+          "source": [
+            78,
+            551
+          ],
+          "target": [
+            515,
+            559
+          ],
+          "predicted_target_px": [
+            513.214953271028,
+            559.7462686567164
+          ],
+          "residual_m": 0.13785523254074775
+        }
+      ],
+      "confidence": "medium",
+      "note": "外墙配准后用两处梯段核检查；所有房间属于一号楼，禁止复制二号楼3F",
+      "matrix": [
+        [
+          0.9672897196261684,
+          0.0
+        ],
+        [
+          0.0,
+          0.9701492537313433
+        ],
+        [
+          437.7663551401869,
+          25.194029850746233
+        ]
+      ],
+      "residuals": [
+        6.703246762680666e-14,
+        3.552713678800501e-14,
+        5.684341886080802e-14,
+        0.0
+      ],
+      "fit_rmse": 4.739911241858271e-14,
+      "max_residual": 6.703246762680666e-14,
+      "leave_one_out_residuals": [
+        0.0,
+        1.3500311979441904e-13,
+        2.3437142008433856e-13,
+        2.2737367544323206e-13
+      ],
+      "axis_scale_ratio": 1.0029562333261228,
+      "residual_unit": "target_floor_pixels",
+      "similarity_comparison": {
+        "matrix": [
+          [
+            0.969829386548772,
+            0.0
+          ],
+          [
+            -0.0,
+            0.969829386548772
+          ],
+          [
+            437.3574687656477,
+            25.303264493594327
+          ]
+        ],
+        "residuals": [
+          0.2883498961469166,
+          0.28834989614697015,
+          0.28834989614694506,
+          0.2883498961469987
+        ],
+        "fit_rmse": 0.2883498961469576,
+        "max_residual": 0.2883498961469987,
+        "leave_one_out_residuals": [
+          0.0,
+          1.3500311979441904e-13,
+          2.3437142008433856e-13,
+          2.2737367544323206e-13
+        ],
+        "axis_scale_ratio": 1.0
+      },
+      "check_rmse_m": 0.17050238652721217,
+      "pixel_to_utm51n_matrix": [
+        [
+          0.0016568338064998232,
+          -0.0670240857175074
+        ],
+        [
+          -0.07283033692557098,
+          0.0011261937645017416
+        ],
+        [
+          219578.43802026825,
+          3356916.9542979994
+        ]
+      ],
+      "absolute_accuracy_m": null,
+      "absolute_confidence": "low",
+      "uncertainty_note": "inherits missing control annotation and approximate CRS conversion; semantic stair checks are not surveyed checkpoints"
+    }
+  },
+  "evidence": [
+    {
+      "id": "plan_1f",
+      "kind": "original_raster",
+      "path": "images/1F.jpg",
+      "original_path": "C:/Users/SubTree/Desktop/1F.jpg",
+      "sha256": "fc5df6aabd58785c0753b27b3efdbd4c8433a92f0e57256c40fbb7b315cfaf95",
+      "dimensions_px": [
+        1330,
+        746
+      ],
+      "status": "verified_bytes"
+    },
+    {
+      "id": "plan_2f",
+      "kind": "original_raster",
+      "path": "images/2F.jpg",
+      "original_path": "C:/Users/SubTree/Desktop/2F.jpg",
+      "sha256": "489db39fa8425d92a692796373502511e14463b258c3cad20f2a615dab75dc49",
+      "dimensions_px": [
+        1165,
+        686
+      ],
+      "status": "verified_bytes"
+    },
+    {
+      "id": "plan_3f",
+      "kind": "original_raster",
+      "path": "images/3F.jpg",
+      "original_path": "C:/Users/SubTree/Desktop/3F.jpg",
+      "sha256": "3fccc49c756bc59b1e48e9524d29c23b5c851d8b30c38e87ac5c32d4474e3e70",
+      "dimensions_px": [
+        309,
+        675
+      ],
+      "status": "verified_bytes"
+    },
+    {
+      "id": "user_building_statement",
+      "kind": "user_text",
+      "path": "user_building_statement.txt",
+      "sha256": "88229c955a01a21e7560a24200886d01eb23674e8ac6b2b07853835d72f5a3c7",
+      "original_path": "user message in this task, 2026-09-07",
+      "status": "user_asserted"
+    },
+    {
+      "id": "control_annotation",
+      "kind": "missing_original_raster",
+      "original_path": "C:/Users/SubTree/AppData/Local/Temp/codex-clipboard-0349ec0f-8b79-44da-b79e-c58dfff85dda.png",
+      "reported_sha256": "977595c4c6f5c8e99b58e5fd07b65634acd69465c36c15c539401942f9e5cc88",
+      "sha256": null,
+      "status": "missing_not_reverified",
+      "note": "旧文件仅提供摘要及像素；不能把 reported_sha256 写成已核验哈希"
+    },
+    {
+      "id": "building_circle",
+      "kind": "missing_original_raster",
+      "original_path": "C:/Users/SubTree/Documents/xwechat/_files/wxid/_tlrq2i8nk73b12/_dfe5/temp/RWTemp/2026-08/9e20f478899dc29eb19741386f9343c8/0ec513de2bbb1bda8a9d45079198176f.jpg",
+      "reported_sha256": "aab281c3e10e713e19db86c823d54cd1d57d6ae794992f58c04f440a051be9a2",
+      "sha256": null,
+      "status": "missing_not_reverified",
+      "note": "另查实际 xwechat_files/wxid_tlrq2i8nk73b12_dfe5 未找到；归属采用本次用户文字陈述"
+    },
+    {
+      "id": "current_workspace_key_contract",
+      "kind": "code_contract_not_location_evidence",
+      "original_path": "C:\\Users\\SubTree\\Desktop\\课程\\短学期\\大二\\code\\checkup-schedule\\examples\\hospitals\\zijingang-campus-hospital\\build_workspace.py",
+      "sha256": "bc2d8b9c63ab24b9e531f5ba58dc0677b88b0cec15fce22b11b735f74a1825d1",
+      "status": "audit_snapshot",
+      "note": "仅引用 stable department keys；不把示例科室/房号绑定当事实；该文件有用户未提交改动，不修改",
+      "path": "department_key_contract.py"
+    }
+  ],
+  "walking_model": {
+    "policy": "只有图签可确认且存在可见门位和连续门外路径的业务科室进入矩阵；原示例业务 key 只作为命名契约",
+    "walking_speed_mps": 1.15,
+    "walking_speed_status": "assumed_not_measured",
+    "profile": "ambulatory_draft",
+    "mappings": [
+      {
+        "location_id": "laboratory-1f",
+        "poi_id": "poi_1f_b1_laboratory",
+        "department_key": "laboratory-1f",
+        "evidence_ids": [
+          "plan_1f",
+          "current_workspace_key_contract"
+        ],
+        "status": "evidenced_label",
+        "note": "图签检验科；不拆分 BLOOD/URINE",
+        "role": "department",
+        "route_node_id": "n_o_1f_b1_laboratory"
+      },
+      {
+        "location_id": "infusion-1f",
+        "poi_id": "poi_1f_b1_infusion",
+        "department_key": "infusion-1f",
+        "evidence_ids": [
+          "plan_1f",
+          "current_workspace_key_contract"
+        ],
+        "status": "evidenced_label",
+        "note": "图签输液；不扩展为急诊抢救或 B 区",
+        "role": "department",
+        "route_node_id": "n_o_1f_b1_infusion"
+      },
+      {
+        "location_id": "ENTRANCE",
+        "poi_id": "poi_1f_b1_entrance",
+        "department_key": null,
+        "role": "navigation_origin",
+        "status": "evidenced_label",
+        "evidence_ids": [
+          "plan_1f"
+        ],
+        "note": "原图门诊入口；提供可选起点 ID ENTRANCE，不自动替换应用患者位置",
+        "route_node_id": "n_o_1f_b1_entrance"
+      }
+    ],
+    "excluded": [
+      {
+        "location_id": "BLOOD",
+        "reason": "未见独立采血位置"
+      },
+      {
+        "location_id": "URINE",
+        "reason": "未见独立尿检位置"
+      },
+      {
+        "location_id": "XRAY",
+        "reason": "仅见放射科，未确认 X 光检查室"
+      },
+      {
+        "location_id": "radiology-1f",
+        "reason": "独立患者入口未确认；不经检查机房制造路径"
+      },
+      {
+        "location_id": "endoscopy-1f",
+        "reason": "原图为内院，旧 GIS 误读为内镜"
+      },
+      {
+        "location_id": "pharmacy-1f",
+        "reason": "科室图签可见，但门/服务窗口未确认"
+      },
+      {
+        "location_id": "emergency-rescue-1f",
+        "reason": "原图急诊 A 区与示例 B 区抢救不等价"
+      },
+      {
+        "location_id": "2f_departments",
+        "reason": "只有房号，未取得有哈希的科室位置表"
+      },
+      {
+        "location_id": "3f_departments",
+        "reason": "只有房号，未取得有哈希的科室位置表"
+      }
+    ]
+  },
+  "vertical_cost_model": "60 seconds per floor, assumed range 40–90; floor heights unknown",
+  "import_order": [
+    "facility",
+    "building",
+    "level",
+    "source_document",
+    "space",
+    "path_node",
+    "opening",
+    "path_edge",
+    "poi",
+    "vertical_connection"
+  ],
+  "missing_original_evidence": [
+    "control_annotation",
+    "building_circle"
+  ]
+}

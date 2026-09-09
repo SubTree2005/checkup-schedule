@@ -11,6 +11,33 @@ from apps.backend.checkup_backend.main import ensure_compatible_columns, resolve
 
 
 class BackendConfigurationTest(unittest.TestCase):
+    def test_compatible_upgrade_adds_disabled_demo_switch_without_changing_settings(self):
+        engine = build_engine("sqlite://")
+        try:
+            with engine.begin() as connection:
+                connection.execute(text("CREATE TABLE hospital_settings (hospitalID VARCHAR(64) PRIMARY KEY, isAvailable BOOLEAN)"))
+                connection.execute(text("INSERT INTO hospital_settings (hospitalID, isAvailable) VALUES ('legacy', 0)"))
+            ensure_compatible_columns(engine)
+            ensure_compatible_columns(engine)
+            with engine.connect() as connection:
+                row = connection.execute(text("SELECT isAvailable, demoUnrestrictedUntil FROM hospital_settings")).one()
+                self.assertEqual(tuple(row), (0, None))
+        finally:
+            engine.dispose()
+
+    def test_agent_local_settings_and_environment_priority(self):
+        from apps.backend.checkup_backend.agent_api import _agent_setting, patient_agent_status
+
+        with patch.dict(os.environ, {}, clear=True), patch(
+            "apps.backend.checkup_backend.agent_api.dotenv_values",
+            return_value={"CHATANYWHERE_API_KEY": "local-test-key", "CHATANYWHERE_MODEL": "deepseek-v4-flash"},
+        ):
+            self.assertEqual(patient_agent_status(None), {"configured": True, "model": "deepseek-v4-flash"})
+            with patch.dict(os.environ, {"CHATANYWHERE_API_KEY": "deployment-test-key"}):
+                self.assertEqual(_agent_setting("CHATANYWHERE_API_KEY"), "deployment-test-key")
+            with patch.dict(os.environ, {"CHATANYWHERE_API_KEY": ""}):
+                self.assertFalse(patient_agent_status(None)["configured"])
+
     def test_explicit_database_url_has_priority(self):
         with patch.dict(os.environ, {"DATABASE_URL": "sqlite:///environment.db"}, clear=True):
             self.assertEqual(resolve_database_url("sqlite:///explicit.db"), "sqlite:///explicit.db")

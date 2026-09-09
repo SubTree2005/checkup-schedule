@@ -1,6 +1,7 @@
+const { navigationMetrics } = require('../../utils/layout')
 const api = require('../../utils/api')
 const flowGuard = require('../../utils/flow-guard')
-const { planReportSummary, stepStatus } = require('../../utils/report')
+const { planReportIndicators, planReportSummary, stepStatus } = require('../../utils/report')
 const app = getApp()
 
 function formatDate(value, fallback) {
@@ -10,7 +11,8 @@ function formatDate(value, fallback) {
 }
 
 Page({
-  data: { record: null, steps: [], activeTab: 'items', recordID: '' },
+  data: {
+    ...navigationMetrics(), record: null, steps: [], indicators: [], activeTab: 'items', recordID: '' },
 
   onLoad(options) {
     if (!flowGuard.requireLogin(app)) return
@@ -49,13 +51,18 @@ Page({
       reportCount: reports.count
     }
     app.globalData.viewingPlanRecord = record
-    this.setData({ record: normalized, steps })
+    this.setData({ record: normalized, steps, indicators: planReportIndicators(record) })
   },
 
   setTab(e) { this.setData({ activeTab: e.currentTarget.dataset.tab }) },
 
   openStep(e) {
     wx.navigateTo({ url: `/pages/exam-detail/exam-detail?planID=${this.data.recordID}&detailID=${e.currentTarget.dataset.id}&mode=${this.data.activeTab}` })
+  },
+
+  openIndicator(e) {
+    const { id, index } = e.currentTarget.dataset
+    wx.navigateTo({ url: `/pages/exam-detail/exam-detail?planID=${encodeURIComponent(this.data.recordID)}&detailID=${encodeURIComponent(id)}&mode=reports&resultIndex=${index}` })
   },
 
   goBack() { wx.navigateBack({ delta: 1 }) }

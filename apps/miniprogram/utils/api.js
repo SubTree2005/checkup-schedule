@@ -69,11 +69,17 @@ function handleResponse(response, resolve, reject, options) {
 }
 
 function networkError(error) {
-  const detail = String(error && error.errMsg || '').trim()
-  const generic = !detail || /^request:fail(?:\s|$)/i.test(detail) || /^cloud\.callContainer:fail(?:\s|$)/i.test(detail)
-  const message = generic ? '暂时无法连接服务，请稍后重试' : detail
+  const detail = String(error && (error.errMsg || error.message) || '').trim()
+  const reason = detail.replace(/^(?:request|cloud\.callContainer|callContainer):fail\s*/i, '').trim()
+  const code = error && error.errCode !== undefined ? String(error.errCode) : ''
+  const timedOut = /timeout|timed out|超时/i.test(detail)
+  const summary = timedOut ? '连接超时，请检查网络后重试' : '暂时无法连接服务'
+  const message = `${summary}${code ? `（${code}）` : ''}${reason ? `：${reason}` : '，请稍后重试'}`
   const result = new Error(message)
+  result.errCode = code
+  result.errMsg = detail
   result.isNetworkError = true
+  result.isTimeout = timedOut
   return result
 }
 
@@ -102,14 +108,28 @@ function request(path, options = {}) {
   }
   const generation = cacheGeneration
   const operation = new Promise((resolve, reject) => {
+    let settled = false
+    const finish = callback => value => {
+      if (settled) return
+      settled = true
+      clearTimeout(deadline)
+      callback(value)
+    }
+    const succeed = finish(resolve)
+    const fail = finish(reject)
+    const deadline = setTimeout(() => {
+      fail(networkError({ errMsg: 'request:fail timeout', errCode: 'CLIENT_TIMEOUT' }))
+    }, 16000)
     const header = {
       'content-type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {})
     }
     const callbacks = {
-      success: response => handleResponse(response, resolve, reject, options),
+      success: response => {
+        if (!settled) handleResponse(response, succeed, fail, options)
+      },
       fail(error) {
-        reject(networkError(error))
+        fail(networkError(error))
       }
     }
 
@@ -117,7 +137,7 @@ function request(path, options = {}) {
       try {
         ensureCloudInitialized(transport)
       } catch (error) {
-        reject(error)
+        fail(error)
         return
       }
       wx.cloud.callContainer({
@@ -125,6 +145,7 @@ function request(path, options = {}) {
         path,
         header: { 'X-WX-SERVICE': transport.service, ...header },
         method,
+        timeout: 15000,
         data: options.data === undefined ? '' : options.data,
         ...callbacks
       })
@@ -164,9 +185,10 @@ function request(path, options = {}) {
 function showError(error) {
   const message = error && error.message ? error.message : '操作失败'
   const now = Date.now()
-  if (message === lastErrorToast.message && now - lastErrorToast.shownAt < 1500) return
+  const repeatDelay = error && error.isNetworkError ? 60000 : 1500
+  if (message === lastErrorToast.message && now - lastErrorToast.shownAt < repeatDelay) return
   lastErrorToast = { message, shownAt: now }
-  wx.showToast({ title: message, icon: 'none', duration: 2500 })
+  wx.showToast({ title: message, icon: 'none', duration: error && error.isNetworkError ? 5000 : 2500 })
 }
 
 module.exports = {
@@ -183,9 +205,9 @@ module.exports = {
     update: data => request('/api/patient/profile', { method: 'PATCH', data })
   },
   hospitals: {
-    list: () => request('/api/patient/hospitals', { cacheMs: 120000 }),
-    catalog: hospitalID => request(`/api/patient/hospitals/${encodeURIComponent(hospitalID)}/catalog`, { cacheMs: 120000 }),
-    appointmentSlots: hospitalID => request(`/api/patient/hospitals/${encodeURIComponent(hospitalID)}/appointment-slots`, { cacheMs: 15000 })
+    list: () => request('/api/patient/hospitals'),
+    catalog: hospitalID => request(`/api/patient/hospitals/${encodeURIComponent(hospitalID)}/catalog`),
+    appointmentSlots: hospitalID => request(`/api/patient/hospitals/${encodeURIComponent(hospitalID)}/appointment-slots`)
   },
   plans: {
     create: data => request('/api/patient/plans', { method: 'POST', data }),
@@ -194,6 +216,7 @@ module.exports = {
     get: planID => request(`/api/patient/plans/${encodeURIComponent(planID)}`, { cacheMs: 3000 }),
     start: (planID, detailID) => request(`/api/patient/plans/${encodeURIComponent(planID)}/steps/${encodeURIComponent(detailID)}/start`, { method: 'POST' }),
     complete: (planID, detailID) => request(`/api/patient/plans/${encodeURIComponent(planID)}/steps/${encodeURIComponent(detailID)}/complete`, { method: 'POST' }),
+    skip: (planID, detailID) => request(`/api/patient/plans/${encodeURIComponent(planID)}/steps/${encodeURIComponent(detailID)}/skip`, { method: 'POST' }),
     pause: planID => request(`/api/patient/plans/${encodeURIComponent(planID)}/pause`, { method: 'POST' }),
     resume: planID => request(`/api/patient/plans/${encodeURIComponent(planID)}/resume`, { method: 'POST' }),
     finish: planID => request(`/api/patient/plans/${encodeURIComponent(planID)}/finish`, { method: 'POST' }),
@@ -206,6 +229,9 @@ module.exports = {
   },
   agent: {
     status: () => request('/api/patient/agent/status', { cacheMs: 30000 }),
+    createJob: data => request('/api/patient/agent/jobs', { method: 'POST', data, invalidateCache: false }),
+    job: id => request(`/api/patient/agent/jobs/${encodeURIComponent(id)}`),
+    cancelJob: id => request(`/api/patient/agent/jobs/${encodeURIComponent(id)}`, { method: 'DELETE', invalidateCache: false }),
     chat: data => request('/api/patient/agent/chat', { method: 'POST', data, invalidateCache: false })
   }
 }

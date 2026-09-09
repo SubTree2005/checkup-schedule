@@ -1,3 +1,4 @@
+const { navigationMetrics } = require('../../utils/layout')
 const api = require('../../utils/api')
 const flowGuard = require('../../utils/flow-guard')
 const { backToRoute } = require('../../utils/navigation')
@@ -44,6 +45,7 @@ function polygonRings(geometry) {
 
 Page({
   data: {
+    ...navigationMetrics(),
     planID: '',
     detailID: '',
     fromName: '当前检查点',
@@ -53,6 +55,8 @@ Page({
     location: '',
     floorInstruction: '请根据院内指引前往目标科室。',
     hasMap: false,
+    canSkip: false,
+    replanNotice: '',
     operating: false
   },
   onLoad(options) {
@@ -62,8 +66,87 @@ Page({
     const planID = options.planID || currentPlan.planID || currentPlan.id
     const detailID = options.detailID || currentStep.detailID
     if (!planID || !detailID) return wx.redirectTo({ url: '/pages/plan/plan' })
-    this.setData({ planID, detailID })
-    api.plans.navigation(planID, detailID).then(data => this.applyNavigation(data)).catch(api.showError)
+    this._followingRoute = options.followRoute === '1' || (currentPlan.planID === planID && currentPlan.planStatus === '进行中')
+    this._needsPlanCheck = true
+    this.setData({ planID, detailID, canSkip: this._followingRoute && currentPlan.planStatus === '进行中' })
+  },
+  onShow() {
+    if (!this.data.planID) return
+    this._visible = true
+    this.refreshNavigation()
+  },
+  onHide() { this._visible = false; clearTimeout(this._refreshTimer) },
+  onUnload() { this.onHide() },
+  async refreshNavigation() {
+    clearTimeout(this._refreshTimer)
+    const revision = this._actionRevision || 0
+    try {
+      if (this.data.operating) return
+      if (this._followingRoute || this._needsPlanCheck) {
+        const plan = await api.plans.get(this.data.planID)
+        if (!this._visible || this.data.operating || this._leaving || revision !== (this._actionRevision || 0)) return
+        this._needsPlanCheck = false
+        if (plan.replanNotice) this._followingRoute = true
+        if (!this._followingRoute && plan.planStatus === '进行中') {
+          const current = (plan.steps || []).find(item => item.status === 'active') || (plan.steps || []).find(item => item.status === 'pending')
+          const target = (plan.steps || []).find(item => item.detailID === this.data.detailID)
+          this._followingRoute = !!current && (current.detailID === this.data.detailID || (target && target.status === 'skipped'))
+        }
+        if (this._followingRoute) {
+          app.saveCurrentPlan(plan.finished ? null : plan)
+          if (!this.applyRoutePlan(plan)) return
+        }
+      }
+      const data = await api.plans.navigation(this.data.planID, this.data.detailID)
+      if (this._visible && !this._leaving && !this.data.operating && revision === (this._actionRevision || 0)) this.applyNavigation(data)
+    } catch (error) { if (!this._map) api.showError(error) }
+    finally {
+      if (this._visible && this._followingRoute && !this._leaving && !this.data.operating) {
+        clearTimeout(this._refreshTimer)
+        this._refreshTimer = setTimeout(() => this.refreshNavigation(), 15000)
+      }
+    }
+  },
+  applyRoutePlan(plan) {
+    if (plan.finished) {
+      app.globalData.viewingPlanRecord = plan
+      this._leaving = true
+      clearTimeout(this._refreshTimer)
+      wx.redirectTo({ url: `/pages/plan-complete/plan-complete?id=${plan.planID}&ended=${plan.ended ? '1' : '0'}` })
+      return false
+    }
+    const step = (plan.steps || []).find(item => item.status === 'active') || (plan.steps || []).find(item => item.status === 'pending')
+    if (!step) { this.setData({ canSkip: false }); return false }
+    if (step.detailID !== this.data.detailID) {
+      this._map = null
+      this.setData({ hasMap: false, toName: step.department || step.title, location: '正在更新下一检查点的路线', distance: '暂无路线数据', duration: '', floorInstruction: '正在更新导航' })
+    }
+    this.setData({ detailID: step.detailID, canSkip: plan.planStatus === '进行中', replanNotice: plan.replanNotice || this.data.replanNotice })
+    return true
+  },
+  async skipCurrent() {
+    if (!this.data.canSkip || this.data.operating) return
+    const detailID = this.data.detailID
+    const confirmed = await confirmAction('跳过此项', '此项将保留为未完成，并重新导航到下一个检查点。结束体检后可预约未完成项目。', '确认跳过')
+    if (!confirmed) return
+    await this.runAction(async () => {
+      const plan = await api.plans.skip(this.data.planID, detailID)
+      app.saveCurrentPlan(plan.finished ? null : plan)
+      app.globalData.viewingPlanRecord = plan
+      if (!this._visible) return plan
+      if (this.applyRoutePlan(plan)) {
+        try {
+          const navigation = await api.plans.navigation(this.data.planID, this.data.detailID)
+          if (this._visible && !this._leaving) this.applyNavigation(navigation)
+        } catch (error) {
+          // Skipping already succeeded; retain the new destination and let polling
+          // retry the map request without repeating the skip mutation.
+          this.setData({ location: '路线暂时加载失败，正在重试，请以院内指引为准。' })
+          api.showError(error)
+        }
+      }
+      return plan
+    })
   },
   applyNavigation(data) {
     this._map = data.map || null
@@ -193,28 +276,32 @@ Page({
   async runAction(action) {
     if (this.data.operating) return null
     this.setData({ operating: true })
+    this._actionRevision = (this._actionRevision || 0) + 1
+    clearTimeout(this._refreshTimer)
     try {
       const updated = await action()
       app.saveCurrentPlan(updated.finished ? null : updated)
+      app.globalData.viewingPlanRecord = updated
       return updated
     } catch (error) {
       api.showError(error)
       return null
     } finally {
       this.setData({ operating: false })
+      if (this._visible && this._followingRoute && !this._leaving) this._refreshTimer = setTimeout(() => this.refreshNavigation(), 15000)
     }
   },
   async pausePlan() {
     const confirmed = await confirmAction('中断体检', '将保留当前进度，之后继续时会重新安排后续路线。', '确认中断')
     if (!confirmed) return
     const updated = await this.runAction(() => api.plans.pause(this.data.planID))
-    if (updated) wx.switchTab({ url: '/pages/index/index' })
+    if (updated) { this._leaving = true; clearTimeout(this._refreshTimer); wx.switchTab({ url: '/pages/index/index' }) }
   },
   async finishPlan() {
-    const confirmed = await confirmAction('结束体检', '未完成的项目将保留为未完成，本次体检结束后不可继续。', '确认结束')
+    const confirmed = await confirmAction('结束体检', '将保留当前记录，未完成项目可在结束后另行预约。', '确认结束')
     if (!confirmed) return
     const updated = await this.runAction(() => api.plans.finish(this.data.planID))
-    if (updated) wx.redirectTo({ url: `/pages/plan-complete/plan-complete?id=${updated.planID}&ended=1` })
+    if (updated) { this._leaving = true; clearTimeout(this._refreshTimer); wx.redirectTo({ url: `/pages/plan-complete/plan-complete?id=${updated.planID}&ended=1` }) }
   },
   goBack() { wx.navigateBack({ delta: 1 }) }
 })

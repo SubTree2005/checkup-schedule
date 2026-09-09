@@ -140,7 +140,8 @@
   });
 
   byId("registerForm").querySelector('[name="workspaceFile"]').addEventListener("change", async (event) => {
-    const file = event.currentTarget.files[0];
+    const input = event.currentTarget;
+    const file = input.files[0];
     registrationWorkspacePayload = null;
     if (!file) {
       byId("registerWorkspaceSummary").innerHTML = "<span>尚未选择注册数据包</span>";
@@ -160,7 +161,7 @@
         payload.exams.length + '</span><span>套餐 ' + payload.packages.length + '</span><span>GIS ' +
         payload.gis.length + '</span></div>';
     } catch (error) {
-      event.currentTarget.value = "";
+      input.value = "";
       byId("registerWorkspaceSummary").innerHTML = "<span>文件解析失败，请重新选择</span>";
       toast(error instanceof SyntaxError ? syntaxLocationMessage(text, error) : error.message, "error");
     }
@@ -253,7 +254,7 @@
     state.anomalies = results[6];
     state.demo = results[7];
     byId("demoPatientTrigger").classList.toggle(
-      "hidden", !state.me.user.isOwner || !state.demo || state.demo.prepared !== 100
+      "hidden", !state.me.user.isOwner
     );
     renderEverything();
   }
@@ -558,6 +559,31 @@
     const yOffset = (height - (maxY - minY) * scale) / 2;
     const project = (point) => [xOffset + (point[0] - minX) * scale, height - yOffset - (point[1] - minY) * scale];
     const flowByDept = Object.fromEntries((flow || []).map((item) => [item.deptID, item]));
+    // GIS-only imports retain surveyed room references rather than business IDs.
+    // Resolve only unique, explicit locations for display; never infer routes.
+    function departmentForPoint(props) {
+      if (props.deptID) return flowByDept[props.deptID] || null;
+      const floor = String(props.floorKey || props.floor || "").toUpperCase();
+      if (!floor) return null;
+      const room = String(props.room_ref || "").trim();
+      const matches = (flow || []).filter((item) => {
+        const location = String(item.location || "").trim().toUpperCase();
+        if (room) {
+          const address = location.match(/^(\d+F)\s+([A-Z0-9-]+)(?=$|[\s（(；;，,])/);
+          return address && address[1] === floor && address[2] === room.toUpperCase();
+        }
+        const locationFloor = location.match(/^\d+F(?=$|[^A-Z0-9])/);
+        return locationFloor && locationFloor[0] === floor && props.name === item.deptName;
+      });
+      // A room repeated across buildings is ambiguous without a business binding.
+      const pointMatches = features.filter((feature) => {
+        const other = feature.properties || {};
+        return feature.geometry && feature.geometry.type === "Point" &&
+          String(other.floorKey || other.floor || "").toUpperCase() === floor &&
+          (room ? String(other.room_ref || "").trim() === room : other.name === props.name);
+      });
+      return matches.length === 1 && pointMatches.length === 1 ? matches[0] : null;
+    }
     let shapes = "", points = "";
 
     function linePath(line, close) {
@@ -584,15 +610,16 @@
           (props.featureType === "route" ? "6" : "3") + '" stroke-linecap="round" opacity=".8"/>';
       } else if (geometry.type === "Point") {
         const projected = project(geometry.coordinates);
-        const dept = flowByDept[props.deptID] || null;
-        const count = dept ? dept.peopleFlow : 0;
-        const color = count >= 20 ? "#d5524a" : count >= 8 ? "#e8a838" : "#3fa77c";
+        const dept = departmentForPoint(props);
+        const count = dept ? Math.max(0, Number(dept.peopleFlow) || 0) : 0;
+        const color = !dept ? "#82939f" : count >= 20 ? "#d5524a" : count >= 8 ? "#e8a838" : "#3fa77c";
         const radius = 10 + Math.min(22, Math.sqrt(count) * 4);
         const label = (dept && dept.deptName) || props.name || "";
         points += '<g transform="translate(' + projected[0].toFixed(1) + ' ' + projected[1].toFixed(1) +
-          ')"><circle r="' + (radius + 7) + '" fill="' + color + '" opacity=".13"/><circle r="' + radius +
+          ')"><title>' + escapeHtml(label + (dept ? "：" + count + " 人" : "：未关联科室人流")) +
+          '</title><circle r="' + (radius + 7) + '" fill="' + color + '" opacity=".13"/><circle r="' + radius +
           '" fill="' + color + '" opacity=".88" stroke="white" stroke-width="4"/><text y="4" text-anchor="middle" fill="white" font-size="12" font-weight="800">' +
-          count + '</text><text y="' + (radius + 22) + '" text-anchor="middle" fill="#24394a" font-size="13" font-weight="700">' +
+          (dept ? count : "—") + '</text><text y="' + (radius + 22) + '" text-anchor="middle" fill="#24394a" font-size="13" font-weight="700">' +
           escapeHtml(label) + '</text></g>';
       }
     });
@@ -887,10 +914,140 @@
 
   byId("demoPatientTrigger").addEventListener("click", openDemoPatientTool);
 
+  function demoToolTabs(active) {
+    return '<div class="demo-tool-tabs"><button id="demoQueueTab" type="button" class="' +
+      (active === 'queue' ? 'primary-button' : 'secondary-button') + '">排队模拟</button>' +
+      '<button id="demoImportTab" type="button" class="' +
+      (active === 'import' ? 'primary-button' : 'secondary-button') + '">患者资料导入</button>' +
+      '<button id="demoRestrictionsTab" type="button" class="' +
+      (active === 'restrictions' ? 'primary-button' : 'secondary-button') + '">解除限制</button></div>';
+  }
+
+  function bindDemoToolTabs() {
+    byId("demoQueueTab").addEventListener("click", openDemoPatientTool);
+    byId("demoImportTab").addEventListener("click", openDemoPatientImport);
+    byId("demoRestrictionsTab").addEventListener("click", openDemoRestrictions);
+  }
+
+  async function openDemoRestrictions() {
+    if (!state.me || !state.me.user.isOwner) return;
+    byId("dialogTitle").textContent = "演示患者工具";
+    dialogBody.innerHTML = demoToolTabs('restrictions') + '<div class="dialog-grid">' +
+      '<div class="full demo-pool-status"><b id="demoRestrictionStatus">正在读取状态…</b>' +
+      '<span id="demoRestrictionExpiry"></span></div>' +
+      '<p class="full">临时解除本院项目的开放时间、科室关闭、项目停用、空腹与憋尿准备、前置及互斥关系，以及预约号源限制。排队和步行路线照常计算。</p>' +
+      '<p class="full">开启后持续 2 小时，也可随时恢复。原有配置会保留，小程序重新进入项目选择或刷新路线后生效。</p>' +
+      '<div class="dialog-actions"><button id="cancelDialog" type="button" class="secondary-button">关闭</button>' +
+      '<button id="toggleDemoRestrictions" type="button" class="primary-button" disabled>正在读取…</button></div></div>';
+    bindDemoToolTabs();
+    const button = byId("toggleDemoRestrictions");
+    const status = byId("demoRestrictionStatus");
+    const expiry = byId("demoRestrictionExpiry");
+    let enabled = false;
+    let expiryTimer;
+    function render(result) {
+      clearTimeout(expiryTimer);
+      state.demo = result;
+      const restriction = result.restrictions || {};
+      enabled = !!restriction.enabled && Date.parse(restriction.expiresAt) > Date.now();
+      status.textContent = enabled ? '已临时解除项目限制' : '当前使用正常限制';
+      expiry.textContent = enabled ? '自动恢复时间：' + new Date(restriction.expiresAt).toLocaleString('zh-CN') : '仅对当前医院生效';
+      button.textContent = enabled ? '恢复正常限制' : '临时解除限制（2 小时）';
+      button.disabled = false;
+      if (enabled) expiryTimer = setTimeout(() => {
+        if (dialog.open && byId("toggleDemoRestrictions") === button && !button.disabled) render(result);
+      }, Math.max(1, Date.parse(restriction.expiresAt) - Date.now() + 100));
+    }
+    button.addEventListener("click", async () => {
+      if (button.disabled) return;
+      button.disabled = true;
+      try {
+        render(await api('/demo-patients/restrictions', { method: 'PUT', body: { enabled: !enabled } }));
+        toast(enabled ? '本院项目限制已临时解除，2 小时后自动恢复' : '已恢复本院正常限制');
+      } catch (error) { button.disabled = false; toast(error.message, "error"); }
+    });
+    if (!dialog.open) dialog.showModal();
+    try { render(await api('/demo-patients')); }
+    catch (error) { status.textContent = '状态读取失败，请重新打开此页'; toast(error.message, "error"); }
+  }
+
+  function openDemoPatientImport() {
+    if (!state.me || !state.me.user.isOwner) return;
+    byId("dialogTitle").textContent = "演示患者工具";
+    let bundle = null;
+    let fileVersion = 0;
+    dialogBody.innerHTML = demoToolTabs('import') + '<form id="patientImportForm" class="dialog-grid">' +
+      '<label>患者手机号<input name="phone" type="tel" pattern="1[0-9]{10}" maxlength="11" autocomplete="off" required /></label>' +
+      '<label>登录密码<input name="password" type="password" minlength="8" maxlength="128" autocomplete="new-password" required /></label>' +
+      '<label class="full">当前密码（已有账号且需要改密码时填写）<input name="currentPassword" type="password" maxlength="128" autocomplete="off" /><small>已有账号需验证当前密码；若不改密码，登录密码填原密码即可。</small></label>' +
+      '<label class="upload-zone full">患者资料 JSON<input name="patientFile" type="file" accept=".json,application/json" required /><span>点击选择患者资料文件</span><small>JSON 只含资料、体检经历和报告，不含账号或密码。仅追加历史记录，重复导入不会新增相同体检。</small></label>' +
+      '<div id="patientImportSummary" class="import-file-summary full">尚未选择文件</div>' +
+      '<div class="dialog-actions"><button id="downloadPatientTemplate" type="button" class="secondary-button">下载本院示例</button>' +
+      '<button id="cancelDialog" type="button" class="secondary-button">取消</button><button id="submitPatientImport" type="submit" class="primary-button">导入演示患者</button></div></form>';
+    bindDemoToolTabs();
+    const form = byId("patientImportForm");
+    form.querySelector('[name="patientFile"]').addEventListener("change", async (event) => {
+      const version = ++fileVersion;
+      bundle = null;
+      const file = event.target.files[0];
+      const summary = byId("patientImportSummary");
+      summary.textContent = "尚未选择文件";
+      if (!file) return;
+      try {
+        if (file.size > 2 * 1024 * 1024) throw new Error("患者资料文件不能超过 2 MB");
+        const parsed = JSON.parse((await file.text()).replace(/^\uFEFF/, ""));
+        if (version !== fileVersion) return;
+        if (!parsed || parsed.formatVersion !== 'patient-demo-1.0' || parsed.simulated !== true ||
+            !parsed.patient || !Array.isArray(parsed.visits) || !parsed.visits.length) {
+          throw new Error("请选择患者演示 JSON，可先下载本院示例");
+        }
+        const allowed = ['formatVersion', 'simulated', 'hospitalName', 'patient', 'visits'];
+        if (Object.keys(parsed).some(key => !allowed.includes(key)) ||
+            Object.keys(parsed.patient).some(key => !['name', 'gender', 'age', 'medicalHistory', 'allergens'].includes(key))) {
+          throw new Error("JSON 含未知字段；手机号和密码请仅填写在页面中");
+        }
+        if (parsed.hospitalName !== state.me.hospital.hospitalName) throw new Error("数据包医院名称与当前医院不一致");
+        const steps = parsed.visits.flatMap(visit => visit.steps || []);
+        bundle = parsed;
+        summary.textContent = parsed.patient.name + ' · ' + parsed.visits.length + ' 次体检 · ' + steps.length +
+          ' 个项目 · ' + steps.filter(step => step.report).length + ' 份报告（模拟）';
+      } catch (error) {
+        if (version !== fileVersion) return;
+        summary.textContent = error.message;
+        toast(error.message, "error");
+      }
+    });
+    byId("downloadPatientTemplate").addEventListener("click", async () => {
+      try { downloadJson(await api('/demo-patients/import-template'), 'patient-demo-example.json'); }
+      catch (error) { toast(error.message, "error"); }
+    });
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const button = byId("submitPatientImport");
+      if (button.disabled) return;
+      if (!bundle) return toast("请先选择有效的患者资料 JSON", "error");
+      const fields = formObject(form);
+      button.disabled = true;
+      try {
+        const result = await api('/demo-patients/import', { method: 'POST', body: {
+          phone: String(fields.phone || '').trim(), password: fields.password,
+          currentPassword: fields.currentPassword || null, bundle: bundle
+        }});
+        form.reset();
+        bundle = null;
+        dialog.close();
+        toast('已导入 ' + result.importedVisits + ' 次体检、' + result.importedReports + ' 份报告；跳过 ' + result.skippedVisits + ' 次重复记录');
+      } catch (error) { toast(error.message, "error"); }
+      finally { button.disabled = false; }
+    });
+    if (!dialog.open) dialog.showModal();
+  }
+
   function openDemoPatientTool() {
+    if (!state.me || !state.me.user.isOwner) return;
     const demo = state.demo || { prepared: 0, active: 0, inactive: 0 };
     byId("dialogTitle").textContent = "演示患者工具";
-    dialogBody.innerHTML = '<form id="demoPatientForm" class="dialog-grid">' +
+    dialogBody.innerHTML = demoToolTabs('queue') + '<form id="demoPatientForm" class="dialog-grid">' +
       '<div class="full demo-pool-status"><b>已预备 ' + demo.prepared + ' 人</b><span>当前纳入计算 ' +
       demo.active + ' 人 · 未激活 ' + demo.inactive + ' 人</span></div>' +
       '<label class="full">指定当前纳入人数<input name="count" type="number" min="1" max="100" value="' +
@@ -898,6 +1055,7 @@
       '<div class="dialog-actions"><button type="button" class="danger-button" id="withdrawDemoPatients"' +
       (demo.active ? '' : ' disabled') + '>撤回全部</button><button type="button" class="secondary-button" id="cancelDialog">取消</button>' +
       '<button type="submit" class="primary-button">应用人数</button></div></form>';
+    bindDemoToolTabs();
     byId("demoPatientForm").addEventListener("submit", async (event) => {
       event.preventDefault();
       const count = Number(new FormData(event.currentTarget).get("count"));
@@ -917,7 +1075,7 @@
         toast("演示患者已全部撤回，固定患者池仍保留");
       } catch (error) { toast(error.message, "error"); }
     });
-    dialog.showModal();
+    if (!dialog.open) dialog.showModal();
   }
 
   function validateWorkspacePayload(payload) {
@@ -1042,7 +1200,8 @@
   }
 
   byId("workspaceImportForm").querySelector('[name="workspaceFile"]').addEventListener("change", async (event) => {
-    const file = event.currentTarget.files[0];
+    const input = event.currentTarget;
+    const file = input.files[0];
     workspaceImportPayload = null;
     byId("importResult").classList.add("hidden");
     if (!file) {
@@ -1065,7 +1224,7 @@
         '</span></div><small>格式版本 ' + escapeHtml(payload.formatVersion || "未填写") + '</small>';
       renderImportPreview(payload);
     } catch (error) {
-      event.currentTarget.value = "";
+      input.value = "";
       byId("importFileSummary").innerHTML = "<span>文件解析失败，请重新选择</span>";
       renderImportPreview(null);
       const text = file ? await file.text() : "";
@@ -1075,13 +1234,14 @@
 
   byId("workspaceImportForm").addEventListener("submit", async (event) => {
     event.preventDefault();
+    const form = event.currentTarget;
     if (!workspaceImportPayload) return toast("请先选择有效的标准 JSON 文件", "error");
     const validation = validateWorkspacePayload(workspaceImportPayload);
     if (validation.errors.length) {
       renderImportPreview(workspaceImportPayload);
       return toast("导入预检未通过，请先修正文件", "error");
     }
-    const submitButton = event.currentTarget.querySelector('[type="submit"]');
+    const submitButton = form.querySelector('[type="submit"]');
     submitButton.disabled = true;
     submitButton.textContent = "正在校验并导入…";
     try {
@@ -1095,7 +1255,7 @@
         '</small></span><span>套餐<small>' + summaryText("packages") + '</small></span><span>GIS<small>' +
         summaryText("gis") + '</small></span></div>';
       byId("importResult").classList.remove("hidden");
-      event.currentTarget.reset();
+      form.reset();
       workspaceImportPayload = null;
       byId("importFileSummary").innerHTML = "<span>导入完成，可继续选择其他文件</span>";
       renderImportPreview(null);
@@ -1117,7 +1277,8 @@
   });
 
   byId("gisForm").querySelector('[name="gisFile"]').addEventListener("change", async (event) => {
-    const file = event.currentTarget.files[0];
+    const input = event.currentTarget;
+    const file = input.files[0];
     pendingGisUpload = null;
     byId("gisUploadPreview").innerHTML = "";
     if (!file) return;
@@ -1131,7 +1292,7 @@
       renderMap(byId("gisPreview"), geojson, state.dashboard ? state.dashboard.flow : []);
       renderGisValidation(byId("gisPreviewValidation"), validation);
     } catch (error) {
-      event.currentTarget.value = "";
+      input.value = "";
       byId("gisUploadPreview").innerHTML = "";
       toast(error instanceof SyntaxError ? syntaxLocationMessage(text, error) : error.message, "error");
     }
@@ -1139,7 +1300,8 @@
 
   byId("gisForm").addEventListener("submit", async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const data = new FormData(form);
     const file = data.get("gisFile");
     try {
       const geojson = pendingGisUpload || JSON.parse(await file.text());
@@ -1149,7 +1311,7 @@
         return toast("GIS 预检未通过，请先修正文件", "error");
       }
       await api("/gis/" + encodeURIComponent(data.get("floorKey")), { method: "PUT", body: { geojson: geojson } });
-      event.currentTarget.reset();
+      form.reset();
       pendingGisUpload = null;
       byId("gisUploadPreview").innerHTML = "";
       await loadWorkspace();
@@ -1186,9 +1348,10 @@
 
   byId("anomalyForm").addEventListener("submit", async (event) => {
     event.preventDefault();
+    const form = event.currentTarget;
     try {
-      await api("/anomalies", { method: "POST", body: formObject(event.currentTarget) });
-      event.currentTarget.reset();
+      await api("/anomalies", { method: "POST", body: formObject(form) });
+      form.reset();
       await loadWorkspace();
       toast("现场异常已上报");
     } catch (error) { toast(error.message, "error"); }

@@ -139,7 +139,7 @@ def build_exams() -> list[dict]:
         exam("colonoscopy", "endoscopy-1f", "肠镜", 35, prerequisites={"fastingHours": 8}, priority=7, critical=True),
         exam("urine-routine", "laboratory-1f", "尿常规（尿液自动化分析）", 8, priority=6, slots=morning),
         exam("stool-routine", "laboratory-1f", "粪便常规及隐血试验", 10, priority=6, slots=morning),
-        exam("lab-package-1", "laboratory-1f", "套餐一生化：肝肾功能基础", 12, prerequisites={"fastingHours": 8}, priority=9, slots=fasting_morning, critical=True),
+        exam("lab-package-1", "laboratory-1f", "套餐一生化：肝肾功能基础", 12, prerequisites={"fastingHours": 8}, priority=9, critical=True),
         exam("lab-package-2", "laboratory-1f", "套餐二血液检查：血常规+肝功能半套", 15, prerequisites={"fastingHours": 8}, priority=9, slots=fasting_morning, critical=True),
         exam("lab-package-3", "laboratory-1f", "套餐三血液检查：血常规+糖脂+肝肾功能", 18, prerequisites={"fastingHours": 8}, priority=9, slots=fasting_morning, critical=True),
         exam("lab-package-4", "laboratory-1f", "套餐四血液检查：糖脂肝肾功能+AFP/CEA", 20, prerequisites={"fastingHours": 8}, priority=9, slots=fasting_morning, critical=True),
@@ -198,7 +198,7 @@ def build_exams() -> list[dict]:
             exam("gynecology-basic", "gynecology-312", "妇科常规检查", 15),
             exam("tct-option", "gynecology-312", "TCT（增选）", 15),
             exam("hpv-option", "gynecology-312", "HPV（增选）", 15),
-            exam("general-measurements", "general-check-316", "一般项目：身高、体重、血压", 8, priority=7, slots=morning),
+            exam("general-measurements", "general-check-316", "一般项目：身高、体重、血压", 8, priority=7),
             exam("internal-basic", "internal-check-318", "内科常规：心、肺、肝、脾", 10, priority=6),
             exam("surgery-basic", "surgery-check-320", "外科常规：皮肤、淋巴结、甲状腺、胸廓、脊柱、四肢", 12, priority=6),
             exam("surgery-expanded", "surgery-check-320", "外科全面：常规项目、肛门指诊、乳房", 16, priority=6),
@@ -237,13 +237,13 @@ def build_packages() -> list[dict]:
         }
 
     return [
-        package("official-package-1", "校医院体检套餐一", "入学体检/用工体检", 80, basic + ["lab-package-1", "radiology-registration", "chest-dr-frontal"], "一般、内外科、眼科、五官科、肝肾功能基础及胸片正位。", ["入学体检人群", "用工体检人群"]),
-        package("official-package-2", "校医院体检套餐二", "用工体检", 120, basic + ["lab-package-2", "urine-routine", "radiology-registration", "chest-dr-frontal"], "在基础临床检查上增加血常规、尿常规和肝功能半套。", ["用工体检人群"]),
-        package("official-package-3", "校医院体检套餐三", "用工体检/健康体检", 280, basic + ["lab-package-3", "urine-routine", "ultrasound-abdomen-basic", "ecg-routine", "radiology-registration", "chest-dr-two-view"], "增加糖脂、肝肾功能、腹部彩超、心电图及DR正侧位。", ["用工体检人群", "基础健康体检人群"]),
-        package("official-package-4", "校医院体检套餐四", "用工体检/健康体检", 398, basic + ["lab-package-4", "urine-routine", "ultrasound-abdomen-full", "ecg-routine", "radiology-registration", "chest-dr-two-view"], "增加AFP、CEA肿瘤标志物及含胰、双肾的腹部彩超。", ["用工体检人群", "常规健康筛查人群"]),
-        package("official-package-5", "校医院体检套餐五", "健康体检", 580, basic + ["lab-package-5", "urine-routine", "ultrasound-abdomen-thyroid", "ecg-routine", "radiology-registration", "chest-dr-two-view"], "包含甲状腺功能7项、三项肿瘤标志物及腹部和甲状腺彩超。", ["较全面健康体检人群"]),
-        package("official-package-6", "校医院体检套餐六", "健康体检", 800, ["general-measurements", "internal-basic", "surgery-expanded", "eye-fundus", "ent-expanded", "lab-package-6", "urine-routine", "breath-c14", "radiology-registration", "chest-dr-two-view", "ecg-routine", "ultrasound-package-6"], "全面临床检查、综合生化、肿瘤标志物、C14呼气试验和多部位彩超。", ["全面健康体检人群"], ["性别相关彩超项目应由医院按参检者情况确认。"]),
-        package("official-package-7", "校医院体检套餐七", "健康体检", 1350, ["general-measurements", "internal-basic", "surgery-expanded", "eye-fundus", "ent-expanded", "gynecology-basic", "lab-package-7", "urine-routine", "stool-routine", "breath-c13", "radiology-registration", "low-dose-chest-ct", "ecg-routine", "ultrasound-package-7"], "官网最高档套餐，包含全面生化、肿瘤标志物、13C呼气试验、低剂量CT和多部位彩超。", ["高标准全面健康体检人群"], ["妇科及性别相关项目仅适用于相应人群，预约后应由医院确认和调整。"]),
+        package("official-package-1", "校医院体检套餐1", "入学体检/用工体检", 80, basic + ["lab-package-1", "radiology-registration", "chest-dr-frontal"], "一般、内外科、眼科、五官科、肝肾功能基础及胸片正位。", ["入学体检人群", "用工体检人群"]),
+        package("official-package-2", "校医院体检套餐2", "用工体检", 120, basic + ["lab-package-2", "urine-routine", "radiology-registration", "chest-dr-frontal"], "在基础临床检查上增加血常规、尿常规和肝功能半套。", ["用工体检人群"]),
+        package("official-package-3", "校医院体检套餐3", "用工体检/健康体检", 280, basic + ["lab-package-3", "urine-routine", "ultrasound-abdomen-basic", "ecg-routine", "radiology-registration", "chest-dr-two-view"], "增加糖脂、肝肾功能、腹部彩超、心电图及DR正侧位。", ["用工体检人群", "基础健康体检人群"]),
+        package("official-package-4", "校医院体检套餐4", "用工体检/健康体检", 398, basic + ["lab-package-4", "urine-routine", "ultrasound-abdomen-full", "ecg-routine", "radiology-registration", "chest-dr-two-view"], "增加AFP、CEA肿瘤标志物及含胰、双肾的腹部彩超。", ["用工体检人群", "常规健康筛查人群"]),
+        package("official-package-5", "校医院体检套餐5", "健康体检", 580, basic + ["lab-package-5", "urine-routine", "ultrasound-abdomen-thyroid", "ecg-routine", "radiology-registration", "chest-dr-two-view"], "包含甲状腺功能7项、三项肿瘤标志物及腹部和甲状腺彩超。", ["较全面健康体检人群"]),
+        package("official-package-6", "校医院体检套餐6", "健康体检", 800, ["general-measurements", "internal-basic", "surgery-expanded", "eye-fundus", "ent-expanded", "lab-package-6", "urine-routine", "breath-c14", "radiology-registration", "chest-dr-two-view", "ecg-routine", "ultrasound-package-6"], "全面临床检查、综合生化、肿瘤标志物、C14呼气试验和多部位彩超。", ["全面健康体检人群"], ["性别相关彩超项目应由医院按参检者情况确认。"]),
+        package("official-package-7", "校医院体检套餐7", "健康体检", 1350, ["general-measurements", "internal-basic", "surgery-expanded", "eye-fundus", "ent-expanded", "gynecology-basic", "lab-package-7", "urine-routine", "stool-routine", "breath-c13", "radiology-registration", "low-dose-chest-ct", "ecg-routine", "ultrasound-package-7"], "官网最高档套餐，包含全面生化、肿瘤标志物、13C呼气试验、低剂量CT和多部位彩超。", ["高标准全面健康体检人群"], ["妇科及性别相关项目仅适用于相应人群，预约后应由医院确认和调整。"]),
     ]
 
 

@@ -1,3 +1,4 @@
+const { navigationMetrics } = require('../../utils/layout')
 const api = require('../../utils/api')
 const flowGuard = require('../../utils/flow-guard')
 const { examIcon } = require('../../utils/icon-map')
@@ -13,13 +14,15 @@ function formatDateTime(value) {
 }
 
 Page({
-  data: { planID: '', detailID: '', step: null, report: null, reportFirst: false, loading: true },
+  data: {
+    ...navigationMetrics(), planID: '', detailID: '', step: null, report: null, reportFirst: false, loading: true },
 
   onLoad(options) {
     if (!flowGuard.requireLogin(app)) return
     const planID = options.planID || ''
     const detailID = options.detailID || ''
-    this.setData({ planID, detailID, reportFirst: options.mode === 'reports' })
+    const resultIndex = /^\d+$/.test(options.resultIndex || '') ? Number(options.resultIndex) : null
+    this.setData({ planID, detailID, reportFirst: options.mode === 'reports', resultIndex })
     const cached = app.globalData.viewingPlanRecord || app.globalData.currentPlan
     if (cached && (cached.planID || cached.id) === planID) this.applyPlan(cached)
     if (!planID || !detailID) return
@@ -33,9 +36,11 @@ Page({
     if (!step) return
     const displayStatus = stepStatus(step)
     const report = normalizeReport(step)
+    const indicator = this.data.resultIndex !== null && this.data.resultIndex !== undefined ? report.rows[this.data.resultIndex] : null
     const completed = step.status === 'done' || step.completed === true || ['done', 'reported'].includes(displayStatus.tone)
     this.setData({
       loading: false,
+      indicator: indicator || null,
       step: {
         detailID: step.detailID,
         title: step.title || '检查项目',
@@ -47,7 +52,7 @@ Page({
         statusText: displayStatus.text,
         statusTone: displayStatus.tone
       },
-      report: { ...report, reportedAtText: formatDateTime(report.reportedAt) }
+      report: { ...report, rows: this.data.resultIndex === null || this.data.resultIndex === undefined ? report.rows : indicator ? [indicator] : [], reportedAtText: formatDateTime(report.reportedAt) }
     })
   },
 

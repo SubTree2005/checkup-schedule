@@ -1,0 +1,204 @@
+{
+  "status": "navigation_draft_not_survey",
+  "profile": "ambulatory_draft",
+  "rows": [
+    {
+      "origin": "ENTRANCE",
+      "destination": "infusion-1f",
+      "walk_seconds": 13.917188503017721,
+      "travel_minutes": 1,
+      "distance_m": 16.00476677847038,
+      "origin_poi_id": "poi_1f_b1_entrance",
+      "destination_poi_id": "poi_1f_b1_infusion",
+      "node_ids": [
+        "n_o_1f_b1_entrance",
+        "n_1f_917_566",
+        "n_1f_917_460",
+        "n_1f_994_460",
+        "n_1f_984_438",
+        "n_o_1f_b1_infusion"
+      ],
+      "edge_ids": [
+        "e_1f_0053",
+        "e_1f_0051",
+        "e_1f_0052",
+        "e_1f_0055",
+        "e_1f_0056"
+      ],
+      "profile": "ambulatory_draft",
+      "mapping_evidence_ids": [
+        "current_workspace_key_contract",
+        "plan_1f"
+      ],
+      "status": "navigation_draft_not_survey",
+      "source_bundle_sha256": "f61cdd87af3cf723e92b8cce86d74dd9f59c12d7ddf66c939eafb375c810c203"
+    },
+    {
+      "origin": "ENTRANCE",
+      "destination": "laboratory-1f",
+      "walk_seconds": 16.67484752560521,
+      "travel_minutes": 1,
+      "distance_m": 19.17607465444599,
+      "origin_poi_id": "poi_1f_b1_entrance",
+      "destination_poi_id": "poi_1f_b1_laboratory",
+      "node_ids": [
+        "n_o_1f_b1_entrance",
+        "n_1f_917_566",
+        "n_1f_688_566",
+        "n_1f_688_610",
+        "n_1f_688_611",
+        "n_o_1f_b1_laboratory"
+      ],
+      "edge_ids": [
+        "e_1f_0053",
+        "e_1f_0043",
+        "e_1f_0042",
+        "e_1f_0044",
+        "e_1f_0046"
+      ],
+      "profile": "ambulatory_draft",
+      "mapping_evidence_ids": [
+        "current_workspace_key_contract",
+        "plan_1f"
+      ],
+      "status": "navigation_draft_not_survey",
+      "source_bundle_sha256": "f61cdd87af3cf723e92b8cce86d74dd9f59c12d7ddf66c939eafb375c810c203"
+    },
+    {
+      "origin": "infusion-1f",
+      "destination": "ENTRANCE",
+      "walk_seconds": 13.917188503017721,
+      "travel_minutes": 1,
+      "distance_m": 16.004766778470376,
+      "origin_poi_id": "poi_1f_b1_infusion",
+      "destination_poi_id": "poi_1f_b1_entrance",
+      "node_ids": [
+        "n_o_1f_b1_infusion",
+        "n_1f_984_438",
+        "n_1f_994_460",
+        "n_1f_917_460",
+        "n_1f_917_566",
+        "n_o_1f_b1_entrance"
+      ],
+      "edge_ids": [
+        "e_1f_0056",
+        "e_1f_0055",
+        "e_1f_0052",
+        "e_1f_0051",
+        "e_1f_0053"
+      ],
+      "profile": "ambulatory_draft",
+      "mapping_evidence_ids": [
+        "current_workspace_key_contract",
+        "plan_1f"
+      ],
+      "status": "navigation_draft_not_survey",
+      "source_bundle_sha256": "f61cdd87af3cf723e92b8cce86d74dd9f59c12d7ddf66c939eafb375c810c203"
+    },
+    {
+      "origin": "infusion-1f",
+      "destination": "laboratory-1f",
+      "walk_seconds": 28.661089108642145,
+      "travel_minutes": 1,
+      "distance_m": 32.960252474938464,
+      "origin_poi_id": "poi_1f_b1_infusion",
+      "destination_poi_id": "poi_1f_b1_laboratory",
+      "node_ids": [
+        "n_o_1f_b1_infusion",
+        "n_1f_984_438",
+        "n_1f_994_460",
+        "n_1f_917_460",
+        "n_1f_917_566",
+        "n_1f_688_566",
+        "n_1f_688_610",
+        "n_1f_688_611",
+        "n_o_1f_b1_laboratory"
+      ],
+      "edge_ids": [
+        "e_1f_0056",
+        "e_1f_0055",
+        "e_1f_0052",
+        "e_1f_0051",
+        "e_1f_0043",
+        "e_1f_0042",
+        "e_1f_0044",
+        "e_1f_0046"
+      ],
+      "profile": "ambulatory_draft",
+      "mapping_evidence_ids": [
+        "current_workspace_key_contract",
+        "plan_1f"
+      ],
+      "status": "navigation_draft_not_survey",
+      "source_bundle_sha256": "f61cdd87af3cf723e92b8cce86d74dd9f59c12d7ddf66c939eafb375c810c203"
+    },
+    {
+      "origin": "laboratory-1f",
+      "destination": "ENTRANCE",
+      "walk_seconds": 16.67484752560521,
+      "travel_minutes": 1,
+      "distance_m": 19.17607465444599,
+      "origin_poi_id": "poi_1f_b1_laboratory",
+      "destination_poi_id": "poi_1f_b1_entrance",
+      "node_ids": [
+        "n_o_1f_b1_laboratory",
+        "n_1f_688_611",
+        "n_1f_688_610",
+        "n_1f_688_566",
+        "n_1f_917_566",
+        "n_o_1f_b1_entrance"
+      ],
+      "edge_ids": [
+        "e_1f_0046",
+        "e_1f_0044",
+        "e_1f_0042",
+        "e_1f_0043",
+        "e_1f_0053"
+      ],
+      "profile": "ambulatory_draft",
+      "mapping_evidence_ids": [
+        "current_workspace_key_contract",
+        "plan_1f"
+      ],
+      "status": "navigation_draft_not_survey",
+      "source_bundle_sha256": "f61cdd87af3cf723e92b8cce86d74dd9f59c12d7ddf66c939eafb375c810c203"
+    },
+    {
+      "origin": "laboratory-1f",
+      "destination": "infusion-1f",
+      "walk_seconds": 28.66108910864214,
+      "travel_minutes": 1,
+      "distance_m": 32.960252474938464,
+      "origin_poi_id": "poi_1f_b1_laboratory",
+      "destination_poi_id": "poi_1f_b1_infusion",
+      "node_ids": [
+        "n_o_1f_b1_laboratory",
+        "n_1f_688_611",
+        "n_1f_688_610",
+        "n_1f_688_566",
+        "n_1f_917_566",
+        "n_1f_917_460",
+        "n_1f_994_460",
+        "n_1f_984_438",
+        "n_o_1f_b1_infusion"
+      ],
+      "edge_ids": [
+        "e_1f_0046",
+        "e_1f_0044",
+        "e_1f_0042",
+        "e_1f_0043",
+        "e_1f_0051",
+        "e_1f_0052",
+        "e_1f_0055",
+        "e_1f_0056"
+      ],
+      "profile": "ambulatory_draft",
+      "mapping_evidence_ids": [
+        "current_workspace_key_contract",
+        "plan_1f"
+      ],
+      "status": "navigation_draft_not_survey",
+      "source_bundle_sha256": "f61cdd87af3cf723e92b8cce86d74dd9f59c12d7ddf66c939eafb375c810c203"
+    }
+  ]
+}

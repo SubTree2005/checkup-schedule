@@ -1,0 +1,3 @@
+# GIS evidence and audit manifests contain byte-level SHA-256 checks.
+# Preserve original bytes across Windows and Linux checkouts.
+gis/** -text

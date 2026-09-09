@@ -1,4 +1,4 @@
-<view class="auth-page safe-top">
+<view class="auth-page safe-top" style="{{navigationStyle}}">
   <view class="auth-content">
     <view class="brand-block">
       <image class="login-logo-image" src="../../addpicture/logo.png" mode="widthFix"></image>

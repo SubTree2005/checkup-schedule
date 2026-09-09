@@ -22,6 +22,7 @@ const appMock = {
 let registeredApp = null
 
 global.wx = {
+  getDeviceInfo() { return { platform: 'devtools' } },
   getAccountInfoSync() {
     return { miniProgram: { envVersion: 'develop' } }
   },
@@ -247,6 +248,38 @@ async function main() {
   await registeredComponent.methods.sendMessage.call(aiComponent)
   assert.strictEqual(requests.length, requestCountBeforeBlockedSend, 'confirming the composer while thinking must not start a second request')
 
+  let nativeTabCalls = 0
+  const customTab = { setData(patch) { Object.assign(this, patch) } }
+  wx.showTabBar = wx.hideTabBar = () => { nativeTabCalls += 1 }
+  wx.hideKeyboard = () => {}
+  wx.getWindowInfo = () => ({ windowHeight: 812, statusBarHeight: 44 })
+  wx.getMenuButtonBoundingClientRect = () => ({ bottom: 84 })
+  currentPages = [{ route: 'pages/index/index', getTabBar: () => customTab }]
+  const chatUI = {
+    ...registeredComponent.methods,
+    data: { ...registeredComponent.data, withTabBar: true },
+    setData(patch) { Object.assign(this.data, patch) }
+  }
+  chatUI.showSession({ title: '布局回归', messages: [] })
+  assert.strictEqual(customTab.hidden, true)
+  assert.strictEqual(chatUI.data.headerTop, 44, 'title returns to the native navigation row')
+  assert(chatUI.data.headerRight >= 96, 'header must reserve capsule space')
+  chatUI.onKeyboardHeight({ detail: { height: 300 } })
+  assert.strictEqual(chatUI.data.viewportHeight - chatUI.data.keyboardHeight, 512)
+  wx.getWindowInfo = () => ({ windowHeight: 512, statusBarHeight: 44 })
+  chatUI.onKeyboardHeight({ detail: { height: 300 } })
+  assert.strictEqual(chatUI.data.viewportHeight - chatUI.data.keyboardHeight, 512, 'a resized native viewport must not lift the composer twice')
+  chatUI.onKeyboardHeight({ detail: { height: 9999 } })
+  assert(chatUI.data.viewportHeight - chatUI.data.keyboardHeight >= chatUI.data.headerTop + 100)
+  chatUI.onBlur()
+  assert.strictEqual(chatUI.data.keyboardHeight, 0)
+  chatUI.closeChat()
+  assert.strictEqual(customTab.hidden, false)
+  chatUI.onKeyboardHeight({ detail: { height: 300 } })
+  assert.strictEqual(chatUI.data.keyboardHeight, 0, 'late keyboard events must not affect a closed chat')
+  assert.strictEqual(nativeTabCalls, 0, 'custom navigation must never restore a second native tab bar')
+  currentPages = []
+
   require('../apps/miniprogram/pages/plan/plan')
   assert(registeredPage, 'plan page should register')
   const planDefinition = registeredPage
@@ -360,6 +393,70 @@ async function main() {
   assert.strictEqual(oversizedNavigationPage.data.hasMap, false, 'oversized or deeply nested maps must not be drawn')
   assert.match(oversizedNavigationPage.data.location, /地图数据过大/)
 
+  // Preparation must survive a failed plan; near-term bookings ask before side effects.
+  const savedGlobalData = appMock.globalData
+  const savedSaveProfile = appMock.saveProfile
+  const preparationCalls = []
+  const originalCatalog = api.hospitals.catalog
+  appMock.saveProfile = function (profile) { this.globalData.profile = profile }
+  appMock.globalData = {
+    selectedHospitalId: 'hospital-1', currentPackageId: 'package-1', selectedItemIDs: [],
+    catalog: { packages: [{ id: 'package-1', items: [{ id: 'lab', fastingRequired: true }] }] },
+    profile: { fasting: 'no' }, appointmentDraft: null
+  }
+  api.profile.update = async updates => { preparationCalls.push(['profile', updates]) }
+  api.hospitals.catalog = async () => appMock.globalData.catalog
+  api.plans.create = async payload => {
+    preparationCalls.push(['plan', payload])
+    throw new Error('无可行时段')
+  }
+  require('../apps/miniprogram/pages/preparation-confirm/preparation-confirm')
+  const makePreparationPage = definition => ({
+    ...definition,
+    data: { ...definition.data, wechatPush: false, systemCalendar: false },
+    setData(updates) { Object.assign(this.data, updates) }
+  })
+  const preparationPage = makePreparationPage(registeredPage)
+  await preparationPage.onLoad()
+  await preparationPage.confirmPrepared()
+  assert.strictEqual(appMock.globalData.profile.fasting, 'yes', 'failed scheduling must retain independently saved preparation')
+  assert.deepStrictEqual(preparationCalls.map(call => call[0]), ['profile', 'plan'])
+
+  const referenceNow = Date.now()
+  appMock.globalData.appointmentDraft = { appointmentAt: new Date(referenceNow + 45 * 60000).toISOString() }
+  assert.strictEqual(planFlow.needsAppointmentFastingConfirmation(appMock, referenceNow), true)
+  appMock.globalData.appointmentDraft.appointmentAt = new Date(referenceNow + 8 * 3600000).toISOString()
+  assert.strictEqual(planFlow.needsAppointmentFastingConfirmation(appMock, referenceNow), false, 'exactly eight hours allows future preparation')
+  appMock.globalData.appointmentDraft.appointmentAt = new Date(referenceNow + 45 * 60000).toISOString()
+  appMock.globalData.selectedItemIDs = ['non-fasting']
+  assert.strictEqual(planFlow.needsAppointmentFastingConfirmation(appMock, referenceNow), false, 'only selected fasting exams require confirmation')
+  appMock.globalData.selectedItemIDs = []
+  require('../apps/miniprogram/pages/preparation-reminder/preparation-reminder')
+  const reminderDefinition = registeredPage
+  preparationCalls.length = 0
+  modalConfirm = false
+  const declinedPage = makePreparationPage(reminderDefinition)
+  await declinedPage.confirmAppointment()
+  assert.deepStrictEqual(preparationCalls, [['profile', { fasting: 'no' }]], 'declining must clear stale fasting confirmation and must not book')
+  assert.strictEqual(declinedPage.data.submitting, false)
+
+  preparationCalls.length = 0
+  modalConfirm = true
+  await makePreparationPage(reminderDefinition).confirmAppointment()
+  assert.deepStrictEqual(preparationCalls.map(call => call[0]), ['profile', 'plan'])
+  assert.strictEqual(preparationCalls[1][1].profile.fasting, 'yes')
+  assert.strictEqual(appMock.globalData.profile.fasting, 'yes', 'failed appointment must retain confirmation too')
+
+  preparationCalls.length = 0
+  api.profile.update = async () => { throw new Error('保存失败') }
+  await makePreparationPage(reminderDefinition).confirmAppointment()
+  assert.strictEqual(preparationCalls.length, 0, 'do not create a plan if preparation persistence fails')
+
+  api.profile.update = originalProfileUpdate
+  api.plans.create = originalCreate
+  api.hospitals.catalog = originalCatalog
+  appMock.globalData = savedGlobalData
+  appMock.saveProfile = savedSaveProfile
   console.log('Mini-program runtime tests passed: navigation bounds, caching, account isolation, readiness flow and AI request serialization.')
 }
 

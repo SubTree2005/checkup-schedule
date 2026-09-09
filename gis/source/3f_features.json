@@ -1,0 +1,2224 @@
+{
+  "schema_version": 2,
+  "floor": "3F",
+  "image": "images/3F.jpg",
+  "pixel_convention": "original raster; origin top-left; x right, y down; pixel centres at integers",
+  "status": "navigation_draft_not_survey",
+  "spaces": [
+    {
+      "id": "3f_b1_main_corridor",
+      "building_id": "b1",
+      "name": "主通道",
+      "room_ref": null,
+      "use_type": "corridor",
+      "polygon_px": [
+        [
+          127,
+          40
+        ],
+        [
+          209,
+          40
+        ],
+        [
+          209,
+          130
+        ],
+        [
+          180,
+          130
+        ],
+        [
+          180,
+          166
+        ],
+        [
+          219,
+          166
+        ],
+        [
+          219,
+          211
+        ],
+        [
+          170,
+          211
+        ],
+        [
+          170,
+          537
+        ],
+        [
+          210,
+          537
+        ],
+        [
+          210,
+          630
+        ],
+        [
+          127,
+          630
+        ],
+        [
+          127,
+          574
+        ],
+        [
+          112,
+          574
+        ],
+        [
+          112,
+          528
+        ],
+        [
+          127,
+          528
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_cross_310",
+      "building_id": "b1",
+      "name": "310/312/314/316 门前横向通道",
+      "room_ref": null,
+      "use_type": "corridor",
+      "polygon_px": [
+        [
+          170,
+          246
+        ],
+        [
+          268,
+          246
+        ],
+        [
+          268,
+          265
+        ],
+        [
+          170,
+          265
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_cross_318",
+      "building_id": "b1",
+      "name": "318/320/322/324 门前横向通道",
+      "room_ref": null,
+      "use_type": "corridor",
+      "polygon_px": [
+        [
+          170,
+          337
+        ],
+        [
+          268,
+          337
+        ],
+        [
+          268,
+          350
+        ],
+        [
+          170,
+          350
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_cross_326",
+      "building_id": "b1",
+      "name": "326/328/330 门前横向通道",
+      "room_ref": null,
+      "use_type": "corridor",
+      "polygon_px": [
+        [
+          170,
+          434
+        ],
+        [
+          268,
+          434
+        ],
+        [
+          268,
+          445
+        ],
+        [
+          170,
+          445
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_301",
+      "building_id": "b1",
+      "name": "一号楼301",
+      "room_ref": "301",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          54,
+          147
+        ],
+        [
+          127,
+          147
+        ],
+        [
+          127,
+          221
+        ],
+        [
+          54,
+          221
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_303",
+      "building_id": "b1",
+      "name": "一号楼303",
+      "room_ref": "303",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          54,
+          221
+        ],
+        [
+          127,
+          221
+        ],
+        [
+          127,
+          282
+        ],
+        [
+          54,
+          282
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_305",
+      "building_id": "b1",
+      "name": "一号楼305",
+      "room_ref": "305",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          54,
+          282
+        ],
+        [
+          127,
+          282
+        ],
+        [
+          127,
+          314
+        ],
+        [
+          54,
+          314
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_307",
+      "building_id": "b1",
+      "name": "一号楼307",
+      "room_ref": "307",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          54,
+          314
+        ],
+        [
+          127,
+          314
+        ],
+        [
+          127,
+          377
+        ],
+        [
+          54,
+          377
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_309",
+      "building_id": "b1",
+      "name": "一号楼309",
+      "room_ref": "309",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          54,
+          377
+        ],
+        [
+          127,
+          377
+        ],
+        [
+          127,
+          416
+        ],
+        [
+          54,
+          416
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_311",
+      "building_id": "b1",
+      "name": "一号楼311",
+      "room_ref": "311",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          54,
+          416
+        ],
+        [
+          127,
+          416
+        ],
+        [
+          127,
+          488
+        ],
+        [
+          54,
+          488
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_302",
+      "building_id": "b1",
+      "name": "一号楼302",
+      "room_ref": "302",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          209,
+          40
+        ],
+        [
+          268,
+          40
+        ],
+        [
+          268,
+          87
+        ],
+        [
+          209,
+          87
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_304",
+      "building_id": "b1",
+      "name": "一号楼304",
+      "room_ref": "304",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          209,
+          87
+        ],
+        [
+          268,
+          87
+        ],
+        [
+          268,
+          130
+        ],
+        [
+          209,
+          130
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_306",
+      "building_id": "b1",
+      "name": "一号楼306",
+      "room_ref": "306",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          180,
+          130
+        ],
+        [
+          219,
+          130
+        ],
+        [
+          219,
+          166
+        ],
+        [
+          180,
+          166
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_308",
+      "building_id": "b1",
+      "name": "一号楼308",
+      "room_ref": "308",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          219,
+          133
+        ],
+        [
+          268,
+          133
+        ],
+        [
+          268,
+          211
+        ],
+        [
+          219,
+          211
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_310",
+      "building_id": "b1",
+      "name": "一号楼310",
+      "room_ref": "310",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          170,
+          211
+        ],
+        [
+          217,
+          211
+        ],
+        [
+          217,
+          246
+        ],
+        [
+          170,
+          246
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_312",
+      "building_id": "b1",
+      "name": "一号楼312",
+      "room_ref": "312",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          217,
+          211
+        ],
+        [
+          268,
+          211
+        ],
+        [
+          268,
+          246
+        ],
+        [
+          217,
+          246
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_316",
+      "building_id": "b1",
+      "name": "一号楼316",
+      "room_ref": "316",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          170,
+          265
+        ],
+        [
+          217,
+          265
+        ],
+        [
+          217,
+          302
+        ],
+        [
+          170,
+          302
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_314",
+      "building_id": "b1",
+      "name": "一号楼314",
+      "room_ref": "314",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          217,
+          265
+        ],
+        [
+          268,
+          265
+        ],
+        [
+          268,
+          302
+        ],
+        [
+          217,
+          302
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_318",
+      "building_id": "b1",
+      "name": "一号楼318",
+      "room_ref": "318",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          170,
+          302
+        ],
+        [
+          217,
+          302
+        ],
+        [
+          217,
+          337
+        ],
+        [
+          170,
+          337
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_320",
+      "building_id": "b1",
+      "name": "一号楼320",
+      "room_ref": "320",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          217,
+          302
+        ],
+        [
+          268,
+          302
+        ],
+        [
+          268,
+          337
+        ],
+        [
+          217,
+          337
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_324",
+      "building_id": "b1",
+      "name": "一号楼324",
+      "room_ref": "324",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          170,
+          350
+        ],
+        [
+          217,
+          350
+        ],
+        [
+          217,
+          391
+        ],
+        [
+          170,
+          391
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_322",
+      "building_id": "b1",
+      "name": "一号楼322",
+      "room_ref": "322",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          217,
+          350
+        ],
+        [
+          268,
+          350
+        ],
+        [
+          268,
+          391
+        ],
+        [
+          217,
+          391
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_326",
+      "building_id": "b1",
+      "name": "一号楼326",
+      "room_ref": "326",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          170,
+          391
+        ],
+        [
+          217,
+          391
+        ],
+        [
+          217,
+          434
+        ],
+        [
+          170,
+          434
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_328",
+      "building_id": "b1",
+      "name": "一号楼328",
+      "room_ref": "328",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          217,
+          391
+        ],
+        [
+          268,
+          391
+        ],
+        [
+          268,
+          434
+        ],
+        [
+          217,
+          434
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_330",
+      "building_id": "b1",
+      "name": "一号楼330",
+      "room_ref": "330",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          170,
+          445
+        ],
+        [
+          268,
+          445
+        ],
+        [
+          268,
+          537
+        ],
+        [
+          210,
+          537
+        ],
+        [
+          210,
+          477
+        ],
+        [
+          170,
+          477
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_332",
+      "building_id": "b1",
+      "name": "一号楼332",
+      "room_ref": "332",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          170,
+          477
+        ],
+        [
+          210,
+          477
+        ],
+        [
+          210,
+          537
+        ],
+        [
+          170,
+          537
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_336",
+      "building_id": "b1",
+      "name": "一号楼336",
+      "room_ref": "336",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          210,
+          537
+        ],
+        [
+          268,
+          537
+        ],
+        [
+          268,
+          586
+        ],
+        [
+          210,
+          586
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_338",
+      "building_id": "b1",
+      "name": "一号楼338",
+      "room_ref": "338",
+      "use_type": "room",
+      "polygon_px": [
+        [
+          210,
+          586
+        ],
+        [
+          268,
+          586
+        ],
+        [
+          268,
+          637
+        ],
+        [
+          210,
+          637
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_stair_n",
+      "building_id": "b1",
+      "name": "一号楼图上侧楼梯",
+      "room_ref": null,
+      "use_type": "stairs",
+      "polygon_px": [
+        [
+          23,
+          102
+        ],
+        [
+          137,
+          102
+        ],
+        [
+          137,
+          112
+        ],
+        [
+          127,
+          112
+        ],
+        [
+          127,
+          147
+        ],
+        [
+          23,
+          147
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_stair_s",
+      "building_id": "b1",
+      "name": "一号楼图下侧楼梯",
+      "room_ref": null,
+      "use_type": "stairs",
+      "polygon_px": [
+        [
+          21,
+          529
+        ],
+        [
+          125,
+          529
+        ],
+        [
+          125,
+          574
+        ],
+        [
+          21,
+          574
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_toilets",
+      "building_id": "b1",
+      "name": "toilets",
+      "room_ref": null,
+      "use_type": "restroom",
+      "polygon_px": [
+        [
+          54,
+          40
+        ],
+        [
+          105,
+          40
+        ],
+        [
+          105,
+          101
+        ],
+        [
+          54,
+          101
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "3f_b1_unknown_shaft_s",
+      "building_id": "b1",
+      "name": "未标注方框（用途待核）",
+      "room_ref": null,
+      "use_type": "unknown",
+      "polygon_px": [
+        [
+          54,
+          488
+        ],
+        [
+          106,
+          488
+        ],
+        [
+          106,
+          528
+        ],
+        [
+          54,
+          528
+        ]
+      ],
+      "label_confidence": "high",
+      "geometry_confidence": "medium",
+      "boundary_role": "generalized_visible_partition_not_wall_survey",
+      "evidence_ids": [
+        "plan_3f",
+        "user_building_statement"
+      ],
+      "building_confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    }
+  ],
+  "openings": [
+    {
+      "id": "o_3f_b1_301",
+      "space_id": "3f_b1_301",
+      "segment_px": [
+        [
+          127,
+          180
+        ],
+        [
+          127,
+          194
+        ]
+      ],
+      "approach_px": [
+        [
+          147,
+          187
+        ],
+        [
+          127,
+          187
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_303",
+      "space_id": "3f_b1_303",
+      "segment_px": [
+        [
+          127,
+          236
+        ],
+        [
+          127,
+          250
+        ]
+      ],
+      "approach_px": [
+        [
+          147,
+          243
+        ],
+        [
+          127,
+          243
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_305",
+      "space_id": "3f_b1_305",
+      "segment_px": [
+        [
+          127,
+          296
+        ],
+        [
+          127,
+          310
+        ]
+      ],
+      "approach_px": [
+        [
+          147,
+          303
+        ],
+        [
+          127,
+          303
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_307",
+      "space_id": "3f_b1_307",
+      "segment_px": [
+        [
+          127,
+          323
+        ],
+        [
+          127,
+          337
+        ]
+      ],
+      "approach_px": [
+        [
+          147,
+          330
+        ],
+        [
+          127,
+          330
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_309",
+      "space_id": "3f_b1_309",
+      "segment_px": [
+        [
+          127,
+          384
+        ],
+        [
+          127,
+          398
+        ]
+      ],
+      "approach_px": [
+        [
+          147,
+          391
+        ],
+        [
+          127,
+          391
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_311",
+      "space_id": "3f_b1_311",
+      "segment_px": [
+        [
+          127,
+          427
+        ],
+        [
+          127,
+          441
+        ]
+      ],
+      "approach_px": [
+        [
+          147,
+          434
+        ],
+        [
+          127,
+          434
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_302",
+      "space_id": "3f_b1_302",
+      "segment_px": [
+        [
+          209,
+          63
+        ],
+        [
+          209,
+          77
+        ]
+      ],
+      "approach_px": [
+        [
+          147,
+          70
+        ],
+        [
+          209,
+          70
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_304",
+      "space_id": "3f_b1_304",
+      "segment_px": [
+        [
+          209,
+          106
+        ],
+        [
+          209,
+          120
+        ]
+      ],
+      "approach_px": [
+        [
+          147,
+          113
+        ],
+        [
+          209,
+          113
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_306",
+      "space_id": "3f_b1_306",
+      "segment_px": [
+        [
+          190,
+          166
+        ],
+        [
+          206,
+          166
+        ]
+      ],
+      "approach_px": [
+        [
+          198,
+          185
+        ],
+        [
+          198,
+          166
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_308",
+      "space_id": "3f_b1_308",
+      "segment_px": [
+        [
+          219,
+          182
+        ],
+        [
+          219,
+          198
+        ]
+      ],
+      "approach_px": [
+        [
+          207,
+          185
+        ],
+        [
+          207,
+          190
+        ],
+        [
+          219,
+          190
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_310",
+      "space_id": "3f_b1_310",
+      "segment_px": [
+        [
+          200,
+          246
+        ],
+        [
+          214,
+          246
+        ]
+      ],
+      "approach_px": [
+        [
+          207,
+          255
+        ],
+        [
+          207,
+          246
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_312",
+      "space_id": "3f_b1_312",
+      "segment_px": [
+        [
+          221,
+          246
+        ],
+        [
+          235,
+          246
+        ]
+      ],
+      "approach_px": [
+        [
+          228,
+          255
+        ],
+        [
+          228,
+          246
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_316",
+      "space_id": "3f_b1_316",
+      "segment_px": [
+        [
+          200,
+          265
+        ],
+        [
+          214,
+          265
+        ]
+      ],
+      "approach_px": [
+        [
+          207,
+          255
+        ],
+        [
+          207,
+          265
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_314",
+      "space_id": "3f_b1_314",
+      "segment_px": [
+        [
+          221,
+          265
+        ],
+        [
+          235,
+          265
+        ]
+      ],
+      "approach_px": [
+        [
+          228,
+          255
+        ],
+        [
+          228,
+          265
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_318",
+      "space_id": "3f_b1_318",
+      "segment_px": [
+        [
+          200,
+          337
+        ],
+        [
+          214,
+          337
+        ]
+      ],
+      "approach_px": [
+        [
+          207,
+          344
+        ],
+        [
+          207,
+          337
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_320",
+      "space_id": "3f_b1_320",
+      "segment_px": [
+        [
+          221,
+          337
+        ],
+        [
+          235,
+          337
+        ]
+      ],
+      "approach_px": [
+        [
+          228,
+          344
+        ],
+        [
+          228,
+          337
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_324",
+      "space_id": "3f_b1_324",
+      "segment_px": [
+        [
+          200,
+          350
+        ],
+        [
+          214,
+          350
+        ]
+      ],
+      "approach_px": [
+        [
+          207,
+          344
+        ],
+        [
+          207,
+          350
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_322",
+      "space_id": "3f_b1_322",
+      "segment_px": [
+        [
+          221,
+          350
+        ],
+        [
+          235,
+          350
+        ]
+      ],
+      "approach_px": [
+        [
+          228,
+          344
+        ],
+        [
+          228,
+          350
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_326",
+      "space_id": "3f_b1_326",
+      "segment_px": [
+        [
+          200,
+          434
+        ],
+        [
+          214,
+          434
+        ]
+      ],
+      "approach_px": [
+        [
+          207,
+          439.5
+        ],
+        [
+          207,
+          434
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_328",
+      "space_id": "3f_b1_328",
+      "segment_px": [
+        [
+          221,
+          434
+        ],
+        [
+          235,
+          434
+        ]
+      ],
+      "approach_px": [
+        [
+          228,
+          439.5
+        ],
+        [
+          228,
+          434
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_330",
+      "space_id": "3f_b1_330",
+      "segment_px": [
+        [
+          211,
+          445
+        ],
+        [
+          225,
+          445
+        ]
+      ],
+      "approach_px": [
+        [
+          218,
+          439.5
+        ],
+        [
+          218,
+          445
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_332",
+      "space_id": "3f_b1_332",
+      "segment_px": [
+        [
+          182,
+          537
+        ],
+        [
+          198,
+          537
+        ]
+      ],
+      "approach_px": [
+        [
+          147,
+          545
+        ],
+        [
+          190,
+          545
+        ],
+        [
+          190,
+          537
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_336",
+      "space_id": "3f_b1_336",
+      "segment_px": [
+        [
+          210,
+          543
+        ],
+        [
+          210,
+          557
+        ]
+      ],
+      "approach_px": [
+        [
+          147,
+          550
+        ],
+        [
+          210,
+          550
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_338",
+      "space_id": "3f_b1_338",
+      "segment_px": [
+        [
+          210,
+          589
+        ],
+        [
+          210,
+          604
+        ]
+      ],
+      "approach_px": [
+        [
+          147,
+          596.5
+        ],
+        [
+          210,
+          596.5
+        ]
+      ],
+      "kind": "door",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_stair_n",
+      "space_id": "3f_b1_stair_n",
+      "segment_px": [
+        [
+          127,
+          116
+        ],
+        [
+          127,
+          132
+        ]
+      ],
+      "approach_px": [
+        [
+          147,
+          124
+        ],
+        [
+          127.0,
+          124
+        ]
+      ],
+      "kind": "stair_gate",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    },
+    {
+      "id": "o_3f_b1_stair_s",
+      "space_id": "3f_b1_stair_s",
+      "segment_px": [
+        [
+          125,
+          540
+        ],
+        [
+          125,
+          556
+        ]
+      ],
+      "approach_px": [
+        [
+          147,
+          548
+        ],
+        [
+          125.0,
+          548
+        ]
+      ],
+      "kind": "stair_gate",
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "confidence": "medium",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
+    }
+  ],
+  "centerlines": [
+    {
+      "id": "main",
+      "building_id": "b1",
+      "path_px": [
+        [
+          147,
+          61
+        ],
+        [
+          147,
+          620
+        ]
+      ],
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "status": "visible_passage",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "branch_310",
+      "building_id": "b1",
+      "path_px": [
+        [
+          147,
+          255
+        ],
+        [
+          254,
+          255
+        ]
+      ],
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "status": "visible_passage",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "branch_318",
+      "building_id": "b1",
+      "path_px": [
+        [
+          147,
+          344
+        ],
+        [
+          254,
+          344
+        ]
+      ],
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "status": "visible_passage",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "branch_326",
+      "building_id": "b1",
+      "path_px": [
+        [
+          147,
+          439.5
+        ],
+        [
+          254,
+          439.5
+        ]
+      ],
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "status": "visible_passage",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    },
+    {
+      "id": "north_bay",
+      "building_id": "b1",
+      "path_px": [
+        [
+          147,
+          185
+        ],
+        [
+          207,
+          185
+        ]
+      ],
+      "evidence_ids": [
+        "plan_3f"
+      ],
+      "status": "visible_passage",
+      "accessible": "unknown",
+      "access_control": "unknown"
+    }
+  ],
+  "levels": [
+    {
+      "building_id": "b1",
+      "polygon_px": [
+        [
+          53,
+          39
+        ],
+        [
+          103,
+          39
+        ],
+        [
+          103,
+          17
+        ],
+        [
+          137,
+          17
+        ],
+        [
+          137,
+          39
+        ],
+        [
+          270,
+          39
+        ],
+        [
+          270,
+          647
+        ],
+        [
+          53,
+          647
+        ],
+        [
+          53,
+          574
+        ],
+        [
+          21,
+          574
+        ],
+        [
+          21,
+          528
+        ],
+        [
+          53,
+          528
+        ],
+        [
+          53,
+          147
+        ],
+        [
+          23,
+          147
+        ],
+        [
+          23,
+          101
+        ],
+        [
+          53,
+          101
+        ]
+      ],
+      "holes_px": []
+    }
+  ],
+  "unresolved": [
+    {
+      "object_id": "3f_b1_unknown_shaft_s",
+      "issue": "unlabelled_box_not_elevator_evidence",
+      "action": "没有电梯标识；用途、无障碍、电梯停层均 unknown"
+    }
+  ],
+  "unknown_attributes": [
+    "elevators",
+    "access_control",
+    "wheelchair_access",
+    "clinical_room_mapping",
+    "floor_height_m"
+  ],
+  "direction_note": "上/下/左/右及内部 n/s/w/e 标识均按图像方向；不声称地理方位。"
+}

@@ -64,22 +64,25 @@
 .pause-symbol { display: flex; align-items: center; gap: 9rpx; }
 .pause-symbol text { width: 8rpx; height: 32rpx; border-radius: 5rpx; background: #FFFFFF; }
 
-.ai-stage { position: fixed; z-index: 500; inset: 0; overflow: hidden; }
+.ai-stage { position: fixed; z-index: 500; top: 0; left: 0; right: 0; overflow: hidden; }
 .ai-backdrop {
   position: absolute;
   inset: 0;
   background: rgba(242, 247, 255, 0.98);
 }
 
-.ai-chat { position: absolute; inset: 0; }
-.ai-header { height: 98rpx; padding: 0 28rpx; display: flex; align-items: center; justify-content: space-between; }
+.ai-chat { position: absolute; inset: 0; box-sizing: border-box; display: flex; flex-direction: column; }
+.ai-header { height: 98rpx; flex: none; padding: 0 28rpx; display: flex; align-items: center; justify-content: space-between; }
 .ai-close { width: 82rpx; color: #172033; font-size: 60rpx; line-height: 1; }
 .ai-title { max-width: 430rpx; overflow: hidden; color: #172033; font-size: 29rpx; font-weight: 650; white-space: nowrap; text-overflow: ellipsis; text-align: center; }
-.ai-settings { width: 82rpx; color: #356FE7; font-size: 23rpx; text-align: right; }
+.ai-title { flex: 1; min-width: 0; }
+.ai-new-conversation { flex: none; text-align: center; color: #9098a5; font-size: 22rpx; padding: 12rpx 24rpx 0; }
 
 .ai-messages {
-  height: calc(100vh - 250rpx);
-  padding: 18rpx 28rpx 170rpx;
+  flex: 1;
+  min-height: 0;
+  height: 0;
+  padding: 18rpx 28rpx;
   box-sizing: border-box;
 }
 
@@ -103,32 +106,34 @@
 .message-tail { height: 20rpx; }
 
 .ai-composer {
-  position: absolute;
+  position: relative;
   z-index: 4;
-  left: 24rpx;
-  right: 24rpx;
-  bottom: calc(env(safe-area-inset-bottom) + 24rpx);
+  flex: none;
+  margin: 12rpx 24rpx 0;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 24rpx);
   display: flex;
   align-items: flex-end;
   gap: 16rpx;
-  transition: transform .2s ease;
 }
 
-.ai-input {
+.keyboard-open .ai-composer { padding-bottom: 16rpx; }
+
+.ai-input-shell {
   flex: 1;
-  height: 88rpx;
+  min-width: 0;
   min-height: 88rpx;
-  max-height: 230rpx;
-  padding: 20rpx 28rpx;
+  display: flex;
+  align-items: center;
+  padding: 18rpx 28rpx;
   box-sizing: border-box;
   color: #1F2B42;
   background: rgba(255,255,255,0.94);
   border: 2rpx solid rgba(86,139,243,0.72);
   border-radius: 34rpx;
   box-shadow: 0 15rpx 40rpx rgba(46,93,180,0.15), inset 0 2rpx 5rpx rgba(255,255,255,0.98);
-  font-size: 25rpx;
-  line-height: 46rpx;
 }
+.ai-input { width: 100%; height: 40rpx; min-height: 40rpx; max-height: 160rpx; padding: 0; font-size: 25rpx; line-height: 40rpx; color: #1F2B42; }
+.ai-input-placeholder { line-height: 40rpx; color: #8591A4; }
 .ai-orb-composer { width: 88rpx; height: 88rpx; flex: none; }
 .ai-orb.is-thinking .ai-orb-color {
   animation: ai-orb-spin .8s linear infinite;

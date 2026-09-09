@@ -2,11 +2,11 @@
 
 page { background: linear-gradient(180deg, #F7FAFF 0%, #FFFFFF 100%); }
 .operation-page { min-height: 100vh; }
-.flow-nav { height: 128rpx; padding: 0 28rpx; display: flex; align-items: center; justify-content: space-between; }
+.flow-nav { height: var(--navigation-bar-height, 44px); padding: 0 28rpx; display: flex; align-items: center; justify-content: space-between; }
 .nav-back { width: 64rpx; height: 64rpx; display: flex; align-items: center; color: #101827; font-size: 58rpx; }
 .nav-title { color: #111827; font-size: 31rpx; font-weight: 650; }
 .nav-space { width: 64rpx; }
-.operation-scroll { width: 100%; height: calc(100vh - env(safe-area-inset-top) - 148rpx); padding: 12rpx 28rpx calc(env(safe-area-inset-bottom) + 150rpx); box-sizing: border-box; }
+.operation-scroll { width: 100%; height: calc(100vh - var(--status-bar-height, 24px) - var(--navigation-bar-height, 44px)); padding: 12rpx 28rpx calc(env(safe-area-inset-bottom) + 150rpx); box-sizing: border-box; }
 .current-card, .reminder-card { padding: 30rpx 28rpx; background: rgba(255,255,255,0.94); border: 2rpx solid #DFE7F2; border-radius: 30rpx; box-shadow: 0 16rpx 42rpx rgba(50,75,118,0.07); }
 .item-head { display: flex; align-items: flex-start; gap: 18rpx; }
 .item-icon { width: 82rpx; height: 82rpx; flex: none; display: block; }
@@ -15,14 +15,13 @@ page { background: linear-gradient(180deg, #F7FAFF 0%, #FFFFFF 100%); }
 .item-badges { margin-top: 12rpx; display: flex; align-items: center; gap: 10rpx; flex-wrap: wrap; }
 .current-badge { flex: none; padding: 7rpx 12rpx; color: #218C4B; background: #ECF9F0; border: 2rpx solid #BDE8C9; border-radius: 12rpx; font-size: 20rpx; }
 .step-count { flex: none; padding: 8rpx 14rpx; color: #2F69EC; background: #EDF4FF; border-radius: 999rpx; font-size: 20rpx; }
-.location-row { min-height: 108rpx; display: flex; align-items: center; gap: 18rpx; border-bottom: 2rpx solid #EDF1F6; }
+.location-row { min-height: 120rpx; padding: 18rpx 0; display: flex; align-items: center; gap: 18rpx; border-bottom: 2rpx solid #EDF1F6; }
 .row-icon { width: 44rpx; height: 44rpx; flex: none; display: block; }
 .location-copy { flex: 1; min-width: 0; }
 .location-text { color: #263248; font-size: 25rpx; line-height: 1.4; }
 .location-hint { margin-top: 5rpx; color: #7B8798; font-size: 21rpx; line-height: 1.35; }
-.replan-btn { width: 172rpx; min-height: 66rpx; margin: 0; padding: 0 16rpx; display: flex; align-items: center; justify-content: center; gap: 9rpx; color: #52617A; background: #FFFFFF; border: 2rpx solid #BFD3FA; border-radius: 999rpx; font-size: 22rpx; }
-.replan-icon { width: 32rpx; height: 32rpx; flex: none; display: block; }
-.replan-btn::after { border: none; }
+.route-actions { display: flex; flex: none; gap: 20rpx; }
+.route-notice { margin-bottom: 20rpx; padding: 22rpx; border-radius: 20rpx; color: #52617A; background: #EDF4FF; font-size: 23rpx; line-height: 1.5; }
 .metric-row { min-height: 104rpx; display: flex; align-items: center; justify-content: space-between; border-bottom: 2rpx solid #EDF1F6; }
 .metric-row:last-child { border-bottom: none; }
 .metric-label { display: flex; align-items: center; gap: 18rpx; color: #455168; font-size: 25rpx; }

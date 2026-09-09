@@ -1,3 +1,4 @@
+const { navigationMetrics } = require('../../utils/layout')
 const api = require('../../utils/api')
 const flowGuard = require('../../utils/flow-guard')
 const app = getApp()
@@ -34,7 +35,10 @@ function normalizeDate(row) {
 
 Page({
   data: {
+    ...navigationMetrics(),
     dates: [],
+    followUpItems: [],
+    followUpCount: 0,
     slots: [],
     hasDates: false,
     hasBookableSlot: false,
@@ -45,6 +49,8 @@ Page({
 
   async onLoad() {
     if (!flowGuard.requireSelection(app)) return
+    const followUpItems = app.globalData.followUpPlanDraft ? app.globalData.followUpPlanDraft.items : []
+    this.setData({ followUpItems, followUpCount: followUpItems.length })
     try {
       const payload = await api.hospitals.appointmentSlots(app.globalData.selectedHospitalId)
       this.applyAvailability(payload)
@@ -55,6 +61,7 @@ Page({
   },
 
   applyAvailability(payload) {
+    app.globalData.demoRestrictionHospital = payload.hospital
     const today = localDateKey(new Date())
     const dates = (payload.dates || []).map(normalizeDate).filter(item => item.key >= today)
     const firstDate = dates.find(item => item.available && item.slots.some(slot => slot.available))
@@ -102,6 +109,7 @@ Page({
   },
 
   goBack() {
+    app.globalData.followUpPlanDraft = null
     const split = app.globalData.splitPlanDraft
     if (split) {
       app.globalData.currentPackageId = split.packageID

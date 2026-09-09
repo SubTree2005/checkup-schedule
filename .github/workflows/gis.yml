@@ -1,0 +1,27 @@
+name: Indoor GIS
+on:
+  push:
+    paths: ['gis/**', 'scripts/*gis*.py', 'tests/test_gis*.py', 'packages/scheduler/checkup_scheduler/gis.py', 'pyproject.toml', '.github/workflows/gis.yml']
+  pull_request:
+    paths: ['gis/**', 'scripts/*gis*.py', 'tests/test_gis*.py', 'packages/scheduler/checkup_scheduler/gis.py', 'pyproject.toml', '.github/workflows/gis.yml']
+jobs:
+  spatial-and-postgis:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgis/postgis:17-3.5
+        env:
+          POSTGRES_PASSWORD: gis_test_only
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s --health-timeout 5s --health-retries 5
+    env:
+      GIS_TEST_DSN: postgresql://postgres:gis_test_only@127.0.0.1:5432/postgres
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install -e '.[gis,gis-postgis-test,backend,test]'
+      - run: python scripts/build_indoor_gis.py
+      - run: python -m unittest discover -s tests -p 'test_gis*.py' -v

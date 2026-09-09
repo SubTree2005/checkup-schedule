@@ -1,0 +1,1322 @@
+{
+  "formatVersion": "patient-demo-1.0",
+  "simulated": true,
+  "hospitalName": "浙江大学校医院（紫金港校区）",
+  "patient": {
+    "name": "林",
+    "gender": "男",
+    "age": 21,
+    "medicalHistory": "近视；甘油三酯轻度偏高。",
+    "allergens": "无已知过敏史"
+  },
+  "visits": [
+    {
+      "recordKey": "campus-demo-2024-09-12",
+      "title": "入学健康体检",
+      "packageName": "校医院体检套餐3",
+      "steps": [
+        {
+          "itemName": "套餐三血液检查：血常规+糖脂+肝肾功能",
+          "departmentName": "检验科",
+          "startedAt": "2024-09-12T08:00:00+08:00",
+          "completedAt": "2024-09-12T08:18:00+08:00",
+          "report": {
+            "conclusion": "血常规及生化模拟指标均在演示参考范围内。 仅供产品演示。",
+            "reportedAt": "2024-09-12T12:18:00+08:00",
+            "items": [
+              {
+                "label": "白细胞计数",
+                "value": "6.2",
+                "unit": "10^9/L",
+                "reference": "3.5–9.5（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "血红蛋白",
+                "value": "146",
+                "unit": "g/L",
+                "reference": "130–175（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "空腹血糖",
+                "value": "4.8",
+                "unit": "mmol/L",
+                "reference": "3.9–6.1（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "甘油三酯",
+                "value": "1.12",
+                "unit": "mmol/L",
+                "reference": "<1.70（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "总胆固醇",
+                "value": "4.15",
+                "unit": "mmol/L",
+                "reference": "<5.20（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "丙氨酸氨基转移酶",
+                "value": "20",
+                "unit": "U/L",
+                "reference": "9–50（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "肌酐",
+                "value": "76",
+                "unit": "μmol/L",
+                "reference": "57–97（演示参考）",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "尿常规（尿液自动化分析）",
+          "departmentName": "检验科",
+          "startedAt": "2024-09-12T08:23:00+08:00",
+          "completedAt": "2024-09-12T08:31:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2024-09-12T12:31:00+08:00",
+            "items": [
+              {
+                "label": "尿蛋白",
+                "value": "阴性",
+                "unit": "",
+                "reference": "阴性",
+                "status": "正常"
+              },
+              {
+                "label": "尿糖",
+                "value": "阴性",
+                "unit": "",
+                "reference": "阴性",
+                "status": "正常"
+              },
+              {
+                "label": "尿潜血",
+                "value": "阴性",
+                "unit": "",
+                "reference": "阴性",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "一般项目：身高、体重、血压",
+          "departmentName": "一般检查（316）",
+          "startedAt": "2024-09-12T08:36:00+08:00",
+          "completedAt": "2024-09-12T08:44:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2024-09-12T12:44:00+08:00",
+            "items": [
+              {
+                "label": "身高",
+                "value": "175",
+                "unit": "cm",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "体重",
+                "value": "64",
+                "unit": "kg",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "血压",
+                "value": "116/74",
+                "unit": "mmHg",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "BMI",
+                "value": "20.9",
+                "unit": "kg/m²",
+                "reference": "18.5–23.9（演示参考）",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "内科常规：心、肺、肝、脾",
+          "departmentName": "内科（318）",
+          "startedAt": "2024-09-12T08:49:00+08:00",
+          "completedAt": "2024-09-12T08:59:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2024-09-12T12:59:00+08:00",
+            "items": [
+              {
+                "label": "心肺听诊",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "腹部触诊",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "外科常规：皮肤、淋巴结、甲状腺、胸廓、脊柱、四肢",
+          "departmentName": "外科（320）",
+          "startedAt": "2024-09-12T09:04:00+08:00",
+          "completedAt": "2024-09-12T09:16:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2024-09-12T13:16:00+08:00",
+            "items": [
+              {
+                "label": "皮肤及浅表淋巴结",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "脊柱四肢",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "眼科常规检查",
+          "departmentName": "眼科（324）",
+          "startedAt": "2024-09-12T09:21:00+08:00",
+          "completedAt": "2024-09-12T09:31:00+08:00",
+          "report": {
+            "conclusion": "模拟既往近视，双眼矫正视力均为 1.0。 仅供产品演示。",
+            "reportedAt": "2024-09-12T13:31:00+08:00",
+            "items": [
+              {
+                "label": "右眼矫正视力",
+                "value": "1.0",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "左眼矫正视力",
+                "value": "1.0",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "屈光状态",
+                "value": "近视（模拟既往情况）",
+                "unit": "",
+                "reference": "",
+                "status": "提示"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "五官科常规检查",
+          "departmentName": "耳鼻喉科（322）",
+          "startedAt": "2024-09-12T09:36:00+08:00",
+          "completedAt": "2024-09-12T09:46:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2024-09-12T13:46:00+08:00",
+            "items": [
+              {
+                "label": "外耳及鼓膜",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "鼻咽部",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "腹部彩超：肝、胆、脾",
+          "departmentName": "B超室1（303）",
+          "startedAt": "2024-09-12T09:51:00+08:00",
+          "completedAt": "2024-09-12T10:06:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2024-09-12T14:06:00+08:00",
+            "items": [
+              {
+                "label": "肝脏",
+                "value": "形态大小正常，回声均匀",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "胆囊及脾脏",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "十二导联常规心电图",
+          "departmentName": "心电图室（310）",
+          "startedAt": "2024-09-12T10:11:00+08:00",
+          "completedAt": "2024-09-12T10:21:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2024-09-12T14:21:00+08:00",
+            "items": [
+              {
+                "label": "心率",
+                "value": "72",
+                "unit": "次/分",
+                "reference": "60–100（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "心律",
+                "value": "窦性心律",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "放射检查登记",
+          "departmentName": "放射科（MRI、CT、DR）",
+          "startedAt": "2024-09-12T10:26:00+08:00",
+          "completedAt": "2024-09-12T10:31:00+08:00",
+          "report": null
+        },
+        {
+          "itemName": "胸片（DR正侧位）",
+          "departmentName": "放射科（MRI、CT、DR）",
+          "startedAt": "2024-09-12T10:36:00+08:00",
+          "completedAt": "2024-09-12T10:48:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2024-09-12T14:48:00+08:00",
+            "items": [
+              {
+                "label": "胸部影像",
+                "value": "双肺未见明显活动性病变（模拟）",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "recordKey": "campus-demo-2025-09-10",
+      "title": "学年常规体检",
+      "packageName": "校医院体检套餐3",
+      "steps": [
+        {
+          "itemName": "套餐三血液检查：血常规+糖脂+肝肾功能",
+          "departmentName": "检验科",
+          "startedAt": "2025-09-10T08:00:00+08:00",
+          "completedAt": "2025-09-10T08:18:00+08:00",
+          "report": {
+            "conclusion": "模拟结果中甘油三酯轻度偏高，其余展示指标在演示参考范围内。 仅供产品演示。",
+            "reportedAt": "2025-09-10T12:18:00+08:00",
+            "items": [
+              {
+                "label": "白细胞计数",
+                "value": "6.8",
+                "unit": "10^9/L",
+                "reference": "3.5–9.5（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "血红蛋白",
+                "value": "149",
+                "unit": "g/L",
+                "reference": "130–175（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "空腹血糖",
+                "value": "5.0",
+                "unit": "mmol/L",
+                "reference": "3.9–6.1（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "甘油三酯",
+                "value": "1.85",
+                "unit": "mmol/L",
+                "reference": "<1.70（演示参考）",
+                "status": "偏高"
+              },
+              {
+                "label": "总胆固醇",
+                "value": "4.88",
+                "unit": "mmol/L",
+                "reference": "<5.20（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "丙氨酸氨基转移酶",
+                "value": "26",
+                "unit": "U/L",
+                "reference": "9–50（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "肌酐",
+                "value": "79",
+                "unit": "μmol/L",
+                "reference": "57–97（演示参考）",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "尿常规（尿液自动化分析）",
+          "departmentName": "检验科",
+          "startedAt": "2025-09-10T08:23:00+08:00",
+          "completedAt": "2025-09-10T08:31:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2025-09-10T12:31:00+08:00",
+            "items": [
+              {
+                "label": "尿蛋白",
+                "value": "阴性",
+                "unit": "",
+                "reference": "阴性",
+                "status": "正常"
+              },
+              {
+                "label": "尿糖",
+                "value": "阴性",
+                "unit": "",
+                "reference": "阴性",
+                "status": "正常"
+              },
+              {
+                "label": "尿潜血",
+                "value": "阴性",
+                "unit": "",
+                "reference": "阴性",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "一般项目：身高、体重、血压",
+          "departmentName": "一般检查（316）",
+          "startedAt": "2025-09-10T08:36:00+08:00",
+          "completedAt": "2025-09-10T08:44:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2025-09-10T12:44:00+08:00",
+            "items": [
+              {
+                "label": "身高",
+                "value": "175",
+                "unit": "cm",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "体重",
+                "value": "69",
+                "unit": "kg",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "血压",
+                "value": "120/78",
+                "unit": "mmHg",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "BMI",
+                "value": "22.5",
+                "unit": "kg/m²",
+                "reference": "18.5–23.9（演示参考）",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "内科常规：心、肺、肝、脾",
+          "departmentName": "内科（318）",
+          "startedAt": "2025-09-10T08:49:00+08:00",
+          "completedAt": "2025-09-10T08:59:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2025-09-10T12:59:00+08:00",
+            "items": [
+              {
+                "label": "心肺听诊",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "腹部触诊",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "外科常规：皮肤、淋巴结、甲状腺、胸廓、脊柱、四肢",
+          "departmentName": "外科（320）",
+          "startedAt": "2025-09-10T09:04:00+08:00",
+          "completedAt": "2025-09-10T09:16:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2025-09-10T13:16:00+08:00",
+            "items": [
+              {
+                "label": "皮肤及浅表淋巴结",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "脊柱四肢",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "眼科常规检查",
+          "departmentName": "眼科（324）",
+          "startedAt": "2025-09-10T09:21:00+08:00",
+          "completedAt": "2025-09-10T09:31:00+08:00",
+          "report": {
+            "conclusion": "模拟既往近视，双眼矫正视力均为 1.0。 仅供产品演示。",
+            "reportedAt": "2025-09-10T13:31:00+08:00",
+            "items": [
+              {
+                "label": "右眼矫正视力",
+                "value": "1.0",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "左眼矫正视力",
+                "value": "1.0",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "屈光状态",
+                "value": "近视（模拟既往情况）",
+                "unit": "",
+                "reference": "",
+                "status": "提示"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "五官科常规检查",
+          "departmentName": "耳鼻喉科（322）",
+          "startedAt": "2025-09-10T09:36:00+08:00",
+          "completedAt": "2025-09-10T09:46:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2025-09-10T13:46:00+08:00",
+            "items": [
+              {
+                "label": "外耳及鼓膜",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "鼻咽部",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "腹部彩超：肝、胆、脾",
+          "departmentName": "B超室1（303）",
+          "startedAt": "2025-09-10T09:51:00+08:00",
+          "completedAt": "2025-09-10T10:06:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2025-09-10T14:06:00+08:00",
+            "items": [
+              {
+                "label": "肝脏",
+                "value": "形态大小正常，回声均匀",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "胆囊及脾脏",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "十二导联常规心电图",
+          "departmentName": "心电图室（310）",
+          "startedAt": "2025-09-10T10:11:00+08:00",
+          "completedAt": "2025-09-10T10:21:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2025-09-10T14:21:00+08:00",
+            "items": [
+              {
+                "label": "心率",
+                "value": "76",
+                "unit": "次/分",
+                "reference": "60–100（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "心律",
+                "value": "窦性心律",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "放射检查登记",
+          "departmentName": "放射科（MRI、CT、DR）",
+          "startedAt": "2025-09-10T10:26:00+08:00",
+          "completedAt": "2025-09-10T10:31:00+08:00",
+          "report": null
+        },
+        {
+          "itemName": "胸片（DR正侧位）",
+          "departmentName": "放射科（MRI、CT、DR）",
+          "startedAt": "2025-09-10T10:36:00+08:00",
+          "completedAt": "2025-09-10T10:48:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2025-09-10T14:48:00+08:00",
+            "items": [
+              {
+                "label": "胸部影像",
+                "value": "双肺未见明显活动性病变（模拟）",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "recordKey": "campus-demo-2026-03-16",
+      "title": "春季健康体检",
+      "packageName": "校医院体检套餐3",
+      "steps": [
+        {
+          "itemName": "套餐三血液检查：血常规+糖脂+肝肾功能",
+          "departmentName": "检验科",
+          "startedAt": "2026-03-16T08:00:00+08:00",
+          "completedAt": "2026-03-16T08:18:00+08:00",
+          "report": {
+            "conclusion": "模拟结果中甘油三酯仍轻度偏高，用于展示连续体检对比。 仅供产品演示。",
+            "reportedAt": "2026-03-16T12:18:00+08:00",
+            "items": [
+              {
+                "label": "白细胞计数",
+                "value": "6.1",
+                "unit": "10^9/L",
+                "reference": "3.5–9.5（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "血红蛋白",
+                "value": "148",
+                "unit": "g/L",
+                "reference": "130–175（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "空腹血糖",
+                "value": "4.9",
+                "unit": "mmol/L",
+                "reference": "3.9–6.1（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "甘油三酯",
+                "value": "1.92",
+                "unit": "mmol/L",
+                "reference": "<1.70（演示参考）",
+                "status": "偏高"
+              },
+              {
+                "label": "总胆固醇",
+                "value": "4.93",
+                "unit": "mmol/L",
+                "reference": "<5.20（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "丙氨酸氨基转移酶",
+                "value": "28",
+                "unit": "U/L",
+                "reference": "9–50（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "肌酐",
+                "value": "78",
+                "unit": "μmol/L",
+                "reference": "57–97（演示参考）",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "尿常规（尿液自动化分析）",
+          "departmentName": "检验科",
+          "startedAt": "2026-03-16T08:23:00+08:00",
+          "completedAt": "2026-03-16T08:31:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2026-03-16T12:31:00+08:00",
+            "items": [
+              {
+                "label": "尿蛋白",
+                "value": "阴性",
+                "unit": "",
+                "reference": "阴性",
+                "status": "正常"
+              },
+              {
+                "label": "尿糖",
+                "value": "阴性",
+                "unit": "",
+                "reference": "阴性",
+                "status": "正常"
+              },
+              {
+                "label": "尿潜血",
+                "value": "阴性",
+                "unit": "",
+                "reference": "阴性",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "一般项目：身高、体重、血压",
+          "departmentName": "一般检查（316）",
+          "startedAt": "2026-03-16T08:36:00+08:00",
+          "completedAt": "2026-03-16T08:44:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2026-03-16T12:44:00+08:00",
+            "items": [
+              {
+                "label": "身高",
+                "value": "175",
+                "unit": "cm",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "体重",
+                "value": "71",
+                "unit": "kg",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "血压",
+                "value": "122/78",
+                "unit": "mmHg",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "BMI",
+                "value": "23.2",
+                "unit": "kg/m²",
+                "reference": "18.5–23.9（演示参考）",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "内科常规：心、肺、肝、脾",
+          "departmentName": "内科（318）",
+          "startedAt": "2026-03-16T08:49:00+08:00",
+          "completedAt": "2026-03-16T08:59:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2026-03-16T12:59:00+08:00",
+            "items": [
+              {
+                "label": "心肺听诊",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "腹部触诊",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "外科常规：皮肤、淋巴结、甲状腺、胸廓、脊柱、四肢",
+          "departmentName": "外科（320）",
+          "startedAt": "2026-03-16T09:04:00+08:00",
+          "completedAt": "2026-03-16T09:16:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2026-03-16T13:16:00+08:00",
+            "items": [
+              {
+                "label": "皮肤及浅表淋巴结",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "脊柱四肢",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "眼科常规检查",
+          "departmentName": "眼科（324）",
+          "startedAt": "2026-03-16T09:21:00+08:00",
+          "completedAt": "2026-03-16T09:31:00+08:00",
+          "report": {
+            "conclusion": "模拟既往近视，双眼矫正视力均为 1.0。 仅供产品演示。",
+            "reportedAt": "2026-03-16T13:31:00+08:00",
+            "items": [
+              {
+                "label": "右眼矫正视力",
+                "value": "1.0",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "左眼矫正视力",
+                "value": "1.0",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "屈光状态",
+                "value": "近视（模拟既往情况）",
+                "unit": "",
+                "reference": "",
+                "status": "提示"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "五官科常规检查",
+          "departmentName": "耳鼻喉科（322）",
+          "startedAt": "2026-03-16T09:36:00+08:00",
+          "completedAt": "2026-03-16T09:46:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2026-03-16T13:46:00+08:00",
+            "items": [
+              {
+                "label": "外耳及鼓膜",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "鼻咽部",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "腹部彩超：肝、胆、脾",
+          "departmentName": "B超室1（303）",
+          "startedAt": "2026-03-16T09:51:00+08:00",
+          "completedAt": "2026-03-16T10:06:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2026-03-16T14:06:00+08:00",
+            "items": [
+              {
+                "label": "肝脏",
+                "value": "形态大小正常，回声均匀",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "胆囊及脾脏",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "十二导联常规心电图",
+          "departmentName": "心电图室（310）",
+          "startedAt": "2026-03-16T10:11:00+08:00",
+          "completedAt": "2026-03-16T10:21:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2026-03-16T14:21:00+08:00",
+            "items": [
+              {
+                "label": "心率",
+                "value": "74",
+                "unit": "次/分",
+                "reference": "60–100（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "心律",
+                "value": "窦性心律",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "放射检查登记",
+          "departmentName": "放射科（MRI、CT、DR）",
+          "startedAt": "2026-03-16T10:26:00+08:00",
+          "completedAt": "2026-03-16T10:31:00+08:00",
+          "report": null
+        },
+        {
+          "itemName": "胸片（DR正侧位）",
+          "departmentName": "放射科（MRI、CT、DR）",
+          "startedAt": "2026-03-16T10:36:00+08:00",
+          "completedAt": "2026-03-16T10:48:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2026-03-16T14:48:00+08:00",
+            "items": [
+              {
+                "label": "胸部影像",
+                "value": "双肺未见明显活动性病变（模拟）",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "recordKey": "campus-demo-2026-09-04",
+      "title": "秋季健康复查",
+      "packageName": "校医院体检套餐3",
+      "steps": [
+        {
+          "itemName": "套餐三血液检查：血常规+糖脂+肝肾功能",
+          "departmentName": "检验科",
+          "startedAt": "2026-09-04T08:00:00+08:00",
+          "completedAt": "2026-09-04T08:18:00+08:00",
+          "report": {
+            "conclusion": "模拟复查的甘油三酯较前次下降，已在演示参考范围内。 仅供产品演示。",
+            "reportedAt": "2026-09-04T12:18:00+08:00",
+            "items": [
+              {
+                "label": "白细胞计数",
+                "value": "5.9",
+                "unit": "10^9/L",
+                "reference": "3.5–9.5（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "血红蛋白",
+                "value": "147",
+                "unit": "g/L",
+                "reference": "130–175（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "空腹血糖",
+                "value": "4.8",
+                "unit": "mmol/L",
+                "reference": "3.9–6.1（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "甘油三酯",
+                "value": "1.45",
+                "unit": "mmol/L",
+                "reference": "<1.70（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "总胆固醇",
+                "value": "4.52",
+                "unit": "mmol/L",
+                "reference": "<5.20（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "丙氨酸氨基转移酶",
+                "value": "23",
+                "unit": "U/L",
+                "reference": "9–50（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "肌酐",
+                "value": "77",
+                "unit": "μmol/L",
+                "reference": "57–97（演示参考）",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "尿常规（尿液自动化分析）",
+          "departmentName": "检验科",
+          "startedAt": "2026-09-04T08:23:00+08:00",
+          "completedAt": "2026-09-04T08:31:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2026-09-04T12:31:00+08:00",
+            "items": [
+              {
+                "label": "尿蛋白",
+                "value": "阴性",
+                "unit": "",
+                "reference": "阴性",
+                "status": "正常"
+              },
+              {
+                "label": "尿糖",
+                "value": "阴性",
+                "unit": "",
+                "reference": "阴性",
+                "status": "正常"
+              },
+              {
+                "label": "尿潜血",
+                "value": "阴性",
+                "unit": "",
+                "reference": "阴性",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "一般项目：身高、体重、血压",
+          "departmentName": "一般检查（316）",
+          "startedAt": "2026-09-04T08:36:00+08:00",
+          "completedAt": "2026-09-04T08:44:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2026-09-04T12:44:00+08:00",
+            "items": [
+              {
+                "label": "身高",
+                "value": "175",
+                "unit": "cm",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "体重",
+                "value": "67",
+                "unit": "kg",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "血压",
+                "value": "118/76",
+                "unit": "mmHg",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "BMI",
+                "value": "21.9",
+                "unit": "kg/m²",
+                "reference": "18.5–23.9（演示参考）",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "内科常规：心、肺、肝、脾",
+          "departmentName": "内科（318）",
+          "startedAt": "2026-09-04T08:49:00+08:00",
+          "completedAt": "2026-09-04T08:59:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2026-09-04T12:59:00+08:00",
+            "items": [
+              {
+                "label": "心肺听诊",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "腹部触诊",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "外科常规：皮肤、淋巴结、甲状腺、胸廓、脊柱、四肢",
+          "departmentName": "外科（320）",
+          "startedAt": "2026-09-04T09:04:00+08:00",
+          "completedAt": "2026-09-04T09:16:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2026-09-04T13:16:00+08:00",
+            "items": [
+              {
+                "label": "皮肤及浅表淋巴结",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "脊柱四肢",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "眼科常规检查",
+          "departmentName": "眼科（324）",
+          "startedAt": "2026-09-04T09:21:00+08:00",
+          "completedAt": "2026-09-04T09:31:00+08:00",
+          "report": {
+            "conclusion": "模拟既往近视，双眼矫正视力均为 1.0。 仅供产品演示。",
+            "reportedAt": "2026-09-04T13:31:00+08:00",
+            "items": [
+              {
+                "label": "右眼矫正视力",
+                "value": "1.0",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "左眼矫正视力",
+                "value": "1.0",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "屈光状态",
+                "value": "近视（模拟既往情况）",
+                "unit": "",
+                "reference": "",
+                "status": "提示"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "五官科常规检查",
+          "departmentName": "耳鼻喉科（322）",
+          "startedAt": "2026-09-04T09:36:00+08:00",
+          "completedAt": "2026-09-04T09:46:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2026-09-04T13:46:00+08:00",
+            "items": [
+              {
+                "label": "外耳及鼓膜",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "鼻咽部",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "腹部彩超：肝、胆、脾",
+          "departmentName": "B超室1（303）",
+          "startedAt": "2026-09-04T09:51:00+08:00",
+          "completedAt": "2026-09-04T10:06:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2026-09-04T14:06:00+08:00",
+            "items": [
+              {
+                "label": "肝脏",
+                "value": "形态大小正常，回声均匀",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              },
+              {
+                "label": "胆囊及脾脏",
+                "value": "未见明显异常",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "十二导联常规心电图",
+          "departmentName": "心电图室（310）",
+          "startedAt": "2026-09-04T10:11:00+08:00",
+          "completedAt": "2026-09-04T10:21:00+08:00",
+          "report": {
+            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "reportedAt": "2026-09-04T14:21:00+08:00",
+            "items": [
+              {
+                "label": "心率",
+                "value": "70",
+                "unit": "次/分",
+                "reference": "60–100（演示参考）",
+                "status": "正常"
+              },
+              {
+                "label": "心律",
+                "value": "窦性心律",
+                "unit": "",
+                "reference": "",
+                "status": "正常"
+              }
+            ]
+          }
+        },
+        {
+          "itemName": "放射检查登记",
+          "departmentName": "放射科（MRI、CT、DR）",
+          "startedAt": "2026-09-04T10:26:00+08:00",
+          "completedAt": "2026-09-04T10:31:00+08:00",
+          "report": null
+        },
+        {
+          "itemName": "胸片（DR正侧位）",
+          "departmentName": "放射科（MRI、CT、DR）",
+          "startedAt": "2026-09-04T10:36:00+08:00",
+          "completedAt": "2026-09-04T10:48:00+08:00",
+          "report": null
+        }
+      ]
+    }
+  ]
+}

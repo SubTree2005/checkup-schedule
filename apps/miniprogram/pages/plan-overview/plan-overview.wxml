@@ -1,4 +1,4 @@
-<view class="overview-page safe-top" wx:if="{{hasPlan}}">
+<view class="overview-page safe-top" style="{{navigationStyle}}" wx:if="{{hasPlan}}">
   <view class="flow-nav">
     <view class="nav-back" bindtap="goBack" aria-label="返回">‹</view>
     <view class="nav-title">体检总览</view>
@@ -21,13 +21,21 @@
       <view class="overview-tab {{activeTab === 'reports' ? 'overview-tab-active' : ''}}" data-tab="reports" bindtap="setTab">体检报告</view>
     </view>
 
-    <view class="steps-card">
+    <view class="steps-card" wx:if="{{activeTab === 'items'}}">
       <view class="step-row step-{{item.status}}" wx:for="{{steps}}" wx:key="detailID" data-id="{{item.detailID}}" bindtap="openStep">
         <image class="status-icon" src="{{item.iconPath}}" mode="aspectFit"></image>
         <view class="step-title">{{item.title}}</view>
         <view class="step-status step-status-{{item.statusTone}}">{{item.statusText}}</view>
         <view class="step-arrow">›</view>
       </view>
+    </view>
+    <view class="steps-card indicators-card" wx:else>
+      <view class="indicator-row" wx:for="{{indicators}}" wx:key="key" data-id="{{item.detailID}}" data-index="{{item.resultIndex}}" bindtap="openIndicator">
+        <view class="indicator-copy"><view class="indicator-label">{{item.label}}</view><view class="indicator-project">{{item.projectTitle}}</view></view>
+        <view class="indicator-result result-{{item.statusTone}}"><view>{{item.value === '' ? '—' : item.value}} <text class="indicator-unit">{{item.unit}}</text></view><view wx:if="{{item.statusText}}" class="indicator-status">{{item.statusText}}</view></view>
+        <view class="indicator-arrow">›</view>
+      </view>
+      <view class="indicators-empty" wx:if="{{!indicators.length}}">暂无已发布的指标结果</view>
     </view>
 
     <button class="primary-btn current-btn" style="width:100%;margin-left:0;margin-right:0;" bindtap="goCurrent">返回当前操作</button>

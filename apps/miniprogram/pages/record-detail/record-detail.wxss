@@ -2,11 +2,11 @@
 
 page { background: linear-gradient(180deg, #F7FAFF 0%, #FFFFFF 100%); }
 .detail-page { min-height: 100vh; }
-.flow-nav { height: 128rpx; padding: 0 28rpx; display: flex; align-items: center; justify-content: space-between; }
+.flow-nav { height: var(--navigation-bar-height, 44px); padding: 0 28rpx; display: flex; align-items: center; justify-content: space-between; }
 .nav-back { width: 64rpx; height: 64rpx; display: flex; align-items: center; color: #101827; font-size: 58rpx; }
 .nav-title { color: #111827; font-size: 31rpx; font-weight: 650; }
 .nav-space { width: 64rpx; }
-.detail-scroll { width: 100%; height: calc(100vh - env(safe-area-inset-top) - 148rpx); padding: 8rpx 28rpx 48rpx; box-sizing: border-box; }
+.detail-scroll { width: 100%; height: calc(100vh - var(--status-bar-height, 24px) - var(--navigation-bar-height, 44px)); padding: 8rpx 28rpx 48rpx; box-sizing: border-box; }
 .summary-card, .items-card { background: rgba(255,255,255,0.94); border: 2rpx solid #E0E7F1; border-radius: 28rpx; box-shadow: 0 14rpx 36rpx rgba(50,75,118,0.06); }
 .summary-card { min-height: 146rpx; padding: 24rpx; display: flex; align-items: center; gap: 20rpx; }
 .hospital-photo { width: 102rpx; height: 82rpx; flex: none; display: block; border-radius: 16rpx; background: #EEF3F8; }

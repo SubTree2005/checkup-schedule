@@ -24,8 +24,32 @@ function resultRows(report) {
     value: item.value === undefined || item.value === null ? '' : String(item.value),
     unit: item.unit || '',
     reference: item.referenceRange || item.reference || '',
-    status: item.status || item.resultStatus || ''
+    status: item.status || item.resultStatus || '',
+    ...resultStatus(item.status || item.resultStatus || '')
   }))
+}
+
+function resultStatus(status) {
+  const value = String(status).toLowerCase()
+  const labels = { normal: '正常', high: '偏高', h: '偏高', low: '偏低', l: '偏低', abnormal: '异常', positive: '阳性', negative: '阴性' }
+  return {
+    statusText: labels[value] || status,
+    statusTone: ['high', 'h', 'low', 'l', 'abnormal', 'positive', '偏高', '偏低', '异常', '阳性', '↑', '↓'].includes(value) ? 'abnormal' : 'neutral'
+  }
+}
+
+function planReportIndicators(plan = {}) {
+  return (plan.steps || []).reduce((all, step) => {
+    const report = normalizeReport(step)
+    if (!report.available) return all
+    return all.concat(report.rows.map((row, resultIndex) => ({
+      ...row,
+      key: `${step.detailID}:${resultIndex}`,
+      detailID: step.detailID,
+      projectTitle: step.title,
+      resultIndex
+    })))
+  }, [])
 }
 
 function normalizeReport(step = {}) {
@@ -43,6 +67,7 @@ function stepStatus(step = {}) {
   if (reportIsReady(step)) return { text: '已出报告', tone: 'reported' }
   if (step.status === 'done' || step.completed) return { text: '未出报告', tone: 'done' }
   if (step.status === 'active') return { text: '当前', tone: 'active' }
+  if (step.status === 'skipped') return { text: '未完成', tone: 'pending' }
   return { text: '未完成', tone: 'pending' }
 }
 
@@ -62,4 +87,4 @@ function planReportSummary(plan = {}) {
   }
 }
 
-module.exports = { normalizeReport, planReportSummary, reportIsReady, stepStatus }
+module.exports = { normalizeReport, planReportIndicators, planReportSummary, reportIsReady, stepStatus }

@@ -1,12 +1,14 @@
+const { navigationMetrics } = require('../../utils/layout')
 const api = require('../../utils/api')
 const { ICONS, examIcon } = require('../../utils/icon-map')
-const { stepStatus } = require('../../utils/report')
+const { planReportIndicators, stepStatus } = require('../../utils/report')
 const flowGuard = require('../../utils/flow-guard')
 const { backToRoute } = require('../../utils/navigation')
 const app = getApp()
 
 Page({
-  data: { planID: '', hasPlan: false, hospitalName: '', packageName: '', steps: [], completedSteps: 0, totalSteps: 0, progress: 0, activeTab: 'items' },
+  data: {
+    ...navigationMetrics(), planID: '', hasPlan: false, hospitalName: '', packageName: '', steps: [], indicators: [], completedSteps: 0, totalSteps: 0, progress: 0, activeTab: 'items' },
 
   onLoad(options) { this.setData({ planID: options.planID || '' }) },
 
@@ -45,6 +47,7 @@ Page({
       hospitalName: plan.hospitalName || '体检医院',
       packageName: plan.packageName || '自选项目',
       steps,
+      indicators: planReportIndicators(plan),
       completedSteps,
       totalSteps,
       progress
@@ -57,6 +60,11 @@ Page({
     const detailID = e.currentTarget.dataset.id
     app.globalData.viewingPlanRecord = this._plan
     wx.navigateTo({ url: `/pages/exam-detail/exam-detail?planID=${this.data.planID}&detailID=${detailID}&mode=${this.data.activeTab}` })
+  },
+
+  openIndicator(e) {
+    const { id, index } = e.currentTarget.dataset
+    wx.navigateTo({ url: `/pages/exam-detail/exam-detail?planID=${encodeURIComponent(this.data.planID)}&detailID=${encodeURIComponent(id)}&mode=reports&resultIndex=${index}` })
   },
 
   goCurrent() { backToRoute('pages/plan/plan', `/pages/plan/plan?planID=${this.data.planID}`) },

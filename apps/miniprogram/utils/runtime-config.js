@@ -17,10 +17,20 @@ function normalizeBaseUrl(value) {
   return String(value || '').trim().replace(/\/$/, '')
 }
 
+function isDevTools() {
+  try {
+    const info = typeof wx.getDeviceInfo === 'function' ? wx.getDeviceInfo() : wx.getSystemInfoSync()
+    return info.platform === 'devtools'
+  } catch (_error) {
+    return false
+  }
+}
+
 function requestTransport() {
   const environment = environmentVersion()
-  const developmentOverride = environment === 'develop' ? wx.getStorageSync('apiBaseUrl') : ''
-  if (environment === 'develop') {
+  // Phone previews also report "develop"; loopback is only usable by the IDE.
+  if (environment === 'develop' && isDevTools()) {
+    const developmentOverride = wx.getStorageSync('apiBaseUrl')
     return {
       type: 'http',
       baseUrl: normalizeBaseUrl(developmentOverride || LOCAL_API_BASE_URL)

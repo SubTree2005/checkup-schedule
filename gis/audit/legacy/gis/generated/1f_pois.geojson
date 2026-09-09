@@ -1,0 +1,555 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "poi_main_entrance",
+      "properties": {
+        "id": "poi_main_entrance",
+        "name": "门诊入口",
+        "category": "entrance",
+        "route_node_id": "n_entrance",
+        "scheduler_location_id": "LOBBY",
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          1420,
+          920
+        ],
+        "local_m": [
+          10.563,
+          -1.753
+        ],
+        "source_crs": "BD-09LL",
+        "source_coordinate": [
+          120.094905229112,
+          30.315090191807
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083585090962,
+          30.311393098442
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_lobby",
+      "properties": {
+        "id": "poi_lobby",
+        "name": "门诊大厅",
+        "category": "lobby",
+        "route_node_id": "n_lobby",
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          1250,
+          760
+        ],
+        "local_m": [
+          16.81,
+          4.878
+        ],
+        "source_crs": "BD-09LL",
+        "source_coordinate": [
+          120.094970236415,
+          30.31514975986
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083650463512,
+          30.311451407757
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_laboratory",
+      "properties": {
+        "id": "poi_laboratory",
+        "name": "检验科",
+        "category": "laboratory",
+        "route_node_id": "n_lab",
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          1100,
+          980
+        ],
+        "local_m": [
+          7.715,
+          10.248
+        ],
+        "source_crs": "BD-09LL",
+        "source_coordinate": [
+          120.094875590376,
+          30.315198004892
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083555395899,
+          30.311501499131
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_blood_candidate",
+      "properties": {
+        "id": "poi_blood_candidate",
+        "name": "采血（检验科候选位置）",
+        "category": "scheduler_mapping_candidate",
+        "route_node_id": "n_lab",
+        "scheduler_location_id": "BLOOD",
+        "confidence": "low",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          1080,
+          960
+        ],
+        "local_m": [
+          8.498,
+          11.03
+        ],
+        "source_crs": "BD-09LL",
+        "source_coordinate": [
+          120.094883733426,
+          30.315205026954
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083563584293,
+          30.311508363487
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_urine_candidate",
+      "properties": {
+        "id": "poi_urine_candidate",
+        "name": "尿液检验（检验科候选位置）",
+        "category": "scheduler_mapping_candidate",
+        "route_node_id": "n_lab",
+        "scheduler_location_id": "URINE",
+        "confidence": "low",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          1140,
+          960
+        ],
+        "local_m": [
+          8.577,
+          8.765
+        ],
+        "source_crs": "BD-09LL",
+        "source_coordinate": [
+          120.094884555992,
+          30.315184677595
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083564394292,
+          30.311487996059
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_radiology",
+      "properties": {
+        "id": "poi_radiology",
+        "name": "放射科",
+        "category": "radiology",
+        "route_node_id": "n_radiology",
+        "scheduler_location_id": "XRAY",
+        "confidence": "medium",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          700,
+          835
+        ],
+        "local_m": [
+          13.052,
+          25.543
+        ],
+        "source_crs": "BD-09LL",
+        "source_coordinate": [
+          120.09493113158,
+          30.315335399613
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083611319129,
+          30.311637827164
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_mri",
+      "properties": {
+        "id": "poi_mri",
+        "name": "MRI",
+        "category": "imaging",
+        "route_node_id": "n_mri",
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          520,
+          150
+        ],
+        "local_m": [
+          40.519,
+          33.25
+        ],
+        "source_crs": "BD-09LL",
+        "source_coordinate": [
+          120.0952169543,
+          30.315404631456
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08389859286,
+          30.311701503633
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_pharmacy",
+      "properties": {
+        "id": "poi_pharmacy",
+        "name": "药剂科",
+        "category": "pharmacy",
+        "route_node_id": "n_pharmacy",
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          1165,
+          440
+        ],
+        "local_m": [
+          29.64,
+          8.512
+        ],
+        "source_crs": "BD-09LL",
+        "source_coordinate": [
+          120.095103746929,
+          30.315182411192
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083784651873,
+          30.311481464324
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_emergency_a",
+      "properties": {
+        "id": "poi_emergency_a",
+        "name": "急诊A区",
+        "category": "emergency",
+        "route_node_id": "n_emergency_a",
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          1350,
+          440
+        ],
+        "local_m": [
+          29.884,
+          1.528
+        ],
+        "source_crs": "BD-09LL",
+        "source_coordinate": [
+          120.095106283175,
+          30.315119667337
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083787149338,
+          30.311418664718
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_infusion",
+      "properties": {
+        "id": "poi_infusion",
+        "name": "输液",
+        "category": "infusion",
+        "route_node_id": "n_infusion",
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          1605,
+          490
+        ],
+        "local_m": [
+          28.198,
+          -8.166
+        ],
+        "source_crs": "BD-09LL",
+        "source_coordinate": [
+          120.095088735985,
+          30.315032585208
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083769445311,
+          30.311331915169
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_observation",
+      "properties": {
+        "id": "poi_observation",
+        "name": "观察",
+        "category": "observation",
+        "route_node_id": "n_east",
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          1690,
+          690
+        ],
+        "local_m": [
+          20.221,
+          -11.641
+        ],
+        "source_crs": "BD-09LL",
+        "source_coordinate": [
+          120.095005728902,
+          30.315001367528
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083686007722,
+          30.311302309609
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_emergency_107",
+      "properties": {
+        "id": "poi_emergency_107",
+        "name": "107急诊室",
+        "category": "emergency",
+        "route_node_id": "n_107",
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          1900,
+          880
+        ],
+        "local_m": [
+          12.813,
+          -19.823
+        ],
+        "source_crs": "BD-09LL",
+        "source_coordinate": [
+          120.094928644119,
+          30.314927874823
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083608487063,
+          30.311230309207
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_service",
+      "properties": {
+        "id": "poi_service",
+        "name": "综合服务中心",
+        "category": "service",
+        "route_node_id": "n_service",
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          955,
+          720
+        ],
+        "local_m": [
+          18.039,
+          16.069
+        ],
+        "source_crs": "BD-09LL",
+        "source_coordinate": [
+          120.094983026608,
+          30.315250288756
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08366339789,
+          30.311551697989
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_restroom_nw",
+      "properties": {
+        "id": "poi_restroom_nw",
+        "name": "卫生间（西北）",
+        "category": "restroom",
+        "route_node_id": "n_restroom_nw",
+        "confidence": "medium",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          145,
+          150
+        ],
+        "local_m": [
+          40.025,
+          47.408
+        ],
+        "source_crs": "BD-09LL",
+        "source_coordinate": [
+          120.095211813261,
+          30.315531814947
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08389352939,
+          30.311828799863
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_restroom_north",
+      "properties": {
+        "id": "poi_restroom_north",
+        "name": "卫生间（北侧）",
+        "category": "restroom",
+        "route_node_id": "n_stair_2",
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          945,
+          110
+        ],
+        "local_m": [
+          42.697,
+          17.257
+        ],
+        "source_crs": "BD-09LL",
+        "source_coordinate": [
+          120.095239615288,
+          30.315260968052
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08392124818,
+          30.311557384686
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_stair_1",
+      "properties": {
+        "id": "poi_stair_1",
+        "name": "楼梯1#",
+        "category": "stairs",
+        "route_node_id": "n_stair_1",
+        "confidence": "medium",
+        "accessible": false,
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          950,
+          930
+        ],
+        "local_m": [
+          9.54,
+          15.978
+        ],
+        "source_crs": "BD-09LL",
+        "source_coordinate": [
+          120.094894577057,
+          30.315249475644
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083574516862,
+          30.31155260572
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_stair_2",
+      "properties": {
+        "id": "poi_stair_2",
+        "name": "楼梯2#",
+        "category": "stairs",
+        "route_node_id": "n_stair_2",
+        "confidence": "medium",
+        "accessible": false,
+        "level_id": "zju2_zijingang_1f",
+        "pixel": [
+          980,
+          200
+        ],
+        "local_m": [
+          39.103,
+          15.816
+        ],
+        "source_crs": "BD-09LL",
+        "source_coordinate": [
+          120.095202217545,
+          30.315248022353
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083883657013,
+          30.311545165608
+        ]
+      }
+    }
+  ]
+}

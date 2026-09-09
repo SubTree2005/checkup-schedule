@@ -27,6 +27,7 @@ from checkup_scheduler import (
 from .api import client_ip, get_hospital_settings
 from .database import get_db
 from .navigation_routes import route_segments
+from .navigation_registration import registration_target, REGISTRATION_NAME, REGISTRATION_NOTICE
 from .demo_restrictions import demo_unrestricted
 from .exam_constraints import prerequisite_item_ids, validate_exam_selection
 from .hospital_time import (
@@ -1661,6 +1662,8 @@ def patient_navigation(
             floor_instruction = "请沿图中蓝色路线前往绿色终点。"
         else:
             floor_instruction = f"请前往 {target_floor}，并按楼层图中的绿色终点寻找科室。"
+    if map_data and map_data.get("registrationNotice"):
+        floor_instruction += " " + map_data["registrationNotice"]
     duration = max(1, math.ceil(distance / speed / 60)) if distance is not None else None
     if map_data and "walkSeconds" in map_data:
         duration = max(1, math.ceil(map_data["walkSeconds"] / 60))
@@ -1721,7 +1724,10 @@ def _navigation_map(
                     matched = parts and parts[1] == floor.floor_key.upper() and parts[2] == room
                 else:
                     parts = re.match(r"^(\d+F)(?=$|[^A-Z0-9])", address)
-                    matched = parts and parts[1] == floor.floor_key.upper() and properties.get("name") == department.dept_name
+                    # Equipment suffixes describe services, not a separate room.
+                    # Do not remove room numbers or arbitrary parenthetical text.
+                    name = re.sub(r"[（(](?:MRI|CT|DR)(?:[\s、,，/]+(?:MRI|CT|DR))*[）)]$", "", department.dept_name, flags=re.I).strip()
+                    matched = parts and parts[1] == floor.floor_key.upper() and properties.get("name") == name
                 if matched:
                     matches.append(department.dept_id)
             if len(matches) == 1:
@@ -1735,12 +1741,17 @@ def _navigation_map(
     target_location = locations.get(to_department_id)
     if target_location is None:
         return None
+    floors, target_location, is_registration = registration_target(floors, target_location)
+    if is_registration:
+        to_name = REGISTRATION_NAME
     target_floor, target_point, target_props = target_location
     from_location = locations.get(from_department_id) if from_department_id else None
     source = (*from_location, from_name) if from_location else (entrances[0] if from_department_id is None and len(entrances) == 1 else None)
     if source:
         routed = route_segments(floors, source, (*target_location, to_name))
         if routed:
+            if is_registration:
+                routed["registrationNotice"] = REGISTRATION_NOTICE
             routed["segments"][0]["fromPoint"]["departmentID"] = from_department_id
             routed["segments"][-1]["toPoint"]["departmentID"] = to_department_id
             # Keep the last-floor legacy map shape for older mini-programs.
@@ -1764,6 +1775,7 @@ def _navigation_map(
                 target_point,
             )
     return {
+        **({"registrationNotice": "检查前请先到一楼综合服务中心办理放射登记；当前仅标出登记位置，完整路线暂不可用。"} if is_registration else {}),
         "floorKey": target_floor.floor_key,
         "version": target_floor.version,
         "geojson": target_floor.geojson,

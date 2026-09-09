@@ -2264,6 +2264,39 @@
       "accessible": "unknown",
       "access_control": "unknown",
       "status": "visible_on_plan"
+    },
+    {
+      "id": "o_1f_b1_service",
+      "space_id": "1f_b1_service",
+      "segment_px": [
+        [
+          630,
+          402
+        ],
+        [
+          650,
+          402
+        ]
+      ],
+      "approach_px": [
+        [
+          640,
+          387
+        ],
+        [
+          640,
+          402
+        ]
+      ],
+      "kind": "opening",
+      "confidence": "medium",
+      "evidence_ids": [
+        "plan_1f",
+        "user_radiology_registration"
+      ],
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "visible_on_plan"
     }
   ],
   "centerlines": [

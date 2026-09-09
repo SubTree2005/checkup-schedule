@@ -1481,9 +1481,9 @@
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
         "source": "n_1f_563_387",
-        "target": "n_1f_917_387",
-        "length_m": 21.419499776027994,
-        "walk_seconds": 18.625651979154778,
+        "target": "n_1f_640_387",
+        "length_m": 4.6590437365463515,
+        "walk_seconds": 4.051342379605523,
         "accessible": "unknown",
         "access_control": "unknown",
         "direction": "bidirectional",
@@ -1501,7 +1501,7 @@
               387.0
             ],
             [
-              917.0,
+              640.0,
               387.0
             ]
           ]
@@ -1515,8 +1515,8 @@
             30.31156921447983
           ],
           [
-            120.08371214848631,
-            30.311376223338492
+            120.08370614269323,
+            30.311527236181362
           ]
         ]
       }
@@ -1526,6 +1526,104 @@
       "id": "e_1f_0031",
       "properties": {
         "id": "e_1f_0031",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "source": "n_1f_640_387",
+        "target": "n_o_1f_b1_service",
+        "length_m": 0.9796715990868796,
+        "walk_seconds": 0.8518883470320693,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_1f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              640.0,
+              387.0
+            ],
+            [
+              640.0,
+              402.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08370614269323,
+            30.311527236181362
+          ],
+          [
+            120.08369596358989,
+            30.311527145710013
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_1f_0032",
+      "properties": {
+        "id": "e_1f_0032",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "source": "n_1f_640_387",
+        "target": "n_1f_917_387",
+        "length_m": 16.760456039481642,
+        "walk_seconds": 14.574309599549256,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_1f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              640.0,
+              387.0
+            ],
+            [
+              917.0,
+              387.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08370614269323,
+            30.311527236181362
+          ],
+          [
+            120.08371214848631,
+            30.311376223338492
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_1f_0033",
+      "properties": {
+        "id": "e_1f_0033",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -1572,9 +1670,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0032",
+      "id": "e_1f_0034",
       "properties": {
-        "id": "e_1f_0032",
+        "id": "e_1f_0034",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -1621,9 +1719,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0033",
+      "id": "e_1f_0035",
       "properties": {
-        "id": "e_1f_0033",
+        "id": "e_1f_0035",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -1670,9 +1768,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0034",
+      "id": "e_1f_0036",
       "properties": {
-        "id": "e_1f_0034",
+        "id": "e_1f_0036",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -1719,9 +1817,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0035",
+      "id": "e_1f_0037",
       "properties": {
-        "id": "e_1f_0035",
+        "id": "e_1f_0037",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -1768,9 +1866,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0036",
+      "id": "e_1f_0038",
       "properties": {
-        "id": "e_1f_0036",
+        "id": "e_1f_0038",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -1817,9 +1915,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0037",
+      "id": "e_1f_0039",
       "properties": {
-        "id": "e_1f_0037",
+        "id": "e_1f_0039",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -1866,9 +1964,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0038",
+      "id": "e_1f_0040",
       "properties": {
-        "id": "e_1f_0038",
+        "id": "e_1f_0040",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -1915,9 +2013,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0039",
+      "id": "e_1f_0041",
       "properties": {
-        "id": "e_1f_0039",
+        "id": "e_1f_0041",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -1964,9 +2062,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0040",
+      "id": "e_1f_0042",
       "properties": {
-        "id": "e_1f_0040",
+        "id": "e_1f_0042",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -2013,9 +2111,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0041",
+      "id": "e_1f_0043",
       "properties": {
-        "id": "e_1f_0041",
+        "id": "e_1f_0043",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -2062,9 +2160,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0042",
+      "id": "e_1f_0044",
       "properties": {
-        "id": "e_1f_0042",
+        "id": "e_1f_0044",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -2111,9 +2209,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0043",
+      "id": "e_1f_0045",
       "properties": {
-        "id": "e_1f_0043",
+        "id": "e_1f_0045",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -2160,9 +2258,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0044",
+      "id": "e_1f_0046",
       "properties": {
-        "id": "e_1f_0044",
+        "id": "e_1f_0046",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -2209,9 +2307,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0045",
+      "id": "e_1f_0047",
       "properties": {
-        "id": "e_1f_0045",
+        "id": "e_1f_0047",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -2258,9 +2356,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0046",
+      "id": "e_1f_0048",
       "properties": {
-        "id": "e_1f_0046",
+        "id": "e_1f_0048",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -2307,9 +2405,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0047",
+      "id": "e_1f_0049",
       "properties": {
-        "id": "e_1f_0047",
+        "id": "e_1f_0049",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -2356,9 +2454,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0048",
+      "id": "e_1f_0050",
       "properties": {
-        "id": "e_1f_0048",
+        "id": "e_1f_0050",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -2405,9 +2503,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0049",
+      "id": "e_1f_0051",
       "properties": {
-        "id": "e_1f_0049",
+        "id": "e_1f_0051",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -2454,9 +2552,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0050",
+      "id": "e_1f_0052",
       "properties": {
-        "id": "e_1f_0050",
+        "id": "e_1f_0052",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -2503,9 +2601,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0051",
+      "id": "e_1f_0053",
       "properties": {
-        "id": "e_1f_0051",
+        "id": "e_1f_0053",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -2552,9 +2650,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0052",
+      "id": "e_1f_0054",
       "properties": {
-        "id": "e_1f_0052",
+        "id": "e_1f_0054",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -2601,9 +2699,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0053",
+      "id": "e_1f_0055",
       "properties": {
-        "id": "e_1f_0053",
+        "id": "e_1f_0055",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -2650,9 +2748,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0054",
+      "id": "e_1f_0056",
       "properties": {
-        "id": "e_1f_0054",
+        "id": "e_1f_0056",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -2699,9 +2797,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0055",
+      "id": "e_1f_0057",
       "properties": {
-        "id": "e_1f_0055",
+        "id": "e_1f_0057",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -2748,9 +2846,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0056",
+      "id": "e_1f_0058",
       "properties": {
-        "id": "e_1f_0056",
+        "id": "e_1f_0058",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -2797,9 +2895,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0057",
+      "id": "e_1f_0059",
       "properties": {
-        "id": "e_1f_0057",
+        "id": "e_1f_0059",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -2846,9 +2944,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0058",
+      "id": "e_1f_0060",
       "properties": {
-        "id": "e_1f_0058",
+        "id": "e_1f_0060",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -2895,9 +2993,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0059",
+      "id": "e_1f_0061",
       "properties": {
-        "id": "e_1f_0059",
+        "id": "e_1f_0061",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -2944,9 +3042,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0060",
+      "id": "e_1f_0062",
       "properties": {
-        "id": "e_1f_0060",
+        "id": "e_1f_0062",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
@@ -2993,9 +3091,9 @@
     },
     {
       "type": "Feature",
-      "id": "e_1f_0061",
+      "id": "e_1f_0063",
       "properties": {
-        "id": "e_1f_0061",
+        "id": "e_1f_0063",
         "status": "navigation_draft_not_survey",
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",

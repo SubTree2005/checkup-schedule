@@ -73,6 +73,14 @@
       "status": "audit_snapshot",
       "note": "仅引用 stable department keys；不把示例科室/房号绑定当事实；该文件有用户未提交改动，不修改",
       "path": "department_key_contract.py"
+    },
+    {
+      "id": "user_radiology_registration",
+      "kind": "user_text",
+      "path": "registration_destination_statement.txt",
+      "sha256": "fd72f7f8631b220fdb121ec57794c3d130900be33db63bb66d6b88f54b4a5bae",
+      "status": "user_asserted",
+      "original_path": "user message in this task, 2026-09-09"
     }
   ]
 }

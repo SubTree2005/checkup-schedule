@@ -1,0 +1,82 @@
+{
+  "n_o_1f_b1_stair_n": {
+    "source_coordinates": [
+      120.08388132518097,
+      30.311509159912983
+    ],
+    "coordinates": [
+      676.0,
+      -130.0
+    ]
+  },
+  "n_o_2f_b1_stair_n": {
+    "source_coordinates": [
+      120.08387921245095,
+      30.311517084504697
+    ],
+    "coordinates": [
+      562.0,
+      -145.0
+    ]
+  },
+  "n_o_1f_b1_stair_s": {
+    "source_coordinates": [
+      120.08355526869786,
+      30.311514442467228
+    ],
+    "coordinates": [
+      661.0,
+      -610.0
+    ]
+  },
+  "n_o_2f_b1_stair_s": {
+    "source_coordinates": [
+      120.08355655602887,
+      30.31152233404475
+    ],
+    "coordinates": [
+      549.0,
+      -558.0
+    ]
+  },
+  "n_o_1f_b2_stair_s": {
+    "source_coordinates": [
+      120.08357188820413,
+      30.311813450416672
+    ],
+    "coordinates": [
+      113.0,
+      -568.0
+    ]
+  },
+  "n_o_2f_b2_stair_s": {
+    "source_coordinates": [
+      120.08355110669703,
+      30.311803891725216
+    ],
+    "coordinates": [
+      98.0,
+      -544.0
+    ]
+  },
+  "n_o_3f_b1_stair_n": {
+    "source_coordinates": [
+      120.08387877784412,
+      30.311517947221827
+    ],
+    "coordinates": [
+      127.0,
+      -124.0
+    ]
+  },
+  "n_o_3f_b1_stair_s": {
+    "source_coordinates": [
+      120.08355781549884,
+      30.31151630252844
+    ],
+    "coordinates": [
+      125.0,
+      -548.0
+    ]
+  }
+}

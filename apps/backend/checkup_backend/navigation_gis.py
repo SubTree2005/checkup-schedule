@@ -5,8 +5,10 @@ from pathlib import Path
 from types import SimpleNamespace
 
 from .navigation_routes import enabled
+from .navigation_coordinates import is_rectified, registry_in_pixels
 
 REGISTRY = json.loads((Path(__file__).parent / 'data/registration_destination.json').read_text(encoding='utf-8'))
+PIXEL_REGISTRY = registry_in_pixels(REGISTRY)
 
 
 def matches(feature, expected):
@@ -26,34 +28,35 @@ def prepare_navigation_floors(floors):
     """Copy known legacy geometry only; explicit edits and stored GIS stay intact."""
     result = []
     for floor in floors:
-        if floor.floor_key != REGISTRY['floorKey']:
+        registry = PIXEL_REGISTRY if is_rectified(floor.geojson) else REGISTRY
+        if floor.floor_key != registry['floorKey']:
             result.append(floor)
             continue
         geojson = copy.deepcopy(floor.geojson)
         features = geojson.get('features', [])
-        services = [f for f in features if matches(f, REGISTRY['service'])]
-        radiology = [f for f in features if matches(f, REGISTRY['radiology']) or matches(f, REGISTRY['radiologyPOI'])]
+        services = [f for f in features if matches(f, registry['service'])]
+        radiology = [f for f in features if matches(f, registry['radiology']) or matches(f, registry['radiologyPOI'])]
         if len(services) != 1 or len(radiology) != 1:
             result.append(floor)
             continue
         service, target = services[0], radiology[0]
         props = service['properties']
-        edge = matching_edge(features, REGISTRY['originalEdge'])
+        edge = matching_edge(features, registry['originalEdge'])
         if (enabled(props) and not (props.get('route_node_id') or props.get('routeNodeId') or props.get('deptID')) and edge
                 and not any('n_1f_640_387' in ((f.get('properties') or {}).get('source'), (f.get('properties') or {}).get('target')) for f in features)):
             features.remove(edge)
-            features.extend(copy.deepcopy(REGISTRY['replacementEdges']))
-            props['route_node_id'] = REGISTRY['routeNodeID']
+            features.extend(copy.deepcopy(registry['replacementEdges']))
+            props['route_node_id'] = registry['routeNodeID']
         # Explicit [] disables the old map's supplied registration rule.
-        props.setdefault('guidanceFor', [REGISTRY['radiology']['id']])
+        props.setdefault('guidanceFor', [registry['radiology']['id']])
         props.setdefault('guidanceOrder', 0)
         props = target['properties']
-        old_spaces = [f for f in features if f.get('id') == REGISTRY['originalRadiologySpace']['id'] and f.get('geometry') == REGISTRY['originalRadiologySpace']['geometry']]
+        old_spaces = [f for f in features if f.get('id') == registry['originalRadiologySpace']['id'] and f.get('geometry') == registry['originalRadiologySpace']['geometry']]
         if (enabled(props) and not (props.get('route_node_id') or props.get('routeNodeId') or props.get('deptID'))
-                and len(old_spaces) == 1 and matching_edge(features, REGISTRY['exitEdge'])
+                and len(old_spaces) == 1 and matching_edge(features, registry['exitEdge'])
                 and not any('n_o_1f_b2_radiology' in ((f.get('properties') or {}).get('source'), (f.get('properties') or {}).get('target')) for f in features)):
-            features[features.index(old_spaces[0])] = copy.deepcopy(REGISTRY['radiologySpace'])
-            features.append(copy.deepcopy(REGISTRY['exitApproach']))
+            features[features.index(old_spaces[0])] = copy.deepcopy(registry['radiologySpace'])
+            features.append(copy.deepcopy(registry['exitApproach']))
             props['route_node_id'] = 'n_o_1f_b2_radiology'
         result.append(SimpleNamespace(floor_key=floor.floor_key, version=floor.version, geojson=geojson))
     return result

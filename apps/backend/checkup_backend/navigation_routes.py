@@ -3,6 +3,9 @@ import heapq
 import json
 import math
 from pathlib import Path
+from .navigation_coordinates import is_rectified
+
+LEGACY_PIXEL_NODES = json.loads((Path(__file__).parent / 'data/legacy_pixel_nodes.json').read_text(encoding='utf-8'))
 
 
 def coordinate(value):
@@ -92,7 +95,7 @@ def route_segments(floors, source, target):
                 connections.extend(items)
     else:
         # Compatibility for the original GIS-only export, which omitted these
-        # connectors. Both endpoint IDs AND exact surveyed coordinates must match.
+        # connectors. Both endpoint IDs and packaged source coordinates must match.
         connections = json.loads((Path(__file__).parent / 'data/legacy_gis_connections.json').read_text(encoding='utf-8'))
     seen = set()
     for c in connections:
@@ -102,6 +105,11 @@ def route_segments(floors, source, target):
         for side in ('from', 'to'):
             matches = [k for k in nodes if k[1] == c.get(side + '_node_id') and (not c.get(side + '_floor') or k[0] == c[side + '_floor'])]
             expected = coordinate(c.get(side + '_coordinates'))
+            if not declared and len(matches) == 1 and is_rectified(floor_by_key[matches[0][0]].geojson):
+                legacy_node = LEGACY_PIXEL_NODES.get(c.get(side + '_node_id'), {})
+                if expected != legacy_node.get('source_coordinates'):
+                    break
+                expected = coordinate(legacy_node.get('coordinates'))
             if len(matches) != 1 or (not declared and expected is None):
                 break
             if expected is not None and any(abs(x-y) > 1e-9 for x, y in zip(nodes[matches[0]], expected)):

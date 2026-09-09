@@ -12,24 +12,25 @@
     "EPSG:4326 export"
   ],
   "conversion_note": "Numerical inverse of engineering formula, not official Baidu inverse; no surveyed accuracy claim",
-  "source_bundle_sha256": "2acf6a20df2f4edc84580def58a7a4e4fa93cf9ced03486f35a56171ff3e4f1a",
+  "source_bundle_sha256": "b9b3fd23e95748e631d28c55b97aca7229e4669bc58e2b44a0ac703ed702609c",
   "source_files_sha256": {
-    "1f_features.json": "9acaf70bcfa665b70d8a573c8f03d6447b4e24e952ffdb2d5138ba097f4a8d5b",
+    "1f_features.json": "9f7f1d4848dc0f8c5a693e4643abecbc8b839e0dafdab4f58f657ffb17c71227",
     "2f_features.json": "47ff5650b8ef7987e6c236a65461aefe871bb96dd2145648b025ebf0a13e7f64",
     "3f_features.json": "7a288acfcae8a6ae69914dea89db9d76292a66e261bb2c718070605ed42c9128",
     "department_key_contract.py": "bc2d8b9c63ab24b9e531f5ba58dc0677b88b0cec15fce22b11b735f74a1825d1",
-    "evidence.json": "49220c36d19f3ccb8a8b05676052693ac2f44554b5a773472b92cd543ec02b93",
+    "evidence.json": "72da01e4c6c0a0c035018fb02dfd881558ca8d9ece259a67030aecebbcf85d58",
     "images/1F.jpg": "fc5df6aabd58785c0753b27b3efdbd4c8433a92f0e57256c40fbb7b315cfaf95",
     "images/2F.jpg": "489db39fa8425d92a692796373502511e14463b258c3cad20f2a615dab75dc49",
     "images/3F.jpg": "3fccc49c756bc59b1e48e9524d29c23b5c851d8b30c38e87ac5c32d4474e3e70",
+    "images/radiology_exit_user.png": "ea50898b01fcfb60b8e7ddf20066861489dbdb795952e92906495e798efdce9d",
     "registration.json": "3234483b9b54fbb1c2595260e64a5faea2a54a39f5a11f86c9b2fc840918b400",
     "registration_destination_statement.txt": "fd72f7f8631b220fdb121ec57794c3d130900be33db63bb66d6b88f54b4a5bae",
-    "scheduler_mappings.json": "b667e194be2648db0916c8f4123ccc4655bc450cc9ccbe7aa1d660dcb25f9c9c",
+    "scheduler_mappings.json": "9cf7b5f48ca9ececf6db853ef715faf9bdaaa21a9412dabc69830a40cb7e860a",
     "user_building_statement.txt": "88229c955a01a21e7560a24200886d01eb23674e8ac6b2b07853835d72f5a3c7",
     "vertical_connections.json": "7c0a6f9d1284fbb2a590b38cbf692c93f9b732ebdf5a6a5a903a0d538a4dd046"
   },
   "generation_code_sha256": {
-    "build_indoor_gis.py": "d8aa4c48847b579e4ed7f025a34edd8ed35bb3fc23949c86bf5c149cc1a01d1f",
+    "build_indoor_gis.py": "97b08ddca1e3d8eb2fdc5855516ffa6cab704cefbad8b847620ff94085d02f7b",
     "gis_coordinates.py": "db314e238f63e8ce01a1808027a6d145e193ef84eb41263c691d5791b37f68e8"
   },
   "registration": {
@@ -518,6 +519,14 @@
       "sha256": "fd72f7f8631b220fdb121ec57794c3d130900be33db63bb66d6b88f54b4a5bae",
       "status": "user_asserted",
       "original_path": "user message in this task, 2026-09-09"
+    },
+    {
+      "id": "user_radiology_exit",
+      "kind": "user_annotated_raster",
+      "path": "images/radiology_exit_user.png",
+      "sha256": "ea50898b01fcfb60b8e7ddf20066861489dbdb795952e92906495e798efdce9d",
+      "status": "user_asserted",
+      "original_path": "user annotated blue exit, 2026-09-09"
     }
   ],
   "walking_model": {
@@ -580,7 +589,7 @@
       },
       {
         "location_id": "radiology-1f",
-        "reason": "独立患者入口未确认；不经检查机房制造路径"
+        "reason": "入口已由用户蓝点确认，导航通过 GIS guidanceFor 经综合服务中心；尚未绑定调度项目位置"
       },
       {
         "location_id": "endoscopy-1f",

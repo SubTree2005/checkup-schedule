@@ -81,6 +81,14 @@
       "sha256": "fd72f7f8631b220fdb121ec57794c3d130900be33db63bb66d6b88f54b4a5bae",
       "status": "user_asserted",
       "original_path": "user message in this task, 2026-09-09"
+    },
+    {
+      "id": "user_radiology_exit",
+      "kind": "user_annotated_raster",
+      "path": "images/radiology_exit_user.png",
+      "sha256": "ea50898b01fcfb60b8e7ddf20066861489dbdb795952e92906495e798efdce9d",
+      "status": "user_asserted",
+      "original_path": "user annotated blue exit, 2026-09-09"
     }
   ]
 }

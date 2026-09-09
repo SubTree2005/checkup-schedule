@@ -980,7 +980,11 @@
       ],
       "building_confidence": "medium",
       "accessible": "unknown",
-      "access_control": "unknown"
+      "access_control": "unknown",
+      "guidance_for": [
+        "poi_1f_b2_radiology"
+      ],
+      "guidance_order": 0
     },
     {
       "id": "1f_b2_machine_3",
@@ -1104,11 +1108,19 @@
         ],
         [
           547,
-          584
+          402
+        ],
+        [
+          581,
+          402
+        ],
+        [
+          581,
+          583
         ],
         [
           399,
-          584
+          583
         ],
         [
           399,
@@ -1124,12 +1136,13 @@
       "boundary_role": "generalized_visible_partition_not_wall_survey",
       "evidence_ids": [
         "plan_1f",
-        "user_building_statement"
+        "user_building_statement",
+        "user_radiology_exit"
       ],
       "building_confidence": "medium",
       "accessible": "unknown",
       "access_control": "unknown",
-      "note": "可见与机房相通的门；没有确认独立患者入口，不经机房穿行来制造可达性"
+      "note": "用户蓝点确认综合服务中心左侧的患者出入口；补全原先漏描的北侧入口通道，不穿越机房。"
     },
     {
       "id": "1f_b1_laboratory",
@@ -2297,6 +2310,39 @@
       "accessible": "unknown",
       "access_control": "unknown",
       "status": "visible_on_plan"
+    },
+    {
+      "id": "o_1f_b2_radiology",
+      "space_id": "1f_b2_radiology",
+      "segment_px": [
+        [
+          551,
+          402
+        ],
+        [
+          575,
+          402
+        ]
+      ],
+      "approach_px": [
+        [
+          563,
+          387
+        ],
+        [
+          563,
+          402
+        ]
+      ],
+      "kind": "opening",
+      "confidence": "medium",
+      "evidence_ids": [
+        "plan_1f",
+        "user_radiology_exit"
+      ],
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "status": "user_confirmed_on_plan"
     }
   ],
   "centerlines": [
@@ -2701,16 +2747,6 @@
     },
     {
       "object_id": "1f_b1_guard",
-      "issue": "door_not_confirmed",
-      "action": "标注功能区，暂不映射为可达的调度位置"
-    },
-    {
-      "object_id": "1f_b1_service",
-      "issue": "door_not_confirmed",
-      "action": "标注功能区，暂不映射为可达的调度位置"
-    },
-    {
-      "object_id": "1f_b2_radiology",
       "issue": "door_not_confirmed",
       "action": "标注功能区，暂不映射为可达的调度位置"
     },

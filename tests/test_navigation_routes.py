@@ -1,7 +1,7 @@
 import unittest
 from types import SimpleNamespace
 
-from apps.backend.checkup_backend.navigation_routes import route_segments
+from apps.backend.checkup_backend.navigation_routes import route_segments, route_via
 
 
 class NavigationRoutesTest(unittest.TestCase):
@@ -52,6 +52,22 @@ class NavigationRoutesTest(unittest.TestCase):
     def test_missing_anchor_does_not_snap_to_an_unrelated_corridor(self):
         source=(self.floors[0],[0,0],{'route_node_id':'missing'},'起点')
         self.assertIsNone(route_segments(self.floors,source,self.target))
+
+    def test_waypoint_detour_remains_continuous_and_middle_stair_transfer_survives(self):
+        floor = self.floors[1]
+        floor.geojson['features'].append({'geometry': {'type': 'LineString', 'coordinates': [[0,0],[0,5]]}, 'properties': {
+            'featureType': 'corridor', 'source': 'stair-A2', 'target': 'guide', 'length_m': 5, 'walk_seconds': 5}})
+        guide = (floor, [0,5], {'route_node_id': 'guide'}, '导诊台')
+        result = route_via(self.floors, self.source, self.target, [guide])
+        middle = result['segments'][1]
+        self.assertEqual([s['floorKey'] for s in result['segments']], ['1F','2F','3F'])
+        self.assertEqual(middle['routeCoordinates'], [[0,0],[0,5],[0,0],[5,5],[10,0]])
+        self.assertEqual(middle['waypoints'][0]['coordinates'], [0,5])
+        self.assertEqual(middle['fromPoint']['name'], 'stair-A2')
+        self.assertEqual(middle['toPoint']['name'], 'stair-B2')
+        self.assertEqual(result['walkSeconds'], 160)
+        floor.geojson['features'][-1]['properties']['routing_status'] = 'disabled'
+        self.assertIsNone(route_via(self.floors, self.source, self.target, [guide]), 'mandatory stop must not be skipped')
 
 
 if __name__ == '__main__':

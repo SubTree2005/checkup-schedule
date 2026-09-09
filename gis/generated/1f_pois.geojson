@@ -594,6 +594,10 @@
           "plan_1f",
           "user_building_statement"
         ],
+        "guidanceFor": [
+          "poi_1f_b2_radiology"
+        ],
+        "guidanceOrder": 0,
         "geometry_px": {
           "type": "Point",
           "coordinates": [
@@ -737,28 +741,29 @@
         "name": "放射科",
         "category": "radiology",
         "room_ref": null,
-        "route_node_id": null,
+        "route_node_id": "n_o_1f_b2_radiology",
         "scheduler_location_id": null,
         "confidence": "high",
         "accessible": "unknown",
         "access_control": "unknown",
         "evidence_ids": [
           "plan_1f",
-          "user_building_statement"
+          "user_building_statement",
+          "user_radiology_exit"
         ],
         "geometry_px": {
           "type": "Point",
           "coordinates": [
-            473.0,
-            561.0
+            564.0,
+            450.5
           ]
         }
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          120.08358444415131,
-          30.311617230496417
+          120.08366140333274,
+          30.31156828630465
         ]
       }
     },

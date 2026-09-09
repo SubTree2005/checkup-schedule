@@ -14,6 +14,10 @@ page { background: linear-gradient(180deg, #F7FAFF 0%, #FFFFFF 100%); }
 .destination-copy { flex: 1; min-width: 0; color: #263248; font-size: 27rpx; font-weight: 600; line-height: 1.45; }
 .destination-copy text { margin-left: 10rpx; color: #2F69EC; font-size: 29rpx; }
 .map-card { margin-top: 18rpx; padding: 14rpx; }
+.floor-selector { position: relative; display: flex; height: 64rpx; margin: 6rpx auto 18rpx; border-radius: 999rpx; background: #EDF2FA; overflow: hidden; }
+.floor-slider { position: absolute; left: 0; top: 0; height: 100%; border: 5rpx solid #EDF2FA; box-sizing: border-box; border-radius: 999rpx; background: #2F69EC; transition: transform .18s ease; }
+.floor-option { position: relative; flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center; color: #52617A; font-size: 25rpx; line-height: 1; font-weight: 600; }
+.floor-option.selected { color: white; }
 .map-heading { padding: 10rpx 12rpx; color: #172033; font-size: 28rpx; font-weight: 650; }
 .map-instruction { padding: 0 12rpx 14rpx; color: #52617A; font-size: 23rpx; line-height: 1.5; }
 .map-transition { margin-top: 12rpx; padding: 18rpx; border-radius: 14rpx; color: #1350BE; background: #EDF4FF; font-size: 24rpx; line-height: 1.5; }

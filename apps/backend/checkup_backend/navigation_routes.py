@@ -17,6 +17,38 @@ def enabled(props):
     return props.get('routing_status', 'enabled') in ('enabled', 'draft_enabled', 'verified') and props.get('access_control') not in ('closed', 'restricted', 'no')
 
 
+def route_via(floors, source, target, waypoints):
+    """Join complete legs; keep a single continuous polyline on each floor visit."""
+    if waypoints is None:
+        return None
+    endpoints = [source, *waypoints, target]
+    result = {'segments': [], 'walkSeconds': 0, 'horizontalDistanceMeters': 0}
+    for index, (start, end) in enumerate(zip(endpoints, endpoints[1:])):
+        leg = route_segments(floors, start, end)
+        if leg is None:
+            return None
+        segments = leg['segments']
+        if result['segments']:
+            previous, following = result['segments'][-1], segments[0]
+            if previous['floorKey'] != following['floorKey'] or previous['routeCoordinates'][-1] != following['routeCoordinates'][0]:
+                return None
+            previous.setdefault('waypoints', []).append({**previous['toPoint'], 'order': index})
+            previous['routeCoordinates'].extend(following['routeCoordinates'][1:])
+            previous['toPoint'] = following['toPoint']
+            previous['transition'] = following['transition']
+            segments = segments[1:]
+        result['segments'].extend(segments)
+        result['walkSeconds'] += leg['walkSeconds']
+        result['horizontalDistanceMeters'] += leg['horizontalDistanceMeters']
+    for index, segment in enumerate(result['segments']):
+        segment['segmentID'] = str(index)
+        labels = [segment['fromPoint']['name'], *['途经：' + p['name'] for p in segment.get('waypoints', [])], segment['toPoint']['name']]
+        segment['instruction'] = ' → '.join(labels)
+    if waypoints:
+        result['guidanceNotice'] = '请先依次前往' + '、'.join(p[3] for p in waypoints) + '，再前往目标科室。'
+    return result
+
+
 def route_segments(floors, source, target):
     """Endpoints are (floor record, POI coordinates, POI properties, display name)."""
     graph, nodes, labels = {}, {}, {}
@@ -91,6 +123,8 @@ def route_segments(floors, source, target):
 
     def anchor(endpoint):
         floor, point, props, _name = endpoint
+        if not enabled(props):
+            return None
         node_id = props.get('route_node_id') or props.get('routeNodeId')
         if node_id:
             if not isinstance(node_id, str):

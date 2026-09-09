@@ -18,7 +18,7 @@ P16,poi_1f_b1_service,zju2_zijingang_b1,zju2_zijingang_b1_1f,综合服务中心,
 P17,poi_1f_b2_machine_3,zju2_zijingang_b2,zju2_zijingang_b2_1f,3号机房,n_o_1f_b2_machine_3,unknown
 P18,poi_1f_b2_machine_2,zju2_zijingang_b2,zju2_zijingang_b2_1f,2号机房,n_o_1f_b2_machine_2,unknown
 P19,poi_1f_b2_machine_1,zju2_zijingang_b2,zju2_zijingang_b2_1f,1号机房,n_o_1f_b2_machine_1,unknown
-P20,poi_1f_b2_radiology,zju2_zijingang_b2,zju2_zijingang_b2_1f,放射科,,unknown
+P20,poi_1f_b2_radiology,zju2_zijingang_b2,zju2_zijingang_b2_1f,放射科,n_o_1f_b2_radiology,unknown
 P21,poi_1f_b1_laboratory,zju2_zijingang_b1,zju2_zijingang_b1_1f,检验科,n_o_1f_b1_laboratory,unknown
 P22,poi_1f_b2_archive,zju2_zijingang_b2,zju2_zijingang_b2_1f,档案室,,unknown
 P23,poi_1f_b2_clinic_n1,zju2_zijingang_b2,zju2_zijingang_b2_1f,肠道门诊,,unknown

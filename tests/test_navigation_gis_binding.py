@@ -6,7 +6,7 @@ from types import SimpleNamespace
 from unittest.mock import Mock
 
 from apps.backend.checkup_backend.patient_api import _navigation_map
-from apps.backend.checkup_backend.navigation_registration import REGISTRY, REGISTRATION_NAME
+from apps.backend.checkup_backend.navigation_gis import REGISTRY, guidance_waypoints
 
 
 class NavigationGISBindingTest(unittest.TestCase):
@@ -55,14 +55,16 @@ class NavigationGISBindingTest(unittest.TestCase):
         self.assertEqual(result['segments'][0]['fromPoint']['name'], '门诊入口')
         self.assertEqual([s['floorKey'] for s in result['segments']], ['1F', '2F', '3F'])
 
-    def test_radiology_routes_all_floors_to_registration_door(self):
+    def test_radiology_routes_all_floors_via_registration_to_clinical_door(self):
         result = self.navigation(target='radiology', source='general')
         self.assertEqual([s['floorKey'] for s in result['segments']], ['3F', '2F', '1F'])
-        self.assertEqual(result['toPoint']['name'], REGISTRATION_NAME)
-        self.assertIn('登记', result['registrationNotice'])
+        self.assertEqual(result['toPoint']['departmentID'], 'radiology')
+        self.assertIn('综合服务中心', result['guidanceNotice'])
         self.assertEqual(result['routeCoordinates'][-1], result['toPoint']['coordinates'])
         approach = next(f for f in REGISTRY['replacementEdges'] if f['properties']['target'] == REGISTRY['routeNodeID'])
-        self.assertEqual(result['routeCoordinates'][-2:], approach['geometry']['coordinates'])
+        self.assertIn(approach['geometry']['coordinates'][-1], result['routeCoordinates'])
+        self.assertEqual(result['waypoints'][0]['coordinates'], approach['geometry']['coordinates'][-1])
+        self.assertEqual(result['routeCoordinates'][-2:], REGISTRY['exitApproach']['geometry']['coordinates'])
         self.assertGreater(len(result['segments'][0]['routeCoordinates']), 1)
         self.assertGreater(result['walkSeconds'], 0)
 
@@ -76,6 +78,13 @@ class NavigationGISBindingTest(unittest.TestCase):
         features.append(copy.deepcopy(REGISTRY['originalEdge']))
         service = next(f for f in features if f['properties'].get('space_id') == '1f_b1_service' and f['geometry']['type'] == 'Point')
         service['properties']['route_node_id'] = None
+        service['properties'].pop('guidanceFor', None)
+        features[:] = [f for f in features if 'n_o_1f_b2_radiology' not in (f['properties'].get('source'), f['properties'].get('target'))]
+        for index, feature in enumerate(features):
+            if feature.get('id') == REGISTRY['radiologyPOI']['id']:
+                features[index] = copy.deepcopy(REGISTRY['radiology'])
+            if feature.get('id') == REGISTRY['radiologySpace']['id']:
+                features[index] = copy.deepcopy(REGISTRY['originalRadiologySpace'])
         return floor
 
     def test_old_upload_gets_complete_route_without_mutating_stored_gis(self):
@@ -83,14 +92,20 @@ class NavigationGISBindingTest(unittest.TestCase):
         before = copy.deepcopy(floor.geojson)
         result = self.navigation(target='radiology', source='general')
         self.assertEqual([s['floorKey'] for s in result['segments']], ['3F', '2F', '1F'])
-        self.assertEqual(result['toPoint']['name'], REGISTRATION_NAME)
+        self.assertEqual(result['toPoint']['coordinates'], REGISTRY['exitApproach']['geometry']['coordinates'][-1])
+        reverse = self.navigation(source='radiology')
+        self.assertEqual([s['floorKey'] for s in reverse['segments']], ['1F', '2F', '3F'])
+        self.assertEqual(reverse['segments'][0]['fromPoint']['coordinates'], REGISTRY['exitApproach']['geometry']['coordinates'][-1])
         self.assertEqual(floor.geojson, before)
 
-    def test_registration_from_entrance_and_no_assumed_post_exam_location(self):
+    def test_registration_from_entrance_and_departure_from_confirmed_exit(self):
         result = self.navigation(target='radiology')
         self.assertEqual(result['segments'][0]['fromPoint']['name'], '门诊入口')
-        self.assertEqual(result['toPoint']['name'], REGISTRATION_NAME)
-        self.assertNotIn('segments', self.navigation(source='radiology'))
+        self.assertEqual(result['toPoint']['departmentID'], 'radiology')
+        reverse = self.navigation(source='radiology')
+        self.assertEqual([s['floorKey'] for s in reverse['segments']], ['1F', '2F', '3F'])
+        self.assertNotIn('guidanceNotice', reverse)
+        self.assertEqual(reverse['segments'][0]['routeCoordinates'][0], REGISTRY['exitApproach']['geometry']['coordinates'][-1])
 
     def test_old_upload_closure_or_changed_geometry_is_not_overridden(self):
         for change in ('closed', 'moved'):
@@ -104,13 +119,38 @@ class NavigationGISBindingTest(unittest.TestCase):
                     edge['geometry']['coordinates'][0][0] += 0.001
                 result = self.navigation(target='radiology', source='general')
                 self.assertNotIn('segments', result)
-                self.assertNotIn('registrationNotice', result)
+                self.assertIn('routeUnavailableNotice', result)
 
     def test_explicit_radiology_binding_takes_precedence(self):
         point = next(f for f in self.floors[0].geojson['features'] if f.get('id') == 'poi_1f_b2_radiology')
         point['properties']['deptID'] = 'radiology'
         result = self.navigation(target='radiology', source='general')
-        self.assertNotIn('registrationNotice', result)
+        self.assertEqual(result['toPoint']['departmentID'], 'radiology')
+
+    def test_explicit_empty_guidance_and_closed_mandatory_stop(self):
+        service = next(f for f in self.floors[0].geojson['features'] if f.get('id') == REGISTRY['service']['id'])
+        service['properties']['guidanceFor'] = []
+        self.assertNotIn('guidanceNotice', self.navigation(target='radiology'))
+        service['properties']['guidanceFor'] = ['radiology']
+        self.assertIn('guidanceNotice', self.navigation(target='radiology'))
+        service['properties']['access_control'] = 'closed'
+        result = self.navigation(target='radiology')
+        self.assertNotIn('segments', result)
+        self.assertIn('routeUnavailableNotice', result)
+
+    def test_guidance_order_and_binding_are_authored_in_gis(self):
+        floor = self.floors[0]
+        for id_, order in [('first', 20), ('second', 10)]:
+            floor.geojson['features'].append({'id': id_, 'geometry': {'type': 'Point', 'coordinates': [0,0]},
+                'properties': {'name': id_, 'guidanceFor': ['other-dept'], 'guidanceOrder': order, 'route_node_id': id_}})
+        stops = guidance_waypoints(self.floors, {}, 'other-dept')
+        self.assertEqual([s[3] for s in stops], ['second', 'first'])
+        self.assertEqual(guidance_waypoints(self.floors, {}, 'unbound-dept'), [])
+
+    def test_unroutable_other_floor_origin_is_not_painted_on_destination_floor(self):
+        self.floors[0].geojson['verticalConnections'] = []
+        result = self.navigation(source='lab')
+        self.assertIsNone(result['fromPoint'])
 
     def test_existing_gis_upload_uses_verified_legacy_connections(self):
         for f in self.floors:

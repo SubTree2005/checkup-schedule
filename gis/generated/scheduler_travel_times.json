@@ -19,11 +19,11 @@
         "n_o_1f_b1_infusion"
       ],
       "edge_ids": [
-        "e_1f_0053",
-        "e_1f_0051",
-        "e_1f_0052",
         "e_1f_0055",
-        "e_1f_0056"
+        "e_1f_0053",
+        "e_1f_0054",
+        "e_1f_0057",
+        "e_1f_0058"
       ],
       "profile": "ambulatory_draft",
       "mapping_evidence_ids": [
@@ -31,7 +31,7 @@
         "plan_1f"
       ],
       "status": "navigation_draft_not_survey",
-      "source_bundle_sha256": "f61cdd87af3cf723e92b8cce86d74dd9f59c12d7ddf66c939eafb375c810c203"
+      "source_bundle_sha256": "2acf6a20df2f4edc84580def58a7a4e4fa93cf9ced03486f35a56171ff3e4f1a"
     },
     {
       "origin": "ENTRANCE",
@@ -50,11 +50,11 @@
         "n_o_1f_b1_laboratory"
       ],
       "edge_ids": [
-        "e_1f_0053",
-        "e_1f_0043",
-        "e_1f_0042",
+        "e_1f_0055",
+        "e_1f_0045",
         "e_1f_0044",
-        "e_1f_0046"
+        "e_1f_0046",
+        "e_1f_0048"
       ],
       "profile": "ambulatory_draft",
       "mapping_evidence_ids": [
@@ -62,7 +62,7 @@
         "plan_1f"
       ],
       "status": "navigation_draft_not_survey",
-      "source_bundle_sha256": "f61cdd87af3cf723e92b8cce86d74dd9f59c12d7ddf66c939eafb375c810c203"
+      "source_bundle_sha256": "2acf6a20df2f4edc84580def58a7a4e4fa93cf9ced03486f35a56171ff3e4f1a"
     },
     {
       "origin": "infusion-1f",
@@ -81,11 +81,11 @@
         "n_o_1f_b1_entrance"
       ],
       "edge_ids": [
-        "e_1f_0056",
-        "e_1f_0055",
-        "e_1f_0052",
-        "e_1f_0051",
-        "e_1f_0053"
+        "e_1f_0058",
+        "e_1f_0057",
+        "e_1f_0054",
+        "e_1f_0053",
+        "e_1f_0055"
       ],
       "profile": "ambulatory_draft",
       "mapping_evidence_ids": [
@@ -93,7 +93,7 @@
         "plan_1f"
       ],
       "status": "navigation_draft_not_survey",
-      "source_bundle_sha256": "f61cdd87af3cf723e92b8cce86d74dd9f59c12d7ddf66c939eafb375c810c203"
+      "source_bundle_sha256": "2acf6a20df2f4edc84580def58a7a4e4fa93cf9ced03486f35a56171ff3e4f1a"
     },
     {
       "origin": "infusion-1f",
@@ -115,14 +115,14 @@
         "n_o_1f_b1_laboratory"
       ],
       "edge_ids": [
-        "e_1f_0056",
-        "e_1f_0055",
-        "e_1f_0052",
-        "e_1f_0051",
-        "e_1f_0043",
-        "e_1f_0042",
+        "e_1f_0058",
+        "e_1f_0057",
+        "e_1f_0054",
+        "e_1f_0053",
+        "e_1f_0045",
         "e_1f_0044",
-        "e_1f_0046"
+        "e_1f_0046",
+        "e_1f_0048"
       ],
       "profile": "ambulatory_draft",
       "mapping_evidence_ids": [
@@ -130,7 +130,7 @@
         "plan_1f"
       ],
       "status": "navigation_draft_not_survey",
-      "source_bundle_sha256": "f61cdd87af3cf723e92b8cce86d74dd9f59c12d7ddf66c939eafb375c810c203"
+      "source_bundle_sha256": "2acf6a20df2f4edc84580def58a7a4e4fa93cf9ced03486f35a56171ff3e4f1a"
     },
     {
       "origin": "laboratory-1f",
@@ -149,11 +149,11 @@
         "n_o_1f_b1_entrance"
       ],
       "edge_ids": [
+        "e_1f_0048",
         "e_1f_0046",
         "e_1f_0044",
-        "e_1f_0042",
-        "e_1f_0043",
-        "e_1f_0053"
+        "e_1f_0045",
+        "e_1f_0055"
       ],
       "profile": "ambulatory_draft",
       "mapping_evidence_ids": [
@@ -161,7 +161,7 @@
         "plan_1f"
       ],
       "status": "navigation_draft_not_survey",
-      "source_bundle_sha256": "f61cdd87af3cf723e92b8cce86d74dd9f59c12d7ddf66c939eafb375c810c203"
+      "source_bundle_sha256": "2acf6a20df2f4edc84580def58a7a4e4fa93cf9ced03486f35a56171ff3e4f1a"
     },
     {
       "origin": "laboratory-1f",
@@ -183,14 +183,14 @@
         "n_o_1f_b1_infusion"
       ],
       "edge_ids": [
+        "e_1f_0048",
         "e_1f_0046",
         "e_1f_0044",
-        "e_1f_0042",
-        "e_1f_0043",
-        "e_1f_0051",
-        "e_1f_0052",
-        "e_1f_0055",
-        "e_1f_0056"
+        "e_1f_0045",
+        "e_1f_0053",
+        "e_1f_0054",
+        "e_1f_0057",
+        "e_1f_0058"
       ],
       "profile": "ambulatory_draft",
       "mapping_evidence_ids": [
@@ -198,7 +198,7 @@
         "plan_1f"
       ],
       "status": "navigation_draft_not_survey",
-      "source_bundle_sha256": "f61cdd87af3cf723e92b8cce86d74dd9f59c12d7ddf66c939eafb375c810c203"
+      "source_bundle_sha256": "2acf6a20df2f4edc84580def58a7a4e4fa93cf9ced03486f35a56171ff3e4f1a"
     }
   ]
 }

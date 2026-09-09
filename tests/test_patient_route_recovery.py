@@ -88,6 +88,20 @@ class PatientRouteRecoveryTest(unittest.TestCase):
         self.assertEqual(navigation.status_code, 200, navigation.text)
         self.assertEqual(navigation.json()["fromName"], first["department"])
 
+    def test_navigation_exposes_registration_instructions_and_route_time(self):
+        plan = self.plan([self.exam("放射检查")])
+        with patch("apps.backend.checkup_backend.patient_api._navigation_map", return_value={
+            "segments": [{"floorKey": "3F"}, {"floorKey": "2F"}, {"floorKey": "1F"}],
+            "horizontalDistanceMeters": 36, "walkSeconds": 150,
+            "registrationNotice": "检查前请先到一楼综合服务中心办理放射登记。",
+        }):
+            response = self.patient.get(f"/api/patient/plans/{plan['planID']}/navigation", params={"detailID": plan['steps'][0]['detailID']})
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertIn("楼梯", response.json()["floorInstruction"])
+        self.assertIn("综合服务中心", response.json()["floorInstruction"])
+        self.assertEqual(response.json()["durationMinutes"], 3)
+        self.assertEqual(response.json()["distanceMeters"], 36)
+
     def test_complete_preserves_completion_when_a_later_department_closes(self):
         exams = [self.exam("甲"), self.exam("乙"), self.exam("丙")]
         plan = self.plan(exams)

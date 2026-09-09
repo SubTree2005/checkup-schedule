@@ -14,7 +14,7 @@ P12,poi_1f_b1_infusion,zju2_zijingang_b1,zju2_zijingang_b1_1f,输液,n_o_1f_b1_i
 P13,poi_1f_b1_observation,zju2_zijingang_b1,zju2_zijingang_b1_1f,观察,n_o_1f_b1_observation,unknown
 107,poi_1f_b1_107,zju2_zijingang_b1,zju2_zijingang_b1_1f,一号楼107,,unknown
 P15,poi_1f_b1_guard,zju2_zijingang_b1,zju2_zijingang_b1_1f,门卫（兼消控）,,unknown
-P16,poi_1f_b1_service,zju2_zijingang_b1,zju2_zijingang_b1_1f,综合服务中心,,unknown
+P16,poi_1f_b1_service,zju2_zijingang_b1,zju2_zijingang_b1_1f,综合服务中心,n_o_1f_b1_service,unknown
 P17,poi_1f_b2_machine_3,zju2_zijingang_b2,zju2_zijingang_b2_1f,3号机房,n_o_1f_b2_machine_3,unknown
 P18,poi_1f_b2_machine_2,zju2_zijingang_b2,zju2_zijingang_b2_1f,2号机房,n_o_1f_b2_machine_2,unknown
 P19,poi_1f_b2_machine_1,zju2_zijingang_b2,zju2_zijingang_b2_1f,1号机房,n_o_1f_b2_machine_1,unknown

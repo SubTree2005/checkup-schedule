@@ -585,7 +585,7 @@
         "name": "综合服务中心",
         "category": "service",
         "room_ref": null,
-        "route_node_id": null,
+        "route_node_id": "n_o_1f_b1_service",
         "scheduler_location_id": null,
         "confidence": "high",
         "accessible": "unknown",

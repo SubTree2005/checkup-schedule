@@ -15,7 +15,7 @@
     },
     {
       "table": "source_document",
-      "rows": 8
+      "rows": 9
     },
     {
       "table": "space",
@@ -23,15 +23,15 @@
     },
     {
       "table": "path_node",
-      "rows": 204
+      "rows": 206
     },
     {
       "table": "opening",
-      "rows": 83
+      "rows": 84
     },
     {
       "table": "path_edge",
-      "rows": 202
+      "rows": 204
     },
     {
       "table": "poi",

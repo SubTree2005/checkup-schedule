@@ -1,0 +1,295 @@
+{
+  "floorKey": "1F",
+  "evidence": "gis/source/registration_destination_statement.txt",
+  "radiology": {
+    "type": "Feature",
+    "id": "poi_1f_b2_radiology",
+    "properties": {
+      "id": "poi_1f_b2_radiology",
+      "status": "navigation_draft_not_survey",
+      "space_id": "1f_b2_radiology",
+      "level_id": "zju2_zijingang_b2_1f",
+      "building_id": "zju2_zijingang_b2",
+      "floor": "1F",
+      "name": "放射科",
+      "category": "radiology",
+      "room_ref": null,
+      "route_node_id": null,
+      "scheduler_location_id": null,
+      "confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "evidence_ids": [
+        "plan_1f",
+        "user_building_statement"
+      ],
+      "geometry_px": {
+        "type": "Point",
+        "coordinates": [
+          473.0,
+          561.0
+        ]
+      },
+      "featureType": "poi",
+      "floorKey": "1F"
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        120.08358444415131,
+        30.311617230496417
+      ]
+    }
+  },
+  "service": {
+    "type": "Feature",
+    "id": "poi_1f_b1_service",
+    "properties": {
+      "id": "poi_1f_b1_service",
+      "status": "navigation_draft_not_survey",
+      "space_id": "1f_b1_service",
+      "level_id": "zju2_zijingang_b1_1f",
+      "building_id": "zju2_zijingang_b1",
+      "floor": "1F",
+      "name": "综合服务中心",
+      "category": "service",
+      "room_ref": null,
+      "route_node_id": null,
+      "scheduler_location_id": null,
+      "confidence": "high",
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "evidence_ids": [
+        "plan_1f",
+        "user_building_statement"
+      ],
+      "geometry_px": {
+        "type": "Point",
+        "coordinates": [
+          620.0,
+          470.5
+        ]
+      },
+      "featureType": "poi",
+      "floorKey": "1F"
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        120.08364904538011,
+        30.31153763600109
+      ]
+    }
+  },
+  "originalEdge": {
+    "type": "Feature",
+    "id": "e_1f_0030",
+    "properties": {
+      "id": "e_1f_0030",
+      "status": "navigation_draft_not_survey",
+      "level_id": "zju2_zijingang_b1_1f",
+      "floor": "1F",
+      "source": "n_1f_563_387",
+      "target": "n_1f_917_387",
+      "length_m": 21.419499776027994,
+      "walk_seconds": 18.625651979154778,
+      "accessible": "unknown",
+      "access_control": "unknown",
+      "direction": "bidirectional",
+      "routing_status": "draft_enabled",
+      "evidence_ids": [
+        "plan_1f"
+      ],
+      "cost_status": "assumed_not_measured",
+      "walking_speed_mps": 1.15,
+      "geometry_px": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            563.0,
+            387.0
+          ],
+          [
+            917.0,
+            387.0
+          ]
+        ]
+      },
+      "featureType": "corridor",
+      "floorKey": "1F",
+      "distanceMeters": 21.419499776027994
+    },
+    "geometry": {
+      "type": "LineString",
+      "coordinates": [
+        [
+          120.08370447320598,
+          30.31156921447983
+        ],
+        [
+          120.08371214848631,
+          30.311376223338492
+        ]
+      ]
+    }
+  },
+  "replacementEdges": [
+    {
+      "type": "Feature",
+      "id": "e_1f_0030",
+      "properties": {
+        "id": "e_1f_0030",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "source": "n_1f_563_387",
+        "target": "n_1f_640_387",
+        "length_m": 4.6590437365463515,
+        "walk_seconds": 4.051342379605523,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_1f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              563.0,
+              387.0
+            ],
+            [
+              640.0,
+              387.0
+            ]
+          ]
+        },
+        "featureType": "corridor",
+        "floorKey": "1F",
+        "distanceMeters": 4.6590437365463515
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08370447320598,
+            30.31156921447983
+          ],
+          [
+            120.08370614269323,
+            30.311527236181362
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_1f_0031",
+      "properties": {
+        "id": "e_1f_0031",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "source": "n_1f_640_387",
+        "target": "n_o_1f_b1_service",
+        "length_m": 0.9796715990868796,
+        "walk_seconds": 0.8518883470320693,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_1f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              640.0,
+              387.0
+            ],
+            [
+              640.0,
+              402.0
+            ]
+          ]
+        },
+        "featureType": "corridor",
+        "floorKey": "1F",
+        "distanceMeters": 0.9796715990868796
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08370614269323,
+            30.311527236181362
+          ],
+          [
+            120.08369596358989,
+            30.311527145710013
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_1f_0032",
+      "properties": {
+        "id": "e_1f_0032",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "source": "n_1f_640_387",
+        "target": "n_1f_917_387",
+        "length_m": 16.760456039481642,
+        "walk_seconds": 14.574309599549256,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_1f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              640.0,
+              387.0
+            ],
+            [
+              917.0,
+              387.0
+            ]
+          ]
+        },
+        "featureType": "corridor",
+        "floorKey": "1F",
+        "distanceMeters": 16.760456039481642
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08370614269323,
+            30.311527236181362
+          ],
+          [
+            120.08371214848631,
+            30.311376223338492
+          ]
+        ]
+      }
+    }
+  ],
+  "routeNodeID": "n_o_1f_b1_service"
+}

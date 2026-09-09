@@ -1,6 +1,8 @@
 """Patient route closures, skips and follow-up appointments through the real API."""
 
 import unittest
+import json
+from pathlib import Path
 from datetime import datetime
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -93,7 +95,7 @@ class PatientRouteRecoveryTest(unittest.TestCase):
         with patch("apps.backend.checkup_backend.patient_api._navigation_map", return_value={
             "segments": [{"floorKey": "3F"}, {"floorKey": "2F"}, {"floorKey": "1F"}],
             "horizontalDistanceMeters": 36, "walkSeconds": 150,
-            "registrationNotice": "检查前请先到一楼综合服务中心办理放射登记。",
+            "guidanceNotice": "检查前请先到一楼综合服务中心办理放射登记。",
         }):
             response = self.patient.get(f"/api/patient/plans/{plan['planID']}/navigation", params={"detailID": plan['steps'][0]['detailID']})
         self.assertEqual(response.status_code, 200, response.text)
@@ -101,6 +103,36 @@ class PatientRouteRecoveryTest(unittest.TestCase):
         self.assertIn("综合服务中心", response.json()["floorInstruction"])
         self.assertEqual(response.json()["durationMinutes"], 3)
         self.assertEqual(response.json()["distanceMeters"], 36)
+
+    def test_uploaded_gis_routes_via_guidance_then_back_from_radiology_exit(self):
+        root = Path(__file__).resolve().parents[1]
+        bundle = json.loads((root / 'gis/generated/workspace_gis_only.json').read_text(encoding='utf-8'))
+        for floor in bundle['gis']:
+            response = self.client.put('/api/gis/' + floor['floorKey'], json={'geojson': floor['geojson']})
+            self.assertEqual(response.status_code, 200, response.text)
+        radio = self.exam('放射检查')
+        general = self.exam('一般检查', {'itemIDs': [radio['itemID']]})
+        for exam, name, location in ((radio, '放射科（MRI、CT、DR）', '1F；先登记'), (general, '一般检查（316）', '3F 316')):
+            response = self.client.patch('/api/departments/' + exam['deptID'], json={'deptName': name, 'location': location})
+            self.assertEqual(response.status_code, 200, response.text)
+        plan = self.plan([radio, general])
+        first, second = plan['steps']
+        self.assertEqual(first['itemID'], radio['itemID'])
+        url = f"/api/patient/plans/{plan['planID']}/navigation"
+        outbound = self.patient.get(url, params={'detailID': first['detailID']})
+        self.assertEqual(outbound.status_code, 200, outbound.text)
+        data = outbound.json()
+        self.assertEqual(data['map']['toPoint']['departmentID'], radio['deptID'])
+        self.assertEqual(data['map']['waypoints'][0]['name'], '综合服务中心')
+        self.assertNotEqual(data['map']['waypoints'][0]['coordinates'], data['map']['toPoint']['coordinates'])
+        self.action(plan, first, 'complete')
+        inbound = self.patient.get(url, params={'detailID': second['detailID']})
+        self.assertEqual(inbound.status_code, 200, inbound.text)
+        routed = inbound.json()['map']
+        self.assertEqual([s['floorKey'] for s in routed['segments']], ['1F', '2F', '3F'])
+        self.assertEqual(routed['segments'][0]['fromPoint']['coordinates'], data['map']['toPoint']['coordinates'])
+        self.assertGreater(len(routed['segments'][0]['routeCoordinates']), 1)
+        self.assertNotIn('guidanceNotice', routed)
 
     def test_complete_preserves_completion_when_a_later_department_closes(self):
         exams = [self.exam("甲"), self.exam("乙"), self.exam("丙")]

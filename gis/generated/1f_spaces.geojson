@@ -2412,6 +2412,10 @@
         "building_confidence": "medium",
         "accessible": "unknown",
         "access_control": "unknown",
+        "guidance_for": [
+          "poi_1f_b2_radiology"
+        ],
+        "guidance_order": 0,
         "level_id": "zju2_zijingang_b1_1f",
         "floor": "1F",
         "geometry_px": {
@@ -2719,12 +2723,13 @@
         "boundary_role": "generalized_visible_partition_not_wall_survey",
         "evidence_ids": [
           "plan_1f",
-          "user_building_statement"
+          "user_building_statement",
+          "user_radiology_exit"
         ],
         "building_confidence": "medium",
         "accessible": "unknown",
         "access_control": "unknown",
-        "note": "可见与机房相通的门；没有确认独立患者入口，不经机房穿行来制造可达性",
+        "note": "用户蓝点确认综合服务中心左侧的患者出入口；补全原先漏描的北侧入口通道，不穿越机房。",
         "level_id": "zju2_zijingang_b2_1f",
         "floor": "1F",
         "geometry_px": {
@@ -2741,11 +2746,19 @@
               ],
               [
                 547.0,
-                584.0
+                402.0
+              ],
+              [
+                581.0,
+                402.0
+              ],
+              [
+                581.0,
+                583.0
               ],
               [
                 399.0,
-                584.0
+                583.0
               ],
               [
                 399.0,
@@ -2780,12 +2793,20 @@
               30.3116577120087
             ],
             [
-              120.08356723167697,
-              30.31165743453233
+              120.08356791028469,
+              30.311657440564495
             ],
             [
-              120.08357044068043,
-              30.31157674898318
+              120.08357185648939,
+              30.311558219145713
+            ],
+            [
+              120.08369468436935,
+              30.31155931089948
+            ],
+            [
+              120.08369394719061,
+              30.31157784677128
             ],
             [
               120.08362812229073,

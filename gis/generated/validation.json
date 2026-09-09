@@ -67,6 +67,7 @@
           "n_o_1f_b2_machine_2",
           "n_o_1f_b2_machine_3",
           "n_o_1f_b2_mri",
+          "n_o_1f_b2_radiology",
           "n_o_1f_b2_stair_s",
           "n_o_1f_b2_surgery"
         ]
@@ -92,16 +93,6 @@
         },
         {
           "object_id": "1f_b1_guard",
-          "issue": "door_not_confirmed",
-          "action": "标注功能区，暂不映射为可达的调度位置"
-        },
-        {
-          "object_id": "1f_b1_service",
-          "issue": "door_not_confirmed",
-          "action": "标注功能区，暂不映射为可达的调度位置"
-        },
-        {
-          "object_id": "1f_b2_radiology",
           "issue": "door_not_confirmed",
           "action": "标注功能区，暂不映射为可达的调度位置"
         },
@@ -155,7 +146,6 @@
         "poi_1f_b1_pharmacy",
         "poi_1f_b1_107",
         "poi_1f_b1_guard",
-        "poi_1f_b2_radiology",
         "poi_1f_b2_archive",
         "poi_1f_b2_clinic_n1",
         "poi_1f_b2_clinic_n2",
@@ -511,7 +501,7 @@
     },
     {
       "location_id": "radiology-1f",
-      "reason": "独立患者入口未确认；不经检查机房制造路径"
+      "reason": "入口已由用户蓝点确认，导航通过 GIS guidanceFor 经综合服务中心；尚未绑定调度项目位置"
     },
     {
       "location_id": "endoscopy-1f",

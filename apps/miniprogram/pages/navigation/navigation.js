@@ -56,6 +56,8 @@ Page({
     floorInstruction: '请根据院内指引前往目标科室。',
     hasMap: false,
     mapSegments: [],
+    activeFloorIndex: 0,
+    activeSegment: null,
     canSkip: false,
     replanNotice: '',
     operating: false
@@ -121,6 +123,7 @@ Page({
     if (step.detailID !== this.data.detailID) {
       this._map = null
       this._maps = []
+      this.setData({ mapSegments: [], activeFloorIndex: 0, activeSegment: null })
       this.setData({ hasMap: false, toName: step.department || step.title, location: '正在更新下一检查点的路线', distance: '暂无路线数据', duration: '', floorInstruction: '正在更新导航' })
     }
     this.setData({ detailID: step.detailID, canSkip: plan.planStatus === '进行中', replanNotice: plan.replanNotice || this.data.replanNotice })
@@ -151,8 +154,15 @@ Page({
     })
   },
   applyNavigation(data) {
+    const previous = this._maps && this._maps[this.data.activeFloorIndex]
     this._map = data.map || null
     this._maps = data.map ? (data.map.segments && data.map.segments.length ? data.map.segments : [data.map]) : []
+    const selected = previous ? this._maps.findIndex(map => map.floorKey === previous.floorKey && map.segmentID === previous.segmentID) : 0
+    const activeFloorIndex = Math.max(0, selected)
+    const mapSegments = this._maps.map((map, index) => ({
+      id: `${index}`, floorKey: map.floorKey || '楼层图',
+      instruction: map.instruction || '', transition: map.transition || ''
+    }))
     this.setData({
       fromName: data.fromName,
       toName: data.toName,
@@ -161,18 +171,60 @@ Page({
       location: data.location || '',
       floorInstruction: data.floorInstruction || '请根据院内指引前往目标科室。',
       hasMap: !!this._maps.length,
-      mapSegments: this._maps.map((map, index) => ({
-        id: `indoorMap-${index}`, floorKey: map.floorKey,
-        title: `${index + 1}. ${map.floorKey || '楼层图'}`,
-        instruction: map.instruction || '', transition: map.transition || ''
-      }))
+      mapSegments,
+      activeFloorIndex,
+      activeSegment: mapSegments[activeFloorIndex] || null
     }, () => {
-      if (data.map) wx.nextTick(() => this._maps.forEach((map, index) => this.drawIndoorMap(map, `indoorMap-${index}`)))
+      if (data.map) wx.nextTick(() => this.drawSelectedFloor())
     })
   },
+  drawSelectedFloor() {
+    this.drawIndoorMap((this._maps || [])[this.data.activeFloorIndex], 'indoorMap')
+  },
+  selectFloor(event) {
+    this.setFloor(Number(event.currentTarget.dataset.index))
+  },
+  setFloor(index) {
+    if (!Number.isInteger(index) || index < 0 || index >= (this._maps || []).length || index === this.data.activeFloorIndex) return
+    this.setData({ activeFloorIndex: index, activeSegment: this.data.mapSegments[index] }, () => wx.nextTick(() => this.drawSelectedFloor()))
+  },
+  startFloorSwipe(event) {
+    this._floorTouch = event.touches && event.touches[0]
+  },
+  endFloorSwipe(event) {
+    const start = this._floorTouch
+    this._floorTouch = null
+    const end = event.changedTouches && event.changedTouches[0]
+    if (!start || !end) return
+    const dx = end.clientX - start.clientX
+    const dy = end.clientY - start.clientY
+    if (Math.abs(dx) > 35 && Math.abs(dx) > Math.abs(dy)) this.setFloor(this.data.activeFloorIndex + (dx < 0 ? 1 : -1))
+  },
+  cancelFloorSwipe() { this._floorTouch = null },
+  startFloorDrag(event) {
+    this._dragX = event.touches && event.touches[0] && event.touches[0].clientX
+    this._draggingFloor = true
+    this.createSelectorQuery().select('.floor-selector').boundingClientRect(rect => {
+      this._floorTrack = rect
+      if (this._draggingFloor) this.moveFloorDragTo(this._dragX)
+    }).exec()
+  },
+  moveFloorDrag(event) {
+    this._dragX = event.touches && event.touches[0] && event.touches[0].clientX
+    this.moveFloorDragTo(this._dragX)
+  },
+  moveFloorDragTo(x) {
+    const rect = this._floorTrack
+    const count = (this._maps || []).length
+    if (!rect || !rect.width || !Number.isFinite(x) || count < 2) return
+    this.setFloor(Math.max(0, Math.min(count - 1, Math.floor((x - rect.left) / rect.width * count))))
+  },
+  endFloorDrag() { this._draggingFloor = false; this._floorTrack = null },
   drawIndoorMap(map = this._map, canvasID = 'indoorMap') {
     if (!map || !map.geojson) return
+    const drawRevision = this._drawRevision = (this._drawRevision || 0) + 1
     this.createSelectorQuery().select(`#${canvasID}`).boundingClientRect(rect => {
+      if (drawRevision !== this._drawRevision) return
       if (this._maps && !this._maps.includes(map)) return
       if (!rect || !rect.width || !rect.height) return
       const features = map.geojson.features || []
@@ -254,6 +306,7 @@ Page({
 
       const drawMarker = (point, color, label) => {
         if (!point || !validPoint(point.coordinates)) return
+        if (point.floorKey && map.floorKey && point.floorKey !== map.floorKey) return
         const projected = project(point.coordinates)
         context.beginPath()
         context.arc(projected[0], projected[1], 7, 0, Math.PI * 2)
@@ -275,6 +328,7 @@ Page({
       const samePoint = map.fromPoint && map.toPoint &&
         JSON.stringify(map.fromPoint.coordinates) === JSON.stringify(map.toPoint.coordinates)
       if (!samePoint) drawMarker(map.fromPoint, '#F59E0B', map.fromPoint ? `起：${map.fromPoint.name}` : '')
+      ;(map.waypoints || []).forEach(point => drawMarker(point, '#7C3AED', `途经${point.order || ''}：${point.name}`))
       drawMarker(map.toPoint, '#16A34A', map.toPoint ? `${samePoint ? '' : '终：'}${map.toPoint.name}` : '')
       context.draw()
     }).exec()

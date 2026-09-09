@@ -359,6 +359,17 @@ class GISUpload(BaseModel):
                 raise ValueError("GIS 仅支持 Point、LineString、Polygon 和 MultiPolygon")
             if "coordinates" not in geometry:
                 raise ValueError("GIS geometry 缺少 coordinates")
+            if "guidanceFor" in properties:
+                bindings = properties["guidanceFor"]
+                if (geometry["type"] != "Point" or not isinstance(bindings, list) or len(bindings) > 50
+                        or any(not isinstance(v, str) or not v.strip() or len(v) > 200 for v in bindings)
+                        or len(set(bindings)) != len(bindings)):
+                    raise ValueError("导诊点 guidanceFor 必须是最多 50 个唯一科室 ID 或 POI ID 的数组")
+                order = properties.get("guidanceOrder", 0)
+                if isinstance(order, bool) or not isinstance(order, int) or not 0 <= order <= 999:
+                    raise ValueError("导诊点 guidanceOrder 必须是 0–999 的整数")
+                if bindings and not (properties.get("route_node_id") or properties.get("routeNodeId")):
+                    raise ValueError("导诊点必须设置路网节点 route_node_id")
             coordinate_count += _validate_geometry_coordinates(
                 geometry["type"],
                 geometry["coordinates"],

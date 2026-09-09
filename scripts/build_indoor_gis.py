@@ -299,7 +299,8 @@ def build_floor(spec, matrix, walking_speed_mps=1.15):
             dict(space_id=k,level_id=level_id(s['building_id'],floor),building_id=building_id(s['building_id']),
                  floor=floor,name=s['name'],category=s['use_type'],room_ref=s['room_ref'],
                  route_node_id=opening_by_space.get(k),scheduler_location_id=None,confidence=s['label_confidence'],
-                 accessible='unknown',access_control='unknown',evidence_ids=s['evidence_ids']),point))
+                 accessible='unknown',access_control='unknown',evidence_ids=s['evidence_ids'],
+                 **({'guidanceFor': s['guidance_for'], 'guidanceOrder': s.get('guidance_order', 0)} if 'guidance_for' in s else {})),point))
     groups=components([n['id'] for n in layers['route_nodes']],[(e['properties']['source'],e['properties']['target']) for e in layers['route_edges']])
     if len(groups)!=1: errors.append(f'{floor}: {len(groups)} same-floor graph components {[(len(g),g[0]) for g in groups]}')
     return layers, dict(floor=floor,components=groups,errors=errors,

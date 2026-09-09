@@ -55,7 +55,7 @@
     },
     {
       "location_id": "radiology-1f",
-      "reason": "独立患者入口未确认；不经检查机房制造路径"
+      "reason": "入口已由用户蓝点确认，导航通过 GIS guidanceFor 经综合服务中心；尚未绑定调度项目位置"
     },
     {
       "location_id": "endoscopy-1f",

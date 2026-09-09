@@ -1221,6 +1221,65 @@
           ]
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "id": "o_1f_b2_radiology",
+      "properties": {
+        "id": "o_1f_b2_radiology",
+        "status": "navigation_draft_not_survey",
+        "space_id": "1f_b2_radiology",
+        "kind": "opening",
+        "confidence": "medium",
+        "evidence_ids": [
+          "plan_1f",
+          "user_radiology_exit"
+        ],
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "observation_status": "user_confirmed_on_plan",
+        "level_id": "zju2_zijingang_b2_1f",
+        "building_id": "zju2_zijingang_b2",
+        "route_node_id": "n_o_1f_b2_radiology",
+        "floor": "1F",
+        "snap_distance_px": 0.0,
+        "raw_segment_px": [
+          [
+            551,
+            402
+          ],
+          [
+            575,
+            402
+          ]
+        ],
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              551.0,
+              402.0
+            ],
+            [
+              575.0,
+              402.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08369403391755,
+            30.31157566608048
+          ],
+          [
+            120.08369455427902,
+            30.31156258193568
+          ]
+        ]
+      }
     }
   ]
 }

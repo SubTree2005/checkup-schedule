@@ -874,6 +874,35 @@
     },
     {
       "type": "Feature",
+      "id": "n_o_1f_b2_radiology",
+      "properties": {
+        "id": "n_o_1f_b2_radiology",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_1f",
+        "building_id": "zju2_zijingang_b2",
+        "floor": "1F",
+        "kind": "door",
+        "name": "n_o_1f_b2_radiology",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            563.0,
+            402.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08369429409832,
+          30.31156912400809
+        ]
+      }
+    },
+    {
+      "type": "Feature",
       "id": "n_1f_640_387",
       "properties": {
         "id": "n_1f_640_387",

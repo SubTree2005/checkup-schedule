@@ -2908,6 +2908,10 @@
               "building_confidence": "medium",
               "accessible": "unknown",
               "access_control": "unknown",
+              "guidance_for": [
+                "poi_1f_b2_radiology"
+              ],
+              "guidance_order": 0,
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
               "geometry_px": {
@@ -3223,12 +3227,13 @@
               "boundary_role": "generalized_visible_partition_not_wall_survey",
               "evidence_ids": [
                 "plan_1f",
-                "user_building_statement"
+                "user_building_statement",
+                "user_radiology_exit"
               ],
               "building_confidence": "medium",
               "accessible": "unknown",
               "access_control": "unknown",
-              "note": "可见与机房相通的门；没有确认独立患者入口，不经机房穿行来制造可达性",
+              "note": "用户蓝点确认综合服务中心左侧的患者出入口；补全原先漏描的北侧入口通道，不穿越机房。",
               "level_id": "zju2_zijingang_b2_1f",
               "floor": "1F",
               "geometry_px": {
@@ -3245,11 +3250,19 @@
                     ],
                     [
                       547.0,
-                      584.0
+                      402.0
+                    ],
+                    [
+                      581.0,
+                      402.0
+                    ],
+                    [
+                      581.0,
+                      583.0
                     ],
                     [
                       399.0,
-                      584.0
+                      583.0
                     ],
                     [
                       399.0,
@@ -3286,12 +3299,20 @@
                     30.3116577120087
                   ],
                   [
-                    120.08356723167697,
-                    30.31165743453233
+                    120.08356791028469,
+                    30.311657440564495
                   ],
                   [
-                    120.08357044068043,
-                    30.31157674898318
+                    120.08357185648939,
+                    30.311558219145713
+                  ],
+                  [
+                    120.08369468436935,
+                    30.31155931089948
+                  ],
+                  [
+                    120.08369394719061,
+                    30.31157784677128
                   ],
                   [
                     120.08362812229073,
@@ -5954,6 +5975,58 @@
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
               "source": "n_1f_563_387",
+              "target": "n_o_1f_b2_radiology",
+              "length_m": 0.9796715990868796,
+              "walk_seconds": 0.8518883470320693,
+              "accessible": "unknown",
+              "access_control": "unknown",
+              "direction": "bidirectional",
+              "routing_status": "draft_enabled",
+              "evidence_ids": [
+                "plan_1f"
+              ],
+              "cost_status": "assumed_not_measured",
+              "walking_speed_mps": 1.15,
+              "geometry_px": {
+                "type": "LineString",
+                "coordinates": [
+                  [
+                    563.0,
+                    387.0
+                  ],
+                  [
+                    563.0,
+                    402.0
+                  ]
+                ]
+              },
+              "featureType": "corridor",
+              "floorKey": "1F",
+              "distanceMeters": 0.9796715990868796
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  120.08370447320598,
+                  30.31156921447983
+                ],
+                [
+                  120.08369429409832,
+                  30.31156912400809
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "id": "e_1f_0031",
+            "properties": {
+              "id": "e_1f_0031",
+              "status": "navigation_draft_not_survey",
+              "level_id": "zju2_zijingang_b1_1f",
+              "floor": "1F",
+              "source": "n_1f_563_387",
               "target": "n_1f_640_387",
               "length_m": 4.6590437365463515,
               "walk_seconds": 4.051342379605523,
@@ -5999,9 +6072,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0031",
+            "id": "e_1f_0032",
             "properties": {
-              "id": "e_1f_0031",
+              "id": "e_1f_0032",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -6051,9 +6124,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0032",
+            "id": "e_1f_0033",
             "properties": {
-              "id": "e_1f_0032",
+              "id": "e_1f_0033",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -6103,9 +6176,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0033",
+            "id": "e_1f_0034",
             "properties": {
-              "id": "e_1f_0033",
+              "id": "e_1f_0034",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -6155,9 +6228,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0034",
+            "id": "e_1f_0035",
             "properties": {
-              "id": "e_1f_0034",
+              "id": "e_1f_0035",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -6207,9 +6280,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0035",
+            "id": "e_1f_0036",
             "properties": {
-              "id": "e_1f_0035",
+              "id": "e_1f_0036",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -6259,9 +6332,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0036",
+            "id": "e_1f_0037",
             "properties": {
-              "id": "e_1f_0036",
+              "id": "e_1f_0037",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -6311,9 +6384,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0037",
+            "id": "e_1f_0038",
             "properties": {
-              "id": "e_1f_0037",
+              "id": "e_1f_0038",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -6363,9 +6436,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0038",
+            "id": "e_1f_0039",
             "properties": {
-              "id": "e_1f_0038",
+              "id": "e_1f_0039",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -6415,9 +6488,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0039",
+            "id": "e_1f_0040",
             "properties": {
-              "id": "e_1f_0039",
+              "id": "e_1f_0040",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -6467,9 +6540,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0040",
+            "id": "e_1f_0041",
             "properties": {
-              "id": "e_1f_0040",
+              "id": "e_1f_0041",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -6519,9 +6592,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0041",
+            "id": "e_1f_0042",
             "properties": {
-              "id": "e_1f_0041",
+              "id": "e_1f_0042",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -6571,9 +6644,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0042",
+            "id": "e_1f_0043",
             "properties": {
-              "id": "e_1f_0042",
+              "id": "e_1f_0043",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -6623,9 +6696,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0043",
+            "id": "e_1f_0044",
             "properties": {
-              "id": "e_1f_0043",
+              "id": "e_1f_0044",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -6675,9 +6748,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0044",
+            "id": "e_1f_0045",
             "properties": {
-              "id": "e_1f_0044",
+              "id": "e_1f_0045",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -6727,9 +6800,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0045",
+            "id": "e_1f_0046",
             "properties": {
-              "id": "e_1f_0045",
+              "id": "e_1f_0046",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -6779,9 +6852,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0046",
+            "id": "e_1f_0047",
             "properties": {
-              "id": "e_1f_0046",
+              "id": "e_1f_0047",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -6831,9 +6904,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0047",
+            "id": "e_1f_0048",
             "properties": {
-              "id": "e_1f_0047",
+              "id": "e_1f_0048",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -6883,9 +6956,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0048",
+            "id": "e_1f_0049",
             "properties": {
-              "id": "e_1f_0048",
+              "id": "e_1f_0049",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -6935,9 +7008,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0049",
+            "id": "e_1f_0050",
             "properties": {
-              "id": "e_1f_0049",
+              "id": "e_1f_0050",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -6987,9 +7060,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0050",
+            "id": "e_1f_0051",
             "properties": {
-              "id": "e_1f_0050",
+              "id": "e_1f_0051",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -7039,9 +7112,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0051",
+            "id": "e_1f_0052",
             "properties": {
-              "id": "e_1f_0051",
+              "id": "e_1f_0052",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -7091,9 +7164,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0052",
+            "id": "e_1f_0053",
             "properties": {
-              "id": "e_1f_0052",
+              "id": "e_1f_0053",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -7143,9 +7216,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0053",
+            "id": "e_1f_0054",
             "properties": {
-              "id": "e_1f_0053",
+              "id": "e_1f_0054",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -7195,9 +7268,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0054",
+            "id": "e_1f_0055",
             "properties": {
-              "id": "e_1f_0054",
+              "id": "e_1f_0055",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -7247,9 +7320,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0055",
+            "id": "e_1f_0056",
             "properties": {
-              "id": "e_1f_0055",
+              "id": "e_1f_0056",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -7299,9 +7372,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0056",
+            "id": "e_1f_0057",
             "properties": {
-              "id": "e_1f_0056",
+              "id": "e_1f_0057",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -7351,9 +7424,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0057",
+            "id": "e_1f_0058",
             "properties": {
-              "id": "e_1f_0057",
+              "id": "e_1f_0058",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -7403,9 +7476,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0058",
+            "id": "e_1f_0059",
             "properties": {
-              "id": "e_1f_0058",
+              "id": "e_1f_0059",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -7455,9 +7528,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0059",
+            "id": "e_1f_0060",
             "properties": {
-              "id": "e_1f_0059",
+              "id": "e_1f_0060",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -7507,9 +7580,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0060",
+            "id": "e_1f_0061",
             "properties": {
-              "id": "e_1f_0060",
+              "id": "e_1f_0061",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -7559,9 +7632,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0061",
+            "id": "e_1f_0062",
             "properties": {
-              "id": "e_1f_0061",
+              "id": "e_1f_0062",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -7611,9 +7684,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0062",
+            "id": "e_1f_0063",
             "properties": {
-              "id": "e_1f_0062",
+              "id": "e_1f_0063",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -7663,9 +7736,9 @@
           },
           {
             "type": "Feature",
-            "id": "e_1f_0063",
+            "id": "e_1f_0064",
             "properties": {
-              "id": "e_1f_0063",
+              "id": "e_1f_0064",
               "status": "navigation_draft_not_survey",
               "level_id": "zju2_zijingang_b1_1f",
               "floor": "1F",
@@ -8977,6 +9050,67 @@
           },
           {
             "type": "Feature",
+            "id": "o_1f_b2_radiology",
+            "properties": {
+              "id": "o_1f_b2_radiology",
+              "status": "navigation_draft_not_survey",
+              "space_id": "1f_b2_radiology",
+              "kind": "opening",
+              "confidence": "medium",
+              "evidence_ids": [
+                "plan_1f",
+                "user_radiology_exit"
+              ],
+              "accessible": "unknown",
+              "access_control": "unknown",
+              "observation_status": "user_confirmed_on_plan",
+              "level_id": "zju2_zijingang_b2_1f",
+              "building_id": "zju2_zijingang_b2",
+              "route_node_id": "n_o_1f_b2_radiology",
+              "floor": "1F",
+              "snap_distance_px": 0.0,
+              "raw_segment_px": [
+                [
+                  551,
+                  402
+                ],
+                [
+                  575,
+                  402
+                ]
+              ],
+              "geometry_px": {
+                "type": "LineString",
+                "coordinates": [
+                  [
+                    551.0,
+                    402.0
+                  ],
+                  [
+                    575.0,
+                    402.0
+                  ]
+                ]
+              },
+              "featureType": "opening",
+              "floorKey": "1F"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  120.08369403391755,
+                  30.31157566608048
+                ],
+                [
+                  120.08369455427902,
+                  30.31156258193568
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
             "id": "poi_1f_b2_103",
             "properties": {
               "id": "poi_1f_b2_103",
@@ -9598,6 +9732,10 @@
                 "plan_1f",
                 "user_building_statement"
               ],
+              "guidanceFor": [
+                "poi_1f_b2_radiology"
+              ],
+              "guidanceOrder": 0,
               "geometry_px": {
                 "type": "Point",
                 "coordinates": [
@@ -9749,20 +9887,21 @@
               "name": "放射科",
               "category": "radiology",
               "room_ref": null,
-              "route_node_id": null,
+              "route_node_id": "n_o_1f_b2_radiology",
               "scheduler_location_id": null,
               "confidence": "high",
               "accessible": "unknown",
               "access_control": "unknown",
               "evidence_ids": [
                 "plan_1f",
-                "user_building_statement"
+                "user_building_statement",
+                "user_radiology_exit"
               ],
               "geometry_px": {
                 "type": "Point",
                 "coordinates": [
-                  473.0,
-                  561.0
+                  564.0,
+                  450.5
                 ]
               },
               "featureType": "poi",
@@ -9771,8 +9910,8 @@
             "geometry": {
               "type": "Point",
               "coordinates": [
-                120.08358444415131,
-                30.311617230496417
+                120.08366140333274,
+                30.31156828630465
               ]
             }
           },

@@ -21,56 +21,56 @@
           "startedAt": "2024-09-12T08:00:00+08:00",
           "completedAt": "2024-09-12T08:18:00+08:00",
           "report": {
-            "conclusion": "血常规及生化模拟指标均在演示参考范围内。 仅供产品演示。",
+            "conclusion": "血常规及生化指标均在参考范围内。",
             "reportedAt": "2024-09-12T12:18:00+08:00",
             "items": [
               {
                 "label": "白细胞计数",
                 "value": "6.2",
                 "unit": "10^9/L",
-                "reference": "3.5–9.5（演示参考）",
+                "reference": "3.5–9.5",
                 "status": "正常"
               },
               {
                 "label": "血红蛋白",
                 "value": "146",
                 "unit": "g/L",
-                "reference": "130–175（演示参考）",
+                "reference": "130–175",
                 "status": "正常"
               },
               {
                 "label": "空腹血糖",
                 "value": "4.8",
                 "unit": "mmol/L",
-                "reference": "3.9–6.1（演示参考）",
+                "reference": "3.9–6.1",
                 "status": "正常"
               },
               {
                 "label": "甘油三酯",
                 "value": "1.12",
                 "unit": "mmol/L",
-                "reference": "<1.70（演示参考）",
+                "reference": "<1.70",
                 "status": "正常"
               },
               {
                 "label": "总胆固醇",
                 "value": "4.15",
                 "unit": "mmol/L",
-                "reference": "<5.20（演示参考）",
+                "reference": "<5.20",
                 "status": "正常"
               },
               {
                 "label": "丙氨酸氨基转移酶",
                 "value": "20",
                 "unit": "U/L",
-                "reference": "9–50（演示参考）",
+                "reference": "9–50",
                 "status": "正常"
               },
               {
                 "label": "肌酐",
                 "value": "76",
                 "unit": "μmol/L",
-                "reference": "57–97（演示参考）",
+                "reference": "57–97",
                 "status": "正常"
               }
             ]
@@ -82,7 +82,7 @@
           "startedAt": "2024-09-12T08:23:00+08:00",
           "completedAt": "2024-09-12T08:31:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2024-09-12T12:31:00+08:00",
             "items": [
               {
@@ -115,7 +115,7 @@
           "startedAt": "2024-09-12T08:36:00+08:00",
           "completedAt": "2024-09-12T08:44:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2024-09-12T12:44:00+08:00",
             "items": [
               {
@@ -143,7 +143,7 @@
                 "label": "BMI",
                 "value": "20.9",
                 "unit": "kg/m²",
-                "reference": "18.5–23.9（演示参考）",
+                "reference": "18.5–23.9",
                 "status": "正常"
               }
             ]
@@ -155,7 +155,7 @@
           "startedAt": "2024-09-12T08:49:00+08:00",
           "completedAt": "2024-09-12T08:59:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2024-09-12T12:59:00+08:00",
             "items": [
               {
@@ -181,7 +181,7 @@
           "startedAt": "2024-09-12T09:04:00+08:00",
           "completedAt": "2024-09-12T09:16:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2024-09-12T13:16:00+08:00",
             "items": [
               {
@@ -207,7 +207,7 @@
           "startedAt": "2024-09-12T09:21:00+08:00",
           "completedAt": "2024-09-12T09:31:00+08:00",
           "report": {
-            "conclusion": "模拟既往近视，双眼矫正视力均为 1.0。 仅供产品演示。",
+            "conclusion": "既往近视，双眼矫正视力均为 1.0。",
             "reportedAt": "2024-09-12T13:31:00+08:00",
             "items": [
               {
@@ -226,7 +226,7 @@
               },
               {
                 "label": "屈光状态",
-                "value": "近视（模拟既往情况）",
+                "value": "近视",
                 "unit": "",
                 "reference": "",
                 "status": "提示"
@@ -240,7 +240,7 @@
           "startedAt": "2024-09-12T09:36:00+08:00",
           "completedAt": "2024-09-12T09:46:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2024-09-12T13:46:00+08:00",
             "items": [
               {
@@ -266,7 +266,7 @@
           "startedAt": "2024-09-12T09:51:00+08:00",
           "completedAt": "2024-09-12T10:06:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2024-09-12T14:06:00+08:00",
             "items": [
               {
@@ -292,14 +292,14 @@
           "startedAt": "2024-09-12T10:11:00+08:00",
           "completedAt": "2024-09-12T10:21:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2024-09-12T14:21:00+08:00",
             "items": [
               {
                 "label": "心率",
                 "value": "72",
                 "unit": "次/分",
-                "reference": "60–100（演示参考）",
+                "reference": "60–100",
                 "status": "正常"
               },
               {
@@ -325,12 +325,12 @@
           "startedAt": "2024-09-12T10:36:00+08:00",
           "completedAt": "2024-09-12T10:48:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2024-09-12T14:48:00+08:00",
             "items": [
               {
                 "label": "胸部影像",
-                "value": "双肺未见明显活动性病变（模拟）",
+                "value": "双肺未见明显活动性病变",
                 "unit": "",
                 "reference": "",
                 "status": "正常"
@@ -351,56 +351,56 @@
           "startedAt": "2025-09-10T08:00:00+08:00",
           "completedAt": "2025-09-10T08:18:00+08:00",
           "report": {
-            "conclusion": "模拟结果中甘油三酯轻度偏高，其余展示指标在演示参考范围内。 仅供产品演示。",
+            "conclusion": "结果中甘油三酯轻度偏高，其余展示指标在参考范围内。",
             "reportedAt": "2025-09-10T12:18:00+08:00",
             "items": [
               {
                 "label": "白细胞计数",
                 "value": "6.8",
                 "unit": "10^9/L",
-                "reference": "3.5–9.5（演示参考）",
+                "reference": "3.5–9.5",
                 "status": "正常"
               },
               {
                 "label": "血红蛋白",
                 "value": "149",
                 "unit": "g/L",
-                "reference": "130–175（演示参考）",
+                "reference": "130–175",
                 "status": "正常"
               },
               {
                 "label": "空腹血糖",
                 "value": "5.0",
                 "unit": "mmol/L",
-                "reference": "3.9–6.1（演示参考）",
+                "reference": "3.9–6.1",
                 "status": "正常"
               },
               {
                 "label": "甘油三酯",
                 "value": "1.85",
                 "unit": "mmol/L",
-                "reference": "<1.70（演示参考）",
+                "reference": "<1.70",
                 "status": "偏高"
               },
               {
                 "label": "总胆固醇",
                 "value": "4.88",
                 "unit": "mmol/L",
-                "reference": "<5.20（演示参考）",
+                "reference": "<5.20",
                 "status": "正常"
               },
               {
                 "label": "丙氨酸氨基转移酶",
                 "value": "26",
                 "unit": "U/L",
-                "reference": "9–50（演示参考）",
+                "reference": "9–50",
                 "status": "正常"
               },
               {
                 "label": "肌酐",
                 "value": "79",
                 "unit": "μmol/L",
-                "reference": "57–97（演示参考）",
+                "reference": "57–97",
                 "status": "正常"
               }
             ]
@@ -412,7 +412,7 @@
           "startedAt": "2025-09-10T08:23:00+08:00",
           "completedAt": "2025-09-10T08:31:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2025-09-10T12:31:00+08:00",
             "items": [
               {
@@ -445,7 +445,7 @@
           "startedAt": "2025-09-10T08:36:00+08:00",
           "completedAt": "2025-09-10T08:44:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2025-09-10T12:44:00+08:00",
             "items": [
               {
@@ -473,7 +473,7 @@
                 "label": "BMI",
                 "value": "22.5",
                 "unit": "kg/m²",
-                "reference": "18.5–23.9（演示参考）",
+                "reference": "18.5–23.9",
                 "status": "正常"
               }
             ]
@@ -485,7 +485,7 @@
           "startedAt": "2025-09-10T08:49:00+08:00",
           "completedAt": "2025-09-10T08:59:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2025-09-10T12:59:00+08:00",
             "items": [
               {
@@ -511,7 +511,7 @@
           "startedAt": "2025-09-10T09:04:00+08:00",
           "completedAt": "2025-09-10T09:16:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2025-09-10T13:16:00+08:00",
             "items": [
               {
@@ -537,7 +537,7 @@
           "startedAt": "2025-09-10T09:21:00+08:00",
           "completedAt": "2025-09-10T09:31:00+08:00",
           "report": {
-            "conclusion": "模拟既往近视，双眼矫正视力均为 1.0。 仅供产品演示。",
+            "conclusion": "既往近视，双眼矫正视力均为 1.0。",
             "reportedAt": "2025-09-10T13:31:00+08:00",
             "items": [
               {
@@ -556,7 +556,7 @@
               },
               {
                 "label": "屈光状态",
-                "value": "近视（模拟既往情况）",
+                "value": "近视",
                 "unit": "",
                 "reference": "",
                 "status": "提示"
@@ -570,7 +570,7 @@
           "startedAt": "2025-09-10T09:36:00+08:00",
           "completedAt": "2025-09-10T09:46:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2025-09-10T13:46:00+08:00",
             "items": [
               {
@@ -596,7 +596,7 @@
           "startedAt": "2025-09-10T09:51:00+08:00",
           "completedAt": "2025-09-10T10:06:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2025-09-10T14:06:00+08:00",
             "items": [
               {
@@ -622,14 +622,14 @@
           "startedAt": "2025-09-10T10:11:00+08:00",
           "completedAt": "2025-09-10T10:21:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2025-09-10T14:21:00+08:00",
             "items": [
               {
                 "label": "心率",
                 "value": "76",
                 "unit": "次/分",
-                "reference": "60–100（演示参考）",
+                "reference": "60–100",
                 "status": "正常"
               },
               {
@@ -655,12 +655,12 @@
           "startedAt": "2025-09-10T10:36:00+08:00",
           "completedAt": "2025-09-10T10:48:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2025-09-10T14:48:00+08:00",
             "items": [
               {
                 "label": "胸部影像",
-                "value": "双肺未见明显活动性病变（模拟）",
+                "value": "双肺未见明显活动性病变",
                 "unit": "",
                 "reference": "",
                 "status": "正常"
@@ -681,56 +681,56 @@
           "startedAt": "2026-03-16T08:00:00+08:00",
           "completedAt": "2026-03-16T08:18:00+08:00",
           "report": {
-            "conclusion": "模拟结果中甘油三酯仍轻度偏高，用于展示连续体检对比。 仅供产品演示。",
+            "conclusion": "结果中甘油三酯仍轻度偏高，用于展示连续体检对比。",
             "reportedAt": "2026-03-16T12:18:00+08:00",
             "items": [
               {
                 "label": "白细胞计数",
                 "value": "6.1",
                 "unit": "10^9/L",
-                "reference": "3.5–9.5（演示参考）",
+                "reference": "3.5–9.5",
                 "status": "正常"
               },
               {
                 "label": "血红蛋白",
                 "value": "148",
                 "unit": "g/L",
-                "reference": "130–175（演示参考）",
+                "reference": "130–175",
                 "status": "正常"
               },
               {
                 "label": "空腹血糖",
                 "value": "4.9",
                 "unit": "mmol/L",
-                "reference": "3.9–6.1（演示参考）",
+                "reference": "3.9–6.1",
                 "status": "正常"
               },
               {
                 "label": "甘油三酯",
                 "value": "1.92",
                 "unit": "mmol/L",
-                "reference": "<1.70（演示参考）",
+                "reference": "<1.70",
                 "status": "偏高"
               },
               {
                 "label": "总胆固醇",
                 "value": "4.93",
                 "unit": "mmol/L",
-                "reference": "<5.20（演示参考）",
+                "reference": "<5.20",
                 "status": "正常"
               },
               {
                 "label": "丙氨酸氨基转移酶",
                 "value": "28",
                 "unit": "U/L",
-                "reference": "9–50（演示参考）",
+                "reference": "9–50",
                 "status": "正常"
               },
               {
                 "label": "肌酐",
                 "value": "78",
                 "unit": "μmol/L",
-                "reference": "57–97（演示参考）",
+                "reference": "57–97",
                 "status": "正常"
               }
             ]
@@ -742,7 +742,7 @@
           "startedAt": "2026-03-16T08:23:00+08:00",
           "completedAt": "2026-03-16T08:31:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2026-03-16T12:31:00+08:00",
             "items": [
               {
@@ -775,7 +775,7 @@
           "startedAt": "2026-03-16T08:36:00+08:00",
           "completedAt": "2026-03-16T08:44:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2026-03-16T12:44:00+08:00",
             "items": [
               {
@@ -803,7 +803,7 @@
                 "label": "BMI",
                 "value": "23.2",
                 "unit": "kg/m²",
-                "reference": "18.5–23.9（演示参考）",
+                "reference": "18.5–23.9",
                 "status": "正常"
               }
             ]
@@ -815,7 +815,7 @@
           "startedAt": "2026-03-16T08:49:00+08:00",
           "completedAt": "2026-03-16T08:59:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2026-03-16T12:59:00+08:00",
             "items": [
               {
@@ -841,7 +841,7 @@
           "startedAt": "2026-03-16T09:04:00+08:00",
           "completedAt": "2026-03-16T09:16:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2026-03-16T13:16:00+08:00",
             "items": [
               {
@@ -867,7 +867,7 @@
           "startedAt": "2026-03-16T09:21:00+08:00",
           "completedAt": "2026-03-16T09:31:00+08:00",
           "report": {
-            "conclusion": "模拟既往近视，双眼矫正视力均为 1.0。 仅供产品演示。",
+            "conclusion": "既往近视，双眼矫正视力均为 1.0。",
             "reportedAt": "2026-03-16T13:31:00+08:00",
             "items": [
               {
@@ -886,7 +886,7 @@
               },
               {
                 "label": "屈光状态",
-                "value": "近视（模拟既往情况）",
+                "value": "近视",
                 "unit": "",
                 "reference": "",
                 "status": "提示"
@@ -900,7 +900,7 @@
           "startedAt": "2026-03-16T09:36:00+08:00",
           "completedAt": "2026-03-16T09:46:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2026-03-16T13:46:00+08:00",
             "items": [
               {
@@ -926,7 +926,7 @@
           "startedAt": "2026-03-16T09:51:00+08:00",
           "completedAt": "2026-03-16T10:06:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2026-03-16T14:06:00+08:00",
             "items": [
               {
@@ -952,14 +952,14 @@
           "startedAt": "2026-03-16T10:11:00+08:00",
           "completedAt": "2026-03-16T10:21:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2026-03-16T14:21:00+08:00",
             "items": [
               {
                 "label": "心率",
                 "value": "74",
                 "unit": "次/分",
-                "reference": "60–100（演示参考）",
+                "reference": "60–100",
                 "status": "正常"
               },
               {
@@ -985,12 +985,12 @@
           "startedAt": "2026-03-16T10:36:00+08:00",
           "completedAt": "2026-03-16T10:48:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2026-03-16T14:48:00+08:00",
             "items": [
               {
                 "label": "胸部影像",
-                "value": "双肺未见明显活动性病变（模拟）",
+                "value": "双肺未见明显活动性病变",
                 "unit": "",
                 "reference": "",
                 "status": "正常"
@@ -1011,56 +1011,56 @@
           "startedAt": "2026-09-04T08:00:00+08:00",
           "completedAt": "2026-09-04T08:18:00+08:00",
           "report": {
-            "conclusion": "模拟复查的甘油三酯较前次下降，已在演示参考范围内。 仅供产品演示。",
+            "conclusion": "复查的甘油三酯较前次下降，已在参考范围内。",
             "reportedAt": "2026-09-04T12:18:00+08:00",
             "items": [
               {
                 "label": "白细胞计数",
                 "value": "5.9",
                 "unit": "10^9/L",
-                "reference": "3.5–9.5（演示参考）",
+                "reference": "3.5–9.5",
                 "status": "正常"
               },
               {
                 "label": "血红蛋白",
                 "value": "147",
                 "unit": "g/L",
-                "reference": "130–175（演示参考）",
+                "reference": "130–175",
                 "status": "正常"
               },
               {
                 "label": "空腹血糖",
                 "value": "4.8",
                 "unit": "mmol/L",
-                "reference": "3.9–6.1（演示参考）",
+                "reference": "3.9–6.1",
                 "status": "正常"
               },
               {
                 "label": "甘油三酯",
                 "value": "1.45",
                 "unit": "mmol/L",
-                "reference": "<1.70（演示参考）",
+                "reference": "<1.70",
                 "status": "正常"
               },
               {
                 "label": "总胆固醇",
                 "value": "4.52",
                 "unit": "mmol/L",
-                "reference": "<5.20（演示参考）",
+                "reference": "<5.20",
                 "status": "正常"
               },
               {
                 "label": "丙氨酸氨基转移酶",
                 "value": "23",
                 "unit": "U/L",
-                "reference": "9–50（演示参考）",
+                "reference": "9–50",
                 "status": "正常"
               },
               {
                 "label": "肌酐",
                 "value": "77",
                 "unit": "μmol/L",
-                "reference": "57–97（演示参考）",
+                "reference": "57–97",
                 "status": "正常"
               }
             ]
@@ -1072,7 +1072,7 @@
           "startedAt": "2026-09-04T08:23:00+08:00",
           "completedAt": "2026-09-04T08:31:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2026-09-04T12:31:00+08:00",
             "items": [
               {
@@ -1105,7 +1105,7 @@
           "startedAt": "2026-09-04T08:36:00+08:00",
           "completedAt": "2026-09-04T08:44:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2026-09-04T12:44:00+08:00",
             "items": [
               {
@@ -1133,7 +1133,7 @@
                 "label": "BMI",
                 "value": "21.9",
                 "unit": "kg/m²",
-                "reference": "18.5–23.9（演示参考）",
+                "reference": "18.5–23.9",
                 "status": "正常"
               }
             ]
@@ -1145,7 +1145,7 @@
           "startedAt": "2026-09-04T08:49:00+08:00",
           "completedAt": "2026-09-04T08:59:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2026-09-04T12:59:00+08:00",
             "items": [
               {
@@ -1171,7 +1171,7 @@
           "startedAt": "2026-09-04T09:04:00+08:00",
           "completedAt": "2026-09-04T09:16:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2026-09-04T13:16:00+08:00",
             "items": [
               {
@@ -1197,7 +1197,7 @@
           "startedAt": "2026-09-04T09:21:00+08:00",
           "completedAt": "2026-09-04T09:31:00+08:00",
           "report": {
-            "conclusion": "模拟既往近视，双眼矫正视力均为 1.0。 仅供产品演示。",
+            "conclusion": "既往近视，双眼矫正视力均为 1.0。",
             "reportedAt": "2026-09-04T13:31:00+08:00",
             "items": [
               {
@@ -1216,7 +1216,7 @@
               },
               {
                 "label": "屈光状态",
-                "value": "近视（模拟既往情况）",
+                "value": "近视",
                 "unit": "",
                 "reference": "",
                 "status": "提示"
@@ -1230,7 +1230,7 @@
           "startedAt": "2026-09-04T09:36:00+08:00",
           "completedAt": "2026-09-04T09:46:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2026-09-04T13:46:00+08:00",
             "items": [
               {
@@ -1256,7 +1256,7 @@
           "startedAt": "2026-09-04T09:51:00+08:00",
           "completedAt": "2026-09-04T10:06:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2026-09-04T14:06:00+08:00",
             "items": [
               {
@@ -1282,14 +1282,14 @@
           "startedAt": "2026-09-04T10:11:00+08:00",
           "completedAt": "2026-09-04T10:21:00+08:00",
           "report": {
-            "conclusion": "本项目模拟结果未见明显异常。 仅供产品演示。",
+            "conclusion": "本项目结果未见明显异常。",
             "reportedAt": "2026-09-04T14:21:00+08:00",
             "items": [
               {
                 "label": "心率",
                 "value": "70",
                 "unit": "次/分",
-                "reference": "60–100（演示参考）",
+                "reference": "60–100",
                 "status": "正常"
               },
               {

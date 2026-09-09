@@ -13,6 +13,7 @@ page { background: linear-gradient(180deg, #F7FAFF 0%, #FFFFFF 100%); }
 .destination-pin { width: 56rpx; height: 56rpx; flex: none; display: block; }
 .destination-copy { flex: 1; min-width: 0; color: #263248; font-size: 27rpx; font-weight: 600; line-height: 1.45; }
 .destination-copy text { margin-left: 10rpx; color: #2F69EC; font-size: 29rpx; }
+.destination-card .route-pill { width: auto; min-width: 0; height: 56rpx; min-height: 56rpx; margin: 0; padding: 0 24rpx; display: flex; align-items: center; justify-content: center; line-height: 1; box-sizing: border-box; }
 .map-card { margin-top: 18rpx; padding: 14rpx; }
 .floor-selector { position: relative; display: flex; height: 64rpx; margin: 6rpx auto 18rpx; border-radius: 999rpx; background: #EDF2FA; overflow: hidden; }
 .floor-slider { position: absolute; left: 0; top: 0; height: 100%; border: 5rpx solid #EDF2FA; box-sizing: border-box; border-radius: 999rpx; background: #2F69EC; transition: transform .18s ease; }

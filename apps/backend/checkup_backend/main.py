@@ -22,6 +22,7 @@ from .database import Base, build_engine, build_session_factory
 from .middleware import SecurityBoundaryMiddleware
 from .patient_api import router as patient_router
 from .reminder_api import internal_reminder_router, patient_reminder_router
+from .patient_import import router as patient_import_router
 
 
 def ensure_compatible_columns(engine) -> None:
@@ -34,6 +35,7 @@ def ensure_compatible_columns(engine) -> None:
             additions = {
                 "hospitalLevel": "VARCHAR(50) NOT NULL DEFAULT '未定级'",
                 "positioning": "VARCHAR(100) NOT NULL DEFAULT '综合医疗机构'",
+                "demoUnrestrictedUntil": "DATETIME NULL",
             }
             for name, declaration in additions.items():
                 if name not in existing:
@@ -43,6 +45,10 @@ def ensure_compatible_columns(engine) -> None:
             if "avatarUrl" not in user_columns:
                 declaration = "LONGTEXT" if engine.dialect.name == "mysql" else "TEXT"
                 connection.execute(text(f"ALTER TABLE user_info ADD COLUMN avatarUrl {declaration}"))
+        if "plan_execution_detail" in tables:
+            detail_columns = {column["name"] for column in inspector.get_columns("plan_execution_detail")}
+            if "examReport" not in detail_columns:
+                connection.execute(text("ALTER TABLE plan_execution_detail ADD COLUMN examReport JSON"))
         if "queue_snapshot" in tables:
             queue_table = Base.metadata.tables["queue_snapshot"]
             queue_index = next(
@@ -190,6 +196,7 @@ def create_app(database_url: str | None = None, static_dir: str | Path | None = 
     app.include_router(router)
     app.include_router(patient_router)
     app.include_router(patient_agent_router)
+    app.include_router(patient_import_router)
     app.include_router(patient_reminder_router)
     app.include_router(internal_reminder_router)
     if (admin_dir / "assets").is_dir():

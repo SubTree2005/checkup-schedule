@@ -1,0 +1,1299 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "1f_restroom_nw",
+      "properties": {
+        "id": "1f_restroom_nw",
+        "name": "卫生间（西北）",
+        "use_type": "restroom",
+        "room_ref": null,
+        "confidence": "medium",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08390935282,
+              30.31185644609
+            ],
+            [
+              120.083911216259,
+              30.3118096011
+            ],
+            [
+              120.083854120804,
+              30.311809093959
+            ],
+            [
+              120.083852257373,
+              30.311855938948
+            ],
+            [
+              120.08390935282,
+              30.31185644609
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_west_large_room",
+      "properties": {
+        "id": "1f_west_large_room",
+        "name": "西侧大房间（图签待核）",
+        "use_type": "room",
+        "room_ref": null,
+        "confidence": "low",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083852257373,
+              30.311855938948
+            ],
+            [
+              120.083854120804,
+              30.311809093959
+            ],
+            [
+              120.083695523498,
+              30.311807684811
+            ],
+            [
+              120.083693660092,
+              30.311854529792
+            ],
+            [
+              120.083852257373,
+              30.311855938948
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_room_103",
+      "properties": {
+        "id": "1f_room_103",
+        "name": "103",
+        "use_type": "room",
+        "room_ref": "103",
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08389719688,
+              30.311789781147
+            ],
+            [
+              120.08389935729,
+              30.311735468088
+            ],
+            [
+              120.083821115486,
+              30.311734773077
+            ],
+            [
+              120.08381895509,
+              30.311789086133
+            ],
+            [
+              120.08389719688,
+              30.311789781147
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_room_102",
+      "properties": {
+        "id": "1f_room_102",
+        "name": "102",
+        "use_type": "room",
+        "room_ref": "102",
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08381895509,
+              30.311789086133
+            ],
+            [
+              120.083821115486,
+              30.311734773077
+            ],
+            [
+              120.083778822795,
+              30.311734397334
+            ],
+            [
+              120.083776662406,
+              30.311788710388
+            ],
+            [
+              120.08381895509,
+              30.311789086133
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_room_101",
+      "properties": {
+        "id": "1f_room_101",
+        "name": "101",
+        "use_type": "room",
+        "room_ref": "101",
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083776662406,
+              30.311788710388
+            ],
+            [
+              120.083778822795,
+              30.311734397334
+            ],
+            [
+              120.083736530229,
+              30.311734021543
+            ],
+            [
+              120.083734369847,
+              30.311788334594
+            ],
+            [
+              120.083776662406,
+              30.311788710388
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_mri",
+      "properties": {
+        "id": "1f_mri",
+        "name": "MRI",
+        "use_type": "imaging",
+        "room_ref": null,
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083936610874,
+              30.311756173553
+            ],
+            [
+              120.083940526493,
+              30.311657731092
+            ],
+            [
+              120.083858055178,
+              30.311656998582
+            ],
+            [
+              120.083854139586,
+              30.311755441038
+            ],
+            [
+              120.083936610874,
+              30.311756173553
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_electrical",
+      "properties": {
+        "id": "1f_electrical",
+        "name": "配电间",
+        "use_type": "utility",
+        "room_ref": null,
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083940526493,
+              30.311657731092
+            ],
+            [
+              120.083943118769,
+              30.311592555355
+            ],
+            [
+              120.083860647437,
+              30.311591822849
+            ],
+            [
+              120.083858055178,
+              30.311656998582
+            ],
+            [
+              120.083940526493,
+              30.311657731092
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_endoscopy",
+      "properties": {
+        "id": "1f_endoscopy",
+        "name": "内镜",
+        "use_type": "clinical",
+        "room_ref": null,
+        "confidence": "medium",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083855867877,
+              30.311711990584
+            ],
+            [
+              120.083860647437,
+              30.311591822849
+            ],
+            [
+              120.083726156731,
+              30.311590627956
+            ],
+            [
+              120.083721377225,
+              30.311710795676
+            ],
+            [
+              120.083855867877,
+              30.311711990584
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_restroom_north",
+      "properties": {
+        "id": "1f_restroom_north",
+        "name": "卫生间（北侧）",
+        "use_type": "restroom",
+        "room_ref": null,
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083943699317,
+              30.311577958701
+            ],
+            [
+              120.083945454428,
+              30.311533829275
+            ],
+            [
+              120.083892588126,
+              30.311533359738
+            ],
+            [
+              120.083890833022,
+              30.311577489163
+            ],
+            [
+              120.083943699317,
+              30.311577958701
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_stair_2",
+      "properties": {
+        "id": "1f_stair_2",
+        "name": "楼梯2#",
+        "use_type": "stairs",
+        "room_ref": null,
+        "confidence": "medium",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083890833022,
+              30.311577489163
+            ],
+            [
+              120.083892925641,
+              30.311524873309
+            ],
+            [
+              120.083863320594,
+              30.311524610343
+            ],
+            [
+              120.083861227981,
+              30.311577226197
+            ],
+            [
+              120.083890833022,
+              30.311577489163
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_room_129",
+      "properties": {
+        "id": "1f_room_129",
+        "name": "129",
+        "use_type": "room",
+        "room_ref": "129",
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083861430495,
+              30.311572134341
+            ],
+            [
+              120.08386298308,
+              30.311533096773
+            ],
+            [
+              120.083820690262,
+              30.311532721072
+            ],
+            [
+              120.083819137682,
+              30.311571758639
+            ],
+            [
+              120.083861430495,
+              30.311572134341
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_room_127",
+      "properties": {
+        "id": "1f_room_127",
+        "name": "127",
+        "use_type": "room",
+        "room_ref": "127",
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083819137682,
+              30.311571758639
+            ],
+            [
+              120.083820690262,
+              30.311532721072
+            ],
+            [
+              120.083767824413,
+              30.311532251384
+            ],
+            [
+              120.083766271839,
+              30.311571288949
+            ],
+            [
+              120.083819137682,
+              30.311571758639
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_room_125",
+      "properties": {
+        "id": "1f_room_125",
+        "name": "125",
+        "use_type": "room",
+        "room_ref": "125",
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083766271839,
+              30.311571288949
+            ],
+            [
+              120.083767824413,
+              30.311532251384
+            ],
+            [
+              120.083727646498,
+              30.31153189437
+            ],
+            [
+              120.08372609393,
+              30.311570931934
+            ],
+            [
+              120.083766271839,
+              30.311571288949
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_pharmacy",
+      "properties": {
+        "id": "1f_pharmacy",
+        "name": "药剂科",
+        "use_type": "pharmacy",
+        "room_ref": null,
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083821675793,
+              30.311507940698
+            ],
+            [
+              120.08382379531,
+              30.311454645906
+            ],
+            [
+              120.08374766853,
+              30.311453969537
+            ],
+            [
+              120.083745549026,
+              30.311507264325
+            ],
+            [
+              120.083821675793,
+              30.311507940698
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_emergency_a",
+      "properties": {
+        "id": "1f_emergency_a",
+        "name": "急诊A区",
+        "use_type": "emergency",
+        "room_ref": null,
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08382379531,
+              30.311454645906
+            ],
+            [
+              120.083826630225,
+              30.311383359848
+            ],
+            [
+              120.083750503426,
+              30.311382683484
+            ],
+            [
+              120.08374766853,
+              30.311453969537
+            ],
+            [
+              120.08382379531,
+              30.311454645906
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_infusion",
+      "properties": {
+        "id": "1f_infusion",
+        "name": "输液",
+        "use_type": "infusion",
+        "room_ref": null,
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083831331977,
+              30.311371516406
+            ],
+            [
+              120.083833626802,
+              30.311313808614
+            ],
+            [
+              120.083737838523,
+              30.311275604015
+            ],
+            [
+              120.083693116334,
+              30.311336330546
+            ],
+            [
+              120.083755205153,
+              30.311370840051
+            ],
+            [
+              120.083831331977,
+              30.311371516406
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_observation",
+      "properties": {
+        "id": "1f_observation",
+        "name": "观察",
+        "use_type": "observation",
+        "room_ref": null,
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083701574813,
+              30.31133640572
+            ],
+            [
+              120.083730954712,
+              30.31128912595
+            ],
+            [
+              120.083677324394,
+              30.311254691559
+            ],
+            [
+              120.083639351215,
+              30.311305290678
+            ],
+            [
+              120.083701574813,
+              30.31133640572
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_emergency_107",
+      "properties": {
+        "id": "1f_emergency_107",
+        "name": "107急诊室",
+        "use_type": "emergency",
+        "room_ref": "107",
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083667786074,
+              30.311281772996
+            ],
+            [
+              120.083706434195,
+              30.311214200943
+            ],
+            [
+              120.083585352402,
+              30.311173733599
+            ],
+            [
+              120.083539685999,
+              30.31125822198
+            ],
+            [
+              120.083667786074,
+              30.311281772996
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_guard_fire_control",
+      "properties": {
+        "id": "1f_guard_fire_control",
+        "name": "门卫（兼消控）",
+        "use_type": "security",
+        "room_ref": null,
+        "confidence": "medium",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083643040497,
+              30.311318906577
+            ],
+            [
+              120.083670035672,
+              30.311278397215
+            ],
+            [
+              120.083620094873,
+              30.311257578623
+            ],
+            [
+              120.083590985211,
+              30.311298069144
+            ],
+            [
+              120.083643040497,
+              30.311318906577
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_service_center",
+      "properties": {
+        "id": "1f_service_center",
+        "name": "综合服务中心",
+        "use_type": "service",
+        "room_ref": null,
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083707062328,
+              30.311570762804
+            ],
+            [
+              120.083708614894,
+              30.311531725242
+            ],
+            [
+              120.083617686472,
+              30.311530917025
+            ],
+            [
+              120.083616133919,
+              30.311569954583
+            ],
+            [
+              120.083707062328,
+              30.311570762804
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_outpatient_lobby",
+      "properties": {
+        "id": "1f_outpatient_lobby",
+        "name": "门诊大厅",
+        "use_type": "lobby",
+        "room_ref": null,
+        "confidence": "high",
+        "scheduler_location_id": "LOBBY",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083710729515,
+              30.311531744034
+            ],
+            [
+              120.083716196951,
+              30.311394263837
+            ],
+            [
+              120.083593549376,
+              30.311393173647
+            ],
+            [
+              120.08358922951,
+              30.31150179997
+            ],
+            [
+              120.083618833988,
+              30.311502063171
+            ],
+            [
+              120.083617686472,
+              30.311530917025
+            ],
+            [
+              120.083710729515,
+              30.311531744034
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_machine_room_3",
+      "properties": {
+        "id": "1f_machine_room_3",
+        "name": "3号机房",
+        "use_type": "imaging_support",
+        "room_ref": null,
+        "confidence": "medium",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083700581646,
+              30.311733702079
+            ],
+            [
+              120.083703146995,
+              30.311669205306
+            ],
+            [
+              120.083635479308,
+              30.311668603857
+            ],
+            [
+              120.083632913974,
+              30.311733100626
+            ],
+            [
+              120.083700581646,
+              30.311733702079
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_machine_room_2",
+      "properties": {
+        "id": "1f_machine_room_2",
+        "name": "2号机房",
+        "use_type": "imaging_support",
+        "room_ref": null,
+        "confidence": "medium",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083703146995,
+              30.311669205306
+            ],
+            [
+              120.083704767162,
+              30.311628470486
+            ],
+            [
+              120.083637099466,
+              30.311627869041
+            ],
+            [
+              120.083635479308,
+              30.311668603857
+            ],
+            [
+              120.083703146995,
+              30.311669205306
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_machine_room_1",
+      "properties": {
+        "id": "1f_machine_room_1",
+        "name": "1号机房",
+        "use_type": "imaging_support",
+        "room_ref": null,
+        "confidence": "medium",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083704767162,
+              30.311628470486
+            ],
+            [
+              120.083706387288,
+              30.311587735654
+            ],
+            [
+              120.083638719582,
+              30.311587134212
+            ],
+            [
+              120.083637099466,
+              30.311627869041
+            ],
+            [
+              120.083704767162,
+              30.311628470486
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_radiology",
+      "properties": {
+        "id": "1f_radiology",
+        "name": "放射科",
+        "use_type": "radiology",
+        "room_ref": null,
+        "confidence": "high",
+        "scheduler_location_id": "XRAY",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083635479308,
+              30.311668603857
+            ],
+            [
+              120.083639327115,
+              30.311571858649
+            ],
+            [
+              120.083586461945,
+              30.311571388665
+            ],
+            [
+              120.083582614155,
+              30.311668133867
+            ],
+            [
+              120.083635479308,
+              30.311668603857
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_clinic_w1",
+      "properties": {
+        "id": "1f_clinic_w1",
+        "name": "西侧门诊1（图签待核）",
+        "use_type": "clinic",
+        "room_ref": null,
+        "confidence": "low",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083628639002,
+              30.311787394873
+            ],
+            [
+              120.083629719193,
+              30.311760238353
+            ],
+            [
+              120.083578968666,
+              30.311759787155
+            ],
+            [
+              120.08357788848,
+              30.311786943673
+            ],
+            [
+              120.083628639002,
+              30.311787394873
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_clinic_w2",
+      "properties": {
+        "id": "1f_clinic_w2",
+        "name": "西侧门诊2（图签待核）",
+        "use_type": "clinic",
+        "room_ref": null,
+        "confidence": "low",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083629719193,
+              30.311760238353
+            ],
+            [
+              120.083630934384,
+              30.311729687262
+            ],
+            [
+              120.083580183852,
+              30.311729236066
+            ],
+            [
+              120.083578968666,
+              30.311759787155
+            ],
+            [
+              120.083629719193,
+              30.311760238353
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_clinic_w3",
+      "properties": {
+        "id": "1f_clinic_w3",
+        "name": "西侧门诊3（图签待核）",
+        "use_type": "clinic",
+        "room_ref": null,
+        "confidence": "low",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083630934384,
+              30.311729687262
+            ],
+            [
+              120.083632149553,
+              30.311699136164
+            ],
+            [
+              120.083581399015,
+              30.31169868497
+            ],
+            [
+              120.083580183852,
+              30.311729236066
+            ],
+            [
+              120.083630934384,
+              30.311729687262
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_clinic_w4",
+      "properties": {
+        "id": "1f_clinic_w4",
+        "name": "西侧门诊4（图签待核）",
+        "use_type": "clinic",
+        "room_ref": null,
+        "confidence": "low",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083632149553,
+              30.311699136164
+            ],
+            [
+              120.083633364698,
+              30.31166858506
+            ],
+            [
+              120.083582614155,
+              30.311668133867
+            ],
+            [
+              120.083581399015,
+              30.31169868497
+            ],
+            [
+              120.083632149553,
+              30.311699136164
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_stair_1",
+      "properties": {
+        "id": "1f_stair_1",
+        "name": "楼梯1#",
+        "use_type": "stairs",
+        "room_ref": null,
+        "confidence": "medium",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083607000457,
+              30.311586852234
+            ],
+            [
+              120.083609228045,
+              30.311530841828
+            ],
+            [
+              120.08355424839,
+              30.311530352983
+            ],
+            [
+              120.083552020813,
+              30.311586363385
+            ],
+            [
+              120.083607000457,
+              30.311586852234
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_laboratory",
+      "properties": {
+        "id": "1f_laboratory",
+        "name": "检验科",
+        "use_type": "laboratory",
+        "room_ref": null,
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083586394442,
+              30.31157308595
+            ],
+            [
+              120.083591389479,
+              30.311447486819
+            ],
+            [
+              120.08350046182,
+              30.311446678219
+            ],
+            [
+              120.083495466822,
+              30.311572277334
+            ],
+            [
+              120.083586394442,
+              30.31157308595
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_main_entrance",
+      "properties": {
+        "id": "1f_main_entrance",
+        "name": "门诊入口",
+        "use_type": "entrance",
+        "room_ref": null,
+        "confidence": "high",
+        "level_id": "zju2_zijingang_1f",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08359260443,
+              30.311416935662
+            ],
+            [
+              120.083594494308,
+              30.311369411627
+            ],
+            [
+              120.083524712544,
+              30.311368791111
+            ],
+            [
+              120.083522822677,
+              30.311416315141
+            ],
+            [
+              120.08359260443,
+              30.311416935662
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

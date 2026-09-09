@@ -1,0 +1,13 @@
+<!doctype html><html lang="zh"><meta charset="utf-8"><title>紫金港室内 GIS 核验</title>
+<style>body{font-family:system-ui;margin:24px;background:#f4f6f7;color:#17252e}header{position:sticky;top:0;background:white;padding:12px;z-index:1}button,a{margin:8px}object{width:100%;background:white}p{max-width:1000px}.warning{color:#9b3d00}</style>
+<header><b>浙大二院浙大院区（紫金港） · 导航级草案 / 非测绘成果</b><br>
+<button onclick="show('1f')">1F</button><button onclick="show('2f')">2F</button><button onclick="show('3f')">3F</button>
+<label><input type="checkbox" checked onchange="toggle('spaces',this.checked)">空间边界</label>
+<label><input type="checkbox" checked onchange="toggle('route_edges',this.checked);toggle('route_nodes',this.checked)">路网</label>
+<label><input type="checkbox" checked onchange="toggle('openings',this.checked)">门/开口</label>
+<label><input type="checkbox" checked onchange="toggle('labels',this.checked)">编号</label></header>
+<p>蓝色：可见分隔的概化边界；紫红色：门外路线与节点；橙色：门/开口。编号前 ? 表示门位未确认、尚未接入路网。B1/B2 分别为一号楼/二号楼。悬停查看稳定 ID，P 编号可查各楼层 feature_index.csv。原图红色箭头是疏散标识，不代表单向患者路线。</p>
+<p class="warning">控制点标注原图和蓝圈原图缺失；继承像素配准未复核。空缺门位、科室、门禁、电梯与无障碍均待核验。楼梯连接按图推断，不能宣称已现场确认。</p>
+<object id="map" type="image/svg+xml" data="1f_overlay.svg"></object>
+<p><a href="validation.json">核验结果与未解决项</a><a href="metadata.json">坐标链、残差与证据</a><a href="scheduler_travel_times.json">可追溯步行矩阵</a></p>
+<script>function show(f){document.getElementById('map').data=f+'_overlay.svg';document.querySelectorAll('input').forEach(x=>x.checked=true)}function toggle(id,on){const d=document.getElementById('map').contentDocument;const g=d&&d.getElementById(id);if(g)g.style.display=on?'':'none'}</script></html>

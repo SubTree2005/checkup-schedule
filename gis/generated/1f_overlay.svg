@@ -1,0 +1,230 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1330 746">
+<image href="../source/images/1F.jpg" width="1330" height="746"/>
+<g id="spaces">
+<polygon points="175.0,387.0 170.0,387.0 170.0,81.0 134.0,81.0 134.0,567.0 131.0,567.0 131.0,568.0 139.0,568.0 139.0,583.0 173.0,583.0 173.0,505.0 175.0,505.0 175.0,387.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b2_west_corridor 图左主通道</title></polygon>
+<polygon points="659.0,370.0 151.0,370.0 151.0,402.0 318.0,402.0 398.0,402.0 480.0,402.0 547.0,402.0 581.0,402.0 659.0,402.0 659.0,370.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_shared_main_link 一层主连廊</title></polygon>
+<polygon points="270.0,162.0 270.0,216.0 270.0,280.0 270.0,344.0 270.0,370.0 317.0,370.0 317.0,369.0 317.0,219.0 545.0,219.0 548.0,219.0 548.0,166.0 546.0,166.0 546.0,162.0 545.0,162.0 545.0,163.0 424.0,163.0 424.0,162.0 270.0,162.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b2_inner_corridor 内院外围通道</title></polygon>
+<polygon points="547.0,166.0 547.0,387.0 578.0,387.0 578.0,166.0 547.0,166.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b1_b1_spine 一号楼图左通道</title></polygon>
+<polygon points="659.0,370.0 811.0,370.0 811.0,346.0 704.0,346.0 704.0,40.0 659.0,40.0 659.0,113.0 676.0,113.0 676.0,166.0 659.0,166.0 659.0,225.0 659.0,313.0 659.0,367.0 659.0,370.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b1_east_upper_hall 一层图上侧通道</title></polygon>
+<polygon points="966.0,346.0 659.0,346.0 659.0,367.0 659.0,402.0 659.0,539.0 659.0,583.0 661.0,583.0 661.0,636.0 659.0,636.0 659.0,657.0 709.0,657.0 709.0,584.0 709.0,581.0 883.0,581.0 883.0,640.0 950.0,640.0 950.0,581.0 1090.0,581.0 1090.0,554.0 1010.0,430.0 969.0,353.0 966.0,346.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b1_lobby 门诊大厅</title></polygon>
+<polygon points="1010.0,430.0 1090.0,554.0 1118.0,544.0 1223.0,480.0 1198.0,442.0 1148.0,354.0 1010.0,430.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b1_east_passage 图右翼通道（边界概化）</title></polygon>
+<polygon points="173.0,78.0 238.0,78.0 238.0,162.0 270.0,162.0 270.0,216.0 173.0,216.0 173.0,78.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b2_103 二号楼103</title></polygon>
+<polygon points="173.0,216.0 270.0,216.0 270.0,280.0 173.0,280.0 173.0,216.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b2_102 二号楼102</title></polygon>
+<polygon points="173.0,280.0 270.0,280.0 270.0,344.0 173.0,344.0 173.0,280.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b2_101 二号楼101</title></polygon>
+<polygon points="579.0,166.0 659.0,166.0 659.0,225.0 579.0,225.0 579.0,166.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b1_129 一号楼129</title></polygon>
+<polygon points="579.0,225.0 659.0,225.0 659.0,313.0 579.0,313.0 579.0,225.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b1_127 一号楼127</title></polygon>
+<polygon points="579.0,313.0 659.0,313.0 659.0,367.0 579.0,367.0 579.0,313.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b1_125 一号楼125</title></polygon>
+<polygon points="240.0,39.0 424.0,39.0 424.0,161.0 240.0,161.0 240.0,39.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b2_mri 图签 MIR（疑为 MRI，待核）</title></polygon>
+<polygon points="424.0,39.0 545.0,39.0 545.0,163.0 424.0,163.0 424.0,39.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b2_electrical 配电间</title></polygon>
+<polygon points="317.0,219.0 545.0,219.0 545.0,369.0 317.0,369.0 317.0,219.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b2_courtyard 内院</title></polygon>
+<polygon points="45.0,163.0 133.0,163.0 133.0,402.0 45.0,402.0 45.0,163.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b2_surgery 手术室</title></polygon>
+<polygon points="119.0,402.0 119.0,420.0 153.0,420.0 153.0,402.0 133.0,402.0 119.0,402.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b2_surgery_approach 手术室门前通道</title></polygon>
+<polygon points="705.0,222.0 811.0,222.0 811.0,344.0 705.0,344.0 705.0,222.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b1_pharmacy 药剂科</title></polygon>
+<polygon points="811.0,222.0 942.0,222.0 942.0,344.0 811.0,344.0 811.0,222.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b1_emergency_a 急诊A区</title></polygon>
+<polygon points="969.0,225.0 1068.0,225.0 1148.0,354.0 1010.0,430.0 969.0,353.0 969.0,225.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b1_infusion 输液</title></polygon>
+<polygon points="1024.0,430.0 1092.0,392.0 1148.0,487.0 1069.0,516.0 1024.0,430.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b1_observation 观察</title></polygon>
+<polygon points="1170.0,539.0 1235.0,500.0 1285.0,584.0 1194.0,636.0 1160.0,582.0 1170.0,539.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b1_107 一号楼107</title></polygon>
+<polygon points="1087.0,584.0 1127.0,560.0 1157.0,602.0 1120.0,626.0 1087.0,584.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b1_guard 门卫（兼消控）</title></polygon>
+<polygon points="581.0,402.0 659.0,402.0 659.0,539.0 581.0,539.0 581.0,402.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b1_service 综合服务中心</title></polygon>
+<polygon points="318.0,402.0 398.0,402.0 398.0,499.0 318.0,499.0 318.0,402.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b2_machine_3 3号机房</title></polygon>
+<polygon points="398.0,402.0 480.0,402.0 480.0,499.0 398.0,499.0 398.0,402.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b2_machine_2 2号机房</title></polygon>
+<polygon points="480.0,402.0 547.0,402.0 547.0,499.0 480.0,499.0 480.0,402.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b2_machine_1 1号机房</title></polygon>
+<polygon points="337.0,499.0 547.0,499.0 547.0,584.0 399.0,584.0 399.0,538.0 337.0,538.0 337.0,499.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b2_radiology 放射科</title></polygon>
+<polygon points="580.0,636.0 659.0,636.0 659.0,657.0 709.0,657.0 709.0,584.0 817.0,584.0 817.0,708.0 580.0,718.0 580.0,636.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b1_laboratory 检验科</title></polygon>
+<polygon points="202.0,585.0 399.0,585.0 399.0,685.0 202.0,685.0 202.0,585.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b2_archive 档案室</title></polygon>
+<polygon points="224.0,505.0 271.0,505.0 271.0,584.0 224.0,584.0 224.0,505.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b2_clinic_n1 肠道门诊</title></polygon>
+<polygon points="275.0,505.0 337.0,505.0 337.0,584.0 275.0,584.0 275.0,505.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b2_clinic_n2 发热门诊</title></polygon>
+<polygon points="338.0,539.0 398.0,539.0 398.0,584.0 338.0,584.0 338.0,539.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b2_clinic_n3 发热门诊</title></polygon>
+<polygon points="173.0,505.0 221.0,505.0 221.0,584.0 173.0,584.0 173.0,505.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b2_clinic_n0 图签待核门诊</title></polygon>
+<polygon points="44.0,75.0 133.0,75.0 133.0,112.0 44.0,112.0 44.0,75.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b2_restroom_nw 卫生间</title></polygon>
+<polygon points="580.0,40.0 659.0,40.0 659.0,113.0 580.0,113.0 580.0,40.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b1_restroom_n 卫生间</title></polygon>
+<polygon points="546.0,113.0 676.0,113.0 676.0,166.0 546.0,166.0 546.0,113.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b1_stair_n 楼梯2#</title></polygon>
+<polygon points="579.0,583.0 661.0,583.0 661.0,636.0 579.0,636.0 579.0,583.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b1_stair_s 楼梯1#</title></polygon>
+<polygon points="85.0,568.0 139.0,568.0 139.0,698.0 85.0,698.0 85.0,568.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b2_stair_s 西南楼梯</title></polygon>
+<polygon points="152.0,568.0 152.0,550.0 104.0,550.0 104.0,568.0 139.0,568.0 152.0,568.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b2_west_south_landing 图左下楼梯门前平台</title></polygon>
+<polygon points="883.0,639.0 950.0,639.0 950.0,583.0 883.0,583.0 883.0,639.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>1f_b1_entrance 门诊入口</title></polygon>
+</g>
+<g id="route_edges">
+<polyline points="113.0,558.0 113.0,568.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0000 </title></polyline>
+<polyline points="113.0,558.0 152.0,558.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0001 </title></polyline>
+<polyline points="126.0,402.0 126.0,414.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0002 </title></polyline>
+<polyline points="126.0,414.0 152.0,414.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0003 </title></polyline>
+<polyline points="152.0,100.0 152.0,387.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0004 </title></polyline>
+<polyline points="152.0,387.0 152.0,414.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0005 </title></polyline>
+<polyline points="152.0,387.0 294.0,387.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0006 </title></polyline>
+<polyline points="152.0,414.0 152.0,558.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0007 </title></polyline>
+<polyline points="152.0,558.0 152.0,568.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0008 </title></polyline>
+<polyline points="270.0,180.0 294.0,180.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0009 </title></polyline>
+<polyline points="270.0,228.0 294.0,228.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0010 </title></polyline>
+<polyline points="270.0,293.0 294.0,293.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0011 </title></polyline>
+<polyline points="294.0,180.0 294.0,202.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0012 </title></polyline>
+<polyline points="294.0,202.0 294.0,228.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0013 </title></polyline>
+<polyline points="294.0,202.0 380.5,202.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0014 </title></polyline>
+<polyline points="294.0,228.0 294.0,293.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0015 </title></polyline>
+<polyline points="294.0,293.0 294.0,387.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0016 </title></polyline>
+<polyline points="294.0,387.0 347.5,387.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0017 </title></polyline>
+<polyline points="347.5,387.0 347.5,402.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0018 </title></polyline>
+<polyline points="347.5,387.0 427.5,387.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0019 </title></polyline>
+<polyline points="380.5,161.0 380.5,202.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0020 </title></polyline>
+<polyline points="380.5,202.0 490.0,202.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0021 </title></polyline>
+<polyline points="427.5,387.0 427.5,402.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0022 </title></polyline>
+<polyline points="427.5,387.0 509.5,387.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0023 </title></polyline>
+<polyline points="490.0,163.0 490.0,202.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0024 </title></polyline>
+<polyline points="490.0,202.0 563.0,202.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0025 </title></polyline>
+<polyline points="509.5,387.0 509.5,402.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0026 </title></polyline>
+<polyline points="509.5,387.0 563.0,387.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0027 </title></polyline>
+<polyline points="563.0,173.0 563.0,202.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0028 </title></polyline>
+<polyline points="563.0,202.0 563.0,387.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0029 </title></polyline>
+<polyline points="563.0,387.0 917.0,387.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0030 </title></polyline>
+<polyline points="659.0,209.0 687.0,209.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0031 </title></polyline>
+<polyline points="659.0,251.0 687.0,251.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0032 </title></polyline>
+<polyline points="659.0,325.0 687.0,325.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0033 </title></polyline>
+<polyline points="661.0,610.0 688.0,610.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0034 </title></polyline>
+<polyline points="676.0,130.0 687.0,130.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0035 </title></polyline>
+<polyline points="687.0,69.0 687.0,130.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0036 </title></polyline>
+<polyline points="687.0,130.0 687.0,209.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0037 </title></polyline>
+<polyline points="687.0,209.0 687.0,251.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0038 </title></polyline>
+<polyline points="687.0,251.0 687.0,325.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0039 </title></polyline>
+<polyline points="687.0,325.0 687.0,361.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0040 </title></polyline>
+<polyline points="687.0,361.0 880.0,361.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0041 </title></polyline>
+<polyline points="688.0,566.0 688.0,610.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0042 </title></polyline>
+<polyline points="688.0,566.0 917.0,566.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0043 </title></polyline>
+<polyline points="688.0,610.0 688.0,611.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0044 </title></polyline>
+<polyline points="688.0,611.0 688.0,615.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0045 </title></polyline>
+<polyline points="688.0,611.0 709.0,611.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0046 </title></polyline>
+<polyline points="880.0,344.0 880.0,361.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0047 </title></polyline>
+<polyline points="880.0,361.0 917.0,361.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0048 </title></polyline>
+<polyline points="917.0,361.0 917.0,387.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0049 </title></polyline>
+<polyline points="917.0,387.0 917.0,460.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0050 </title></polyline>
+<polyline points="917.0,460.0 917.0,566.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0051 </title></polyline>
+<polyline points="917.0,460.0 994.0,460.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0052 </title></polyline>
+<polyline points="917.0,566.0 917.0,583.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0053 </title></polyline>
+<polyline points="917.0,583.0 917.0,623.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0054 </title></polyline>
+<polyline points="984.0,438.0 994.0,460.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0055 </title></polyline>
+<polyline points="984.0,438.0 1003.999292,418.730377" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0056 </title></polyline>
+<polyline points="994.0,460.0 1025.0,477.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0057 </title></polyline>
+<polyline points="1025.0,477.0 1097.0,550.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0058 </title></polyline>
+<polyline points="1097.0,550.0 1178.0,499.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0059 </title></polyline>
+<polyline points="1129.153558,493.918314 1154.0,510.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0060 </title></polyline>
+<polyline points="1154.0,510.0 1178.0,499.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_1f_0061 </title></polyline>
+</g>
+<g id="openings">
+<polyline points="270.0,173.0 270.0,187.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_1f_b2_103 </title></polyline>
+<polyline points="270.0,221.0 270.0,235.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_1f_b2_102 </title></polyline>
+<polyline points="270.0,286.0 270.0,300.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_1f_b2_101 </title></polyline>
+<polyline points="659.0,202.0 659.0,216.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_1f_b1_129 </title></polyline>
+<polyline points="659.0,244.0 659.0,258.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_1f_b1_127 </title></polyline>
+<polyline points="659.0,318.0 659.0,332.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_1f_b1_125 </title></polyline>
+<polyline points="369.0,161.0 392.0,161.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_1f_b2_mri </title></polyline>
+<polyline points="480.0,163.0 500.0,163.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_1f_b2_electrical </title></polyline>
+<polyline points="119.0,402.0 133.0,402.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_1f_b2_surgery </title></polyline>
+<polyline points="870.0,344.0 890.0,344.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_1f_b1_emergency_a </title></polyline>
+<polyline points="1000.0002023653088,411.2198922470434 1007.9983810775295,426.24086202365305" fill="none" stroke="#ff7900" stroke-width="2"><title>o_1f_b1_infusion </title></polyline>
+<polyline points="1120.9713357808528,496.9219147133578 1137.3357808528665,490.9147133578085" fill="none" stroke="#ff7900" stroke-width="2"><title>o_1f_b1_observation </title></polyline>
+<polyline points="338.0,402.0 357.0,402.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_1f_b2_machine_3 </title></polyline>
+<polyline points="418.0,402.0 437.0,402.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_1f_b2_machine_2 </title></polyline>
+<polyline points="500.0,402.0 519.0,402.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_1f_b2_machine_1 </title></polyline>
+<polyline points="709.0,603.0 709.0,619.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_1f_b1_laboratory </title></polyline>
+<polyline points="676.0,121.0 676.0,139.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_1f_b1_stair_n </title></polyline>
+<polyline points="661.0,602.0 661.0,618.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_1f_b1_stair_s </title></polyline>
+<polyline points="104.0,568.0 122.0,568.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_1f_b2_stair_s </title></polyline>
+<polyline points="903.0,583.0 931.0,583.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_1f_b1_entrance </title></polyline>
+</g>
+<g id="route_nodes">
+<circle cx="113.0" cy="558.0" r="1.5" fill="#b400a0"><title>n_1f_113_558 n_1f_113_558</title></circle>
+<circle cx="113.0" cy="568.0" r="1.5" fill="#b400a0"><title>n_o_1f_b2_stair_s n_o_1f_b2_stair_s</title></circle>
+<circle cx="152.0" cy="558.0" r="1.5" fill="#b400a0"><title>n_1f_152_558 n_1f_152_558</title></circle>
+<circle cx="126.0" cy="402.0" r="1.5" fill="#b400a0"><title>n_o_1f_b2_surgery n_o_1f_b2_surgery</title></circle>
+<circle cx="126.0" cy="414.0" r="1.5" fill="#b400a0"><title>n_1f_126_414 n_1f_126_414</title></circle>
+<circle cx="152.0" cy="414.0" r="1.5" fill="#b400a0"><title>n_1f_152_414 n_1f_152_414</title></circle>
+<circle cx="152.0" cy="100.0" r="1.5" fill="#b400a0"><title>n_1f_152_100 n_1f_152_100</title></circle>
+<circle cx="152.0" cy="387.0" r="1.5" fill="#b400a0"><title>n_1f_152_387 n_1f_152_387</title></circle>
+<circle cx="294.0" cy="387.0" r="1.5" fill="#b400a0"><title>n_1f_294_387 n_1f_294_387</title></circle>
+<circle cx="152.0" cy="568.0" r="1.5" fill="#b400a0"><title>n_1f_152_568 n_1f_152_568</title></circle>
+<circle cx="270.0" cy="180.0" r="1.5" fill="#b400a0"><title>n_o_1f_b2_103 n_o_1f_b2_103</title></circle>
+<circle cx="294.0" cy="180.0" r="1.5" fill="#b400a0"><title>n_1f_294_180 n_1f_294_180</title></circle>
+<circle cx="270.0" cy="228.0" r="1.5" fill="#b400a0"><title>n_o_1f_b2_102 n_o_1f_b2_102</title></circle>
+<circle cx="294.0" cy="228.0" r="1.5" fill="#b400a0"><title>n_1f_294_228 n_1f_294_228</title></circle>
+<circle cx="270.0" cy="293.0" r="1.5" fill="#b400a0"><title>n_o_1f_b2_101 n_o_1f_b2_101</title></circle>
+<circle cx="294.0" cy="293.0" r="1.5" fill="#b400a0"><title>n_1f_294_293 n_1f_294_293</title></circle>
+<circle cx="294.0" cy="202.0" r="1.5" fill="#b400a0"><title>n_1f_294_202 n_1f_294_202</title></circle>
+<circle cx="380.5" cy="202.0" r="1.5" fill="#b400a0"><title>n_1f_380p5_202 n_1f_380p5_202</title></circle>
+<circle cx="347.5" cy="387.0" r="1.5" fill="#b400a0"><title>n_1f_347p5_387 n_1f_347p5_387</title></circle>
+<circle cx="347.5" cy="402.0" r="1.5" fill="#b400a0"><title>n_o_1f_b2_machine_3 n_o_1f_b2_machine_3</title></circle>
+<circle cx="427.5" cy="387.0" r="1.5" fill="#b400a0"><title>n_1f_427p5_387 n_1f_427p5_387</title></circle>
+<circle cx="380.5" cy="161.0" r="1.5" fill="#b400a0"><title>n_o_1f_b2_mri n_o_1f_b2_mri</title></circle>
+<circle cx="490.0" cy="202.0" r="1.5" fill="#b400a0"><title>n_1f_490_202 n_1f_490_202</title></circle>
+<circle cx="427.5" cy="402.0" r="1.5" fill="#b400a0"><title>n_o_1f_b2_machine_2 n_o_1f_b2_machine_2</title></circle>
+<circle cx="509.5" cy="387.0" r="1.5" fill="#b400a0"><title>n_1f_509p5_387 n_1f_509p5_387</title></circle>
+<circle cx="490.0" cy="163.0" r="1.5" fill="#b400a0"><title>n_o_1f_b2_electrical n_o_1f_b2_electrical</title></circle>
+<circle cx="563.0" cy="202.0" r="1.5" fill="#b400a0"><title>n_1f_563_202 n_1f_563_202</title></circle>
+<circle cx="509.5" cy="402.0" r="1.5" fill="#b400a0"><title>n_o_1f_b2_machine_1 n_o_1f_b2_machine_1</title></circle>
+<circle cx="563.0" cy="387.0" r="1.5" fill="#b400a0"><title>n_1f_563_387 n_1f_563_387</title></circle>
+<circle cx="563.0" cy="173.0" r="1.5" fill="#b400a0"><title>n_1f_563_173 n_1f_563_173</title></circle>
+<circle cx="917.0" cy="387.0" r="1.5" fill="#b400a0"><title>n_1f_917_387 n_1f_917_387</title></circle>
+<circle cx="659.0" cy="209.0" r="1.5" fill="#b400a0"><title>n_o_1f_b1_129 n_o_1f_b1_129</title></circle>
+<circle cx="687.0" cy="209.0" r="1.5" fill="#b400a0"><title>n_1f_687_209 n_1f_687_209</title></circle>
+<circle cx="659.0" cy="251.0" r="1.5" fill="#b400a0"><title>n_o_1f_b1_127 n_o_1f_b1_127</title></circle>
+<circle cx="687.0" cy="251.0" r="1.5" fill="#b400a0"><title>n_1f_687_251 n_1f_687_251</title></circle>
+<circle cx="659.0" cy="325.0" r="1.5" fill="#b400a0"><title>n_o_1f_b1_125 n_o_1f_b1_125</title></circle>
+<circle cx="687.0" cy="325.0" r="1.5" fill="#b400a0"><title>n_1f_687_325 n_1f_687_325</title></circle>
+<circle cx="661.0" cy="610.0" r="1.5" fill="#b400a0"><title>n_o_1f_b1_stair_s n_o_1f_b1_stair_s</title></circle>
+<circle cx="688.0" cy="610.0" r="1.5" fill="#b400a0"><title>n_1f_688_610 n_1f_688_610</title></circle>
+<circle cx="676.0" cy="130.0" r="1.5" fill="#b400a0"><title>n_o_1f_b1_stair_n n_o_1f_b1_stair_n</title></circle>
+<circle cx="687.0" cy="130.0" r="1.5" fill="#b400a0"><title>n_1f_687_130 n_1f_687_130</title></circle>
+<circle cx="687.0" cy="69.0" r="1.5" fill="#b400a0"><title>n_1f_687_69 n_1f_687_69</title></circle>
+<circle cx="687.0" cy="361.0" r="1.5" fill="#b400a0"><title>n_1f_687_361 n_1f_687_361</title></circle>
+<circle cx="880.0" cy="361.0" r="1.5" fill="#b400a0"><title>n_1f_880_361 n_1f_880_361</title></circle>
+<circle cx="688.0" cy="566.0" r="1.5" fill="#b400a0"><title>n_1f_688_566 n_1f_688_566</title></circle>
+<circle cx="917.0" cy="566.0" r="1.5" fill="#b400a0"><title>n_1f_917_566 n_1f_917_566</title></circle>
+<circle cx="688.0" cy="611.0" r="1.5" fill="#b400a0"><title>n_1f_688_611 n_1f_688_611</title></circle>
+<circle cx="688.0" cy="615.0" r="1.5" fill="#b400a0"><title>n_1f_688_615 n_1f_688_615</title></circle>
+<circle cx="709.0" cy="611.0" r="1.5" fill="#b400a0"><title>n_o_1f_b1_laboratory n_o_1f_b1_laboratory</title></circle>
+<circle cx="880.0" cy="344.0" r="1.5" fill="#b400a0"><title>n_o_1f_b1_emergency_a n_o_1f_b1_emergency_a</title></circle>
+<circle cx="917.0" cy="361.0" r="1.5" fill="#b400a0"><title>n_1f_917_361 n_1f_917_361</title></circle>
+<circle cx="917.0" cy="460.0" r="1.5" fill="#b400a0"><title>n_1f_917_460 n_1f_917_460</title></circle>
+<circle cx="994.0" cy="460.0" r="1.5" fill="#b400a0"><title>n_1f_994_460 n_1f_994_460</title></circle>
+<circle cx="917.0" cy="583.0" r="1.5" fill="#b400a0"><title>n_o_1f_b1_entrance n_o_1f_b1_entrance</title></circle>
+<circle cx="917.0" cy="623.0" r="1.5" fill="#b400a0"><title>n_1f_917_623 n_1f_917_623</title></circle>
+<circle cx="984.0" cy="438.0" r="1.5" fill="#b400a0"><title>n_1f_984_438 n_1f_984_438</title></circle>
+<circle cx="1003.999292" cy="418.730377" r="1.5" fill="#b400a0"><title>n_o_1f_b1_infusion n_o_1f_b1_infusion</title></circle>
+<circle cx="1025.0" cy="477.0" r="1.5" fill="#b400a0"><title>n_1f_1025_477 n_1f_1025_477</title></circle>
+<circle cx="1097.0" cy="550.0" r="1.5" fill="#b400a0"><title>n_1f_1097_550 n_1f_1097_550</title></circle>
+<circle cx="1178.0" cy="499.0" r="1.5" fill="#b400a0"><title>n_1f_1178_499 n_1f_1178_499</title></circle>
+<circle cx="1129.153558" cy="493.918314" r="1.5" fill="#b400a0"><title>n_o_1f_b1_observation n_o_1f_b1_observation</title></circle>
+<circle cx="1154.0" cy="510.0" r="1.5" fill="#b400a0"><title>n_1f_1154_510 n_1f_1154_510</title></circle>
+</g>
+<g id="labels" font-family="sans-serif" font-size="8" fill="#006087" stroke="white" stroke-width="2" paint-order="stroke">
+<text x="197.5" y="112.0" fill="#006087">103<title>poi_1f_b2_103</title></text>
+<text x="213.5" y="240.0" fill="#006087">102<title>poi_1f_b2_102</title></text>
+<text x="213.5" y="304.0" fill="#006087">101<title>poi_1f_b2_101</title></text>
+<text x="611.0" y="187.5" fill="#006087">129<title>poi_1f_b1_129</title></text>
+<text x="611.0" y="261.0" fill="#006087">127<title>poi_1f_b1_127</title></text>
+<text x="611.0" y="332.0" fill="#006087">125<title>poi_1f_b1_125</title></text>
+<text x="324.0" y="92.0" fill="#006087">P7<title>poi_1f_b2_mri</title></text>
+<text x="476.5" y="93.0" fill="#006087">P8<title>poi_1f_b2_electrical</title></text>
+<text x="81.0" y="274.5" fill="#006087">P9<title>poi_1f_b2_surgery</title></text>
+<text x="750.0" y="275.0" fill="#a32900">?P10<title>poi_1f_b1_pharmacy</title></text>
+<text x="868.5" y="275.0" fill="#006087">P11<title>poi_1f_b1_emergency_a</title></text>
+<text x="1030.34496124031" y="281.0" fill="#006087">P12<title>poi_1f_b1_infusion</title></text>
+<text x="1077.0563953488372" y="450.5" fill="#006087">P13<title>poi_1f_b1_observation</title></text>
+<text x="1210.0059523809523" y="552.5" fill="#a32900">?107<title>poi_1f_b1_107</title></text>
+<text x="1114.3214285714287" y="585.0" fill="#a32900">?P15<title>poi_1f_b1_guard</title></text>
+<text x="612.0" y="462.5" fill="#a32900">?P16<title>poi_1f_b1_service</title></text>
+<text x="350.0" y="442.5" fill="#006087">P17<title>poi_1f_b2_machine_3</title></text>
+<text x="431.0" y="442.5" fill="#006087">P18<title>poi_1f_b2_machine_2</title></text>
+<text x="505.5" y="442.5" fill="#006087">P19<title>poi_1f_b2_machine_1</title></text>
+<text x="465.0" y="553.0" fill="#a32900">?P20<title>poi_1f_b2_radiology</title></text>
+<text x="755.0" y="638.5" fill="#006087">P21<title>poi_1f_b1_laboratory</title></text>
+<text x="292.5" y="627.0" fill="#a32900">?P22<title>poi_1f_b2_archive</title></text>
+<text x="239.5" y="536.5" fill="#a32900">?P23<title>poi_1f_b2_clinic_n1</title></text>
+<text x="298.0" y="536.5" fill="#a32900">?P24<title>poi_1f_b2_clinic_n2</title></text>
+<text x="360.0" y="553.5" fill="#a32900">?P25<title>poi_1f_b2_clinic_n3</title></text>
+<text x="189.0" y="536.5" fill="#a32900">?P26<title>poi_1f_b2_clinic_n0</title></text>
+<text x="80.5" y="85.5" fill="#a32900">?P27<title>poi_1f_b2_restroom_nw</title></text>
+<text x="611.5" y="68.5" fill="#a32900">?P28<title>poi_1f_b1_restroom_n</title></text>
+<text x="603.0" y="131.5" fill="#006087">P29<title>poi_1f_b1_stair_n</title></text>
+<text x="612.0" y="601.5" fill="#006087">P30<title>poi_1f_b1_stair_s</title></text>
+<text x="104.0" y="625.0" fill="#006087">P31<title>poi_1f_b2_stair_s</title></text>
+<text x="908.5" y="603.0" fill="#006087">P32<title>poi_1f_b1_entrance</title></text>
+</g></svg>

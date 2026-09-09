@@ -51,6 +51,11 @@ function message(role, content, extras = {}) {
   return { id: uid(), role, content: String(content || ''), createdAt: Date.now(), ...extras }
 }
 
+function startNewSession() {
+  archive(readStorage(SESSION_KEY))
+  return saveSession(newSession())
+}
+
 function newSession() {
   const now = Date.now()
   return {
@@ -195,7 +200,7 @@ const ACTIONS = [
   },
   {
     id: 'exam-history',
-    pattern: /(历史体检|体检历史|历史记录)/,
+    pattern: /^(打开|查看|前往|去看|查找|帮我找)?(历史体检|体检历史|历史记录)$/,
     label: '历史体检',
     description: '按年份查看已完成或已中断的体检记录。',
     buttonText: '查看历史',
@@ -245,6 +250,7 @@ const ACTIONS = [
 
 function localAction(text) {
   const value = String(text || '').trim()
+  if (/(总结|分析|解读|建议|对比|趋势|解释)/.test(value)) return null
   return ACTIONS.find(item => item.pattern.test(value)) || null
 }
 
@@ -292,25 +298,81 @@ function restoreDefaultModel() {
 
 function startRequest(session, pageRoute) {
   let stopped = false
+  let jobID = ''
+  let timer = null
+  let wake = null
+  const patientToken = wx.getStorageSync('patientToken')
+  const requestID = `chat-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`
   const messages = (session.messages || [])
     .filter(item => (item.role === 'user' || item.role === 'assistant') && item.content)
     .slice(-20)
     .map(item => ({ role: item.role, content: item.content }))
   const modelConfig = getModelConfig()
-  const requestData = { messages, currentPage: pageRoute || '' }
+  const requestData = { messages, currentPage: pageRoute || '', requestID }
   if (modelConfig.mode === 'custom') {
     requestData.model = modelConfig.model
     if (modelConfig.apiKey) requestData.apiKey = modelConfig.apiKey
   }
-  const promise = api.agent.chat(requestData).then(payload => {
-    if (stopped) throw new Error('已停止生成')
-    const reply = payload && payload.reply
-    if (!reply) throw new Error('AI 服务未返回可显示的内容')
-    return reply
-  })
+  function checkStopped() {
+    if (stopped || wx.getStorageSync('patientToken') !== patientToken) throw new Error('已停止生成')
+  }
+  function pause() {
+    return new Promise(resolve => {
+      wake = resolve
+      timer = setTimeout(() => { timer = null; wake = null; resolve() }, 1200)
+    })
+  }
+  function cancel() {
+    if (jobID && wx.getStorageSync('patientToken') === patientToken) api.agent.cancelJob(jobID).catch(() => {})
+  }
+  const promise = (async () => {
+    const deadline = Date.now() + 120000
+    let payload
+    // Retry only short submission requests, using the same ID to avoid duplicate model calls.
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      checkStopped()
+      try { payload = await api.agent.createJob(requestData); break }
+      catch (error) {
+        if (error.statusCode === 404) throw new Error('AI 服务版本尚未更新，请联系管理员部署新版后端')
+        if (!error.isNetworkError || attempt === 1) throw error
+        await pause()
+      }
+    }
+    jobID = payload && payload.jobID
+    if (stopped) cancel()
+    checkStopped()
+    if (!jobID) throw new Error('AI 服务未返回有效请求编号')
+    let failures = 0
+    while (Date.now() < deadline) {
+      checkStopped()
+      if (payload.status === 'completed') {
+        if (!payload.reply) throw new Error('AI 服务未返回可显示的内容')
+        return payload.reply
+      }
+      if (payload.status === 'failed') throw new Error(payload.error || 'AI 服务处理失败')
+      if (payload.status === 'cancelled') throw new Error('已停止生成')
+      await pause()
+      checkStopped()
+      try {
+        payload = await api.agent.job(jobID)
+        failures = 0
+      } catch (error) {
+        if (!error.isNetworkError || ++failures >= 3) throw error
+      }
+    }
+    cancel()
+    throw new Error('AI 回答等待超时，请稍后重新发送')
+  })()
   return {
     promise,
-    abort() { stopped = true }
+    abort() {
+      stopped = true
+      if (timer) clearTimeout(timer)
+      timer = null
+      if (wake) wake()
+      wake = null
+      cancel()
+    }
   }
 }
 
@@ -330,5 +392,6 @@ module.exports = {
   runAction,
   saveModelConfig,
   saveSession,
-  startRequest
+  startRequest,
+  startNewSession
 }

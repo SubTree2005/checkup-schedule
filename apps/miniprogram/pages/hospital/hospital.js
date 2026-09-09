@@ -1,9 +1,11 @@
+const { navigationMetrics } = require('../../utils/layout')
 const api = require('../../utils/api')
 const flowGuard = require('../../utils/flow-guard')
 const app = getApp()
 
 Page({
   data: {
+    ...navigationMetrics(),
     hospitals: [],
     visibleHospitals: [],
     hasVisibleHospitals: false,
@@ -73,6 +75,7 @@ Page({
     app.globalData.selectedCampusId = campus.id
     app.globalData.selectedCampus = campus
     app.globalData.catalog = null
+    app.globalData.followUpPlanDraft = null
     app.globalData.currentPackageId = null
     app.globalData.selectedItemIDs = []
     wx.navigateTo({ url: '/pages/package/package' })

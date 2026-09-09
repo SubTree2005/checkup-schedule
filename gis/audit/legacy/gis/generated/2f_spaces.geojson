@@ -1,0 +1,1399 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "2f_w_201",
+      "properties": {
+        "id": "2f_w_201",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b2",
+        "name": "201（二号楼）",
+        "room_ref": "201",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08390988578,
+              30.31177820081
+            ],
+            [
+              120.083909395412,
+              30.311735259233
+            ],
+            [
+              120.083859418401,
+              30.31173646223
+            ],
+            [
+              120.083859908767,
+              30.311779403807
+            ],
+            [
+              120.08390988578,
+              30.31177820081
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_w_202",
+      "properties": {
+        "id": "2f_w_202",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b2",
+        "name": "202（二号楼）",
+        "room_ref": "202",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083864132296,
+              30.311836573296
+            ],
+            [
+              120.083863576616,
+              30.311787906194
+            ],
+            [
+              120.083827878845,
+              30.311788765446
+            ],
+            [
+              120.083828434524,
+              30.311837432548
+            ],
+            [
+              120.083864132296,
+              30.311836573296
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_w_203",
+      "properties": {
+        "id": "2f_w_203",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b2",
+        "name": "203（二号楼）",
+        "room_ref": "203",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.0838384901,
+              30.31177991936
+            ],
+            [
+              120.083837999735,
+              30.311736977783
+            ],
+            [
+              120.083795162497,
+              30.311738008855
+            ],
+            [
+              120.083795652859,
+              30.311780950433
+            ],
+            [
+              120.0838384901,
+              30.31177991936
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_w_205",
+      "properties": {
+        "id": "2f_w_205",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b2",
+        "name": "205（二号楼）",
+        "room_ref": "205",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083795652859,
+              30.311780950433
+            ],
+            [
+              120.083795162497,
+              30.311738008855
+            ],
+            [
+              120.08375589514,
+              30.311738953963
+            ],
+            [
+              120.083756385501,
+              30.311781895541
+            ],
+            [
+              120.083795652859,
+              30.311780950433
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_w_207",
+      "properties": {
+        "id": "2f_w_207",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b2",
+        "name": "207（二号楼）",
+        "room_ref": "207",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083756385501,
+              30.311781895541
+            ],
+            [
+              120.08375589514,
+              30.311738953963
+            ],
+            [
+              120.083716627892,
+              30.311739899027
+            ],
+            [
+              120.083717118251,
+              30.311782840605
+            ],
+            [
+              120.083756385501,
+              30.311781895541
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_w_209",
+      "properties": {
+        "id": "2f_w_209",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b2",
+        "name": "209（二号楼）",
+        "room_ref": "209",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083717118251,
+              30.311782840605
+            ],
+            [
+              120.083716399042,
+              30.31171985962
+            ],
+            [
+              120.083598597955,
+              30.31172269452
+            ],
+            [
+              120.083599317156,
+              30.311785675508
+            ],
+            [
+              120.083717118251,
+              30.311782840605
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_w_206",
+      "properties": {
+        "id": "2f_w_206",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b2",
+        "name": "206（二号楼）",
+        "room_ref": "206",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083828434524,
+              30.311837432548
+            ],
+            [
+              120.083827878845,
+              30.311788765446
+            ],
+            [
+              120.083792181162,
+              30.311789624667
+            ],
+            [
+              120.083792736839,
+              30.311838291769
+            ],
+            [
+              120.083828434524,
+              30.311837432548
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_w_208",
+      "properties": {
+        "id": "2f_w_208",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b2",
+        "name": "208（二号楼）",
+        "room_ref": "208",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083792736839,
+              30.311838291769
+            ],
+            [
+              120.083792181162,
+              30.311789624667
+            ],
+            [
+              120.083756483568,
+              30.311790483855
+            ],
+            [
+              120.083757039243,
+              30.311839150957
+            ],
+            [
+              120.083792736839,
+              30.311838291769
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_w_210",
+      "properties": {
+        "id": "2f_w_210",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b2",
+        "name": "210（二号楼）",
+        "room_ref": "210",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083757039243,
+              30.311839150957
+            ],
+            [
+              120.083756483568,
+              30.311790483855
+            ],
+            [
+              120.083717216317,
+              30.311791428919
+            ],
+            [
+              120.083717771991,
+              30.311840096022
+            ],
+            [
+              120.083757039243,
+              30.311839150957
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_w_212",
+      "properties": {
+        "id": "2f_w_212",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b2",
+        "name": "212（二号楼）",
+        "room_ref": "212",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083717771991,
+              30.311840096022
+            ],
+            [
+              120.083717216317,
+              30.311791428919
+            ],
+            [
+              120.083677949176,
+              30.311792373938
+            ],
+            [
+              120.083678504847,
+              30.311841041041
+            ],
+            [
+              120.083717771991,
+              30.311840096022
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_w_216",
+      "properties": {
+        "id": "2f_w_216",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b2",
+        "name": "216（二号楼）",
+        "room_ref": "216",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083678504847,
+              30.311841041041
+            ],
+            [
+              120.083677949176,
+              30.311792373938
+            ],
+            [
+              120.083645821596,
+              30.311793147098
+            ],
+            [
+              120.083646377265,
+              30.311841814202
+            ],
+            [
+              120.083678504847,
+              30.311841041041
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_w_218",
+      "properties": {
+        "id": "2f_w_218",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b2",
+        "name": "218（二号楼）",
+        "room_ref": "218",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083646377265,
+              30.311841814202
+            ],
+            [
+              120.083645821596,
+              30.311793147098
+            ],
+            [
+              120.083620833529,
+              30.31179374842
+            ],
+            [
+              120.083621389197,
+              30.311842415525
+            ],
+            [
+              120.083646377265,
+              30.311841814202
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_w_220",
+      "properties": {
+        "id": "2f_w_220",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b2",
+        "name": "220（二号楼）",
+        "room_ref": "220",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083621389197,
+              30.311842415525
+            ],
+            [
+              120.083620833529,
+              30.31179374842
+            ],
+            [
+              120.083599415221,
+              30.311794263823
+            ],
+            [
+              120.083599970888,
+              30.311842930927
+            ],
+            [
+              120.083621389197,
+              30.311842415525
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_c_201",
+      "properties": {
+        "id": "2f_c_201",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b1",
+        "name": "201（一号楼）",
+        "room_ref": "201",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083843210069,
+              30.311567902269
+            ],
+            [
+              120.083842752184,
+              30.311527823404
+            ],
+            [
+              120.083792775404,
+              30.311529026325
+            ],
+            [
+              120.083793233287,
+              30.31156910519
+            ],
+            [
+              120.083843210069,
+              30.311567902269
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_c_203",
+      "properties": {
+        "id": "2f_c_203",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b1",
+        "name": "203（一号楼）",
+        "room_ref": "203",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083793233287,
+              30.31156910519
+            ],
+            [
+              120.083792775404,
+              30.311529026325
+            ],
+            [
+              120.083753508057,
+              30.311529971431
+            ],
+            [
+              120.083753965938,
+              30.311570050296
+            ],
+            [
+              120.083793233287,
+              30.31156910519
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_c_205",
+      "properties": {
+        "id": "2f_c_205",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b1",
+        "name": "205（一号楼）",
+        "room_ref": "205",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083753965938,
+              30.311570050296
+            ],
+            [
+              120.083753508057,
+              30.311529971431
+            ],
+            [
+              120.083714240817,
+              30.311530916493
+            ],
+            [
+              120.083714698697,
+              30.311570995359
+            ],
+            [
+              120.083753965938,
+              30.311570050296
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_c_207",
+      "properties": {
+        "id": "2f_c_207",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b1",
+        "name": "207（一号楼）",
+        "room_ref": "207",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083714698697,
+              30.311570995359
+            ],
+            [
+              120.083714240817,
+              30.311530916493
+            ],
+            [
+              120.083674973686,
+              30.311531861509
+            ],
+            [
+              120.083675431564,
+              30.311571940375
+            ],
+            [
+              120.083714698697,
+              30.311570995359
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_c_209",
+      "properties": {
+        "id": "2f_c_209",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b1",
+        "name": "209（一号楼）",
+        "room_ref": "209",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083675431564,
+              30.311571940375
+            ],
+            [
+              120.083674973686,
+              30.311531861509
+            ],
+            [
+              120.083621427775,
+              30.311533150086
+            ],
+            [
+              120.083621885651,
+              30.311573228953
+            ],
+            [
+              120.083675431564,
+              30.311571940375
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_c_211",
+      "properties": {
+        "id": "2f_c_211",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b1",
+        "name": "211（一号楼）",
+        "room_ref": "211",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083571909651,
+              30.311574431535
+            ],
+            [
+              120.083571451777,
+              30.311534352667
+            ],
+            [
+              120.08352147596,
+              30.311535555155
+            ],
+            [
+              120.083521933831,
+              30.311575634024
+            ],
+            [
+              120.083571909651,
+              30.311574431535
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_e_202",
+      "properties": {
+        "id": "2f_e_202",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b1",
+        "name": "202（一号楼）",
+        "room_ref": "202",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083940722275,
+              30.311476784558
+            ],
+            [
+              120.083940329726,
+              30.311442431225
+            ],
+            [
+              120.083906059688,
+              30.311443256165
+            ],
+            [
+              120.083906452235,
+              30.311477609498
+            ],
+            [
+              120.083940722275,
+              30.311476784558
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_e_204",
+      "properties": {
+        "id": "2f_e_204",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b1",
+        "name": "204（一号楼）",
+        "room_ref": "204",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083906452235,
+              30.311477609498
+            ],
+            [
+              120.083906059688,
+              30.311443256165
+            ],
+            [
+              120.083877501383,
+              30.311443943598
+            ],
+            [
+              120.08387789393,
+              30.311478296931
+            ],
+            [
+              120.083906452235,
+              30.311477609498
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_e_206",
+      "properties": {
+        "id": "2f_e_206",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b1",
+        "name": "206（一号楼）",
+        "room_ref": "206",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08387789393,
+              30.311478296931
+            ],
+            [
+              120.083877501383,
+              30.311443943598
+            ],
+            [
+              120.083848943135,
+              30.311444631012
+            ],
+            [
+              120.083849335681,
+              30.311478984345
+            ],
+            [
+              120.08387789393,
+              30.311478296931
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_e_208",
+      "properties": {
+        "id": "2f_e_208",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b1",
+        "name": "208（一号楼）",
+        "room_ref": "208",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083849335681,
+              30.311478984345
+            ],
+            [
+              120.083848943135,
+              30.311444631012
+            ],
+            [
+              120.083823954714,
+              30.311445232484
+            ],
+            [
+              120.083824347258,
+              30.311479585817
+            ],
+            [
+              120.083849335681,
+              30.311478984345
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_e_210",
+      "properties": {
+        "id": "2f_e_210",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b1",
+        "name": "210（一号楼）",
+        "room_ref": "210",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083849630071,
+              30.31150474934
+            ],
+            [
+              120.083849335681,
+              30.311478984345
+            ],
+            [
+              120.083824347258,
+              30.311479585817
+            ],
+            [
+              120.083824641648,
+              30.311505350812
+            ],
+            [
+              120.083849630071,
+              30.31150474934
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_e_212",
+      "properties": {
+        "id": "2f_e_212",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b1",
+        "name": "212（一号楼）",
+        "room_ref": "212",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083824641648,
+              30.311505350812
+            ],
+            [
+              120.083823954714,
+              30.311445232484
+            ],
+            [
+              120.083788257044,
+              30.311446091702
+            ],
+            [
+              120.083788943976,
+              30.311506210031
+            ],
+            [
+              120.083824641648,
+              30.311505350812
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_e_214",
+      "properties": {
+        "id": "2f_e_214",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b1",
+        "name": "214（一号楼）",
+        "room_ref": "214",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083788943976,
+              30.311506210031
+            ],
+            [
+              120.083788257044,
+              30.311446091702
+            ],
+            [
+              120.083752559463,
+              30.311446950887
+            ],
+            [
+              120.083753246393,
+              30.311507069217
+            ],
+            [
+              120.083788943976,
+              30.311506210031
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_e_216",
+      "properties": {
+        "id": "2f_e_216",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b1",
+        "name": "216（一号楼）",
+        "room_ref": "216",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083753246393,
+              30.311507069217
+            ],
+            [
+              120.083752559463,
+              30.311446950887
+            ],
+            [
+              120.083713292226,
+              30.311447895949
+            ],
+            [
+              120.083713979154,
+              30.311508014279
+            ],
+            [
+              120.083753246393,
+              30.311507069217
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_e_218",
+      "properties": {
+        "id": "2f_e_218",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b1",
+        "name": "218（一号楼）",
+        "room_ref": "218",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083713979154,
+              30.311508014279
+            ],
+            [
+              120.083713292226,
+              30.311447895949
+            ],
+            [
+              120.083674025099,
+              30.311448840964
+            ],
+            [
+              120.083674712024,
+              30.311508959294
+            ],
+            [
+              120.083713979154,
+              30.311508014279
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_e_220",
+      "properties": {
+        "id": "2f_e_220",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b1",
+        "name": "220（一号楼）",
+        "room_ref": "220",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083674417638,
+              30.311483194299
+            ],
+            [
+              120.083674025099,
+              30.311448840964
+            ],
+            [
+              120.083634758081,
+              30.311449785929
+            ],
+            [
+              120.083635150619,
+              30.311484139264
+            ],
+            [
+              120.083674417638,
+              30.311483194299
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_e_222",
+      "properties": {
+        "id": "2f_e_222",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b1",
+        "name": "222（一号楼）",
+        "room_ref": "222",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083664002826,
+              30.311509217017
+            ],
+            [
+              120.08366370844,
+              30.311483452022
+            ],
+            [
+              120.083638720344,
+              30.31148405336
+            ],
+            [
+              120.083639014728,
+              30.311509818356
+            ],
+            [
+              120.083664002826,
+              30.311509217017
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_e_224",
+      "properties": {
+        "id": "2f_e_224",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b1",
+        "name": "224（一号楼）",
+        "room_ref": "224",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083635445004,
+              30.31150990426
+            ],
+            [
+              120.083634758081,
+              30.311449785929
+            ],
+            [
+              120.083609770036,
+              30.311450387243
+            ],
+            [
+              120.083610456957,
+              30.311510505575
+            ],
+            [
+              120.083635445004,
+              30.31150990426
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_e_226",
+      "properties": {
+        "id": "2f_e_226",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b1",
+        "name": "226（一号楼）",
+        "room_ref": "226",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083610456957,
+              30.311510505575
+            ],
+            [
+              120.083609770036,
+              30.311450387243
+            ],
+            [
+              120.083584782036,
+              30.311450988535
+            ],
+            [
+              120.083585468955,
+              30.311511106867
+            ],
+            [
+              120.083610456957,
+              30.311510505575
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_e_228",
+      "properties": {
+        "id": "2f_e_228",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b1",
+        "name": "228（一号楼）",
+        "room_ref": "228",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083585468955,
+              30.311511106867
+            ],
+            [
+              120.083584782036,
+              30.311450988535
+            ],
+            [
+              120.083556224377,
+              30.311451675698
+            ],
+            [
+              120.083556911294,
+              30.31151179403
+            ],
+            [
+              120.083585468955,
+              30.311511106867
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "2f_e_230",
+      "properties": {
+        "id": "2f_e_230",
+        "level_id": "zju2_zijingang_2f",
+        "building_id": "zju2_zijingang_b1",
+        "name": "230（一号楼）",
+        "room_ref": "230",
+        "use_type": "room",
+        "confidence": "high",
+        "source_method": "manual_raster_trace"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.083556911294,
+              30.31151179403
+            ],
+            [
+              120.083556224377,
+              30.311451675698
+            ],
+            [
+              120.083520527386,
+              30.311452534607
+            ],
+            [
+              120.083521214301,
+              30.31151265294
+            ],
+            [
+              120.083556911294,
+              30.31151179403
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

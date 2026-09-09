@@ -1,4 +1,5 @@
 const agent = require('../../utils/ai-agent')
+const { navigationMetrics } = require('../../utils/layout')
 
 Component({
   properties: {
@@ -15,13 +16,13 @@ Component({
     keyboardHeight: 0,
     thinking: false,
     scrollIntoView: '',
-    statusBarHeight: 44
+    headerTop: 88,
+    viewportHeight: 0
   },
 
   lifetimes: {
     attached() {
-      const info = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync()
-      this.setData({ statusBarHeight: Number(info.statusBarHeight || 44) })
+      this.updateViewport()
     },
     detached() {
       if (this._request) this._request.abort()
@@ -33,14 +34,21 @@ Component({
   methods: {
     noop() {},
 
+    updateViewport() {
+      const info = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync()
+      const navigation = navigationMetrics()
+      const headerTop = navigation.statusBarHeight
+      const menu = wx.getMenuButtonBoundingClientRect ? wx.getMenuButtonBoundingClientRect() : null
+      const headerRight = menu && menu.left ? Math.max(96, Number(info.windowWidth || 375) - menu.left + 8) : 104
+      this.setData({ headerTop, headerRight, headerHeight: navigation.navigationBarHeight, viewportHeight: Number(info.windowHeight) || 667, keyboardHeight: 0 })
+    },
+
     setTabBarHidden(hidden) {
       if (!this.data.withTabBar) return
       const pages = getCurrentPages()
       const page = pages.length ? pages[pages.length - 1] : null
       const tabBar = page && typeof page.getTabBar === 'function' ? page.getTabBar() : null
       if (tabBar) tabBar.setData({ hidden })
-      if (hidden && wx.hideTabBar) wx.hideTabBar({ animation: false })
-      if (!hidden && wx.showTabBar) wx.showTabBar({ animation: false })
     },
 
     openChat() {
@@ -55,6 +63,7 @@ Component({
 
     showSession(session) {
       this._session = session
+      this.updateViewport()
       this.setTabBarHidden(true)
       this.setData({
         opened: true,
@@ -71,22 +80,24 @@ Component({
       wx.hideKeyboard()
     },
 
-    openSettings() {
-      if (this.data.thinking) return
-      this.setTabBarHidden(false)
-      this.setData({ opened: false, inputFocused: false, keyboardHeight: 0 })
+    startNewConversation() {
+      if (this.data.thinking) this.stopThinking()
+      this.setData({ draft: '', inputFocused: false, keyboardHeight: 0, thinking: false })
       wx.hideKeyboard()
-      const pages = getCurrentPages()
-      const route = pages.length ? pages[pages.length - 1].route : ''
-      if (route !== 'pages/ai-settings/ai-settings') wx.navigateTo({ url: '/pages/ai-settings/ai-settings' })
+      this.showSession(agent.startNewSession())
     },
 
     triggerAdd() { this.triggerEvent('add') },
 
     onInput(event) { this.setData({ draft: event.detail.value }) },
     onFocus() { this.setData({ inputFocused: true }) },
-    onBlur() { this.setData({ inputFocused: false }) },
-    onKeyboardHeight(event) { this.setData({ keyboardHeight: Number(event.detail.height || 0) }) },
+    onBlur() { this.setData({ inputFocused: false, keyboardHeight: 0 }) },
+    onKeyboardHeight(event) {
+      if (!this.data.opened) return
+      const height = Number(event.detail.height)
+      const maxHeight = Math.max(0, this.data.viewportHeight - this.data.headerTop - 100)
+      this.setData({ keyboardHeight: Number.isFinite(height) ? Math.min(maxHeight, Math.max(0, height)) : 0 })
+    },
 
     handleOrbTap() {
       if (this.data.thinking) return this.stopThinking()
@@ -126,14 +137,15 @@ Component({
       const pages = getCurrentPages()
       const pageRoute = pages.length ? pages[pages.length - 1].route : ''
       const requestSession = { ...this._session, messages: pendingMessages }
-      this._request = agent.startRequest(requestSession, pageRoute)
+      const request = agent.startRequest(requestSession, pageRoute)
+      this._request = request
       try {
-        const reply = await this._request.promise
-        if (this.data.thinking) this.finishResponse(text, reply)
+        const reply = await request.promise
+        if (this._request === request && this.data.thinking) this.finishResponse(text, reply)
       } catch (error) {
-        if (this.data.thinking) this.finishResponse(text, `暂时无法完成回答：${error.message || 'AI 服务连接失败'}`)
+        if (this._request === request && this.data.thinking) this.finishResponse(text, `暂时无法完成回答：${error.message || 'AI 服务连接失败'}`)
       } finally {
-        this._request = null
+        if (this._request === request) this._request = null
       }
     },
 

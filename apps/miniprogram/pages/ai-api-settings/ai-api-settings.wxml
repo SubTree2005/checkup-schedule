@@ -1,4 +1,4 @@
-<view class="api-settings-page safe-top">
+<view class="api-settings-page safe-top" style="{{navigationStyle}}">
   <view class="settings-nav"><view class="nav-back" bindtap="goBack">‹</view><view class="nav-title">模型服务</view><view class="nav-space"></view></view>
 
   <view class="settings-content">

@@ -1,0 +1,1485 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "e01",
+      "properties": {
+        "id": "e01",
+        "source": "n_entrance",
+        "target": "n_lobby",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 12.897,
+        "walk_seconds": 11.2,
+        "path_px": [
+          [
+            1420,
+            920
+          ],
+          [
+            1420,
+            760
+          ],
+          [
+            1250,
+            760
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            10.563,
+            -1.753
+          ],
+          [
+            17.034,
+            -1.541
+          ],
+          [
+            16.81,
+            4.878
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083585090962,
+            30.311393098442
+          ],
+          [
+            120.083652758416,
+            30.311393700008
+          ],
+          [
+            120.083650463512,
+            30.311451407757
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e02",
+      "properties": {
+        "id": "e02",
+        "source": "n_lobby",
+        "target": "n_main_e",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 12.493,
+        "walk_seconds": 10.9,
+        "path_px": [
+          [
+            1250,
+            760
+          ],
+          [
+            1420,
+            760
+          ],
+          [
+            1420,
+            610
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            16.81,
+            4.878
+          ],
+          [
+            17.034,
+            -1.541
+          ],
+          [
+            23.101,
+            -1.341
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083650463512,
+            30.311451407757
+          ],
+          [
+            120.083652758416,
+            30.311393700008
+          ],
+          [
+            120.083716196951,
+            30.311394263837
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e03",
+      "properties": {
+        "id": "e03",
+        "source": "n_main_e",
+        "target": "n_main_c",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 20.778,
+        "walk_seconds": 18.1,
+        "path_px": [
+          [
+            1420,
+            610
+          ],
+          [
+            870,
+            610
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            23.101,
+            -1.341
+          ],
+          [
+            22.376,
+            19.424
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083716196951,
+            30.311394263837
+          ],
+          [
+            120.083708771926,
+            30.311580965307
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e04",
+      "properties": {
+        "id": "e04",
+        "source": "n_main_c",
+        "target": "n_main_w",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 24.178,
+        "walk_seconds": 21.0,
+        "path_px": [
+          [
+            870,
+            610
+          ],
+          [
+            230,
+            610
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            22.376,
+            19.424
+          ],
+          [
+            21.533,
+            43.587
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083708771926,
+            30.311580965307
+          ],
+          [
+            120.083700130812,
+            30.311798217616
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e05",
+      "properties": {
+        "id": "e05",
+        "source": "n_main_w",
+        "target": "n_west_south",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 10.724,
+        "walk_seconds": 9.3,
+        "path_px": [
+          [
+            230,
+            610
+          ],
+          [
+            230,
+            875
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            21.533,
+            43.587
+          ],
+          [
+            10.815,
+            43.235
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083700130812,
+            30.311798217616
+          ],
+          [
+            120.083588056416,
+            30.311797221374
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e06",
+      "properties": {
+        "id": "e06",
+        "source": "n_main_w",
+        "target": "n_west_north",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 14.568,
+        "walk_seconds": 12.7,
+        "path_px": [
+          [
+            230,
+            610
+          ],
+          [
+            230,
+            250
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            21.533,
+            43.587
+          ],
+          [
+            36.093,
+            44.066
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083700130812,
+            30.311798217616
+          ],
+          [
+            120.083852384242,
+            30.311799570393
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e07",
+      "properties": {
+        "id": "e07",
+        "source": "n_west_north",
+        "target": "n_room_hall",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 11.603,
+        "walk_seconds": 10.1,
+        "path_px": [
+          [
+            230,
+            250
+          ],
+          [
+            430,
+            250
+          ],
+          [
+            430,
+            350
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            36.093,
+            44.066
+          ],
+          [
+            36.357,
+            36.515
+          ],
+          [
+            32.312,
+            36.382
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083852384242,
+            30.311799570393
+          ],
+          [
+            120.083855084751,
+            30.311731679073
+          ],
+          [
+            120.083812791961,
+            30.311731303366
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e08",
+      "properties": {
+        "id": "e08",
+        "source": "n_room_hall",
+        "target": "n_upper_c",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 16.622,
+        "walk_seconds": 14.5,
+        "path_px": [
+          [
+            430,
+            350
+          ],
+          [
+            870,
+            350
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            32.312,
+            36.382
+          ],
+          [
+            32.892,
+            19.77
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083812791961,
+            30.311731303366
+          ],
+          [
+            120.083818732654,
+            30.311581942351
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e09",
+      "properties": {
+        "id": "e09",
+        "source": "n_upper_c",
+        "target": "n_upper_e",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 7.934,
+        "walk_seconds": 6.9,
+        "path_px": [
+          [
+            870,
+            350
+          ],
+          [
+            1080,
+            350
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            32.892,
+            19.77
+          ],
+          [
+            33.168,
+            11.841
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083818732654,
+            30.311581942351
+          ],
+          [
+            120.083821567791,
+            30.311510656356
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e10",
+      "properties": {
+        "id": "e10",
+        "source": "n_upper_c",
+        "target": "n_main_c",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 10.522,
+        "walk_seconds": 9.1,
+        "path_px": [
+          [
+            870,
+            350
+          ],
+          [
+            870,
+            610
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            32.892,
+            19.77
+          ],
+          [
+            22.376,
+            19.424
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083818732654,
+            30.311581942351
+          ],
+          [
+            120.083708771926,
+            30.311580965307
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e11",
+      "properties": {
+        "id": "e11",
+        "source": "n_upper_e",
+        "target": "n_emergency_a",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 17.511,
+        "walk_seconds": 15.2,
+        "path_px": [
+          [
+            1080,
+            350
+          ],
+          [
+            1080,
+            540
+          ],
+          [
+            1340,
+            540
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            33.168,
+            11.841
+          ],
+          [
+            25.484,
+            11.589
+          ],
+          [
+            25.827,
+            1.772
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083821567791,
+            30.311510656356
+          ],
+          [
+            120.083741211771,
+            30.311509942402
+          ],
+          [
+            120.083744721744,
+            30.311421683508
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e12",
+      "properties": {
+        "id": "e12",
+        "source": "n_emergency_a",
+        "target": "n_infusion",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 7.177,
+        "walk_seconds": 6.2,
+        "path_px": [
+          [
+            1340,
+            540
+          ],
+          [
+            1530,
+            540
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            25.827,
+            1.772
+          ],
+          [
+            26.077,
+            -5.401
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083744721744,
+            30.311421683508
+          ],
+          [
+            120.083747286604,
+            30.31135718659
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e13",
+      "properties": {
+        "id": "e13",
+        "source": "n_infusion",
+        "target": "n_east",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 7.5,
+        "walk_seconds": 6.5,
+        "path_px": [
+          [
+            1530,
+            540
+          ],
+          [
+            1600,
+            590
+          ],
+          [
+            1690,
+            650
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            26.077,
+            -5.401
+          ],
+          [
+            24.147,
+            -8.11
+          ],
+          [
+            21.839,
+            -11.588
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083747286604,
+            30.31135718659
+          ],
+          [
+            120.083727085269,
+            30.311333236652
+          ],
+          [
+            120.083702924677,
+            30.311302459958
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e14",
+      "properties": {
+        "id": "e14",
+        "source": "n_east",
+        "target": "n_107",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 10.021,
+        "walk_seconds": 8.7,
+        "path_px": [
+          [
+            1690,
+            650
+          ],
+          [
+            1770,
+            720
+          ],
+          [
+            1840,
+            850
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            21.839,
+            -11.588
+          ],
+          [
+            19.113,
+            -14.702
+          ],
+          [
+            13.948,
+            -17.517
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083702924677,
+            30.311302459958
+          ],
+          [
+            120.083674399887,
+            30.311275040228
+          ],
+          [
+            120.083620364833,
+            30.311250789468
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e15",
+      "properties": {
+        "id": "e15",
+        "source": "n_east",
+        "target": "n_guard",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 7.689,
+        "walk_seconds": 6.7,
+        "path_px": [
+          [
+            1690,
+            650
+          ],
+          [
+            1690,
+            840
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            21.839,
+            -11.588
+          ],
+          [
+            14.154,
+            -11.841
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083702924677,
+            30.311302459958
+          ],
+          [
+            120.08362256932,
+            30.311301745717
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e16",
+      "properties": {
+        "id": "e16",
+        "source": "n_lobby",
+        "target": "n_lab",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 11.39,
+        "walk_seconds": 9.9,
+        "path_px": [
+          [
+            1250,
+            760
+          ],
+          [
+            1250,
+            900
+          ],
+          [
+            1100,
+            920
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            16.81,
+            4.878
+          ],
+          [
+            11.148,
+            4.692
+          ],
+          [
+            10.142,
+            10.328
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083650463512,
+            30.311451407757
+          ],
+          [
+            120.083591254483,
+            30.311450881391
+          ],
+          [
+            120.0835807711,
+            30.311501724765
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e17",
+      "properties": {
+        "id": "e17",
+        "source": "n_lobby",
+        "target": "n_service",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 12.327,
+        "walk_seconds": 10.7,
+        "path_px": [
+          [
+            1250,
+            760
+          ],
+          [
+            1015,
+            760
+          ],
+          [
+            950,
+            700
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            16.81,
+            4.878
+          ],
+          [
+            16.501,
+            13.75
+          ],
+          [
+            18.842,
+            16.284
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083650463512,
+            30.311451407757
+          ],
+          [
+            120.08364729101,
+            30.311531180195
+          ],
+          [
+            120.083671788848,
+            30.311553470456
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e18",
+      "properties": {
+        "id": "e18",
+        "source": "n_main_c",
+        "target": "n_machines",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 10.173,
+        "walk_seconds": 8.8,
+        "path_px": [
+          [
+            870,
+            610
+          ],
+          [
+            700,
+            610
+          ],
+          [
+            650,
+            690
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            22.376,
+            19.424
+          ],
+          [
+            22.152,
+            25.842
+          ],
+          [
+            18.851,
+            27.624
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083708771926,
+            30.311580965307
+          ],
+          [
+            120.083706476745,
+            30.311638672985
+          ],
+          [
+            120.083671967785,
+            30.311655345124
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e19",
+      "properties": {
+        "id": "e19",
+        "source": "n_machines",
+        "target": "n_radiology",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 4.099,
+        "walk_seconds": 3.6,
+        "path_px": [
+          [
+            650,
+            690
+          ],
+          [
+            700,
+            780
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            18.851,
+            27.624
+          ],
+          [
+            15.277,
+            25.616
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083671967785,
+            30.311655345124
+          ],
+          [
+            120.08363457982,
+            30.311638033948
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e20",
+      "properties": {
+        "id": "e20",
+        "source": "n_main_w",
+        "target": "n_clinics",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 16.458,
+        "walk_seconds": 14.3,
+        "path_px": [
+          [
+            230,
+            610
+          ],
+          [
+            230,
+            830
+          ],
+          [
+            430,
+            830
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            21.533,
+            43.587
+          ],
+          [
+            12.635,
+            43.295
+          ],
+          [
+            12.899,
+            35.744
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083700130812,
+            30.311798217616
+          ],
+          [
+            120.083607087854,
+            30.311797390577
+          ],
+          [
+            120.083609788307,
+            30.311729499275
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e21",
+      "properties": {
+        "id": "e21",
+        "source": "n_room_hall",
+        "target": "n_mri",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 7.447,
+        "walk_seconds": 6.5,
+        "path_px": [
+          [
+            430,
+            350
+          ],
+          [
+            430,
+            250
+          ],
+          [
+            520,
+            250
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            32.312,
+            36.382
+          ],
+          [
+            36.357,
+            36.515
+          ],
+          [
+            36.475,
+            33.117
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083812791961,
+            30.311731303366
+          ],
+          [
+            120.083855084751,
+            30.311731679073
+          ],
+          [
+            120.083856299943,
+            30.311701127968
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e22",
+      "properties": {
+        "id": "e22",
+        "source": "n_room_hall",
+        "target": "n_rooms",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 3.777,
+        "walk_seconds": 3.3,
+        "path_px": [
+          [
+            430,
+            350
+          ],
+          [
+            330,
+            350
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            32.312,
+            36.382
+          ],
+          [
+            32.18,
+            40.157
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083812791961,
+            30.311731303366
+          ],
+          [
+            120.083811441725,
+            30.311765249029
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e23",
+      "properties": {
+        "id": "e23",
+        "source": "n_upper_c",
+        "target": "n_125",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 7.527,
+        "walk_seconds": 6.5,
+        "path_px": [
+          [
+            870,
+            350
+          ],
+          [
+            870,
+            480
+          ],
+          [
+            930,
+            480
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            32.892,
+            19.77
+          ],
+          [
+            27.634,
+            19.597
+          ],
+          [
+            27.713,
+            17.332
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083818732654,
+            30.311581942351
+          ],
+          [
+            120.083763752184,
+            30.311581453871
+          ],
+          [
+            120.083764562232,
+            30.311561086449
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e24",
+      "properties": {
+        "id": "e24",
+        "source": "n_upper_e",
+        "target": "n_pharmacy",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 10.711,
+        "walk_seconds": 9.3,
+        "path_px": [
+          [
+            1080,
+            350
+          ],
+          [
+            1080,
+            540
+          ],
+          [
+            1160,
+            540
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            33.168,
+            11.841
+          ],
+          [
+            25.484,
+            11.589
+          ],
+          [
+            25.589,
+            8.568
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083821567791,
+            30.311510656356
+          ],
+          [
+            120.083741211771,
+            30.311509942402
+          ],
+          [
+            120.083742291783,
+            30.311482785825
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e25",
+      "properties": {
+        "id": "e25",
+        "source": "n_lab",
+        "target": "n_stair_1",
+        "accessible": false,
+        "level_id": "zju2_zijingang_1f",
+        "length_m": 5.682,
+        "walk_seconds": 4.9,
+        "path_px": [
+          [
+            1100,
+            920
+          ],
+          [
+            950,
+            930
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            10.142,
+            10.328
+          ],
+          [
+            9.54,
+            15.978
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.0835807711,
+            30.311501724765
+          ],
+          [
+            120.083574516862,
+            30.31155260572
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e26",
+      "properties": {
+        "id": "e26",
+        "source": "n_upper_e",
+        "target": "n_stair_2",
+        "accessible": false,
+        "level_id": "zju2_zijingang_1f",
+        "length_m": 9.848,
+        "walk_seconds": 8.6,
+        "path_px": [
+          [
+            1080,
+            350
+          ],
+          [
+            980,
+            350
+          ],
+          [
+            980,
+            200
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            33.168,
+            11.841
+          ],
+          [
+            33.037,
+            15.617
+          ],
+          [
+            39.103,
+            15.816
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083821567791,
+            30.311510656356
+          ],
+          [
+            120.083820217741,
+            30.311544602072
+          ],
+          [
+            120.083883657013,
+            30.311545165608
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e27",
+      "properties": {
+        "id": "e27",
+        "source": "n_west_north",
+        "target": "n_west_room",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 11.465,
+        "walk_seconds": 10.0,
+        "path_px": [
+          [
+            230,
+            250
+          ],
+          [
+            130,
+            250
+          ],
+          [
+            130,
+            440
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            36.093,
+            44.066
+          ],
+          [
+            35.961,
+            47.841
+          ],
+          [
+            28.277,
+            47.589
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083852384242,
+            30.311799570393
+          ],
+          [
+            120.083851033944,
+            30.31183351604
+          ],
+          [
+            120.083770677774,
+            30.311832802151
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e28",
+      "properties": {
+        "id": "e28",
+        "source": "n_west_north",
+        "target": "n_restroom_nw",
+        "level_id": "zju2_zijingang_1f",
+        "accessible": true,
+        "length_m": 6.664,
+        "walk_seconds": 5.8,
+        "path_px": [
+          [
+            230,
+            250
+          ],
+          [
+            150,
+            250
+          ],
+          [
+            150,
+            160
+          ]
+        ],
+        "coordinates_local_m": [
+          [
+            36.093,
+            44.066
+          ],
+          [
+            35.988,
+            47.086
+          ],
+          [
+            39.628,
+            47.206
+          ]
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083852384242,
+            30.311799570393
+          ],
+          [
+            120.083851304006,
+            30.311826726911
+          ],
+          [
+            120.08388936761,
+            30.311827065015
+          ]
+        ]
+      }
+    }
+  ]
+}

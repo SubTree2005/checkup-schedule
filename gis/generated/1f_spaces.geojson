@@ -1,0 +1,3857 @@
+{
+  "type": "FeatureCollection",
+  "status": "navigation_draft_not_survey",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "1f_b2_west_corridor",
+      "properties": {
+        "id": "1f_b2_west_corridor",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b2",
+        "name": "图左主通道",
+        "room_ref": null,
+        "use_type": "corridor",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b2_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                175.0,
+                387.0
+              ],
+              [
+                170.0,
+                387.0
+              ],
+              [
+                170.0,
+                81.0
+              ],
+              [
+                134.0,
+                81.0
+              ],
+              [
+                134.0,
+                567.0
+              ],
+              [
+                131.0,
+                567.0
+              ],
+              [
+                131.0,
+                568.0
+              ],
+              [
+                139.0,
+                568.0
+              ],
+              [
+                139.0,
+                583.0
+              ],
+              [
+                173.0,
+                583.0
+              ],
+              [
+                173.0,
+                505.0
+              ],
+              [
+                175.0,
+                505.0
+              ],
+              [
+                175.0,
+                387.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08369606067946,
+              30.311780741485034
+            ],
+            [
+              120.08369595227009,
+              30.31178346734845
+            ],
+            [
+              120.08390360653638,
+              30.311785312842368
+            ],
+            [
+              120.08390282603004,
+              30.31180493906282
+            ],
+            [
+              120.08357302214684,
+              30.311802007823985
+            ],
+            [
+              120.08357295709915,
+              30.311803643341833
+            ],
+            [
+              120.08357227849042,
+              30.311803637309612
+            ],
+            [
+              120.08357245195096,
+              30.31179927592869
+            ],
+            [
+              120.0835622728205,
+              30.311799185445096
+            ],
+            [
+              120.08356301002928,
+              30.31178064957633
+            ],
+            [
+              120.08361594149862,
+              30.31178112008139
+            ],
+            [
+              120.08361598486324,
+              30.31178002973612
+            ],
+            [
+              120.08369606067946,
+              30.311780741485034
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_shared_main_link",
+      "properties": {
+        "id": "1f_shared_main_link",
+        "status": "navigation_draft_not_survey",
+        "building_id": null,
+        "name": "一层主连廊",
+        "room_ref": null,
+        "use_type": "corridor",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_shared_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                659.0,
+                370.0
+              ],
+              [
+                151.0,
+                370.0
+              ],
+              [
+                151.0,
+                402.0
+              ],
+              [
+                318.0,
+                402.0
+              ],
+              [
+                398.0,
+                402.0
+              ],
+              [
+                480.0,
+                402.0
+              ],
+              [
+                547.0,
+                402.0
+              ],
+              [
+                581.0,
+                402.0
+              ],
+              [
+                659.0,
+                402.0
+              ],
+              [
+                659.0,
+                370.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08371809096016,
+              30.31151698043297
+            ],
+            [
+              120.08370707666288,
+              30.311793928165606
+            ],
+            [
+              120.08368536118367,
+              30.311793735155433
+            ],
+            [
+              120.08368898205985,
+              30.31170269131778
+            ],
+            [
+              120.08369071660634,
+              30.311659077502757
+            ],
+            [
+              120.08369249451316,
+              30.311614373341968
+            ],
+            [
+              120.08369394719061,
+              30.31157784677128
+            ],
+            [
+              120.08369468436935,
+              30.31155931089948
+            ],
+            [
+              120.0836963755419,
+              30.311516787428623
+            ],
+            [
+              120.08371809096016,
+              30.31151698043297
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b2_inner_corridor",
+      "properties": {
+        "id": "1f_b2_inner_corridor",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b2",
+        "name": "内院外围通道",
+        "room_ref": null,
+        "use_type": "corridor",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b2_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                270.0,
+                162.0
+              ],
+              [
+                270.0,
+                216.0
+              ],
+              [
+                270.0,
+                280.0
+              ],
+              [
+                270.0,
+                344.0
+              ],
+              [
+                270.0,
+                370.0
+              ],
+              [
+                317.0,
+                370.0
+              ],
+              [
+                317.0,
+                369.0
+              ],
+              [
+                317.0,
+                219.0
+              ],
+              [
+                545.0,
+                219.0
+              ],
+              [
+                548.0,
+                219.0
+              ],
+              [
+                548.0,
+                166.0
+              ],
+              [
+                546.0,
+                166.0
+              ],
+              [
+                546.0,
+                162.0
+              ],
+              [
+                545.0,
+                162.0
+              ],
+              [
+                545.0,
+                163.0
+              ],
+              [
+                424.0,
+                163.0
+              ],
+              [
+                424.0,
+                162.0
+              ],
+              [
+                270.0,
+                162.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08385080732711,
+              30.311730307084794
+            ],
+            [
+              120.08381416247589,
+              30.311729981419894
+            ],
+            [
+              120.0837707315426,
+              30.311729595433366
+            ],
+            [
+              120.08372730061087,
+              30.31172920943242
+            ],
+            [
+              120.08370965679535,
+              30.31172905261543
+            ],
+            [
+              120.08371067583728,
+              30.311703429498742
+            ],
+            [
+              120.0837113544454,
+              30.311703435530184
+            ],
+            [
+              120.0838131456662,
+              30.311704340207854
+            ],
+            [
+              120.0838180889589,
+              30.311580040819102
+            ],
+            [
+              120.08381815400207,
+              30.311578405300814
+            ],
+            [
+              120.08385412018961,
+              30.31157872493025
+            ],
+            [
+              120.0838540768279,
+              30.31157981527583
+            ],
+            [
+              120.08385679125722,
+              30.31157983939842
+            ],
+            [
+              120.08385676957639,
+              30.311580384571194
+            ],
+            [
+              120.08385609096905,
+              30.311580378540544
+            ],
+            [
+              120.08385346758361,
+              30.31164634444704
+            ],
+            [
+              120.0838541461914,
+              30.311646350477716
+            ],
+            [
+              120.08385080732711,
+              30.311730307084794
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b1_b1_spine",
+      "properties": {
+        "id": "1f_b1_b1_spine",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b1",
+        "name": "一号楼图左通道",
+        "room_ref": null,
+        "use_type": "corridor",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                547.0,
+                166.0
+              ],
+              [
+                547.0,
+                387.0
+              ],
+              [
+                578.0,
+                387.0
+              ],
+              [
+                578.0,
+                166.0
+              ],
+              [
+                547.0,
+                166.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08385409850877,
+              30.311579270103053
+            ],
+            [
+              120.08370412629917,
+              30.31157793724312
+            ],
+            [
+              120.083704798431,
+              30.311561036889255
+            ],
+            [
+              120.08385477061489,
+              30.31156236974673
+            ],
+            [
+              120.08385409850877,
+              30.311579270103053
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b1_east_upper_hall",
+      "properties": {
+        "id": "1f_b1_east_upper_hall",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b1",
+        "name": "一层图上侧通道",
+        "room_ref": null,
+        "use_type": "corridor",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                659.0,
+                370.0
+              ],
+              [
+                811.0,
+                370.0
+              ],
+              [
+                811.0,
+                346.0
+              ],
+              [
+                704.0,
+                346.0
+              ],
+              [
+                704.0,
+                40.0
+              ],
+              [
+                659.0,
+                40.0
+              ],
+              [
+                659.0,
+                113.0
+              ],
+              [
+                676.0,
+                113.0
+              ],
+              [
+                676.0,
+                166.0
+              ],
+              [
+                659.0,
+                166.0
+              ],
+              [
+                659.0,
+                225.0
+              ],
+              [
+                659.0,
+                313.0
+              ],
+              [
+                659.0,
+                367.0
+              ],
+              [
+                659.0,
+                370.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08371809096016,
+              30.31151698043297
+            ],
+            [
+              120.08372138655146,
+              30.311434114179324
+            ],
+            [
+              120.08373767310174,
+              30.311434258928898
+            ],
+            [
+              120.08373535318975,
+              30.311492592411152
+            ],
+            [
+              120.08394300684824,
+              30.311494437802335
+            ],
+            [
+              120.08394203123424,
+              30.311518970579982
+            ],
+            [
+              120.08389249292753,
+              30.311518530368385
+            ],
+            [
+              120.08389286149759,
+              30.31150926243061
+            ],
+            [
+              120.08385689533438,
+              30.311508942813486
+            ],
+            [
+              120.08385652676094,
+              30.311518210750926
+            ],
+            [
+              120.08381648895414,
+              30.31151785493873
+            ],
+            [
+              120.08375677154993,
+              30.31151732421304
+            ],
+            [
+              120.08372012678063,
+              30.311516998526944
+            ],
+            [
+              120.08371809096016,
+              30.31151698043297
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b1_lobby",
+      "properties": {
+        "id": "1f_b1_lobby",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b1",
+        "name": "门诊大厅",
+        "room_ref": null,
+        "use_type": "lobby",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                966.0,
+                346.0
+              ],
+              [
+                659.0,
+                346.0
+              ],
+              [
+                659.0,
+                367.0
+              ],
+              [
+                659.0,
+                402.0
+              ],
+              [
+                659.0,
+                539.0
+              ],
+              [
+                659.0,
+                583.0
+              ],
+              [
+                661.0,
+                583.0
+              ],
+              [
+                661.0,
+                636.0
+              ],
+              [
+                659.0,
+                636.0
+              ],
+              [
+                659.0,
+                657.0
+              ],
+              [
+                709.0,
+                657.0
+              ],
+              [
+                709.0,
+                584.0
+              ],
+              [
+                709.0,
+                581.0
+              ],
+              [
+                883.0,
+                581.0
+              ],
+              [
+                883.0,
+                640.0
+              ],
+              [
+                950.0,
+                640.0
+              ],
+              [
+                950.0,
+                581.0
+              ],
+              [
+                1090.0,
+                581.0
+              ],
+              [
+                1090.0,
+                554.0
+              ],
+              [
+                1010.0,
+                430.0
+              ],
+              [
+                969.0,
+                353.0
+              ],
+              [
+                966.0,
+                346.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08374103371166,
+              30.311349757154343
+            ],
+            [
+              120.08373437752412,
+              30.31151712518387
+            ],
+            [
+              120.08372012678063,
+              30.311516998526944
+            ],
+            [
+              120.0836963755419,
+              30.311516787428623
+            ],
+            [
+              120.083603406412,
+              30.311515961088013
+            ],
+            [
+              120.08357354771489,
+              30.311515695679915
+            ],
+            [
+              120.08357359107961,
+              30.31151460533464
+            ],
+            [
+              120.08353762492312,
+              30.31151428562952
+            ],
+            [
+              120.08353758155802,
+              30.31151537597478
+            ],
+            [
+              120.08352333081692,
+              30.311515249296395
+            ],
+            [
+              120.08352441494809,
+              30.311487990665622
+            ],
+            [
+              120.08357395322564,
+              30.311488431015746
+            ],
+            [
+              120.08357598904531,
+              30.31148844911193
+            ],
+            [
+              120.08357976176238,
+              30.31139358907093
+            ],
+            [
+              120.08353972401466,
+              30.311393233177267
+            ],
+            [
+              120.08354117673832,
+              30.311356706610695
+            ],
+            [
+              120.08358121447121,
+              30.31135706250294
+            ],
+            [
+              120.08358424997492,
+              30.31128073833017
+            ],
+            [
+              120.08360257231354,
+              30.31128090119068
+            ],
+            [
+              120.08368498482672,
+              30.311325262927124
+            ],
+            [
+              120.0837363485159,
+              30.311348079418085
+            ],
+            [
+              120.08374103371166,
+              30.311349757154343
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b1_east_passage",
+      "properties": {
+        "id": "1f_b1_east_passage",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b1",
+        "name": "图右翼通道（边界概化）",
+        "room_ref": null,
+        "use_type": "corridor",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                1010.0,
+                430.0
+              ],
+              [
+                1090.0,
+                554.0
+              ],
+              [
+                1118.0,
+                544.0
+              ],
+              [
+                1223.0,
+                480.0
+              ],
+              [
+                1198.0,
+                442.0
+              ],
+              [
+                1148.0,
+                354.0
+              ],
+              [
+                1010.0,
+                430.0
+              ]
+            ],
+            [
+              [
+                1024.0,
+                430.0
+              ],
+              [
+                1092.0,
+                392.0
+              ],
+              [
+                1148.0,
+                487.0
+              ],
+              [
+                1069.0,
+                516.0
+              ],
+              [
+                1024.0,
+                430.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08368498482672,
+              30.311325262927124
+            ],
+            [
+              120.08360257231354,
+              30.31128090119068
+            ],
+            [
+              120.08360996546061,
+              30.311265696673672
+            ],
+            [
+              120.08365567276394,
+              30.31120883956592
+            ],
+            [
+              120.08368091770284,
+              30.31122269807902
+            ],
+            [
+              120.08373955086272,
+              30.31125048746535
+            ],
+            [
+              120.08368498482672,
+              30.311325262927124
+            ]
+          ],
+          [
+            [
+              120.0836852883692,
+              30.31131763050909
+            ],
+            [
+              120.08371254971402,
+              30.31128078795432
+            ],
+            [
+              120.08364929640122,
+              30.311249685298176
+            ],
+            [
+              120.0836279039893,
+              30.311292579023885
+            ],
+            [
+              120.0836852883692,
+              30.31131763050909
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b2_103",
+      "properties": {
+        "id": "1f_b2_103",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b2",
+        "name": "二号楼103",
+        "room_ref": "103",
+        "use_type": "room",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b2_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                173.0,
+                78.0
+              ],
+              [
+                238.0,
+                78.0
+              ],
+              [
+                238.0,
+                162.0
+              ],
+              [
+                270.0,
+                162.0
+              ],
+              [
+                270.0,
+                216.0
+              ],
+              [
+                173.0,
+                216.0
+              ],
+              [
+                173.0,
+                78.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08390570740484,
+              30.311783695415425
+            ],
+            [
+              120.08381205939928,
+              30.311782863176283
+            ],
+            [
+              120.08381416247589,
+              30.311729981419894
+            ],
+            [
+              120.08385080732711,
+              30.311730307084794
+            ],
+            [
+              120.08385011353565,
+              30.311747752613353
+            ],
+            [
+              120.08390711664988,
+              30.31174825918375
+            ],
+            [
+              120.08390570740484,
+              30.311783695415425
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b2_102",
+      "properties": {
+        "id": "1f_b2_102",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b2",
+        "name": "二号楼102",
+        "room_ref": "102",
+        "use_type": "room",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b2_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                173.0,
+                216.0
+              ],
+              [
+                270.0,
+                216.0
+              ],
+              [
+                270.0,
+                280.0
+              ],
+              [
+                173.0,
+                280.0
+              ],
+              [
+                173.0,
+                216.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08381205939928,
+              30.311782863176283
+            ],
+            [
+              120.0837686284427,
+              30.31178247718754
+            ],
+            [
+              120.0837707315426,
+              30.311729595433366
+            ],
+            [
+              120.08381416247589,
+              30.311729981419894
+            ],
+            [
+              120.08381205939928,
+              30.311782863176283
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b2_101",
+      "properties": {
+        "id": "1f_b2_101",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b2",
+        "name": "二号楼101",
+        "room_ref": "101",
+        "use_type": "room",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b2_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                173.0,
+                280.0
+              ],
+              [
+                270.0,
+                280.0
+              ],
+              [
+                270.0,
+                344.0
+              ],
+              [
+                173.0,
+                344.0
+              ],
+              [
+                173.0,
+                280.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.0837686284427,
+              30.31178247718754
+            ],
+            [
+              120.0837251974877,
+              30.311782091184366
+            ],
+            [
+              120.08372730061087,
+              30.31172920943242
+            ],
+            [
+              120.0837707315426,
+              30.311729595433366
+            ],
+            [
+              120.0837686284427,
+              30.31178247718754
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b1_129",
+      "properties": {
+        "id": "1f_b1_129",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b1",
+        "name": "一号楼129",
+        "room_ref": "129",
+        "use_type": "room",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                579.0,
+                166.0
+              ],
+              [
+                659.0,
+                166.0
+              ],
+              [
+                659.0,
+                225.0
+              ],
+              [
+                579.0,
+                225.0
+              ],
+              [
+                579.0,
+                166.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08385479229575,
+              30.31156182457394
+            ],
+            [
+              120.08381475447123,
+              30.311561468760065
+            ],
+            [
+              120.08381648895414,
+              30.31151785493873
+            ],
+            [
+              120.08385652676094,
+              30.311518210750926
+            ],
+            [
+              120.08385479229575,
+              30.31156182457394
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b1_127",
+      "properties": {
+        "id": "1f_b1_127",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b1",
+        "name": "一号楼127",
+        "room_ref": "127",
+        "use_type": "room",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                579.0,
+                225.0
+              ],
+              [
+                659.0,
+                225.0
+              ],
+              [
+                659.0,
+                313.0
+              ],
+              [
+                579.0,
+                313.0
+              ],
+              [
+                579.0,
+                225.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08381475447123,
+              30.311561468760065
+            ],
+            [
+              120.08375503704063,
+              30.311560938031835
+            ],
+            [
+              120.08375677154993,
+              30.31151732421304
+            ],
+            [
+              120.08381648895414,
+              30.31151785493873
+            ],
+            [
+              120.08381475447123,
+              30.311561468760065
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b1_125",
+      "properties": {
+        "id": "1f_b1_125",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b1",
+        "name": "一号楼125",
+        "room_ref": "125",
+        "use_type": "room",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                579.0,
+                313.0
+              ],
+              [
+                659.0,
+                313.0
+              ],
+              [
+                659.0,
+                367.0
+              ],
+              [
+                579.0,
+                367.0
+              ],
+              [
+                579.0,
+                313.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08375503704063,
+              30.311560938031835
+            ],
+            [
+              120.08371839225514,
+              30.311560612344206
+            ],
+            [
+              120.08372012678063,
+              30.311516998526944
+            ],
+            [
+              120.08375677154993,
+              30.31151732421304
+            ],
+            [
+              120.08375503704063,
+              30.311560938031835
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b2_mri",
+      "properties": {
+        "id": "1f_b2_mri",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b2",
+        "name": "图签 MIR（疑为 MRI，待核）",
+        "room_ref": null,
+        "use_type": "imaging",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "note": "原图文字为 MIR；不自动转为调度 MRI",
+        "level_id": "zju2_zijingang_b2_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                240.0,
+                39.0
+              ],
+              [
+                424.0,
+                39.0
+              ],
+              [
+                424.0,
+                161.0
+              ],
+              [
+                240.0,
+                161.0
+              ],
+              [
+                240.0,
+                39.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08393362574347,
+              30.311747404023098
+            ],
+            [
+              120.08385083550611,
+              30.311746668298564
+            ],
+            [
+              120.08385482479919,
+              30.311646356508405
+            ],
+            [
+              120.08393761495239,
+              30.31164709222489
+            ],
+            [
+              120.08393362574347,
+              30.311747404023098
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b2_electrical",
+      "properties": {
+        "id": "1f_b2_electrical",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b2",
+        "name": "配电间",
+        "room_ref": null,
+        "use_type": "utility",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b2_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                424.0,
+                39.0
+              ],
+              [
+                545.0,
+                39.0
+              ],
+              [
+                545.0,
+                163.0
+              ],
+              [
+                424.0,
+                163.0
+              ],
+              [
+                424.0,
+                39.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08393761495239,
+              30.31164709222489
+            ],
+            [
+              120.08385346758361,
+              30.31164634444704
+            ],
+            [
+              120.08385609096905,
+              30.311580378540544
+            ],
+            [
+              120.08394023828157,
+              30.31158112631303
+            ],
+            [
+              120.08393761495239,
+              30.31164709222489
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b2_courtyard",
+      "properties": {
+        "id": "1f_b2_courtyard",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b2",
+        "name": "内院",
+        "room_ref": null,
+        "use_type": "void",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "note": "原字为“内院”，旧数据误读为内镜；不得映射消化内镜",
+        "level_id": "zju2_zijingang_b2_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                317.0,
+                219.0
+              ],
+              [
+                545.0,
+                219.0
+              ],
+              [
+                545.0,
+                369.0
+              ],
+              [
+                317.0,
+                369.0
+              ],
+              [
+                317.0,
+                219.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.0838131456662,
+              30.311704340207854
+            ],
+            [
+              120.0837113544454,
+              30.311703435530184
+            ],
+            [
+              120.08371629786632,
+              30.311579136153693
+            ],
+            [
+              120.0838180889589,
+              30.311580040819102
+            ],
+            [
+              120.0838131456662,
+              30.311704340207854
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b2_surgery",
+      "properties": {
+        "id": "1f_b2_surgery",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b2",
+        "name": "手术室",
+        "room_ref": null,
+        "use_type": "clinical",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b2_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                45.0,
+                163.0
+              ],
+              [
+                133.0,
+                163.0
+              ],
+              [
+                133.0,
+                402.0
+              ],
+              [
+                45.0,
+                402.0
+              ],
+              [
+                45.0,
+                163.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08384525048568,
+              30.311852964925425
+            ],
+            [
+              120.08368306289569,
+              30.311851523458714
+            ],
+            [
+              120.08368497090873,
+              30.311803548263587
+            ],
+            [
+              120.08384715841987,
+              30.31180498972275
+            ],
+            [
+              120.08384525048568,
+              30.311852964925425
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b2_surgery_approach",
+      "properties": {
+        "id": "1f_b2_surgery_approach",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b2",
+        "name": "手术室门前通道",
+        "room_ref": null,
+        "use_type": "corridor",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b2_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                119.0,
+                402.0
+              ],
+              [
+                119.0,
+                420.0
+              ],
+              [
+                153.0,
+                420.0
+              ],
+              [
+                153.0,
+                402.0
+              ],
+              [
+                133.0,
+                402.0
+              ],
+              [
+                119.0,
+                402.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08368466736148,
+              30.311811180681016
+            ],
+            [
+              120.08367245240242,
+              30.311811072111006
+            ],
+            [
+              120.08367318959078,
+              30.311792536240294
+            ],
+            [
+              120.08368540454755,
+              30.311792644810076
+            ],
+            [
+              120.08368497090873,
+              30.311803548263587
+            ],
+            [
+              120.08368466736148,
+              30.311811180681016
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b1_pharmacy",
+      "properties": {
+        "id": "1f_b1_pharmacy",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b1",
+        "name": "药剂科",
+        "room_ref": null,
+        "use_type": "clinical",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                705.0,
+                222.0
+              ],
+              [
+                811.0,
+                222.0
+              ],
+              [
+                811.0,
+                344.0
+              ],
+              [
+                705.0,
+                344.0
+              ],
+              [
+                705.0,
+                222.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.0838195221005,
+              30.31149279508369
+            ],
+            [
+              120.08373673208453,
+              30.311492059300875
+            ],
+            [
+              120.08373903031426,
+              30.311434270991274
+            ],
+            [
+              120.08382182028176,
+              30.31143500676945
+            ],
+            [
+              120.0838195221005,
+              30.31149279508369
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b1_emergency_a",
+      "properties": {
+        "id": "1f_b1_emergency_a",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b1",
+        "name": "急诊A区",
+        "room_ref": null,
+        "use_type": "emergency",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                811.0,
+                222.0
+              ],
+              [
+                942.0,
+                222.0
+              ],
+              [
+                942.0,
+                344.0
+              ],
+              [
+                811.0,
+                344.0
+              ],
+              [
+                811.0,
+                222.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08382182028176,
+              30.31143500676945
+            ],
+            [
+              120.08373903031426,
+              30.311434270991274
+            ],
+            [
+              120.0837418705715,
+              30.311362853362454
+            ],
+            [
+              120.08382466047904,
+              30.311363589134906
+            ],
+            [
+              120.08382182028176,
+              30.31143500676945
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b1_infusion",
+      "properties": {
+        "id": "1f_b1_infusion",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b1",
+        "name": "输液",
+        "room_ref": null,
+        "use_type": "infusion",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                969.0,
+                225.0
+              ],
+              [
+                1068.0,
+                225.0
+              ],
+              [
+                1148.0,
+                354.0
+              ],
+              [
+                1010.0,
+                430.0
+              ],
+              [
+                969.0,
+                353.0
+              ],
+              [
+                969.0,
+                225.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08382321004498,
+              30.311348851377534
+            ],
+            [
+              120.0837363485159,
+              30.311348079418085
+            ],
+            [
+              120.08368498482672,
+              30.311325262927124
+            ],
+            [
+              120.08373955086272,
+              30.31125048746535
+            ],
+            [
+              120.08382535644769,
+              30.31129487927132
+            ],
+            [
+              120.08382321004498,
+              30.311348851377534
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b1_observation",
+      "properties": {
+        "id": "1f_b1_observation",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b1",
+        "name": "观察",
+        "room_ref": null,
+        "use_type": "observation",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                1024.0,
+                430.0
+              ],
+              [
+                1092.0,
+                392.0
+              ],
+              [
+                1148.0,
+                487.0
+              ],
+              [
+                1069.0,
+                516.0
+              ],
+              [
+                1024.0,
+                430.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.0836852883692,
+              30.31131763050909
+            ],
+            [
+              120.0836279039893,
+              30.311292579023885
+            ],
+            [
+              120.08364929640122,
+              30.311249685298176
+            ],
+            [
+              120.08371254971402,
+              30.31128078795432
+            ],
+            [
+              120.0836852883692,
+              30.31131763050909
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b1_107",
+      "properties": {
+        "id": "1f_b1_107",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b1",
+        "name": "一号楼107",
+        "room_ref": "107",
+        "use_type": "room",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "note": "107 急诊室；斜向门位与未编号隔间边界待核",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                1170.0,
+                539.0
+              ],
+              [
+                1235.0,
+                500.0
+              ],
+              [
+                1285.0,
+                584.0
+              ],
+              [
+                1194.0,
+                636.0
+              ],
+              [
+                1160.0,
+                582.0
+              ],
+              [
+                1170.0,
+                539.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08361448594718,
+              30.31123737785289
+            ],
+            [
+              120.08358508911822,
+              30.311242570211455
+            ],
+            [
+              120.08354918165412,
+              30.311223708613753
+            ],
+            [
+              120.08358644216834,
+              30.311174411563485
+            ],
+            [
+              120.08364236085175,
+              30.31120217686247
+            ],
+            [
+              120.08361448594718,
+              30.31123737785289
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b1_guard",
+      "properties": {
+        "id": "1f_b1_guard",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b1",
+        "name": "门卫（兼消控）",
+        "room_ref": null,
+        "use_type": "security",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                1087.0,
+                584.0
+              ],
+              [
+                1127.0,
+                560.0
+              ],
+              [
+                1157.0,
+                602.0
+              ],
+              [
+                1120.0,
+                626.0
+              ],
+              [
+                1087.0,
+                584.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08358214911308,
+              30.311282355752404
+            ],
+            [
+              120.08355436321338,
+              30.31126411171076
+            ],
+            [
+              120.08357145197444,
+              30.311244085090824
+            ],
+            [
+              120.08359930291842,
+              30.311260693610688
+            ],
+            [
+              120.08358214911308,
+              30.311282355752404
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b1_service",
+      "properties": {
+        "id": "1f_b1_service",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b1",
+        "name": "综合服务中心",
+        "room_ref": null,
+        "use_type": "service",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                581.0,
+                402.0
+              ],
+              [
+                659.0,
+                402.0
+              ],
+              [
+                659.0,
+                539.0
+              ],
+              [
+                581.0,
+                539.0
+              ],
+              [
+                581.0,
+                402.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08369468436935,
+              30.31155931089948
+            ],
+            [
+              120.08360171519938,
+              30.31155848455504
+            ],
+            [
+              120.083603406412,
+              30.311515961088013
+            ],
+            [
+              120.0836963755419,
+              30.311516787428623
+            ],
+            [
+              120.08369468436935,
+              30.31155931089948
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b2_machine_3",
+      "properties": {
+        "id": "1f_b2_machine_3",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b2",
+        "name": "3号机房",
+        "room_ref": null,
+        "use_type": "imaging_support",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b2_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                318.0,
+                402.0
+              ],
+              [
+                398.0,
+                402.0
+              ],
+              [
+                398.0,
+                499.0
+              ],
+              [
+                318.0,
+                499.0
+              ],
+              [
+                318.0,
+                402.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08368898205985,
+              30.31170269131778
+            ],
+            [
+              120.08362315707667,
+              30.311702106239473
+            ],
+            [
+              120.08362489165226,
+              30.311658492427235
+            ],
+            [
+              120.08369071660634,
+              30.311659077502757
+            ],
+            [
+              120.08368898205985,
+              30.31170269131778
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b2_machine_2",
+      "properties": {
+        "id": "1f_b2_machine_2",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b2",
+        "name": "2号机房",
+        "room_ref": null,
+        "use_type": "imaging_support",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b2_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                398.0,
+                402.0
+              ],
+              [
+                480.0,
+                402.0
+              ],
+              [
+                480.0,
+                499.0
+              ],
+              [
+                398.0,
+                499.0
+              ],
+              [
+                398.0,
+                402.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08369071660634,
+              30.311659077502757
+            ],
+            [
+              120.08362489165226,
+              30.311658492427235
+            ],
+            [
+              120.0836266695889,
+              30.311613788269298
+            ],
+            [
+              120.08369249451316,
+              30.311614373341968
+            ],
+            [
+              120.08369071660634,
+              30.311659077502757
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b2_machine_1",
+      "properties": {
+        "id": "1f_b2_machine_1",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b2",
+        "name": "1号机房",
+        "room_ref": null,
+        "use_type": "imaging_support",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b2_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                480.0,
+                402.0
+              ],
+              [
+                547.0,
+                402.0
+              ],
+              [
+                547.0,
+                499.0
+              ],
+              [
+                480.0,
+                499.0
+              ],
+              [
+                480.0,
+                402.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08369249451316,
+              30.311614373341968
+            ],
+            [
+              120.0836266695889,
+              30.311613788269298
+            ],
+            [
+              120.08362812229073,
+              30.31157726170093
+            ],
+            [
+              120.08369394719061,
+              30.31157784677128
+            ],
+            [
+              120.08369249451316,
+              30.311614373341968
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b2_radiology",
+      "properties": {
+        "id": "1f_b2_radiology",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b2",
+        "name": "放射科",
+        "room_ref": null,
+        "use_type": "radiology",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "note": "可见与机房相通的门；没有确认独立患者入口，不经机房穿行来制造可达性",
+        "level_id": "zju2_zijingang_b2_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                337.0,
+                499.0
+              ],
+              [
+                547.0,
+                499.0
+              ],
+              [
+                547.0,
+                584.0
+              ],
+              [
+                399.0,
+                584.0
+              ],
+              [
+                399.0,
+                538.0
+              ],
+              [
+                337.0,
+                538.0
+              ],
+              [
+                337.0,
+                499.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08362356903868,
+              30.31169174795911
+            ],
+            [
+              120.08359710332758,
+              30.311691512712365
+            ],
+            [
+              120.08359844763243,
+              30.3116577120087
+            ],
+            [
+              120.08356723167697,
+              30.31165743453233
+            ],
+            [
+              120.08357044068043,
+              30.31157674898318
+            ],
+            [
+              120.08362812229073,
+              30.31157726170093
+            ],
+            [
+              120.08362356903868,
+              30.31169174795911
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b1_laboratory",
+      "properties": {
+        "id": "1f_b1_laboratory",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b1",
+        "name": "检验科",
+        "room_ref": null,
+        "use_type": "laboratory",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                580.0,
+                636.0
+              ],
+              [
+                659.0,
+                636.0
+              ],
+              [
+                659.0,
+                657.0
+              ],
+              [
+                709.0,
+                657.0
+              ],
+              [
+                709.0,
+                584.0
+              ],
+              [
+                817.0,
+                584.0
+              ],
+              [
+                817.0,
+                708.0
+              ],
+              [
+                580.0,
+                718.0
+              ],
+              [
+                580.0,
+                636.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08353586863444,
+              30.3115584446117
+            ],
+            [
+              120.08348022286015,
+              30.311557949951712
+            ],
+            [
+              120.08349214775536,
+              30.311428804371594
+            ],
+            [
+              120.0835762949151,
+              30.311429552369948
+            ],
+            [
+              120.08357395322564,
+              30.311488431015746
+            ],
+            [
+              120.08352441494809,
+              30.311487990665622
+            ],
+            [
+              120.08352333081692,
+              30.311515249296395
+            ],
+            [
+              120.08353758155802,
+              30.31151537597478
+            ],
+            [
+              120.08353586863444,
+              30.3115584446117
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b2_archive",
+      "properties": {
+        "id": "1f_b2_archive",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b2",
+        "name": "档案室",
+        "room_ref": null,
+        "use_type": "storage",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b2_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                202.0,
+                585.0
+              ],
+              [
+                399.0,
+                585.0
+              ],
+              [
+                399.0,
+                685.0
+              ],
+              [
+                202.0,
+                685.0
+              ],
+              [
+                202.0,
+                585.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08356228160766,
+              30.311764827506064
+            ],
+            [
+              120.08349442076396,
+              30.31176422426343
+            ],
+            [
+              120.08349869229943,
+              30.311656825264567
+            ],
+            [
+              120.08356655306926,
+              30.31165742850015
+            ],
+            [
+              120.08356228160766,
+              30.311764827506064
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b2_clinic_n1",
+      "properties": {
+        "id": "1f_b2_clinic_n1",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b2",
+        "name": "肠道门诊",
+        "room_ref": null,
+        "use_type": "clinic",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b2_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                224.0,
+                505.0
+              ],
+              [
+                271.0,
+                505.0
+              ],
+              [
+                271.0,
+                584.0
+              ],
+              [
+                224.0,
+                584.0
+              ],
+              [
+                224.0,
+                505.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.0836170472958,
+              30.311753316276675
+            ],
+            [
+              120.08356343723302,
+              30.311752839740794
+            ],
+            [
+              120.08356445631375,
+              30.31172721662784
+            ],
+            [
+              120.08361806636262,
+              30.311727693162386
+            ],
+            [
+              120.0836170472958,
+              30.311753316276675
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b2_clinic_n2",
+      "properties": {
+        "id": "1f_b2_clinic_n2",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b2",
+        "name": "发热门诊",
+        "room_ref": null,
+        "use_type": "clinic",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b2_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                275.0,
+                505.0
+              ],
+              [
+                337.0,
+                505.0
+              ],
+              [
+                337.0,
+                584.0
+              ],
+              [
+                275.0,
+                584.0
+              ],
+              [
+                275.0,
+                505.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08361815309166,
+              30.311725512471813
+            ],
+            [
+              120.08356454304399,
+              30.311725035937368
+            ],
+            [
+              120.08356588736146,
+              30.311691235234967
+            ],
+            [
+              120.08361949739076,
+              30.311691711767647
+            ],
+            [
+              120.08361815309166,
+              30.311725512471813
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b2_clinic_n3",
+      "properties": {
+        "id": "1f_b2_clinic_n3",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b2",
+        "name": "发热门诊",
+        "room_ref": null,
+        "use_type": "clinic",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b2_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                338.0,
+                539.0
+              ],
+              [
+                398.0,
+                539.0
+              ],
+              [
+                398.0,
+                584.0
+              ],
+              [
+                338.0,
+                584.0
+              ],
+              [
+                338.0,
+                539.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08359644640197,
+              30.31169096150768
+            ],
+            [
+              120.08356590904397,
+              30.31169069006235
+            ],
+            [
+              120.08356720999448,
+              30.311657979704957
+            ],
+            [
+              120.08359774734237,
+              30.31165825114933
+            ],
+            [
+              120.08359644640197,
+              30.31169096150768
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b2_clinic_n0",
+      "properties": {
+        "id": "1f_b2_clinic_n0",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b2",
+        "name": "图签待核门诊",
+        "room_ref": null,
+        "use_type": "clinic",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b2_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                173.0,
+                505.0
+              ],
+              [
+                221.0,
+                505.0
+              ],
+              [
+                221.0,
+                584.0
+              ],
+              [
+                173.0,
+                584.0
+              ],
+              [
+                173.0,
+                505.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08361594149862,
+              30.31178112008139
+            ],
+            [
+              120.08356233142072,
+              30.31178064354408
+            ],
+            [
+              120.08356337218525,
+              30.31175447525864
+            ],
+            [
+              120.08361698224896,
+              30.31175495179461
+            ],
+            [
+              120.08361594149862,
+              30.31178112008139
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b2_restroom_nw",
+      "properties": {
+        "id": "1f_b2_restroom_nw",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b2",
+        "name": "卫生间",
+        "room_ref": null,
+        "use_type": "restroom",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b2_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                44.0,
+                75.0
+              ],
+              [
+                133.0,
+                75.0
+              ],
+              [
+                133.0,
+                112.0
+              ],
+              [
+                44.0,
+                112.0
+              ],
+              [
+                44.0,
+                75.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08390494641687,
+              30.311854040796792
+            ],
+            [
+              120.08387983787497,
+              30.31185381766546
+            ],
+            [
+              120.08388176747323,
+              30.31180529728841
+            ],
+            [
+              120.08390687600279,
+              30.311805520418556
+            ],
+            [
+              120.08390494641687,
+              30.311854040796792
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b1_restroom_n",
+      "properties": {
+        "id": "1f_b1_restroom_n",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b1",
+        "name": "卫生间",
+        "room_ref": null,
+        "use_type": "restroom",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                580.0,
+                40.0
+              ],
+              [
+                659.0,
+                40.0
+              ],
+              [
+                659.0,
+                113.0
+              ],
+              [
+                580.0,
+                113.0
+              ],
+              [
+                580.0,
+                40.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08394031848718,
+              30.31156203923379
+            ],
+            [
+              120.08389078015884,
+              30.311561599020116
+            ],
+            [
+              120.08389249292753,
+              30.311518530368385
+            ],
+            [
+              120.08394203123424,
+              30.311518970579982
+            ],
+            [
+              120.08394031848718,
+              30.31156203923379
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b1_stair_n",
+      "properties": {
+        "id": "1f_b1_stair_n",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b1",
+        "name": "楼梯2#",
+        "room_ref": null,
+        "use_type": "stairs",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                546.0,
+                113.0
+              ],
+              [
+                676.0,
+                113.0
+              ],
+              [
+                676.0,
+                166.0
+              ],
+              [
+                546.0,
+                166.0
+              ],
+              [
+                546.0,
+                113.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08389004301695,
+              30.311580134895426
+            ],
+            [
+              120.0838540768279,
+              30.31157981527583
+            ],
+            [
+              120.08385689533438,
+              30.311508942813486
+            ],
+            [
+              120.08389286149759,
+              30.31150926243061
+            ],
+            [
+              120.08389004301695,
+              30.311580134895426
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b1_stair_s",
+      "properties": {
+        "id": "1f_b1_stair_s",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b1",
+        "name": "楼梯1#",
+        "room_ref": null,
+        "use_type": "stairs",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                579.0,
+                583.0
+              ],
+              [
+                661.0,
+                583.0
+              ],
+              [
+                661.0,
+                636.0
+              ],
+              [
+                579.0,
+                636.0
+              ],
+              [
+                579.0,
+                583.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08357181312462,
+              30.31155930949098
+            ],
+            [
+              120.08353584695183,
+              30.31155898978431
+            ],
+            [
+              120.08353762492312,
+              30.31151428562952
+            ],
+            [
+              120.08357359107961,
+              30.31151460533464
+            ],
+            [
+              120.08357181312462,
+              30.31155930949098
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b2_stair_s",
+      "properties": {
+        "id": "1f_b2_stair_s",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b2",
+        "name": "西南楼梯",
+        "room_ref": null,
+        "use_type": "stairs",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b2_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                85.0,
+                568.0
+              ],
+              [
+                139.0,
+                568.0
+              ],
+              [
+                139.0,
+                698.0
+              ],
+              [
+                85.0,
+                698.0
+              ],
+              [
+                85.0,
+                568.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08357128109178,
+              30.311828715249828
+            ],
+            [
+              120.08348306193784,
+              30.31182793102989
+            ],
+            [
+              120.08348423282331,
+              30.311798491711247
+            ],
+            [
+              120.08357245195096,
+              30.31179927592869
+            ],
+            [
+              120.08357128109178,
+              30.311828715249828
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b2_west_south_landing",
+      "properties": {
+        "id": "1f_b2_west_south_landing",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b2",
+        "name": "图左下楼梯门前平台",
+        "room_ref": null,
+        "use_type": "corridor",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b2_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                152.0,
+                568.0
+              ],
+              [
+                152.0,
+                550.0
+              ],
+              [
+                104.0,
+                550.0
+              ],
+              [
+                104.0,
+                568.0
+              ],
+              [
+                139.0,
+                568.0
+              ],
+              [
+                152.0,
+                568.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08357273382423,
+              30.31179218868468
+            ],
+            [
+              120.08358494878,
+              30.311792297263853
+            ],
+            [
+              120.08358390801992,
+              30.311818465549674
+            ],
+            [
+              120.08357169306092,
+              30.311818356970196
+            ],
+            [
+              120.08357245195096,
+              30.31179927592869
+            ],
+            [
+              120.08357273382423,
+              30.31179218868468
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "1f_b1_entrance",
+      "properties": {
+        "id": "1f_b1_entrance",
+        "status": "navigation_draft_not_survey",
+        "building_id": "zju2_zijingang_b1",
+        "name": "门诊入口",
+        "room_ref": null,
+        "use_type": "entrance",
+        "label_confidence": "high",
+        "geometry_confidence": "medium",
+        "boundary_role": "generalized_visible_partition_not_wall_survey",
+        "evidence_ids": [
+          "plan_1f",
+          "user_building_statement"
+        ],
+        "building_confidence": "medium",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "level_id": "zju2_zijingang_b1_1f",
+        "floor": "1F",
+        "geometry_px": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                883.0,
+                639.0
+              ],
+              [
+                950.0,
+                639.0
+              ],
+              [
+                950.0,
+                583.0
+              ],
+              [
+                883.0,
+                583.0
+              ],
+              [
+                883.0,
+                639.0
+              ]
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              120.08354040262056,
+              30.311393239209462
+            ],
+            [
+              120.08354185534397,
+              30.311356712642866
+            ],
+            [
+              120.0835798572599,
+              30.311357050439
+            ],
+            [
+              120.08357840455056,
+              30.31139357700694
+            ],
+            [
+              120.08354040262056,
+              30.311393239209462
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

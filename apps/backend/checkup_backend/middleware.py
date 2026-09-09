@@ -158,9 +158,10 @@ class SecurityBoundaryMiddleware:
             "/api/patient/auth/login",
             "/api/patient/auth/register",
             "/api/patient/account",
+            "/api/demo-patients/import",
         }:
             return self.auth_rule
-        if path == "/api/patient/agent/chat":
+        if path in {"/api/patient/agent/chat", "/api/patient/agent/jobs"}:
             return self.ai_rule
         if path == "/api/patient/plans" or (
             path.startswith("/api/patient/plans/")

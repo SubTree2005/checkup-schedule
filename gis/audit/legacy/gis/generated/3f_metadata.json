@@ -1,0 +1,119 @@
+{
+  "dataset_id": "zju2_zijingang_3f_draft_v1",
+  "facility": {
+    "id": "zju2_zijingang",
+    "name": "浙大二院浙大院区（紫金港）",
+    "building_id": "zju2_zijingang_b1",
+    "building_name": "一号楼",
+    "level_id": "zju2_zijingang_3f",
+    "level_name": "3F",
+    "ordinal": 3,
+    "height_m": 8.4
+  },
+  "source": {
+    "floorplan_filename": "3F.jpg",
+    "floorplan_sha256": "3FCCC49C756BC59B1E48E9524D29C23B5C851D8B30C38E87AC5C32D4474E3E70",
+    "floorplan_width": 309,
+    "floorplan_height": 675,
+    "building_assignment_evidence_filename": "0ec513de2bbb1bda8a9d45079198176f.jpg",
+    "building_assignment_evidence_sha256": "AAB281C3E10E713E19DB86C823D54CD1D57D6AE794992F58C04F440A051BE9A2",
+    "coordinate_crs": "derived_from_2f_and_1f",
+    "registration_method": "two-point similarity using Building 1 north and south stair cores",
+    "geometry_method": "manual coarse digitization from labelled raster floor plan",
+    "status": "draft_unverified"
+  },
+  "registration": {
+    "anchors": [
+      {
+        "id": "building1_north_stair",
+        "pixel_3f": [
+          86,
+          115
+        ],
+        "pixel_2f": [
+          528,
+          143
+        ],
+        "target_node_id": "n2_stair_en"
+      },
+      {
+        "id": "building1_south_stair",
+        "pixel_3f": [
+          86,
+          560
+        ],
+        "pixel_2f": [
+          528,
+          576
+        ],
+        "target_node_id": "n2_stair_es"
+      }
+    ],
+    "checks": [
+      {
+        "id": "northeast_outer_corner",
+        "pixel_3f": [
+          270,
+          38
+        ],
+        "pixel_2f": [
+          705,
+          62
+        ],
+        "confidence": "medium"
+      },
+      {
+        "id": "southeast_outer_corner",
+        "pixel_3f": [
+          270,
+          650
+        ],
+        "pixel_2f": [
+          705,
+          650
+        ],
+        "confidence": "medium"
+      }
+    ]
+  },
+  "georeferencing": {
+    "origin_bd09": [
+      120.09479530834602,
+      30.315105942964294
+    ],
+    "mean_latitude": 30.315103344679837,
+    "meters_per_degree_longitude": 96098.38434635242,
+    "residual_m_by_control_point": {
+      "1": 2.383,
+      "2": 3.092,
+      "3": 1.724,
+      "4": 1.432,
+      "5": 1.496,
+      "6": 1.231
+    },
+    "rmse_m": 2.001,
+    "max_residual_m": 3.092,
+    "registration_method": "two-point similarity using Building 1 north and south stair cores",
+    "similarity_3f_to_2f": {
+      "a": 0.9730337078651685,
+      "b": 0.0,
+      "c": 444.3191011235955,
+      "d": 31.101123595505626,
+      "scale": 0.9730337078651685
+    },
+    "similarity_2f_to_1f": {
+      "a": 1.6859122401847575,
+      "b": 0.06928406466512702,
+      "c": 99.74595842956123,
+      "d": -77.66743648960738,
+      "scale": 1.687335284767467
+    },
+    "check_error_m": {
+      "northeast_outer_corner": 0.435,
+      "southeast_outer_corner": 0.936
+    },
+    "alignment_check_rmse_m": 0.73,
+    "base_2f_absolute_accuracy_m": 2.649,
+    "estimated_absolute_accuracy_m": 2.748
+  }
+}

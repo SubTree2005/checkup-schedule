@@ -1,4 +1,4 @@
-<view class="flow-page safe-top">
+<view class="flow-page safe-top" style="{{navigationStyle}}">
   <view class="flow-nav">
     <view class="nav-back" bindtap="goBack" aria-label="返回">‹</view>
     <view class="nav-title">准备条件确认</view>
@@ -6,10 +6,10 @@
   </view>
 
   <view class="flow-content">
-    <view class="question-title">您是否已满足以下准备条件？</view>
-    <view class="question-desc">请在体检前按要求完成，以确保检查结果准确。</view>
+    <view class="question-title">{{demoUnrestricted ? '可以直接开始体检' : '您是否已满足以下准备条件？'}}</view>
+    <view class="question-desc">{{demoUnrestricted ? '本院已临时开启演示，当前无需确认检前准备。' : '请在体检前按要求完成，以确保检查结果准确。'}}</view>
 
-    <view class="requirement-card">
+    <view class="requirement-card" wx:if="{{!demoUnrestricted}}">
       <view class="requirement-row" wx:for="{{requirements}}" wx:key="key">
         <image class="requirement-icon" src="{{item.iconPath}}" mode="aspectFit"></image>
         <view class="requirement-copy">
@@ -21,8 +21,8 @@
   </view>
 
   <view class="action-area">
-    <button class="primary-btn action-primary" loading="{{submitting}}" disabled="{{submitting}}" bindtap="confirmPrepared">已满足，开始体检</button>
-    <view class="text-action" bindtap="notPrepared">未满足</view>
+    <button class="primary-btn action-primary" loading="{{submitting || loading}}" disabled="{{submitting || loading}}" bindtap="confirmPrepared">{{demoUnrestricted ? '开始体检' : '已满足，开始体检'}}</button>
+    <view class="text-action" wx:if="{{!demoUnrestricted && !loading}}" bindtap="notPrepared">未满足</view>
   </view>
 </view>
 <ai-agent />

@@ -1,0 +1,5 @@
+﻿connector_id,from_node_id,to_node_id,mode,walk_seconds,accessible,confidence
+vc_1f_2f_wn,n_west_north,n2_stair_wn,stairs,75,False,low
+vc_1f_2f_ws,n_west_south,n2_stair_ws,stairs,75,False,low
+vc_1f_2f_en,n_stair_2,n2_stair_en,stairs,75,False,medium
+vc_1f_2f_es,n_stair_1,n2_stair_es,stairs,75,False,medium

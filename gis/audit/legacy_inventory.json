@@ -1,0 +1,60 @@
+{
+  "original_root": "C:/Users/SubTree/Documents/ChatGPT/checkup-schedule",
+  "files_sha256": {
+    "gis/generated/1f_control_points.csv": "f997ffc84d3a729b79d4e4b694cb96eaad6d9fe46ccfc0e461e45ea66507f870",
+    "gis/generated/1f_level.geojson": "d127a411dc9adb2b6b8888ea74a63f0d9b7521e264b1d138fbaeb81e77b39eee",
+    "gis/generated/1f_metadata.json": "af149627fab7482dfdf9d99e3443942fb99f743b29504fa1280145667e97cf1a",
+    "gis/generated/1f_pois.geojson": "0cc5fbe34e23ffb1a88085e9a610f91828c2243d9be34a66d633b9a4d4d03737",
+    "gis/generated/1f_route_edges.geojson": "bd04d3844bceb6eebc7eceae717ca5cdaadefe67ac6fe7c7b5ba2a840202589f",
+    "gis/generated/1f_route_nodes.geojson": "2a9ec39530678788147f4bddb11fe033ade003abd03989bbd109213076192723",
+    "gis/generated/1f_scheduler_travel_times.csv": "b16147c0425685f3f95e29aff9283cf01a42e997bc99e95070111ace316a80d2",
+    "gis/generated/1f_seed.sql": "ba43dc859403a3d05e77cd5c89be0a470e0e0b256031d8fd24962fa7178ac2cb",
+    "gis/generated/1f_spaces.geojson": "92cd933623915eec5ac5ce7abfb4cf6d382bd102faecbb17948021c8de9a7634",
+    "gis/generated/2f_level.geojson": "4fb69590bd3f1434b6f5befb532c3585c003ff856353ab4f41f2b9e25bdaba14",
+    "gis/generated/2f_metadata.json": "ce7513447d5c70733240f9eda2ee313fa2f963b74454003a55ba31416bf1769e",
+    "gis/generated/2f_pois.geojson": "dcacfa557f8fb3a76733748713844e3cdf30a43b227302ca1c5d9c821791c3f2",
+    "gis/generated/2f_route_edges.geojson": "36231d7bb03618e5944242b96fa34f22758bceaf64c2c5258d04564fb41cc2ed",
+    "gis/generated/2f_route_nodes.geojson": "cd1414c998350a698013075ce65e0f39377a9f8dd4126fcee98719739a2a7078",
+    "gis/generated/2f_seed.sql": "6fa05e42f70f388ef486ab7673a4158c6c644fb4da9de1c347a7a8628ea6100c",
+    "gis/generated/2f_spaces.geojson": "ea92631ea3b6356b6e853c5743604ec55a75d98a0b79449caf496cf499b81c58",
+    "gis/generated/2f_vertical_connections.csv": "cc50c30469ac9126a33f6ebdf8e3d3f22251f497a18feef5df32a959b63c270a",
+    "gis/generated/3f_level.geojson": "91a6625e1a5db68b15ae657a016d43e4faf56e68d4b7c8859105d99fe7fffa2a",
+    "gis/generated/3f_metadata.json": "d082dea8ae5f9fdc7f1af05faaafa78c3feec9471b08a8125370a5fd4c9df49b",
+    "gis/generated/3f_pois.geojson": "76c765fe2e5f2fa366a79d53d679e19ed69f4e7f5d64e05046b738db79369b0d",
+    "gis/generated/3f_route_edges.geojson": "2dfd14d5fd83535b6bd4d734f05eb99183a8e82e62005b3fb3924cd8b272665b",
+    "gis/generated/3f_route_nodes.geojson": "2ab6972940d6947827f8ffc39392001fd272ddae20de6e21d0ae34144840d1c3",
+    "gis/generated/3f_seed.sql": "494b8528b1fc77c6cbdddeea72a77ee3635cb24f4f8a1da79de0bc405e8faa72",
+    "gis/generated/3f_spaces.geojson": "ec56579e7b2ab089abad1182ee3de53cdcf52cf1266df9e77d8ab784cd999c46",
+    "gis/generated/3f_vertical_connections.csv": "9deb5884d4660761d8fad3e806e408c61ff3f844174e63758e0f7053e1f5a073",
+    "gis/README.md": "2ddea89a1018ef9829315b59d78d861d7ba145985102efacd04f112bc3025e2e",
+    "gis/schema.sql": "8cbd527ddfda8946fdaa8ef3aa5a9be14104878666f6604833345fa3f26d2fe2",
+    "gis/source/1f_features.json": "ce55153e73e2b26faf400d71122141e91c93149c1a2772977797a451b1a9a323",
+    "gis/source/2f_features.json": "8dff250fa7b279c92165a92ee1de589279c3277fbb842e386e3859bff58be040",
+    "gis/source/3f_features.json": "807a2538304833ae7a67287773e44675141d211f86bb576a8c7f6af2b2ee662b",
+    "gis_adapter.py": "7a2e54d4d027d818f2e51389d67b81d3463683139be2a101b7f8ea9ad63bc2ec",
+    "scripts/build_1f_gis.py": "63fac7a41f6991837e21cd509707823900fb51b0df26542208cb302bf9b9f6f5",
+    "scripts/build_2f_gis.py": "b0eb7d917b3acdada62782bc665ac775c3eec0a16d4ad4f7cc992befe912b682",
+    "scripts/build_3f_gis.py": "5354a976cd70986c4ba9212e524beada99700e06b6d99883612acc7fb8a388b3",
+    "test_gis.py": "b3dbb2855c52f63a3d147b59013eb0eb27741e4b83070b579db71d7bd08d21e6"
+  },
+  "comparisons": {
+    "1f": {
+      "legacy_spaces": 32,
+      "legacy_edges": 28,
+      "flagged_legacy_edges": 19,
+      "comparison_note": "Flags are against the new manually reviewed partitions; review images, not an independent survey verdict"
+    },
+    "2f": {
+      "legacy_spaces": 34,
+      "legacy_edges": 56,
+      "flagged_legacy_edges": 2,
+      "comparison_note": "Flags are against the new manually reviewed partitions; review images, not an independent survey verdict"
+    },
+    "3f": {
+      "legacy_spaces": 24,
+      "legacy_edges": 35,
+      "flagged_legacy_edges": 5,
+      "comparison_note": "Flags are against the new manually reviewed partitions; review images, not an independent survey verdict"
+    }
+  }
+}

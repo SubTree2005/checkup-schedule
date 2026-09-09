@@ -2,7 +2,7 @@
 
 page { background: linear-gradient(180deg, #F4F8FF 0%, #FFFFFF 72%); }
 .api-settings-page { min-height: 100vh; }
-.settings-nav { height: 112rpx; padding: 0 28rpx; display: flex; align-items: center; justify-content: space-between; }
+.settings-nav { height: var(--navigation-bar-height, 44px); padding: 0 28rpx; display: flex; align-items: center; justify-content: space-between; }
 .nav-back { width: 70rpx; color: #101827; font-size: 58rpx; }
 .nav-title { color: #111827; font-size: 31rpx; font-weight: 650; }
 .nav-space { width: 70rpx; }

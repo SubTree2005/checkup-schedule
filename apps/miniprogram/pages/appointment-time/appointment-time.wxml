@@ -1,4 +1,4 @@
-<view class="flow-page safe-top">
+<view class="flow-page safe-top" style="{{navigationStyle}}">
   <view class="flow-nav">
     <view class="nav-back" bindtap="goBack" aria-label="返回">‹</view>
     <view class="nav-title">选择日期与时间</view>
@@ -6,6 +6,10 @@
   </view>
 
   <view class="flow-content">
+    <view wx:if="{{followUpCount > 0}}" class="selection-card">
+      <view class="section-title">本次补约项目 · {{followUpCount}} 项</view>
+      <view class="page-note" wx:for="{{followUpItems}}" wx:key="id">{{item.name}}</view>
+    </view>
     <view class="page-hint"><view class="hint-dot"></view>请选择预约体检的日期与时间段</view>
 
     <view wx:if="{{loading}}" class="page-note">正在读取医院号源</view>

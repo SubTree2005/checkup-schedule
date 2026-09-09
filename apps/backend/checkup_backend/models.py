@@ -67,6 +67,7 @@ class HospitalSettings(Base):
     appointment_slot_minutes: Mapped[int] = mapped_column("appointmentSlotMinutes", Integer, default=30)
     appointment_slot_capacity: Mapped[int] = mapped_column("appointmentSlotCapacity", Integer, default=20)
     appointment_days_ahead: Mapped[int] = mapped_column("appointmentDaysAhead", Integer, default=7)
+    demo_unrestricted_until: Mapped[datetime | None] = mapped_column("demoUnrestrictedUntil", DateTime, nullable=True)
     update_time: Mapped[datetime] = mapped_column("updateTime", DateTime, default=utcnow, onupdate=utcnow)
 
 
@@ -87,6 +88,19 @@ class UserSession(Base):
     user_id: Mapped[str] = mapped_column("userID", ForeignKey("user_info.userID", ondelete="CASCADE"), index=True)
     login_time: Mapped[datetime] = mapped_column("loginTime", DateTime, default=utcnow)
     login_ip: Mapped[str | None] = mapped_column("loginIP", String(64), nullable=True)
+    expires_at: Mapped[datetime] = mapped_column("expiresAt", DateTime, index=True)
+
+
+class PatientAgentJob(Base):
+    __tablename__ = "patient_agent_job"
+
+    job_id: Mapped[str] = mapped_column("jobID", String(64), primary_key=True)
+    user_id: Mapped[str] = mapped_column("userID", ForeignKey("user_info.userID", ondelete="CASCADE"), index=True)
+    status: Mapped[str] = mapped_column(String(20), default="pending")
+    reply: Mapped[str | None] = mapped_column(Text().with_variant(LONGTEXT(), "mysql"), nullable=True)
+    model: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    error: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    created_at: Mapped[datetime] = mapped_column("createdAt", DateTime, default=utcnow)
     expires_at: Mapped[datetime] = mapped_column("expiresAt", DateTime, index=True)
 
 
@@ -252,6 +266,7 @@ class PlanExecutionDetail(Base):
     exec_status: Mapped[str] = mapped_column("execStatus", String(20), default="待开始")
     actual_wait_time: Mapped[int | None] = mapped_column("actualWaitTime", Integer, nullable=True)
     actual_travel_time: Mapped[int | None] = mapped_column("actualTravelTime", Integer, nullable=True)
+    exam_report: Mapped[dict | None] = mapped_column("examReport", JSON, nullable=True)
 
 
 class AnomalyReport(Base):

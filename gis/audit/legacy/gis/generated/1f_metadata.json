@@ -1,0 +1,53 @@
+{
+  "dataset_id": "zju2_zijingang_1f_draft_v1",
+  "facility": {
+    "id": "zju2_zijingang",
+    "name": "浙大二院浙大院区（紫金港）",
+    "level_id": "zju2_zijingang_1f",
+    "level_name": "1F",
+    "ordinal": 1,
+    "height_m": 0.0
+  },
+  "source": {
+    "floorplan_filename": "1F.jpg",
+    "floorplan_sha256": "FC5DF6AABD58785C0753B27B3EFDBD4C8433A92F0E57256C40FBB7B315CFAF95",
+    "control_image_filename": "codex-clipboard-0349ec0f-8b79-44da-b79e-c58dfff85dda.png",
+    "control_image_sha256": "977595C4C6F5C8E99B58E5FD07B65634ACD69465C36C15C539401942F9E5CC88",
+    "control_image_width": 2136,
+    "control_image_height": 1197,
+    "coordinate_source": "Baidu Maps user-picked satellite image points",
+    "coordinate_crs": "BD-09LL",
+    "geometry_method": "manual coarse digitization from labelled raster floor plan",
+    "status": "draft_unverified"
+  },
+  "georeferencing": {
+    "origin_bd09": [
+      120.09479530834602,
+      30.315105942964294
+    ],
+    "mean_latitude": 30.315103344679837,
+    "meters_per_degree_longitude": 96098.38434635242,
+    "residual_m_by_control_point": {
+      "1": 2.383,
+      "2": 3.092,
+      "3": 1.724,
+      "4": 1.432,
+      "5": 1.496,
+      "6": 1.231
+    },
+    "rmse_m": 2.001,
+    "max_residual_m": 3.092,
+    "affine_east_coefficients": [
+      0.0013174547697296472,
+      -0.040444150937162845,
+      45.90104107673978
+    ],
+    "affine_north_coefficients": [
+      -0.037754843080142535,
+      -0.0013299519796347193,
+      53.082014143775545
+    ],
+    "wgs84_conversion": "BD-09LL -> GCJ-02 -> WGS84, deterministic approximate inverse",
+    "absolute_accuracy_class": "map-derived, non-survey"
+  }
+}

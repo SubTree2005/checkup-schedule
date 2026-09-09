@@ -1,9 +1,11 @@
+const { navigationMetrics } = require('../../utils/layout')
 const api = require('../../utils/api')
 const flowGuard = require('../../utils/flow-guard')
 const app = getApp()
 
 Page({
   data: {
+    ...navigationMetrics(),
     submitting: false,
     form: { name: '', gender: '女', age: '', phone: '', avatarUrl: '' },
     avatarPreview: '../../addpicture/icons/icon-user.png',

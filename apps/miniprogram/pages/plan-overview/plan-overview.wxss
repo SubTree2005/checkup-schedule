@@ -2,11 +2,11 @@
 
 page { background: linear-gradient(180deg, #F7FAFF 0%, #FFFFFF 100%); }
 .overview-page { min-height: 100vh; }
-.flow-nav { height: 128rpx; padding: 0 28rpx; display: flex; align-items: center; justify-content: space-between; }
+.flow-nav { height: var(--navigation-bar-height, 44px); padding: 0 28rpx; display: flex; align-items: center; justify-content: space-between; }
 .nav-back { width: 64rpx; height: 64rpx; display: flex; align-items: center; color: #101827; font-size: 58rpx; }
 .nav-title { color: #111827; font-size: 31rpx; font-weight: 650; }
 .nav-space { width: 64rpx; }
-.overview-scroll { width: 100%; height: calc(100vh - env(safe-area-inset-top) - 148rpx); padding: 12rpx 28rpx calc(env(safe-area-inset-bottom) + 38rpx); box-sizing: border-box; }
+.overview-scroll { width: 100%; height: calc(100vh - var(--status-bar-height, 24px) - var(--navigation-bar-height, 44px)); padding: 12rpx 28rpx calc(env(safe-area-inset-bottom) + 38rpx); box-sizing: border-box; }
 .progress-card, .steps-card { padding: 30rpx 28rpx; background: rgba(255,255,255,0.94); border: 2rpx solid #DFE7F2; border-radius: 30rpx; box-shadow: 0 16rpx 42rpx rgba(50,75,118,0.07); }
 .plan-hospital { color: #172033; font-size: 28rpx; font-weight: 650; line-height: 1.4; }
 .plan-package { margin-top: 7rpx; margin-bottom: 26rpx; color: #738096; font-size: 23rpx; }

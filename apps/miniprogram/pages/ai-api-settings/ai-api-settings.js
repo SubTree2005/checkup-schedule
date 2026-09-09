@@ -1,8 +1,10 @@
+const { navigationMetrics } = require('../../utils/layout')
 const api = require('../../utils/api')
 const agent = require('../../utils/ai-agent')
 
 Page({
   data: {
+    ...navigationMetrics(),
     defaultModelName: agent.DEFAULT_MODEL_LABEL,
     configured: false,
     statusText: '检查中',

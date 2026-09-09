@@ -1,0 +1,78 @@
+{
+  "facility_id": "zju2_zijingang",
+  "facility_name": "浙大二院浙大院区（紫金港）",
+  "status": "navigation_draft_not_survey",
+  "evidence": [
+    {
+      "id": "plan_1f",
+      "kind": "original_raster",
+      "path": "images/1F.jpg",
+      "original_path": "C:/Users/SubTree/Desktop/1F.jpg",
+      "sha256": "fc5df6aabd58785c0753b27b3efdbd4c8433a92f0e57256c40fbb7b315cfaf95",
+      "dimensions_px": [
+        1330,
+        746
+      ],
+      "status": "verified_bytes"
+    },
+    {
+      "id": "plan_2f",
+      "kind": "original_raster",
+      "path": "images/2F.jpg",
+      "original_path": "C:/Users/SubTree/Desktop/2F.jpg",
+      "sha256": "489db39fa8425d92a692796373502511e14463b258c3cad20f2a615dab75dc49",
+      "dimensions_px": [
+        1165,
+        686
+      ],
+      "status": "verified_bytes"
+    },
+    {
+      "id": "plan_3f",
+      "kind": "original_raster",
+      "path": "images/3F.jpg",
+      "original_path": "C:/Users/SubTree/Desktop/3F.jpg",
+      "sha256": "3fccc49c756bc59b1e48e9524d29c23b5c851d8b30c38e87ac5c32d4474e3e70",
+      "dimensions_px": [
+        309,
+        675
+      ],
+      "status": "verified_bytes"
+    },
+    {
+      "id": "user_building_statement",
+      "kind": "user_text",
+      "path": "user_building_statement.txt",
+      "sha256": "88229c955a01a21e7560a24200886d01eb23674e8ac6b2b07853835d72f5a3c7",
+      "original_path": "user message in this task, 2026-09-07",
+      "status": "user_asserted"
+    },
+    {
+      "id": "control_annotation",
+      "kind": "missing_original_raster",
+      "original_path": "C:/Users/SubTree/AppData/Local/Temp/codex-clipboard-0349ec0f-8b79-44da-b79e-c58dfff85dda.png",
+      "reported_sha256": "977595c4c6f5c8e99b58e5fd07b65634acd69465c36c15c539401942f9e5cc88",
+      "sha256": null,
+      "status": "missing_not_reverified",
+      "note": "旧文件仅提供摘要及像素；不能把 reported_sha256 写成已核验哈希"
+    },
+    {
+      "id": "building_circle",
+      "kind": "missing_original_raster",
+      "original_path": "C:/Users/SubTree/Documents/xwechat/_files/wxid/_tlrq2i8nk73b12/_dfe5/temp/RWTemp/2026-08/9e20f478899dc29eb19741386f9343c8/0ec513de2bbb1bda8a9d45079198176f.jpg",
+      "reported_sha256": "aab281c3e10e713e19db86c823d54cd1d57d6ae794992f58c04f440a051be9a2",
+      "sha256": null,
+      "status": "missing_not_reverified",
+      "note": "另查实际 xwechat_files/wxid_tlrq2i8nk73b12_dfe5 未找到；归属采用本次用户文字陈述"
+    },
+    {
+      "id": "current_workspace_key_contract",
+      "kind": "code_contract_not_location_evidence",
+      "original_path": "C:\\Users\\SubTree\\Desktop\\课程\\短学期\\大二\\code\\checkup-schedule\\examples\\hospitals\\zijingang-campus-hospital\\build_workspace.py",
+      "sha256": "bc2d8b9c63ab24b9e531f5ba58dc0677b88b0cec15fce22b11b735f74a1825d1",
+      "status": "audit_snapshot",
+      "note": "仅引用 stable department keys；不把示例科室/房号绑定当事实；该文件有用户未提交改动，不修改",
+      "path": "department_key_contract.py"
+    }
+  ]
+}

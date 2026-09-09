@@ -137,6 +137,10 @@ class PatientAgentChatRequest(BaseModel):
         return normalized or None
 
 
+class PatientAgentJobRequest(PatientAgentChatRequest):
+    requestID: str = Field(min_length=8, max_length=64, pattern=r"^[A-Za-z0-9_-]+$")
+
+
 class PatientRegister(BaseModel):
     phone: str = Field(min_length=5, max_length=32)
     password: str = Field(min_length=8, max_length=128)
@@ -183,6 +187,7 @@ class PatientPlanCreate(BaseModel):
     packageID: str | None = Field(default=None, min_length=1, max_length=64)
     selectedItemIDs: list[str] = Field(default_factory=list, max_length=500)
     appointmentAt: datetime | None = None
+    followUpPlanID: str | None = Field(default=None, min_length=1, max_length=64)
     profile: dict[str, Any] = Field(default_factory=dict, max_length=32)
     reminderSubscription: PatientReminderSubscription | None = None
 
@@ -598,6 +603,10 @@ class HospitalRegister(BaseModel):
 
 class DemoPatientTarget(BaseModel):
     count: int = Field(ge=1, le=100)
+
+
+class DemoRestrictionUpdate(BaseModel):
+    enabled: bool
 
 
 class AnomalyCreate(BaseModel):

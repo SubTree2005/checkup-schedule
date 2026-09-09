@@ -1,0 +1,4024 @@
+{
+  "type": "FeatureCollection",
+  "status": "navigation_draft_not_survey",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "e_2f_0000",
+      "properties": {
+        "id": "e_2f_0000",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_98_542",
+        "target": "n_o_2f_b2_stair_s",
+        "length_m": 0.1501604901251578,
+        "walk_seconds": 0.13057433923926767,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              98.0,
+              542.0
+            ],
+            [
+              98.0,
+              544.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08355266691709,
+            30.311803905594395
+          ],
+          [
+            120.08355110669703,
+            30.311803891725216
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0001",
+      "properties": {
+        "id": "e_2f_0001",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_98_542",
+        "target": "n_2f_110_542",
+        "length_m": 0.831741221253156,
+        "walk_seconds": 0.7232532358723096,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              98.0,
+              542.0
+            ],
+            [
+              110.0,
+              542.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08355266691709,
+            30.311803905594395
+          ],
+          [
+            120.08355310250687,
+            30.31179641662081
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0002",
+      "properties": {
+        "id": "e_2f_0002",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_o_2f_b2_202",
+        "target": "n_2f_117_211",
+        "length_m": 1.1089882945394083,
+        "walk_seconds": 0.9643376474255725,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              101.0,
+              211.0
+            ],
+            [
+              117.0,
+              211.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08381099225633,
+            30.311804328444058
+          ],
+          [
+            120.08381157301656,
+            30.311794343143085
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0003",
+      "properties": {
+        "id": "e_2f_0003",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_o_2f_b2_206",
+        "target": "n_2f_117_239",
+        "length_m": 1.108988295004208,
+        "walk_seconds": 0.9643376478297462,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              101.0,
+              239.0
+            ],
+            [
+              117.0,
+              239.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08378914917145,
+            30.311804134316947
+          ],
+          [
+            120.0837897299339,
+            30.31179414901621
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0004",
+      "properties": {
+        "id": "e_2f_0004",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_o_2f_b2_208",
+        "target": "n_2f_117_284",
+        "length_m": 1.108988294538689,
+        "walk_seconds": 0.9643376474249471,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              101.0,
+              284.0
+            ],
+            [
+              117.0,
+              284.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08375404421446,
+            30.311803822319316
+          ],
+          [
+            120.08375462498044,
+            30.311793837018975
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0005",
+      "properties": {
+        "id": "e_2f_0005",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_o_2f_b2_210",
+        "target": "n_2f_117_338",
+        "length_m": 1.108988295004208,
+        "walk_seconds": 0.9643376478297462,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              101.0,
+              338.0
+            ],
+            [
+              117.0,
+              338.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08371191826747,
+            30.311803447909718
+          ],
+          [
+            120.08371249903772,
+            30.31179346260984
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0006",
+      "properties": {
+        "id": "e_2f_0006",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_o_2f_b2_212",
+        "target": "n_2f_117_390",
+        "length_m": 1.108988294538689,
+        "walk_seconds": 0.9643376474249471,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              101.0,
+              390.0
+            ],
+            [
+              117.0,
+              390.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08367135254214,
+            30.311803087354324
+          ],
+          [
+            120.08367193331647,
+            30.3117931020549
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0007",
+      "properties": {
+        "id": "e_2f_0007",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_o_2f_b2_216",
+        "target": "n_2f_117_443",
+        "length_m": 1.108988294538689,
+        "walk_seconds": 0.9643376474249471,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              101.0,
+              443.0
+            ],
+            [
+              117.0,
+              443.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08363000670813,
+            30.311802719852217
+          ],
+          [
+            120.08363058748665,
+            30.31179273455324
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0008",
+      "properties": {
+        "id": "e_2f_0008",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_o_2f_b2_218",
+        "target": "n_2f_117_479",
+        "length_m": 1.1089882950049272,
+        "walk_seconds": 0.9643376478303716,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              101.0,
+              479.0
+            ],
+            [
+              117.0,
+              479.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08360192274624,
+            30.31180247022069
+          ],
+          [
+            120.08360250352762,
+            30.311792484922027
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0009",
+      "properties": {
+        "id": "e_2f_0009",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_o_2f_b2_220",
+        "target": "n_2f_117_514",
+        "length_m": 1.108988294538689,
+        "walk_seconds": 0.9643376474249471,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              101.0,
+              514.0
+            ],
+            [
+              117.0,
+              514.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08357461889504,
+            30.311802227517585
+          ],
+          [
+            120.08357519967916,
+            30.31179224221923
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0010",
+      "properties": {
+        "id": "e_2f_0010",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_o_2f_b2_stair_n",
+        "target": "n_2f_117_145",
+        "length_m": 0.9010529892259395,
+        "walk_seconds": 0.7835243384573387,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              104.0,
+              145.0
+            ],
+            [
+              117.0,
+              145.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083862588421,
+            30.311802913770904
+          ],
+          [
+            120.08386306028443,
+            30.3117948007134
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0011",
+      "properties": {
+        "id": "e_2f_0011",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_110_542",
+        "target": "n_2f_110_552",
+        "length_m": 0.7508024505747881,
+        "walk_seconds": 0.6528716961519897,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              110.0,
+              542.0
+            ],
+            [
+              110.0,
+              552.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08355310250687,
+            30.31179641662081
+          ],
+          [
+            120.08354530140723,
+            30.31179634727478
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0012",
+      "properties": {
+        "id": "e_2f_0012",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_110_552",
+        "target": "n_2f_117_552",
+        "length_m": 0.48518237906452083,
+        "walk_seconds": 0.4218977209256703,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              110.0,
+              552.0
+            ],
+            [
+              117.0,
+              552.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08354530140723,
+            30.31179634727478
+          ],
+          [
+            120.08354555550157,
+            30.311791978706882
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0013",
+      "properties": {
+        "id": "e_2f_0013",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_117_144",
+        "target": "n_2f_117_145",
+        "length_m": 0.07508024505897902,
+        "walk_seconds": 0.06528716961650351,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              117.0,
+              144.0
+            ],
+            [
+              117.0,
+              145.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08386384039457,
+            30.31179480764613
+          ],
+          [
+            120.08386306028443,
+            30.3117948007134
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0014",
+      "properties": {
+        "id": "e_2f_0014",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_117_145",
+        "target": "n_2f_117_159",
+        "length_m": 1.0511234308251038,
+        "walk_seconds": 0.9140203746305251,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              117.0,
+              145.0
+            ],
+            [
+              117.0,
+              159.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08386306028443,
+            30.3117948007134
+          ],
+          [
+            120.08385213874259,
+            30.31179470365472
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0015",
+      "properties": {
+        "id": "e_2f_0015",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_117_159",
+        "target": "n_2f_117_189",
+        "length_m": 2.2524073517681655,
+        "walk_seconds": 1.9586150884940572,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              117.0,
+              159.0
+            ],
+            [
+              117.0,
+              189.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08385213874259,
+            30.31179470365472
+          ],
+          [
+            120.08382873543893,
+            30.311794495668778
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0016",
+      "properties": {
+        "id": "e_2f_0016",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_117_159",
+        "target": "n_o_2f_b2_201",
+        "length_m": 1.8021059789166787,
+        "walk_seconds": 1.5670486773188512,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              117.0,
+              159.0
+            ],
+            [
+              143.0,
+              159.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08385213874259,
+            30.31179470365472
+          ],
+          [
+            120.08385308247085,
+            30.311778477539853
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0017",
+      "properties": {
+        "id": "e_2f_0017",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_117_189",
+        "target": "n_2f_117_211",
+        "length_m": 1.6517653912675343,
+        "walk_seconds": 1.4363177315369864,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              117.0,
+              189.0
+            ],
+            [
+              117.0,
+              211.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08382873543893,
+            30.311794495668778
+          ],
+          [
+            120.08381157301656,
+            30.311794343143085
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0018",
+      "properties": {
+        "id": "e_2f_0018",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_shared_2f",
+        "floor": "2F",
+        "source": "n_2f_117_189",
+        "target": "n_2f_580_189",
+        "length_m": 32.09134877552135,
+        "walk_seconds": 27.90552067436639,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              117.0,
+              189.0
+            ],
+            [
+              580.0,
+              189.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08382873543893,
+            30.311794495668778
+          ],
+          [
+            120.08384554104853,
+            30.311505546006064
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0019",
+      "properties": {
+        "id": "e_2f_0019",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_117_211",
+        "target": "n_2f_117_239",
+        "length_m": 2.102246861643008,
+        "walk_seconds": 1.8280407492547899,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              117.0,
+              211.0
+            ],
+            [
+              117.0,
+              239.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08381157301656,
+            30.311794343143085
+          ],
+          [
+            120.0837897299339,
+            30.31179414901621
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0020",
+      "properties": {
+        "id": "e_2f_0020",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_117_239",
+        "target": "n_2f_117_266",
+        "length_m": 2.0271666165840285,
+        "walk_seconds": 1.7627535796382858,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              117.0,
+              239.0
+            ],
+            [
+              117.0,
+              266.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.0837897299339,
+            30.31179414901621
+          ],
+          [
+            120.0837686669617,
+            30.311793961819003
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0021",
+      "properties": {
+        "id": "e_2f_0021",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_117_266",
+        "target": "n_2f_117_284",
+        "length_m": 1.351444411046319,
+        "walk_seconds": 1.1751690530837557,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              117.0,
+              266.0
+            ],
+            [
+              117.0,
+              284.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.0837686669617,
+            30.311793961819003
+          ],
+          [
+            120.08375462498044,
+            30.311793837018975
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0022",
+      "properties": {
+        "id": "e_2f_0022",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_117_266",
+        "target": "n_o_2f_b2_203",
+        "length_m": 1.4555471367280435,
+        "walk_seconds": 1.2656931623722119,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              117.0,
+              266.0
+            ],
+            [
+              138.0,
+              266.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.0837686669617,
+            30.311793961819003
+          ],
+          [
+            120.08376942921487,
+            30.311780856112055
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0023",
+      "properties": {
+        "id": "e_2f_0023",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_117_284",
+        "target": "n_2f_117_290",
+        "length_m": 0.4504814703463731,
+        "walk_seconds": 0.3917230176924984,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              117.0,
+              284.0
+            ],
+            [
+              117.0,
+              290.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08375462498044,
+            30.311793837018975
+          ],
+          [
+            120.08374994432008,
+            30.311793795418623
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0024",
+      "properties": {
+        "id": "e_2f_0024",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_117_290",
+        "target": "n_2f_117_338",
+        "length_m": 3.6038517628144846,
+        "walk_seconds": 3.133784141577813,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              117.0,
+              290.0
+            ],
+            [
+              117.0,
+              338.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08374994432008,
+            30.311793795418623
+          ],
+          [
+            120.08371249903772,
+            30.31179346260984
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0025",
+      "properties": {
+        "id": "e_2f_0025",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_117_290",
+        "target": "n_o_2f_b2_205",
+        "length_m": 1.4555471367280435,
+        "walk_seconds": 1.2656931623722119,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              117.0,
+              290.0
+            ],
+            [
+              138.0,
+              290.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08374994432008,
+            30.311793795418623
+          ],
+          [
+            120.08375070657573,
+            30.311780689711952
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0026",
+      "properties": {
+        "id": "e_2f_0026",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_117_338",
+        "target": "n_2f_117_339",
+        "length_m": 0.0750802450661788,
+        "walk_seconds": 0.06528716962276418,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              117.0,
+              338.0
+            ],
+            [
+              117.0,
+              339.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08371249903772,
+            30.31179346260984
+          ],
+          [
+            120.08371171892767,
+            30.311793455676213
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0027",
+      "properties": {
+        "id": "e_2f_0027",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_117_339",
+        "target": "n_2f_117_390",
+        "length_m": 3.829092497976721,
+        "walk_seconds": 3.32964565041454,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              117.0,
+              339.0
+            ],
+            [
+              117.0,
+              390.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08371171892767,
+            30.311793455676213
+          ],
+          [
+            120.08367193331647,
+            30.3117931020549
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0028",
+      "properties": {
+        "id": "e_2f_0028",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_117_339",
+        "target": "n_o_2f_b2_207",
+        "length_m": 1.4555471367280435,
+        "walk_seconds": 1.2656931623722119,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              117.0,
+              339.0
+            ],
+            [
+              138.0,
+              339.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08371171892767,
+            30.311793455676213
+          ],
+          [
+            120.08371248118839,
+            30.311780349970096
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0029",
+      "properties": {
+        "id": "e_2f_0029",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_117_390",
+        "target": "n_2f_117_443",
+        "length_m": 3.9792529881018788,
+        "walk_seconds": 3.4602199896538077,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              117.0,
+              390.0
+            ],
+            [
+              117.0,
+              443.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08367193331647,
+            30.3117931020549
+          ],
+          [
+            120.08363058748665,
+            30.31179273455324
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0030",
+      "properties": {
+        "id": "e_2f_0030",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_117_390",
+        "target": "n_o_2f_b2_209",
+        "length_m": 1.4555471367280435,
+        "walk_seconds": 1.2656931623722119,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              117.0,
+              390.0
+            ],
+            [
+              138.0,
+              390.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08367193331647,
+            30.3117931020549
+          ],
+          [
+            120.08367269558248,
+            30.311779996349355
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0031",
+      "properties": {
+        "id": "e_2f_0031",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_117_443",
+        "target": "n_2f_117_479",
+        "length_m": 2.7028888220854386,
+        "walk_seconds": 2.350338106161251,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              117.0,
+              443.0
+            ],
+            [
+              117.0,
+              479.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08363058748665,
+            30.31179273455324
+          ],
+          [
+            120.08360250352762,
+            30.311792484922027
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0032",
+      "properties": {
+        "id": "e_2f_0032",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_117_479",
+        "target": "n_2f_117_514",
+        "length_m": 2.6278085770627593,
+        "walk_seconds": 2.2850509365763125,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              117.0,
+              479.0
+            ],
+            [
+              117.0,
+              514.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08360250352762,
+            30.311792484922027
+          ],
+          [
+            120.08357519967916,
+            30.31179224221923
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0033",
+      "properties": {
+        "id": "e_2f_0033",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_117_514",
+        "target": "n_2f_117_552",
+        "length_m": 2.8530493122105964,
+        "walk_seconds": 2.4809124454005187,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              117.0,
+              514.0
+            ],
+            [
+              117.0,
+              552.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08357519967916,
+            30.31179224221923
+          ],
+          [
+            120.08354555550157,
+            30.311791978706882
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0034",
+      "properties": {
+        "id": "e_2f_0034",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b2_2f",
+        "floor": "2F",
+        "source": "n_2f_117_552",
+        "target": "n_2f_117_608",
+        "length_m": 4.2044937232641155,
+        "walk_seconds": 3.6560814984905354,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              117.0,
+              552.0
+            ],
+            [
+              117.0,
+              608.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08354555550157,
+            30.311791978706882
+          ],
+          [
+            120.08350186934646,
+            30.31179159036066
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0035",
+      "properties": {
+        "id": "e_2f_0035",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_o_2f_b1_stair_s",
+        "target": "n_2f_580_558",
+        "length_m": 2.148664820640514,
+        "walk_seconds": 1.8684041918613166,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              549.0,
+              558.0
+            ],
+            [
+              580.0,
+              558.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08355655602887,
+            30.31152233404475
+          ],
+          [
+            120.08355768129344,
+            30.31150298752863
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0036",
+      "properties": {
+        "id": "e_2f_0036",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_o_2f_b1_201",
+        "target": "n_2f_580_266",
+        "length_m": 1.386235368289741,
+        "walk_seconds": 1.2054220593823837,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              560.0,
+              266.0
+            ],
+            [
+              580.0,
+              266.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08378474679868,
+            30.31151749380202
+          ],
+          [
+            120.08378547274698,
+            30.31150501217555
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0037",
+      "properties": {
+        "id": "e_2f_0037",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_o_2f_b1_203",
+        "target": "n_2f_580_285",
+        "length_m": 1.386235368289741,
+        "walk_seconds": 1.2054220593823837,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              560.0,
+              285.0
+            ],
+            [
+              580.0,
+              285.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08376992474885,
+            30.311517362073157
+          ],
+          [
+            120.08377065069901,
+            30.311504880446893
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0038",
+      "properties": {
+        "id": "e_2f_0038",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_o_2f_b1_205",
+        "target": "n_2f_580_341",
+        "length_m": 1.3862353682904602,
+        "walk_seconds": 1.205422059383009,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              560.0,
+              341.0
+            ],
+            [
+              580.0,
+              341.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.0837262387083,
+            30.311516973809905
+          ],
+          [
+            120.08372696466395,
+            30.311504492184245
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0039",
+      "properties": {
+        "id": "e_2f_0039",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_o_2f_b1_207",
+        "target": "n_2f_580_413",
+        "length_m": 1.3862353682904602,
+        "walk_seconds": 1.205422059383009,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              560.0,
+              413.0
+            ],
+            [
+              580.0,
+              413.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08367007094422,
+            30.311516474592835
+          ],
+          [
+            120.083670796907,
+            30.311503992967957
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0040",
+      "properties": {
+        "id": "e_2f_0040",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_o_2f_b1_209",
+        "target": "n_2f_580_484",
+        "length_m": 1.3862353682904602,
+        "walk_seconds": 1.205422059383009,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              560.0,
+              484.0
+            ],
+            [
+              580.0,
+              484.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08361468329062,
+            30.311515982285734
+          ],
+          [
+            120.0836154092604,
+            30.31150350066161
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0041",
+      "properties": {
+        "id": "e_2f_0041",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_o_2f_b1_211",
+        "target": "n_2f_580_592",
+        "length_m": 1.3862353682904602,
+        "walk_seconds": 1.205422059383009,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              560.0,
+              592.0
+            ],
+            [
+              580.0,
+              592.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08353043165349,
+            30.311515233379225
+          ],
+          [
+            120.08353115763389,
+            30.311502751756276
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0042",
+      "properties": {
+        "id": "e_2f_0042",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_o_2f_b1_stair_n",
+        "target": "n_2f_580_145",
+        "length_m": 1.2476118314145748,
+        "walk_seconds": 1.084879853403978,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              562.0,
+              145.0
+            ],
+            [
+              580.0,
+              145.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08387921245095,
+            30.311517084504697
+          ],
+          [
+            120.08387986579366,
+            30.311505851039687
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0043",
+      "properties": {
+        "id": "e_2f_0043",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_80",
+        "target": "n_2f_580_88",
+        "length_m": 0.600641960471531,
+        "walk_seconds": 0.522297356931766,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              80.0
+            ],
+            [
+              580.0,
+              88.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08393057280533,
+            30.311506301641057
+          ],
+          [
+            120.08392433194223,
+            30.311506246183487
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0044",
+      "properties": {
+        "id": "e_2f_0044",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_88",
+        "target": "n_2f_580_129",
+        "length_m": 3.0782900474091326,
+        "walk_seconds": 2.6767739542688114,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              88.0
+            ],
+            [
+              580.0,
+              129.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08392433194223,
+            30.311506246183487
+          ],
+          [
+            120.08389234751942,
+            30.31150596195877
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0045",
+      "properties": {
+        "id": "e_2f_0045",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_88",
+        "target": "n_o_2f_b1_202",
+        "length_m": 4.921135557220715,
+        "walk_seconds": 4.279248310626709,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              88.0
+            ],
+            [
+              651.0,
+              88.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08392433194223,
+            30.311506246183487
+          ],
+          [
+            120.08392690899379,
+            30.311461936402374
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0046",
+      "properties": {
+        "id": "e_2f_0046",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_129",
+        "target": "n_2f_580_145",
+        "length_m": 1.2012839209211612,
+        "walk_seconds": 1.044594713844488,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              129.0
+            ],
+            [
+              580.0,
+              145.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08389234751942,
+            30.31150596195877
+          ],
+          [
+            120.08387986579366,
+            30.311505851039687
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0047",
+      "properties": {
+        "id": "e_2f_0047",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_129",
+        "target": "n_o_2f_b1_204",
+        "length_m": 4.921135557686235,
+        "walk_seconds": 4.279248311031509,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              129.0
+            ],
+            [
+              651.0,
+              129.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08389234751942,
+            30.31150596195877
+          ],
+          [
+            120.0838949245853,
+            30.31146165217923
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0048",
+      "properties": {
+        "id": "e_2f_0048",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_145",
+        "target": "n_2f_580_167",
+        "length_m": 1.6517653912966346,
+        "walk_seconds": 1.436317731562291,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              145.0
+            ],
+            [
+              580.0,
+              167.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08387986579366,
+            30.311505851039687
+          ],
+          [
+            120.08386270342098,
+            30.311505698523998
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0049",
+      "properties": {
+        "id": "e_2f_0049",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_167",
+        "target": "n_2f_580_189",
+        "length_m": 1.6517653912966346,
+        "walk_seconds": 1.436317731562291,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              167.0
+            ],
+            [
+              580.0,
+              189.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08386270342098,
+            30.311505698523998
+          ],
+          [
+            120.08384554104853,
+            30.311505546006064
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0050",
+      "properties": {
+        "id": "e_2f_0050",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_167",
+        "target": "n_o_2f_b1_206",
+        "length_m": 4.921135557686235,
+        "walk_seconds": 4.279248311031509,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              167.0
+            ],
+            [
+              651.0,
+              167.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08386270342098,
+            30.311505698523998
+          ],
+          [
+            120.08386528050016,
+            30.311461388745922
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0051",
+      "properties": {
+        "id": "e_2f_0051",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_189",
+        "target": "n_2f_580_205",
+        "length_m": 1.2012839209139614,
+        "walk_seconds": 1.0445947138382274,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              189.0
+            ],
+            [
+              580.0,
+              205.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08384554104853,
+            30.311505546006064
+          ],
+          [
+            120.08383305932328,
+            30.31150543508251
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0052",
+      "properties": {
+        "id": "e_2f_0052",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_205",
+        "target": "n_2f_580_233",
+        "length_m": 2.1022468616502077,
+        "walk_seconds": 1.8280407492610502,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              205.0
+            ],
+            [
+              580.0,
+              233.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08383305932328,
+            30.31150543508251
+          ],
+          [
+            120.0838112163044,
+            30.31150524096344
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0053",
+      "properties": {
+        "id": "e_2f_0053",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_205",
+        "target": "n_o_2f_b1_210",
+        "length_m": 1.5941706736032097,
+        "walk_seconds": 1.3862353683506172,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              205.0
+            ],
+            [
+              603.0,
+              205.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08383305932328,
+            30.31150543508251
+          ],
+          [
+            120.08383389415651,
+            30.311491081211262
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0054",
+      "properties": {
+        "id": "e_2f_0054",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_233",
+        "target": "n_2f_580_266",
+        "length_m": 2.477648086930402,
+        "walk_seconds": 2.1544765973307842,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              233.0
+            ],
+            [
+              580.0,
+              266.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.0838112163044,
+            30.31150524096344
+          ],
+          [
+            120.08378547274698,
+            30.31150501217555
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0055",
+      "properties": {
+        "id": "e_2f_0055",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_233",
+        "target": "n_o_2f_b1_212",
+        "length_m": 1.594170673603929,
+        "walk_seconds": 1.3862353683512427,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              233.0
+            ],
+            [
+              603.0,
+              233.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.0838112163044,
+            30.31150524096344
+          ],
+          [
+            120.0838120511408,
+            30.311490887092525
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0056",
+      "properties": {
+        "id": "e_2f_0056",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_266",
+        "target": "n_2f_580_285",
+        "length_m": 1.4265246561052982,
+        "walk_seconds": 1.2404562227002593,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              266.0
+            ],
+            [
+              580.0,
+              285.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08378547274698,
+            30.31150501217555
+          ],
+          [
+            120.08377065069901,
+            30.311504880446893
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0057",
+      "properties": {
+        "id": "e_2f_0057",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_285",
+        "target": "n_2f_580_313",
+        "length_m": 2.102246861643008,
+        "walk_seconds": 1.8280407492547899,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              285.0
+            ],
+            [
+              580.0,
+              313.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08377065069901,
+            30.311504880446893
+          ],
+          [
+            120.08374880768127,
+            30.311504686317388
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0058",
+      "properties": {
+        "id": "e_2f_0058",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_313",
+        "target": "n_2f_580_341",
+        "length_m": 2.102246861621107,
+        "walk_seconds": 1.8280407492357453,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              313.0
+            ],
+            [
+              580.0,
+              341.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08374880768127,
+            30.311504686317388
+          ],
+          [
+            120.08372696466395,
+            30.311504492184245
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0059",
+      "properties": {
+        "id": "e_2f_0059",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_313",
+        "target": "n_o_2f_b1_214",
+        "length_m": 1.594170673603929,
+        "walk_seconds": 1.3862353683512427,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              313.0
+            ],
+            [
+              603.0,
+              313.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08374880768127,
+            30.311504686317388
+          ],
+          [
+            120.08374964252673,
+            30.31149033244747
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0060",
+      "properties": {
+        "id": "e_2f_0060",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_341",
+        "target": "n_2f_580_367",
+        "length_m": 1.95208637151785,
+        "walk_seconds": 1.697466410015522,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              341.0
+            ],
+            [
+              580.0,
+              367.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08372696466395,
+            30.311504492184245
+          ],
+          [
+            120.08370668186254,
+            30.311504311914476
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0061",
+      "properties": {
+        "id": "e_2f_0061",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_367",
+        "target": "n_2f_580_395",
+        "length_m": 2.102246861643008,
+        "walk_seconds": 1.8280407492547899,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              367.0
+            ],
+            [
+              580.0,
+              395.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08370668186254,
+            30.311504311914476
+          ],
+          [
+            120.08368483884598,
+            30.311504117774277
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0062",
+      "properties": {
+        "id": "e_2f_0062",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_367",
+        "target": "n_o_2f_b1_216",
+        "length_m": 1.5941706736032097,
+        "walk_seconds": 1.3862353683506172,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              367.0
+            ],
+            [
+              603.0,
+              367.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08370668186254,
+            30.311504311914476
+          ],
+          [
+            120.0837075167141,
+            30.311489958045225
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0063",
+      "properties": {
+        "id": "e_2f_0063",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_395",
+        "target": "n_2f_580_413",
+        "length_m": 1.351444411046319,
+        "walk_seconds": 1.1751690530837557,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              395.0
+            ],
+            [
+              580.0,
+              413.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08368483884598,
+            30.311504117774277
+          ],
+          [
+            120.083670796907,
+            30.311503992967957
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0064",
+      "properties": {
+        "id": "e_2f_0064",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_395",
+        "target": "n_o_2f_b1_218",
+        "length_m": 1.5941706736032097,
+        "walk_seconds": 1.3862353683506172,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              395.0
+            ],
+            [
+              603.0,
+              395.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08368483884598,
+            30.311504117774277
+          ],
+          [
+            120.08368567370074,
+            30.311489763905396
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0065",
+      "properties": {
+        "id": "e_2f_0065",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_413",
+        "target": "n_2f_580_443",
+        "length_m": 2.2524073517681655,
+        "walk_seconds": 1.9586150884940572,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              413.0
+            ],
+            [
+              580.0,
+              443.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.083670796907,
+            30.311503992967957
+          ],
+          [
+            120.08364739367573,
+            30.31150378495405
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0066",
+      "properties": {
+        "id": "e_2f_0066",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_443",
+        "target": "n_2f_580_484",
+        "length_m": 3.0782900473800323,
+        "walk_seconds": 2.6767739542435067,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              443.0
+            ],
+            [
+              580.0,
+              484.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08364739367573,
+            30.31150378495405
+          ],
+          [
+            120.0836154092604,
+            30.31150350066161
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0067",
+      "properties": {
+        "id": "e_2f_0067",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_443",
+        "target": "n_o_2f_b1_220",
+        "length_m": 1.594170673603929,
+        "walk_seconds": 1.3862353683512427,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              443.0
+            ],
+            [
+              603.0,
+              443.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08364739367573,
+            30.31150378495405
+          ],
+          [
+            120.08364822853592,
+            30.311489431085754
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0068",
+      "properties": {
+        "id": "e_2f_0068",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_484",
+        "target": "n_2f_580_492",
+        "length_m": 0.600641960471531,
+        "walk_seconds": 0.522297356931766,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              484.0
+            ],
+            [
+              580.0,
+              492.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.0836154092604,
+            30.31150350066161
+          ],
+          [
+            120.08360916839895,
+            30.311503445188993
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0069",
+      "properties": {
+        "id": "e_2f_0069",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_492",
+        "target": "n_2f_580_496",
+        "length_m": 0.3003209802503156,
+        "walk_seconds": 0.26114867847853535,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              492.0
+            ],
+            [
+              580.0,
+              496.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08360916839895,
+            30.311503445188993
+          ],
+          [
+            120.08360604796826,
+            30.311503417452577
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0070",
+      "properties": {
+        "id": "e_2f_0070",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_492",
+        "target": "n_2f_630_492",
+        "length_m": 3.465588420492672,
+        "walk_seconds": 3.0135551482544978,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              492.0
+            ],
+            [
+              630.0,
+              492.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08360916839895,
+            30.311503445188993
+          ],
+          [
+            120.08361098332394,
+            30.311472241128758
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0071",
+      "properties": {
+        "id": "e_2f_0071",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_496",
+        "target": "n_2f_580_535",
+        "length_m": 2.928129557276775,
+        "walk_seconds": 2.546199615023283,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              496.0
+            ],
+            [
+              580.0,
+              535.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08360604796826,
+            30.311503417452577
+          ],
+          [
+            120.08357562376933,
+            30.31150314701862
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0072",
+      "properties": {
+        "id": "e_2f_0072",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_496",
+        "target": "n_o_2f_b1_224",
+        "length_m": 4.297329641746547,
+        "walk_seconds": 3.7368083841274324,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              496.0
+            ],
+            [
+              642.0,
+              496.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08360604796826,
+            30.311503417452577
+          ],
+          [
+            120.08360829847615,
+            30.311464724417977
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0073",
+      "properties": {
+        "id": "e_2f_0073",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_535",
+        "target": "n_2f_580_558",
+        "length_m": 1.7268456363337132,
+        "walk_seconds": 1.5016049011597508,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              535.0
+            ],
+            [
+              580.0,
+              558.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08357562376933,
+            30.31150314701862
+          ],
+          [
+            120.08355768129344,
+            30.31150298752863
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0074",
+      "properties": {
+        "id": "e_2f_0074",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_535",
+        "target": "n_o_2f_b1_226",
+        "length_m": 4.297329641281028,
+        "walk_seconds": 3.736808383722633,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              535.0
+            ],
+            [
+              642.0,
+              535.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08357562376933,
+            30.31150314701862
+          ],
+          [
+            120.08357787428918,
+            30.311464453985337
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0075",
+      "properties": {
+        "id": "e_2f_0075",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_558",
+        "target": "n_2f_580_589",
+        "length_m": 2.327487596805244,
+        "walk_seconds": 2.0239022580915167,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              558.0
+            ],
+            [
+              580.0,
+              589.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08355768129344,
+            30.31150298752863
+          ],
+          [
+            120.0835334979568,
+            30.311502772559933
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0076",
+      "properties": {
+        "id": "e_2f_0076",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_589",
+        "target": "n_2f_580_592",
+        "length_m": 0.2252407351913366,
+        "walk_seconds": 0.19586150886203185,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              589.0
+            ],
+            [
+              580.0,
+              592.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.0835334979568,
+            30.311502772559933
+          ],
+          [
+            120.08353115763389,
+            30.311502751756276
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0077",
+      "properties": {
+        "id": "e_2f_0077",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_589",
+        "target": "n_o_2f_b1_228",
+        "length_m": 4.2973296417458275,
+        "walk_seconds": 3.7368083841268067,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              589.0
+            ],
+            [
+              642.0,
+              589.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.0835334979568,
+            30.311502772559933
+          ],
+          [
+            120.08353574849308,
+            30.311464079528445
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0078",
+      "properties": {
+        "id": "e_2f_0078",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_592",
+        "target": "n_2f_580_615",
+        "length_m": 1.7268456363265134,
+        "walk_seconds": 1.50160490115349,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              592.0
+            ],
+            [
+              580.0,
+              615.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08353115763389,
+            30.311502751756276
+          ],
+          [
+            120.08351321515866,
+            30.311502592260172
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0079",
+      "properties": {
+        "id": "e_2f_0079",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_615",
+        "target": "n_2f_580_624",
+        "length_m": 0.6757222055377097,
+        "walk_seconds": 0.5875845265545302,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              615.0
+            ],
+            [
+              580.0,
+              624.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08351321515866,
+            30.311502592260172
+          ],
+          [
+            120.08350619419018,
+            30.31150252984798
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0080",
+      "properties": {
+        "id": "e_2f_0080",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_2f_580_615",
+        "target": "n_o_2f_b1_230",
+        "length_m": 4.2973296417458275,
+        "walk_seconds": 3.7368083841268067,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              580.0,
+              615.0
+            ],
+            [
+              642.0,
+              615.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08351321515866,
+            30.311502592260172
+          ],
+          [
+            120.08351546570292,
+            30.311463899229548
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "e_2f_0081",
+      "properties": {
+        "id": "e_2f_0081",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_2f",
+        "floor": "2F",
+        "source": "n_o_2f_b1_222",
+        "target": "n_2f_630_492",
+        "length_m": 0.5255617154125519,
+        "walk_seconds": 0.45701018731526255,
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "direction": "bidirectional",
+        "routing_status": "draft_enabled",
+        "evidence_ids": [
+          "plan_2f"
+        ],
+        "cost_status": "assumed_not_measured",
+        "walking_speed_mps": 1.15,
+        "geometry_px": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              630.0,
+              485.0
+            ],
+            [
+              630.0,
+              492.0
+            ]
+          ]
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            120.08361644407597,
+            30.31147228966711
+          ],
+          [
+            120.08361098332394,
+            30.311472241128758
+          ]
+        ]
+      }
+    }
+  ]
+}

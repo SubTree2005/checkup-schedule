@@ -1,0 +1,215 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 309 675">
+<image href="../source/images/3F.jpg" width="309" height="675"/>
+<g id="spaces">
+<polygon points="127.0,40.0 127.0,102.0 137.0,102.0 137.0,112.0 127.0,112.0 127.0,147.0 127.0,221.0 127.0,282.0 127.0,314.0 127.0,377.0 127.0,416.0 127.0,488.0 127.0,528.0 112.0,528.0 112.0,529.0 125.0,529.0 125.0,574.0 127.0,574.0 127.0,630.0 210.0,630.0 210.0,586.0 210.0,537.0 170.0,537.0 170.0,477.0 170.0,445.0 170.0,434.0 170.0,391.0 170.0,350.0 170.0,337.0 170.0,302.0 170.0,265.0 170.0,246.0 170.0,211.0 217.0,211.0 219.0,211.0 219.0,166.0 180.0,166.0 180.0,130.0 209.0,130.0 209.0,87.0 209.0,40.0 127.0,40.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_main_corridor 主通道</title></polygon>
+<polygon points="170.0,246.0 170.0,265.0 217.0,265.0 268.0,265.0 268.0,246.0 217.0,246.0 170.0,246.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_cross_310 310/312/314/316 门前横向通道</title></polygon>
+<polygon points="170.0,337.0 170.0,350.0 217.0,350.0 268.0,350.0 268.0,337.0 217.0,337.0 170.0,337.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_cross_318 318/320/322/324 门前横向通道</title></polygon>
+<polygon points="170.0,434.0 170.0,445.0 268.0,445.0 268.0,434.0 217.0,434.0 170.0,434.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_cross_326 326/328/330 门前横向通道</title></polygon>
+<polygon points="54.0,147.0 127.0,147.0 127.0,221.0 54.0,221.0 54.0,147.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_301 一号楼301</title></polygon>
+<polygon points="54.0,221.0 127.0,221.0 127.0,282.0 54.0,282.0 54.0,221.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_303 一号楼303</title></polygon>
+<polygon points="54.0,282.0 127.0,282.0 127.0,314.0 54.0,314.0 54.0,282.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_305 一号楼305</title></polygon>
+<polygon points="54.0,314.0 127.0,314.0 127.0,377.0 54.0,377.0 54.0,314.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_307 一号楼307</title></polygon>
+<polygon points="54.0,377.0 127.0,377.0 127.0,416.0 54.0,416.0 54.0,377.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_309 一号楼309</title></polygon>
+<polygon points="54.0,416.0 127.0,416.0 127.0,488.0 54.0,488.0 54.0,416.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_311 一号楼311</title></polygon>
+<polygon points="209.0,40.0 268.0,40.0 268.0,87.0 209.0,87.0 209.0,40.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_302 一号楼302</title></polygon>
+<polygon points="209.0,87.0 268.0,87.0 268.0,130.0 209.0,130.0 209.0,87.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_304 一号楼304</title></polygon>
+<polygon points="180.0,130.0 219.0,130.0 219.0,166.0 180.0,166.0 180.0,130.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_306 一号楼306</title></polygon>
+<polygon points="219.0,133.0 268.0,133.0 268.0,211.0 219.0,211.0 219.0,133.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_308 一号楼308</title></polygon>
+<polygon points="170.0,211.0 217.0,211.0 217.0,246.0 170.0,246.0 170.0,211.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_310 一号楼310</title></polygon>
+<polygon points="217.0,211.0 268.0,211.0 268.0,246.0 217.0,246.0 217.0,211.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_312 一号楼312</title></polygon>
+<polygon points="170.0,265.0 217.0,265.0 217.0,302.0 170.0,302.0 170.0,265.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_316 一号楼316</title></polygon>
+<polygon points="217.0,265.0 268.0,265.0 268.0,302.0 217.0,302.0 217.0,265.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_314 一号楼314</title></polygon>
+<polygon points="170.0,302.0 217.0,302.0 217.0,337.0 170.0,337.0 170.0,302.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_318 一号楼318</title></polygon>
+<polygon points="217.0,302.0 268.0,302.0 268.0,337.0 217.0,337.0 217.0,302.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_320 一号楼320</title></polygon>
+<polygon points="170.0,350.0 217.0,350.0 217.0,391.0 170.0,391.0 170.0,350.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_324 一号楼324</title></polygon>
+<polygon points="217.0,350.0 268.0,350.0 268.0,391.0 217.0,391.0 217.0,350.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_322 一号楼322</title></polygon>
+<polygon points="170.0,391.0 217.0,391.0 217.0,434.0 170.0,434.0 170.0,391.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_326 一号楼326</title></polygon>
+<polygon points="217.0,391.0 268.0,391.0 268.0,434.0 217.0,434.0 217.0,391.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_328 一号楼328</title></polygon>
+<polygon points="170.0,445.0 268.0,445.0 268.0,537.0 210.0,537.0 210.0,477.0 170.0,477.0 170.0,445.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_330 一号楼330</title></polygon>
+<polygon points="170.0,477.0 210.0,477.0 210.0,537.0 170.0,537.0 170.0,477.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_332 一号楼332</title></polygon>
+<polygon points="210.0,537.0 268.0,537.0 268.0,586.0 210.0,586.0 210.0,537.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_336 一号楼336</title></polygon>
+<polygon points="210.0,586.0 268.0,586.0 268.0,637.0 210.0,637.0 210.0,586.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_338 一号楼338</title></polygon>
+<polygon points="23.0,102.0 137.0,102.0 137.0,112.0 127.0,112.0 127.0,147.0 23.0,147.0 23.0,102.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_stair_n 一号楼图上侧楼梯</title></polygon>
+<polygon points="21.0,529.0 125.0,529.0 125.0,574.0 21.0,574.0 21.0,529.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_stair_s 一号楼图下侧楼梯</title></polygon>
+<polygon points="54.0,40.0 105.0,40.0 105.0,101.0 54.0,101.0 54.0,40.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_toilets toilets</title></polygon>
+<polygon points="54.0,488.0 106.0,488.0 106.0,528.0 54.0,528.0 54.0,488.0" fill="#168ab7" fill-opacity=".055" stroke="#168ab7" stroke-width=".7"><title>3f_b1_unknown_shaft_s 未标注方框（用途待核）</title></polygon>
+</g>
+<g id="route_edges">
+<polyline points="125.0,548.0 147.0,548.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0000 </title></polyline>
+<polyline points="127.0,124.0 147.0,124.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0001 </title></polyline>
+<polyline points="127.0,187.0 147.0,187.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0002 </title></polyline>
+<polyline points="127.0,243.0 147.0,243.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0003 </title></polyline>
+<polyline points="127.0,303.0 147.0,303.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0004 </title></polyline>
+<polyline points="127.0,330.0 147.0,330.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0005 </title></polyline>
+<polyline points="127.0,391.0 147.0,391.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0006 </title></polyline>
+<polyline points="127.0,434.0 147.0,434.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0007 </title></polyline>
+<polyline points="147.0,61.0 147.0,70.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0008 </title></polyline>
+<polyline points="147.0,70.0 147.0,113.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0009 </title></polyline>
+<polyline points="147.0,70.0 209.0,70.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0010 </title></polyline>
+<polyline points="147.0,113.0 147.0,124.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0011 </title></polyline>
+<polyline points="147.0,113.0 209.0,113.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0012 </title></polyline>
+<polyline points="147.0,124.0 147.0,185.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0013 </title></polyline>
+<polyline points="147.0,185.0 147.0,187.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0014 </title></polyline>
+<polyline points="147.0,185.0 198.0,185.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0015 </title></polyline>
+<polyline points="147.0,187.0 147.0,243.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0016 </title></polyline>
+<polyline points="147.0,243.0 147.0,255.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0017 </title></polyline>
+<polyline points="147.0,255.0 147.0,303.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0018 </title></polyline>
+<polyline points="147.0,255.0 207.0,255.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0019 </title></polyline>
+<polyline points="147.0,303.0 147.0,330.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0020 </title></polyline>
+<polyline points="147.0,330.0 147.0,344.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0021 </title></polyline>
+<polyline points="147.0,344.0 147.0,391.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0022 </title></polyline>
+<polyline points="147.0,344.0 207.0,344.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0023 </title></polyline>
+<polyline points="147.0,391.0 147.0,434.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0024 </title></polyline>
+<polyline points="147.0,434.0 147.0,439.5" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0025 </title></polyline>
+<polyline points="147.0,439.5 147.0,545.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0026 </title></polyline>
+<polyline points="147.0,439.5 207.0,439.5" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0027 </title></polyline>
+<polyline points="147.0,545.0 147.0,548.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0028 </title></polyline>
+<polyline points="147.0,545.0 190.0,545.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0029 </title></polyline>
+<polyline points="147.0,548.0 147.0,550.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0030 </title></polyline>
+<polyline points="147.0,550.0 147.0,596.5" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0031 </title></polyline>
+<polyline points="147.0,550.0 210.0,550.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0032 </title></polyline>
+<polyline points="147.0,596.5 147.0,620.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0033 </title></polyline>
+<polyline points="147.0,596.5 210.0,596.5" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0034 </title></polyline>
+<polyline points="190.0,537.0 190.0,545.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0035 </title></polyline>
+<polyline points="198.0,166.0 198.0,185.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0036 </title></polyline>
+<polyline points="198.0,185.0 207.0,185.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0037 </title></polyline>
+<polyline points="207.0,185.0 207.0,190.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0038 </title></polyline>
+<polyline points="207.0,190.0 219.0,190.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0039 </title></polyline>
+<polyline points="207.0,246.0 207.0,255.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0040 </title></polyline>
+<polyline points="207.0,255.0 207.0,265.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0041 </title></polyline>
+<polyline points="207.0,255.0 228.0,255.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0042 </title></polyline>
+<polyline points="207.0,337.0 207.0,344.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0043 </title></polyline>
+<polyline points="207.0,344.0 207.0,350.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0044 </title></polyline>
+<polyline points="207.0,344.0 228.0,344.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0045 </title></polyline>
+<polyline points="207.0,434.0 207.0,439.5" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0046 </title></polyline>
+<polyline points="207.0,439.5 218.0,439.5" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0047 </title></polyline>
+<polyline points="218.0,439.5 218.0,445.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0048 </title></polyline>
+<polyline points="218.0,439.5 228.0,439.5" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0049 </title></polyline>
+<polyline points="228.0,246.0 228.0,255.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0050 </title></polyline>
+<polyline points="228.0,255.0 228.0,265.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0051 </title></polyline>
+<polyline points="228.0,255.0 254.0,255.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0052 </title></polyline>
+<polyline points="228.0,337.0 228.0,344.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0053 </title></polyline>
+<polyline points="228.0,344.0 228.0,350.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0054 </title></polyline>
+<polyline points="228.0,344.0 254.0,344.0" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0055 </title></polyline>
+<polyline points="228.0,434.0 228.0,439.5" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0056 </title></polyline>
+<polyline points="228.0,439.5 254.0,439.5" fill="none" stroke="#d200a8" stroke-width="1.2"><title>e_3f_0057 </title></polyline>
+</g>
+<g id="openings">
+<polyline points="127.0,180.0 127.0,194.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_301 </title></polyline>
+<polyline points="127.0,236.0 127.0,250.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_303 </title></polyline>
+<polyline points="127.0,296.0 127.0,310.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_305 </title></polyline>
+<polyline points="127.0,323.0 127.0,337.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_307 </title></polyline>
+<polyline points="127.0,384.0 127.0,398.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_309 </title></polyline>
+<polyline points="127.0,427.0 127.0,441.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_311 </title></polyline>
+<polyline points="209.0,63.0 209.0,77.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_302 </title></polyline>
+<polyline points="209.0,106.0 209.0,120.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_304 </title></polyline>
+<polyline points="190.0,166.0 206.0,166.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_306 </title></polyline>
+<polyline points="219.0,182.0 219.0,198.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_308 </title></polyline>
+<polyline points="200.0,246.0 214.0,246.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_310 </title></polyline>
+<polyline points="221.0,246.0 235.0,246.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_312 </title></polyline>
+<polyline points="200.0,265.0 214.0,265.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_316 </title></polyline>
+<polyline points="221.0,265.0 235.0,265.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_314 </title></polyline>
+<polyline points="200.0,337.0 214.0,337.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_318 </title></polyline>
+<polyline points="221.0,337.0 235.0,337.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_320 </title></polyline>
+<polyline points="200.0,350.0 214.0,350.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_324 </title></polyline>
+<polyline points="221.0,350.0 235.0,350.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_322 </title></polyline>
+<polyline points="200.0,434.0 214.0,434.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_326 </title></polyline>
+<polyline points="221.0,434.0 235.0,434.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_328 </title></polyline>
+<polyline points="211.0,445.0 225.0,445.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_330 </title></polyline>
+<polyline points="182.0,537.0 198.0,537.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_332 </title></polyline>
+<polyline points="210.0,543.0 210.0,557.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_336 </title></polyline>
+<polyline points="210.0,589.0 210.0,604.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_338 </title></polyline>
+<polyline points="127.0,116.0 127.0,132.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_stair_n </title></polyline>
+<polyline points="125.0,540.0 125.0,556.0" fill="none" stroke="#ff7900" stroke-width="2"><title>o_3f_b1_stair_s </title></polyline>
+</g>
+<g id="route_nodes">
+<circle cx="125.0" cy="548.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_stair_s n_o_3f_b1_stair_s</title></circle>
+<circle cx="147.0" cy="548.0" r="1.5" fill="#b400a0"><title>n_3f_147_548 n_3f_147_548</title></circle>
+<circle cx="127.0" cy="124.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_stair_n n_o_3f_b1_stair_n</title></circle>
+<circle cx="147.0" cy="124.0" r="1.5" fill="#b400a0"><title>n_3f_147_124 n_3f_147_124</title></circle>
+<circle cx="127.0" cy="187.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_301 n_o_3f_b1_301</title></circle>
+<circle cx="147.0" cy="187.0" r="1.5" fill="#b400a0"><title>n_3f_147_187 n_3f_147_187</title></circle>
+<circle cx="127.0" cy="243.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_303 n_o_3f_b1_303</title></circle>
+<circle cx="147.0" cy="243.0" r="1.5" fill="#b400a0"><title>n_3f_147_243 n_3f_147_243</title></circle>
+<circle cx="127.0" cy="303.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_305 n_o_3f_b1_305</title></circle>
+<circle cx="147.0" cy="303.0" r="1.5" fill="#b400a0"><title>n_3f_147_303 n_3f_147_303</title></circle>
+<circle cx="127.0" cy="330.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_307 n_o_3f_b1_307</title></circle>
+<circle cx="147.0" cy="330.0" r="1.5" fill="#b400a0"><title>n_3f_147_330 n_3f_147_330</title></circle>
+<circle cx="127.0" cy="391.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_309 n_o_3f_b1_309</title></circle>
+<circle cx="147.0" cy="391.0" r="1.5" fill="#b400a0"><title>n_3f_147_391 n_3f_147_391</title></circle>
+<circle cx="127.0" cy="434.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_311 n_o_3f_b1_311</title></circle>
+<circle cx="147.0" cy="434.0" r="1.5" fill="#b400a0"><title>n_3f_147_434 n_3f_147_434</title></circle>
+<circle cx="147.0" cy="61.0" r="1.5" fill="#b400a0"><title>n_3f_147_61 n_3f_147_61</title></circle>
+<circle cx="147.0" cy="70.0" r="1.5" fill="#b400a0"><title>n_3f_147_70 n_3f_147_70</title></circle>
+<circle cx="147.0" cy="113.0" r="1.5" fill="#b400a0"><title>n_3f_147_113 n_3f_147_113</title></circle>
+<circle cx="209.0" cy="70.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_302 n_o_3f_b1_302</title></circle>
+<circle cx="209.0" cy="113.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_304 n_o_3f_b1_304</title></circle>
+<circle cx="147.0" cy="185.0" r="1.5" fill="#b400a0"><title>n_3f_147_185 n_3f_147_185</title></circle>
+<circle cx="198.0" cy="185.0" r="1.5" fill="#b400a0"><title>n_3f_198_185 n_3f_198_185</title></circle>
+<circle cx="147.0" cy="255.0" r="1.5" fill="#b400a0"><title>n_3f_147_255 n_3f_147_255</title></circle>
+<circle cx="207.0" cy="255.0" r="1.5" fill="#b400a0"><title>n_3f_207_255 n_3f_207_255</title></circle>
+<circle cx="147.0" cy="344.0" r="1.5" fill="#b400a0"><title>n_3f_147_344 n_3f_147_344</title></circle>
+<circle cx="207.0" cy="344.0" r="1.5" fill="#b400a0"><title>n_3f_207_344 n_3f_207_344</title></circle>
+<circle cx="147.0" cy="439.5" r="1.5" fill="#b400a0"><title>n_3f_147_439p5 n_3f_147_439p5</title></circle>
+<circle cx="147.0" cy="545.0" r="1.5" fill="#b400a0"><title>n_3f_147_545 n_3f_147_545</title></circle>
+<circle cx="207.0" cy="439.5" r="1.5" fill="#b400a0"><title>n_3f_207_439p5 n_3f_207_439p5</title></circle>
+<circle cx="190.0" cy="545.0" r="1.5" fill="#b400a0"><title>n_3f_190_545 n_3f_190_545</title></circle>
+<circle cx="147.0" cy="550.0" r="1.5" fill="#b400a0"><title>n_3f_147_550 n_3f_147_550</title></circle>
+<circle cx="147.0" cy="596.5" r="1.5" fill="#b400a0"><title>n_3f_147_596p5 n_3f_147_596p5</title></circle>
+<circle cx="210.0" cy="550.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_336 n_o_3f_b1_336</title></circle>
+<circle cx="147.0" cy="620.0" r="1.5" fill="#b400a0"><title>n_3f_147_620 n_3f_147_620</title></circle>
+<circle cx="210.0" cy="596.5" r="1.5" fill="#b400a0"><title>n_o_3f_b1_338 n_o_3f_b1_338</title></circle>
+<circle cx="190.0" cy="537.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_332 n_o_3f_b1_332</title></circle>
+<circle cx="198.0" cy="166.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_306 n_o_3f_b1_306</title></circle>
+<circle cx="207.0" cy="185.0" r="1.5" fill="#b400a0"><title>n_3f_207_185 n_3f_207_185</title></circle>
+<circle cx="207.0" cy="190.0" r="1.5" fill="#b400a0"><title>n_3f_207_190 n_3f_207_190</title></circle>
+<circle cx="219.0" cy="190.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_308 n_o_3f_b1_308</title></circle>
+<circle cx="207.0" cy="246.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_310 n_o_3f_b1_310</title></circle>
+<circle cx="207.0" cy="265.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_316 n_o_3f_b1_316</title></circle>
+<circle cx="228.0" cy="255.0" r="1.5" fill="#b400a0"><title>n_3f_228_255 n_3f_228_255</title></circle>
+<circle cx="207.0" cy="337.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_318 n_o_3f_b1_318</title></circle>
+<circle cx="207.0" cy="350.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_324 n_o_3f_b1_324</title></circle>
+<circle cx="228.0" cy="344.0" r="1.5" fill="#b400a0"><title>n_3f_228_344 n_3f_228_344</title></circle>
+<circle cx="207.0" cy="434.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_326 n_o_3f_b1_326</title></circle>
+<circle cx="218.0" cy="439.5" r="1.5" fill="#b400a0"><title>n_3f_218_439p5 n_3f_218_439p5</title></circle>
+<circle cx="218.0" cy="445.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_330 n_o_3f_b1_330</title></circle>
+<circle cx="228.0" cy="439.5" r="1.5" fill="#b400a0"><title>n_3f_228_439p5 n_3f_228_439p5</title></circle>
+<circle cx="228.0" cy="246.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_312 n_o_3f_b1_312</title></circle>
+<circle cx="228.0" cy="265.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_314 n_o_3f_b1_314</title></circle>
+<circle cx="254.0" cy="255.0" r="1.5" fill="#b400a0"><title>n_3f_254_255 n_3f_254_255</title></circle>
+<circle cx="228.0" cy="337.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_320 n_o_3f_b1_320</title></circle>
+<circle cx="228.0" cy="350.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_322 n_o_3f_b1_322</title></circle>
+<circle cx="254.0" cy="344.0" r="1.5" fill="#b400a0"><title>n_3f_254_344 n_3f_254_344</title></circle>
+<circle cx="228.0" cy="434.0" r="1.5" fill="#b400a0"><title>n_o_3f_b1_328 n_o_3f_b1_328</title></circle>
+<circle cx="254.0" cy="439.5" r="1.5" fill="#b400a0"><title>n_3f_254_439p5 n_3f_254_439p5</title></circle>
+</g>
+<g id="labels" font-family="sans-serif" font-size="8" fill="#006087" stroke="white" stroke-width="2" paint-order="stroke">
+<text x="82.5" y="176.0" fill="#006087">301<title>poi_3f_b1_301</title></text>
+<text x="82.5" y="243.5" fill="#006087">303<title>poi_3f_b1_303</title></text>
+<text x="82.5" y="290.0" fill="#006087">305<title>poi_3f_b1_305</title></text>
+<text x="82.5" y="337.5" fill="#006087">307<title>poi_3f_b1_307</title></text>
+<text x="82.5" y="388.5" fill="#006087">309<title>poi_3f_b1_309</title></text>
+<text x="82.5" y="444.0" fill="#006087">311<title>poi_3f_b1_311</title></text>
+<text x="230.5" y="55.5" fill="#006087">302<title>poi_3f_b1_302</title></text>
+<text x="230.5" y="100.5" fill="#006087">304<title>poi_3f_b1_304</title></text>
+<text x="191.5" y="140.0" fill="#006087">306<title>poi_3f_b1_306</title></text>
+<text x="235.5" y="164.0" fill="#006087">308<title>poi_3f_b1_308</title></text>
+<text x="185.5" y="220.5" fill="#006087">310<title>poi_3f_b1_310</title></text>
+<text x="234.5" y="220.5" fill="#006087">312<title>poi_3f_b1_312</title></text>
+<text x="185.5" y="275.5" fill="#006087">316<title>poi_3f_b1_316</title></text>
+<text x="234.5" y="275.5" fill="#006087">314<title>poi_3f_b1_314</title></text>
+<text x="185.5" y="311.5" fill="#006087">318<title>poi_3f_b1_318</title></text>
+<text x="234.5" y="311.5" fill="#006087">320<title>poi_3f_b1_320</title></text>
+<text x="185.5" y="362.5" fill="#006087">324<title>poi_3f_b1_324</title></text>
+<text x="234.5" y="362.5" fill="#006087">322<title>poi_3f_b1_322</title></text>
+<text x="185.5" y="404.5" fill="#006087">326<title>poi_3f_b1_326</title></text>
+<text x="234.5" y="404.5" fill="#006087">328<title>poi_3f_b1_328</title></text>
+<text x="231.0" y="499.0" fill="#006087">330<title>poi_3f_b1_330</title></text>
+<text x="182.0" y="499.0" fill="#006087">332<title>poi_3f_b1_332</title></text>
+<text x="231.0" y="553.5" fill="#006087">336<title>poi_3f_b1_336</title></text>
+<text x="231.0" y="603.5" fill="#006087">338<title>poi_3f_b1_338</title></text>
+<text x="67.0" y="121.5" fill="#006087">P25<title>poi_3f_b1_stair_n</title></text>
+<text x="65.0" y="543.5" fill="#006087">P26<title>poi_3f_b1_stair_s</title></text>
+<text x="71.5" y="62.5" fill="#a32900">?P27<title>poi_3f_b1_toilets</title></text>
+<text x="72.0" y="500.0" fill="#a32900">?P28<title>poi_3f_b1_unknown_shaft_s</title></text>
+</g></svg>

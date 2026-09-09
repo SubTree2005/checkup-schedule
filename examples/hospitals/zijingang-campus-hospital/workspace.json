@@ -630,10 +630,7 @@
       "prerequisiteItemKeys": [],
       "conflictItemKeys": [],
       "priority": 9,
-      "allowedTimeSlots": {
-        "start": "07:30",
-        "end": "10:30"
-      },
+      "allowedTimeSlots": {},
       "isCritical": true,
       "isActive": true
     },
@@ -1403,10 +1400,7 @@
       "prerequisiteItemKeys": [],
       "conflictItemKeys": [],
       "priority": 7,
-      "allowedTimeSlots": {
-        "start": "07:30",
-        "end": "11:30"
-      },
+      "allowedTimeSlots": {},
       "isCritical": false,
       "isActive": true
     },
@@ -1583,7 +1577,7 @@
   "packages": [
     {
       "key": "official-package-1",
-      "packageName": "校医院体检套餐一",
+      "packageName": "校医院体检套餐1",
       "packageType": "入学体检/用工体检",
       "price": 80,
       "tag": "官网套餐",
@@ -1612,7 +1606,7 @@
     },
     {
       "key": "official-package-2",
-      "packageName": "校医院体检套餐二",
+      "packageName": "校医院体检套餐2",
       "packageType": "用工体检",
       "price": 120,
       "tag": "官网套餐",
@@ -1641,7 +1635,7 @@
     },
     {
       "key": "official-package-3",
-      "packageName": "校医院体检套餐三",
+      "packageName": "校医院体检套餐3",
       "packageType": "用工体检/健康体检",
       "price": 280,
       "tag": "官网套餐",
@@ -1673,7 +1667,7 @@
     },
     {
       "key": "official-package-4",
-      "packageName": "校医院体检套餐四",
+      "packageName": "校医院体检套餐4",
       "packageType": "用工体检/健康体检",
       "price": 398,
       "tag": "官网套餐",
@@ -1705,7 +1699,7 @@
     },
     {
       "key": "official-package-5",
-      "packageName": "校医院体检套餐五",
+      "packageName": "校医院体检套餐5",
       "packageType": "健康体检",
       "price": 580,
       "tag": "官网套餐",
@@ -1736,7 +1730,7 @@
     },
     {
       "key": "official-package-6",
-      "packageName": "校医院体检套餐六",
+      "packageName": "校医院体检套餐6",
       "packageType": "健康体检",
       "price": 800,
       "tag": "官网套餐",
@@ -1769,7 +1763,7 @@
     },
     {
       "key": "official-package-7",
-      "packageName": "校医院体检套餐七",
+      "packageName": "校医院体检套餐7",
       "packageType": "健康体检",
       "price": 1350,
       "tag": "官网套餐",

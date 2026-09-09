@@ -1,4 +1,4 @@
-<view class="delete-page safe-top">
+<view class="delete-page safe-top" style="{{navigationStyle}}">
   <view class="flow-nav">
     <view class="nav-back" bindtap="goBack" aria-label="返回">‹</view>
     <view class="nav-title">注销账号</view>

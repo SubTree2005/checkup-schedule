@@ -12,6 +12,7 @@ htmlcov/
 
 .idea/
 .vscode/
+apps/miniprogram/project.private.config.json
 *.log
 
 simulation/results/

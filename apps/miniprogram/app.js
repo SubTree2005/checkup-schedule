@@ -16,6 +16,7 @@ App({
     appointmentDraft: null,
     preparationDecision: null,
     splitPlanDraft: null,
+    followUpPlanDraft: null,
     catalog: null,
     viewingPlanRecord: null,
     activeTabIndex: 0,
@@ -81,6 +82,7 @@ App({
     this.globalData.appointmentDraft = null
     this.globalData.preparationDecision = null
     this.globalData.splitPlanDraft = null
+    this.globalData.followUpPlanDraft = null
     this.globalData.catalog = null
     this.globalData.viewingPlanRecord = null
     wx.removeStorageSync('patientToken')

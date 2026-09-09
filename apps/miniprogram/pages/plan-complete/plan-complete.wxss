@@ -2,14 +2,18 @@
 
 page { background: linear-gradient(180deg, #F7FAFF 0%, #FFFFFF 100%); }
 .complete-page { min-height: 100vh; }
-.flow-nav { height: 128rpx; padding: 0 28rpx; display: flex; align-items: center; justify-content: space-between; }
+.flow-nav { height: var(--navigation-bar-height, 44px); padding: 0 28rpx; display: flex; align-items: center; justify-content: space-between; }
 .nav-back { width: 64rpx; height: 64rpx; display: flex; align-items: center; color: #101827; font-size: 58rpx; }
 .nav-title { color: #111827; font-size: 31rpx; font-weight: 650; }
 .nav-space { width: 64rpx; }
-.complete-content { padding: 150rpx 32rpx 0; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.complete-content { padding: 80rpx 32rpx 32rpx; display: flex; flex-direction: column; align-items: center; text-align: center; }
 .success-orb { width: 150rpx; height: 150rpx; display: block; }
 .complete-title { margin-top: 56rpx; color: #172033; font-size: 40rpx; font-weight: 650; }
 .complete-desc { margin-top: 22rpx; color: #718096; font-size: 25rpx; }
-.complete-actions { position: fixed; left: 0; right: 0; bottom: 0; padding: 20rpx 36rpx calc(env(safe-area-inset-bottom) + 32rpx); }
+.complete-actions { padding: 20rpx 36rpx calc(env(safe-area-inset-bottom) + 140rpx); }
+.unfinished-card { width: 100%; margin-top: 40rpx; padding: 28rpx; border: 2rpx solid #DFE7F2; border-radius: 26rpx; background: #FFFFFF; text-align: left; }
+.unfinished-title { margin-bottom: 18rpx; color: #172033; font-size: 28rpx; font-weight: 600; }
+.unfinished-item { padding: 10rpx 0; color: #52617A; font-size: 25rpx; }
+.follow-up-btn { width: 100%; margin: 0 0 20rpx; }
 .record-btn { width: 100%; margin: 0; }
 .home-link { height: 84rpx; display: flex; align-items: center; justify-content: center; color: #2F69EC; font-size: 27rpx; }

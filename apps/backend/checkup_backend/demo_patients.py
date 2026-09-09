@@ -11,11 +11,13 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from .exam_constraints import prerequisite_item_ids, validate_exam_selection
+from .demo_restrictions import demo_restriction_status, demo_unrestricted
 from .models import (
     DemoPatientProfile,
     DepartmentInfo,
     ExamInfo,
     ExamPlan,
+    HospitalSettings,
     PackageInfo,
     PlanExecutionDetail,
     UserInfo,
@@ -189,6 +191,7 @@ def demo_pool_summary(db: Session, hospital_id: str, changed: int = 0) -> dict:
         "active": len(active),
         "inactive": len(rows) - len(active),
         "changed": changed,
+        "restrictions": demo_restriction_status(db.get(HospitalSettings, hospital_id)),
         "activePatients": [
             {"ordinal": profile.ordinal, "name": user.name, "planID": profile.active_plan_id}
             for profile, user in active[:8]
@@ -221,10 +224,11 @@ def _deactivate_profiles(db: Session, profiles: list[DemoPatientProfile]) -> Non
 
 
 def _activate_profiles(db: Session, hospital_id: str, profiles: list[DemoPatientProfile]) -> None:
+    unrestricted = demo_unrestricted(db.get(HospitalSettings, hospital_id))
     hospital_exam_rows = db.execute(
         select(ExamInfo)
         .join(DepartmentInfo, DepartmentInfo.dept_id == ExamInfo.dept_id)
-        .where(DepartmentInfo.hospital_id == hospital_id, ExamInfo.is_active.is_(True))
+        .where(DepartmentInfo.hospital_id == hospital_id, True if unrestricted else ExamInfo.is_active.is_(True))
     ).scalars().all()
     exams = {row.item_id: row for row in hospital_exam_rows}
     package_ids = {profile.package_id for profile in profiles if profile.package_id}

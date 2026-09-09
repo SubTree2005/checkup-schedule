@@ -35,6 +35,7 @@
 | 系统内实时排队状态 | `GET /api/queues` |
 | 看板与人流地图 | `GET /api/dashboard/summary`、`GET /api/dashboard/map/{floorKey}` |
 | 演示患者池（仅创建者） | `GET /api/demo-patients`、`POST/DELETE /api/demo-patients/active` |
+| 临时解除项目限制（仅创建者） | `PUT /api/demo-patients/restrictions`，请求体 `{"enabled": true}` 开启，`false` 恢复 |
 
 ### 患者微信小程序接口
 
@@ -48,12 +49,19 @@
 | 医院、院区、预约号源和动态体检目录 | `GET /api/patient/hospitals`、`GET /api/patient/hospitals/{hospitalID}/appointment-slots`、`GET /api/patient/hospitals/{hospitalID}/catalog` |
 | 创建、当前、历史和详情 | `POST /api/patient/plans`、`GET /api/patient/plans/current`、`GET /api/patient/plans`、`GET /api/patient/plans/{planID}` |
 | 开始、完成、中断、继续、结束和动态重排 | `POST /api/patient/plans/{planID}/steps/{detailID}/start`、`POST /api/patient/plans/{planID}/steps/{detailID}/complete`、`POST /api/patient/plans/{planID}/pause`、`POST /api/patient/plans/{planID}/resume`、`POST /api/patient/plans/{planID}/finish`、`POST /api/patient/plans/{planID}/replan` |
+| 跳过当前项目并重排 | `POST /api/patient/plans/{planID}/steps/{detailID}/skip` |
 | 院内导航信息与楼层 GIS 路线 | `GET /api/patient/plans/{planID}/navigation?detailID=...` |
 | 微信提醒能力与本人提醒记录 | `GET /api/patient/reminders/config`、`GET /api/patient/reminders` |
 | AI 助手模型状态与问答 | `GET /api/patient/agent/status`、`POST /api/patient/agent/chat` |
 | 受保护的到期提醒派发 | `POST /api/internal/reminders/dispatch`，请求头必须携带 `X-Reminder-Dispatch-Token` |
 
 计划接口会在 Backend/Adapter 中把数据库实体转换为 `checkup_scheduler` 领域模型。小程序不包含算法副本，也不直接访问数据库。
+
+进行中的计划在读取当前计划、读取详情、开始或完成项目时检查科室和项目的可用状态。关闭科室或停用项目会转为 `skipped`，其依赖项目也会跳过，再用同一 Scheduler 重排剩余路线。手动跳过仅接受当前项目；跳过不会增加完成数，也不会充当前置项目的完成凭据。路线全部走完时，存在未完成项目则记为“已结束”，全部完成才记为“已完成”。小程序在路线页和随行导航页每 15 秒刷新一次，离开页面后停止刷新。
+
+计划响应包含 `hospitalID` 和 `unfinishedItemIDs`。结束页可将未完成项目带入正常预约页；创建补约时传入 `followUpPlanID`、原医院 `hospitalID`、未完成项目 `selectedItemIDs` 和新的 `appointmentAt`，`packageID` 留空。后端校验原计划归属、结束状态、医院与项目范围，并在创建和重排时认可原计划已完成的前置项目。未来预约按服务时间窗排程，科室的临时关闭状态在执行时再次检查；停用项目仍不能预约。原计划保持不变。
+
+患者端“体检报告”按各项目报告中的 `items` / `results` 展示指标，使用所属 `detailID` 和指标序号进入详情；指标值、单位、参考范围和状态位于项目信息之前。未发布指标时显示空状态，不以项目列表替代。
 
 AI 问答必须经过患者登录鉴权。系统默认模式由后端使用部署环境中的模型密钥转发，小程序不会接收这份系统密钥；用户也可在当前设备选择自定义模型并可选填个人密钥，个人密钥只随当次 HTTPS 请求转发，不写入服务端数据库或响应。小程序最多提交最近 20 条会话消息和当前页面标识；页面跳转使用客户端固定白名单操作卡片，模型回复本身不能执行预约、取消、修改数据或任意路由。
 
@@ -63,7 +71,9 @@ AI 问答必须经过患者登录鉴权。系统默认模式由后端使用部�
 
 医院管理端的“医院设置”维护患者端实际读取的院区名称、地址、开放时间、图片与号源规则。医院名采用“机构名（院区名）”时，患者端会将同机构的多个医院账号组合为一个医院卡片，但每个院区仍保留独立 `hospitalID`、目录、号源和计划数据。预约页只展示服务端生成的真实时段；创建预约时服务端再次校验开放状态、时段边界与容量，不能通过伪造 `appointmentAt` 绕过。
 
-工作区导入、检查项目编辑、套餐创建或更新、演示患者池准备及患者自选项目共用同一组约束校验：前置关系必须无环，套餐或计划必须包含全部前置项目，并拒绝互斥项目组合。患者端不会再静默丢弃未选择的前置关系。
+正常模式下，工作区导入、检查项目编辑、套餐创建或更新、演示患者池准备及患者自选项目共用同一组约束校验：前置关系必须无环，套餐或计划必须包含全部前置项目，并拒绝互斥项目组合。患者端不会再静默丢弃未选择的前置关系。
+
+Web 侧边栏底部的演示入口新增“解除限制”页签。开启后，仅当前医院临时忽略医院、科室和项目时间窗（含工作日）、关闭和停用状态、检前准备、前置和互斥关系；预约开放全天时段并忽略容量，保留排队与步行计算。`hospital_settings.demoUnrestrictedUntil` 保存两小时后的 UTC 失效时间，每次业务请求检查有效期，支持手动恢复，服务重启不会延长有效期。原配置、患者准备资料、账户权限和计划归属均保留；已完成/跳过的步骤不会被重新激活。`GET /api/demo-patients` 返回 `restrictions: {enabled, expiresAt}`，患者医院和计划响应提供 `demoUnrestricted`、`demoUnrestrictedUntil`；小程序重新进入项目选择或刷新路线后生效。旧库启动时自动补充可空字段，默认不开启。工作区配置编辑、导入的结构校验仍照常执行。
 
 OpenAPI 交互文档在服务启动后的 `/docs`。
 

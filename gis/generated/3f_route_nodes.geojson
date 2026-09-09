@@ -1,0 +1,1717 @@
+{
+  "type": "FeatureCollection",
+  "status": "navigation_draft_not_survey",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_stair_s",
+      "properties": {
+        "id": "n_o_3f_b1_stair_s",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "stair_landing",
+        "name": "n_o_3f_b1_stair_s",
+        "accessible": "no",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            125.0,
+            548.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08355781549884,
+          30.31151630252844
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_147_548",
+      "properties": {
+        "id": "n_3f_147_548",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_147_548",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            147.0,
+            548.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08355858795187,
+          30.31150302184791
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_stair_n",
+      "properties": {
+        "id": "n_o_3f_b1_stair_n",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "stair_landing",
+        "name": "n_o_3f_b1_stair_n",
+        "accessible": "no",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            127.0,
+            124.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08387877784412,
+          30.311517947221827
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_147_124",
+      "properties": {
+        "id": "n_3f_147_124",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_147_124",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            147.0,
+            124.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08387948003494,
+          30.311505873871592
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_301",
+      "properties": {
+        "id": "n_o_3f_b1_301",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_301",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            127.0,
+            187.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08383109811288,
+          30.31151752350332
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_147_187",
+      "properties": {
+        "id": "n_3f_147_187",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_147_187",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            147.0,
+            187.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08383180030954,
+          30.311505450153714
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_303",
+      "properties": {
+        "id": "n_o_3f_b1_303",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_303",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            127.0,
+            243.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.0837887161312,
+          30.31151714685005
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_147_243",
+      "properties": {
+        "id": "n_3f_147_243",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_147_243",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            147.0,
+            243.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08378941833303,
+          30.311505073501024
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_305",
+      "properties": {
+        "id": "n_o_3f_b1_305",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_305",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            127.0,
+            303.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08374330686677,
+          30.311516743277735
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_147_303",
+      "properties": {
+        "id": "n_3f_147_303",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_147_303",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            147.0,
+            303.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08374400907415,
+          30.31150466992932
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_307",
+      "properties": {
+        "id": "n_o_3f_b1_307",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_307",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            127.0,
+            330.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08372287269835,
+          30.311516561665055
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_147_330",
+      "properties": {
+        "id": "n_3f_147_330",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_147_330",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            147.0,
+            330.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08372357490823,
+          30.311504488316913
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_309",
+      "properties": {
+        "id": "n_o_3f_b1_309",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_309",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            127.0,
+            391.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08367670661545,
+          30.311516151343156
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_147_391",
+      "properties": {
+        "id": "n_3f_147_391",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_147_391",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            147.0,
+            391.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08367740883097,
+          30.31150407799564
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_311",
+      "properties": {
+        "id": "n_o_3f_b1_311",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_311",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            127.0,
+            434.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08364416331219,
+          30.31151586209007
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_147_434",
+      "properties": {
+        "id": "n_3f_147_434",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_147_434",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            147.0,
+            434.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08364486553167,
+          30.311503788742982
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_147_61",
+      "properties": {
+        "id": "n_3f_147_61",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_147_61",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            147.0,
+            61.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08392715976225,
+          30.311506297572084
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_147_70",
+      "properties": {
+        "id": "n_3f_147_70",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_147_70",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            147.0,
+            70.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08392034837253,
+          30.31150623704451
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_147_113",
+      "properties": {
+        "id": "n_3f_147_113",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_147_113",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            147.0,
+            113.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08388780506654,
+          30.311505947852293
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_302",
+      "properties": {
+        "id": "n_o_3f_b1_302",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_302",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            209.0,
+            70.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08392252514668,
+          30.311468809656866
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_304",
+      "properties": {
+        "id": "n_o_3f_b1_304",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_304",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            209.0,
+            113.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08388998185302,
+          30.311468520466
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_147_185",
+      "properties": {
+        "id": "n_3f_147_185",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_147_185",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            147.0,
+            185.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08383331395159,
+          30.311505463605346
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_198_185",
+      "properties": {
+        "id": "n_3f_198_185",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_198_185",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            198.0,
+            185.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.0838351045512,
+          30.311474676563673
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_147_255",
+      "properties": {
+        "id": "n_3f_147_255",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_147_255",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            147.0,
+            255.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.0837803364811,
+          30.311504992787945
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_207_255",
+      "properties": {
+        "id": "n_3f_207_255",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_207_255",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            207.0,
+            255.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08378244308811,
+          30.311468772741026
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_147_344",
+      "properties": {
+        "id": "n_3f_147_344",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_147_344",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            147.0,
+            344.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08371297941493,
+          30.311504394146255
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_207_344",
+      "properties": {
+        "id": "n_3f_207_344",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_207_344",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            207.0,
+            344.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08371508604662,
+          30.311468174102043
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_147_439p5",
+      "properties": {
+        "id": "n_3f_147_439p5",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_147_439p5",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            147.0,
+            439.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08364070301671,
+          30.31150375174496
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_147_545",
+      "properties": {
+        "id": "n_3f_147_545",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_147_545",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            147.0,
+            545.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08356085841443,
+          30.311503042030083
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_207_439p5",
+      "properties": {
+        "id": "n_3f_207_439p5",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_207_439p5",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            207.0,
+            439.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08364280967491,
+          30.31146753170365
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_190_545",
+      "properties": {
+        "id": "n_3f_190_545",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_190_545",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            190.0,
+            545.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08356236820737,
+          30.31147708433614
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_147_550",
+      "properties": {
+        "id": "n_3f_147_550",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_147_550",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            147.0,
+            550.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08355707431018,
+          30.311503008393107
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_147_596p5",
+      "properties": {
+        "id": "n_3f_147_596p5",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_147_596p5",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            147.0,
+            596.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08352188214131,
+          30.311502695563888
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_336",
+      "properties": {
+        "id": "n_o_3f_b1_336",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_336",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            210.0,
+            550.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.0835592863334,
+          30.311464977353232
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_147_620",
+      "properties": {
+        "id": "n_3f_147_620",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_147_620",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            147.0,
+            620.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08350409685208,
+          30.311502537463795
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_338",
+      "properties": {
+        "id": "n_o_3f_b1_338",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_338",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            210.0,
+            596.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08352409417809,
+          30.311464664525513
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_332",
+      "properties": {
+        "id": "n_o_3f_b1_332",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_332",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            190.0,
+            537.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08356842277259,
+          30.31147713815491
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_306",
+      "properties": {
+        "id": "n_o_3f_b1_306",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_306",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            198.0,
+            166.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08384948414626,
+          30.31147480435278
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_207_185",
+      "properties": {
+        "id": "n_3f_207_185",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_207_185",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            207.0,
+            185.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08383542053916,
+          30.311469243556303
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_207_190",
+      "properties": {
+        "id": "n_3f_207_190",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_207_190",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            207.0,
+            190.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08383163643542,
+          30.311469209927353
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_308",
+      "properties": {
+        "id": "n_o_3f_b1_308",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_308",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            219.0,
+            190.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08383205775289,
+          30.31146196591754
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_310",
+      "properties": {
+        "id": "n_o_3f_b1_310",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_310",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            207.0,
+            246.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08378925447454,
+          30.311468833275622
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_316",
+      "properties": {
+        "id": "n_o_3f_b1_316",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_316",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            207.0,
+            265.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.083774874881,
+          30.311468705479943
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_228_255",
+      "properties": {
+        "id": "n_3f_228_255",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_228_255",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            228.0,
+            255.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.0837831803999,
+          30.311456095724523
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_318",
+      "properties": {
+        "id": "n_o_3f_b1_318",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_318",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            207.0,
+            337.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08372038379132,
+          30.311468221187255
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_324",
+      "properties": {
+        "id": "n_o_3f_b1_324",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_324",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            207.0,
+            350.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.0837105451226,
+          30.3114681337431
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_228_344",
+      "properties": {
+        "id": "n_3f_228_344",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_228_344",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            228.0,
+            344.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08371582336706,
+          30.311455497086488
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_326",
+      "properties": {
+        "id": "n_o_3f_b1_326",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_326",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            207.0,
+            434.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08364697218835,
+          30.3114675687015
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_218_439p5",
+      "properties": {
+        "id": "n_3f_218_439p5",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_218_439p5",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            218.0,
+            439.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08364319589529,
+          30.311460891362707
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_330",
+      "properties": {
+        "id": "n_o_3f_b1_330",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_330",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            218.0,
+            445.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08363903338213,
+          30.311460854364768
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_228_439p5",
+      "properties": {
+        "id": "n_3f_228_439p5",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_228_439p5",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            228.0,
+            439.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08364354700463,
+          30.31145485468912
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_312",
+      "properties": {
+        "id": "n_o_3f_b1_312",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_312",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            228.0,
+            246.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08378999178548,
+          30.31145615625902
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_314",
+      "properties": {
+        "id": "n_o_3f_b1_314",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_314",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            228.0,
+            265.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08377561219378,
+          30.311456028463557
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_254_255",
+      "properties": {
+        "id": "n_3f_254_255",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_254_255",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            254.0,
+            255.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08378409326168,
+          30.311440400370714
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_320",
+      "properties": {
+        "id": "n_o_3f_b1_320",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_320",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            228.0,
+            337.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08372112111108,
+          30.31145554417164
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_322",
+      "properties": {
+        "id": "n_o_3f_b1_322",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_322",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            228.0,
+            350.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08371128244364,
+          30.311455456727614
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_254_344",
+      "properties": {
+        "id": "n_3f_254_344",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_254_344",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            254.0,
+            344.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08371673623955,
+          30.311439801733858
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_o_3f_b1_328",
+      "properties": {
+        "id": "n_o_3f_b1_328",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "door",
+        "name": "n_o_3f_b1_328",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            228.0,
+            434.0
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08364770951754,
+          30.31145489168691
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "n_3f_254_439p5",
+      "properties": {
+        "id": "n_3f_254_439p5",
+        "status": "navigation_draft_not_survey",
+        "level_id": "zju2_zijingang_b1_3f",
+        "building_id": "zju2_zijingang_b1",
+        "floor": "3F",
+        "kind": "junction",
+        "name": "n_3f_254_439p5",
+        "accessible": "unknown",
+        "access_control": "unknown",
+        "geometry_px": {
+          "type": "Point",
+          "coordinates": [
+            254.0,
+            439.5
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.08364445988859,
+          30.311439159337738
+        ]
+      }
+    }
+  ]
+}

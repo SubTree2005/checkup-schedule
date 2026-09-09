@@ -1,3 +1,4 @@
+const { navigationMetrics } = require('../../utils/layout')
 const api = require('../../utils/api')
 const flowGuard = require('../../utils/flow-guard')
 const { planReportSummary } = require('../../utils/report')
@@ -6,7 +7,8 @@ const app = getApp()
 function pad(value) { return String(value).padStart(2, '0') }
 
 Page({
-  data: { groups: [], hasGroups: false, loading: true },
+  data: {
+    ...navigationMetrics(), groups: [], hasGroups: false, loading: true },
 
   onShow() {
     if (!flowGuard.requireLogin(app)) return

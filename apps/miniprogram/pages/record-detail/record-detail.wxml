@@ -1,4 +1,4 @@
-<view class="detail-page safe-top" wx:if="{{record}}">
+<view class="detail-page safe-top" style="{{navigationStyle}}" wx:if="{{record}}">
   <view class="flow-nav"><view class="nav-back" bindtap="goBack" aria-label="返回">‹</view><view class="nav-title">体检详情</view><view class="nav-space"></view></view>
 
   <scroll-view class="detail-scroll" scroll-y="true">
@@ -17,17 +17,25 @@
       <view class="detail-tab {{activeTab === 'reports' ? 'detail-tab-active' : ''}}" data-tab="reports" bindtap="setTab">体检报告</view>
     </view>
 
-    <view class="items-card">
+    <view class="items-card" wx:if="{{activeTab === 'items'}}">
       <view class="item-row" wx:for="{{steps}}" wx:key="detailID" data-id="{{item.detailID}}" bindtap="openStep">
         <view class="item-title">{{item.title}}</view>
         <view class="item-status item-{{item.statusTone}}">{{item.statusText}}</view>
         <view class="item-arrow">›</view>
       </view>
     </view>
+    <view class="items-card indicators-card" wx:else>
+      <view class="indicator-row" wx:for="{{indicators}}" wx:key="key" data-id="{{item.detailID}}" data-index="{{item.resultIndex}}" bindtap="openIndicator">
+        <view class="indicator-copy"><view class="indicator-label">{{item.label}}</view><view class="indicator-project">{{item.projectTitle}}</view></view>
+        <view class="indicator-result result-{{item.statusTone}}"><view>{{item.value === '' ? '—' : item.value}} <text class="indicator-unit">{{item.unit}}</text></view><view wx:if="{{item.statusText}}" class="indicator-status">{{item.statusText}}</view></view>
+        <view class="indicator-arrow">›</view>
+      </view>
+      <view class="indicators-empty" wx:if="{{!indicators.length}}">暂无已发布的指标结果</view>
+    </view>
   </scroll-view>
 </view>
 
-<view class="detail-page safe-top" wx:else>
+<view class="detail-page safe-top" style="{{navigationStyle}}" wx:else>
   <view class="flow-nav"><view class="nav-space"></view><view class="nav-title">体检详情</view><view class="nav-space"></view></view>
   <view class="empty-state">正在加载体检记录</view>
 </view>

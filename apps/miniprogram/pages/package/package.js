@@ -1,3 +1,4 @@
+const { navigationMetrics } = require('../../utils/layout')
 const api = require('../../utils/api')
 const { examIcon } = require('../../utils/icon-map')
 const flowGuard = require('../../utils/flow-guard')
@@ -5,6 +6,7 @@ const app = getApp()
 
 Page({
   data: {
+    ...navigationMetrics(),
     loading: true,
     activeTab: 'package',
     selectedHospitalName: '',
@@ -33,6 +35,7 @@ Page({
   applyCatalog(catalog) {
     const source = catalog || {}
     app.globalData.catalog = source
+    app.globalData.demoRestrictionHospital = source.hospital
     const packages = (source.packages || []).map(pkg => this.normalizePackage(pkg))
     const departments = (source.departments || []).map(department => ({
       ...department,
@@ -90,6 +93,7 @@ Page({
   },
 
   continueSelection() {
+    app.globalData.followUpPlanDraft = null
     if (this.data.activeTab === 'package') {
       if (!this.data.selectedPackageId) return wx.showToast({ title: '请选择一个套餐', icon: 'none' })
       app.globalData.currentPackageId = this.data.selectedPackageId

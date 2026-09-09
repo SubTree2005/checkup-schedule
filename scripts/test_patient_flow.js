@@ -172,7 +172,7 @@ async function main() {
   const routePage = page('plan')
   routePage.syncPlan(live)
   assert.strictEqual(routePage.data.currentStep.detailID, 'next')
-  assert.strictEqual(routePage.data.mainActionText, '开始本项')
+  assert.strictEqual(routePage.data.mainActionText, '前往本项')
   let skipCalls = 0
   api.plans.skip = async (planID, detailID) => {
     skipCalls += 1
@@ -244,6 +244,69 @@ async function main() {
   await directNavigation.refreshNavigation()
   assert.strictEqual(directNavigation.data.canSkip, true, 'a direct navigation entry must discover the live plan even without a cached current plan')
   directNavigation.onHide()
+
+  // Arriving activates the item once; completing it opens only the next route.
+  let currentPlan = { planID: 'journey', planStatus: '进行中', steps: [
+    { detailID: 'a', title: '内科', status: 'pending' },
+    { detailID: 'b', title: '外科', status: 'pending' }
+  ] }
+  let starts = 0
+  api.plans.get = async () => currentPlan
+  api.plans.start = async (id, detailID) => {
+    starts += 1
+    currentPlan = { ...currentPlan, steps: currentPlan.steps.map(s => s.detailID === detailID ? { ...s, status: 'active' } : s) }
+    return currentPlan
+  }
+  api.plans.complete = async (id, detailID) => {
+    assert.equal(currentPlan.steps.find(s => s.detailID === detailID).status, 'active')
+    currentPlan = { ...currentPlan, steps: currentPlan.steps.map(s => s.detailID === detailID ? { ...s, status: 'done' } : s) }
+    currentPlan.finished = currentPlan.steps.every(s => s.status === 'done')
+    return currentPlan
+  }
+  const journey = page('plan')
+  journey.syncPlan(currentPlan)
+  await journey.handleMainAction()
+  assert(lastNavigation.includes('detailID=a'))
+  assert.equal(starts, 0, 'going to an item does not start another navigation round')
+  for (const detailID of ['a', 'b']) {
+    const arrival = page('navigation')
+    arrival.setData({ planID: 'journey', detailID })
+    lastRedirect = ''
+    await Promise.all([arrival.completeNavigation(), arrival.completeNavigation()])
+    assert.equal(lastRedirect, '/pages/plan/plan?planID=journey')
+    journey.syncPlan(app.globalData.currentPlan)
+    assert.equal(journey.data.mainActionText, '完成本项')
+    lastNavigation = ''
+    await journey.handleMainAction()
+    if (detailID === 'a') assert(lastNavigation.includes('detailID=b'))
+    else assert.equal(lastNavigation, '', 'last completion does not open another navigation')
+    arrival.onHide()
+  }
+  assert.equal(starts, 2, 'each arrival activates exactly once, including double taps')
+  const failedArrival = page('navigation')
+  currentPlan = { planID: 'journey', planStatus: '进行中', steps: [{ detailID: 'c', status: 'pending' }] }
+  failedArrival.setData({ planID: 'journey', detailID: 'c' })
+  api.plans.start = async () => { throw new Error('network error') }
+  lastRedirect = ''
+  await failedArrival.completeNavigation()
+  assert.equal(lastRedirect, '', 'failed activation stays on navigation for retry')
+  assert.equal(failedArrival.data.operating, false)
+  failedArrival.onHide()
+  // An arrival after a server replan must follow the new destination, not start the old one.
+  const reroutedArrival = page('navigation')
+  reroutedArrival._visible = true
+  reroutedArrival.setData({ planID: 'journey', detailID: 'old' })
+  lastRedirect = ''
+  await reroutedArrival.completeNavigation()
+  assert.equal(reroutedArrival.data.detailID, 'c')
+  assert.equal(lastRedirect, '')
+  reroutedArrival.onHide()
+  currentPlan.steps[0].status = 'active'
+  const activeArrival = page('navigation')
+  activeArrival.setData({ planID: 'journey', detailID: 'c' })
+  await activeArrival.completeNavigation()
+  assert.equal(lastRedirect, '/pages/plan/plan?planID=journey', 'an already active item does not call start again')
+  activeArrival.onHide()
 
   const config = require('../apps/miniprogram/app.json')
   let customHeaders = 0

@@ -104,7 +104,7 @@ Page({
       currentStepNumber: currentStep ? currentStepIndex + 1 : steps.length,
       totalSteps: Number(plan.totalSteps || steps.length),
       queueAhead: Math.max(0, Number((currentStep && currentStep.queueAhead) || 0)),
-      mainActionText: paused ? '继续体检' : scheduled ? '开始体检' : currentStep && currentStep.status === 'pending' ? '开始本项' : '完成本项',
+      mainActionText: paused ? '继续体检' : scheduled ? '开始体检' : currentStep && currentStep.status === 'pending' ? '前往本项' : '完成本项',
       canSkip: plan.planStatus === '进行中',
       replanNotice: plan.replanNotice || this.data.replanNotice,
       reminder: this.resolveReminder(currentStep)
@@ -189,8 +189,7 @@ Page({
       return
     }
     if (step.status === 'pending') {
-      const updated = await this.runAction(() => api.plans.start(plan.planID, step.detailID))
-      if (updated) this.openNavigation(updated)
+      this.openNavigation(plan)
       return
     }
     const updated = await this.runAction(() => api.plans.complete(plan.planID, step.detailID))
@@ -209,14 +208,19 @@ Page({
     wx.navigateTo({ url: `/pages/navigation/navigation?planID=${currentPlan.planID}&detailID=${step.detailID}&followRoute=1` })
   },
 
-  onReplan() { if (this._plan) this.runAction(() => api.plans.replan(this._plan.planID)) },
+  async onReplan() {
+    if (!this._plan) return
+    const updated = await this.runAction(() => api.plans.replan(this._plan.planID))
+    if (updated) this.openNavigation(updated)
+  },
 
   async skipCurrent() {
     if (!this._plan || !this.data.currentStep || this.data.operating) return
     const detailID = this.data.currentStep.detailID
     const confirmed = await confirmAction('跳过此项', '此项将保留为未完成，并重新安排后续路线。结束体检后可预约未完成项目。', '确认跳过')
     if (!confirmed) return
-    await this.runAction(() => api.plans.skip(this._plan.planID, detailID))
+    const updated = await this.runAction(() => api.plans.skip(this._plan.planID, detailID))
+    if (updated) this.openNavigation(updated)
   },
 
   goOverview() {

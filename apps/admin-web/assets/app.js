@@ -1036,7 +1036,7 @@
         form.reset();
         bundle = null;
         dialog.close();
-        toast('已导入 ' + result.importedVisits + ' 次体检、' + result.importedReports + ' 份报告；跳过 ' + result.skippedVisits + ' 次重复记录');
+        toast('已导入 ' + result.importedVisits + ' 次体检，更新 ' + (result.updatedVisits || 0) + ' 次体检、写入 ' + result.importedReports + ' 份报告；跳过 ' + result.skippedVisits + ' 次未变化记录');
       } catch (error) { toast(error.message, "error"); }
       finally { button.disabled = false; }
     });

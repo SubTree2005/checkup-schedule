@@ -48,7 +48,8 @@ function displaySegments(segments) {
   let skipped = false
   segments.forEach((segment, index) => {
     const passThrough = index > 0 && index < segments.length - 1 &&
-      !(segment.waypoints || []).length && (segment.routeCoordinates || []).length === 1 &&
+      !(segment.waypoints || []).length && (segment.routeCoordinates || []).length > 0 &&
+      segment.routeCoordinates.every(point => validPoint(point) && JSON.stringify(point) === JSON.stringify(segment.routeCoordinates[0])) &&
       segment.fromPoint && segment.toPoint && segment.fromPoint.name === segment.toPoint.name &&
       JSON.stringify(segment.fromPoint.coordinates) === JSON.stringify(segment.toPoint.coordinates)
     if (passThrough) { skipped = true; return }
@@ -339,7 +340,8 @@ Page({
         context.setFontSize(11)
         const measure = text => {
           const measured = typeof context.measureText === 'function' ? context.measureText(text) : null
-          return measured && measured.width ? measured.width : text.length * 11
+          // Older Android canvas implementations can under-measure CJK glyphs.
+          return Math.max(measured && measured.width || 0, Array.from(text).reduce((width, char) => width + (char.charCodeAt(0) > 255 ? 11 : 7), 0))
         }
         const original = label
         while (label.length > 1 && measure(label) > rect.width - 16) label = label.slice(0, -1)
@@ -371,7 +373,33 @@ Page({
       context.draw()
     }).exec()
   },
-  completeNavigation() {
+  async completeNavigation() {
+    if (this.data.operating || this._leaving) return
+    const detailID = this.data.detailID
+    const updated = await this.runAction(async () => {
+      const plan = await api.plans.get(this.data.planID)
+      const current = (plan.steps || []).find(step => step.status === 'active') || (plan.steps || []).find(step => step.status === 'pending')
+      if (plan.planStatus === '进行中' && current && current.detailID === detailID && current.status === 'pending') {
+        return api.plans.start(plan.planID, detailID)
+      }
+      return plan
+    })
+    if (!updated) return
+    if (updated.finished) { this.applyRoutePlan(updated); return }
+    const current = (updated.steps || []).find(step => step.status === 'active') || (updated.steps || []).find(step => step.status === 'pending')
+    if (updated.planStatus === '进行中' && current && current.detailID !== detailID) {
+      this._followingRoute = true
+      this.applyRoutePlan(updated)
+      await this.refreshNavigation()
+      return
+    }
+    if (updated.planStatus === '进行中' && current && current.status === 'pending') {
+      this.applyRoutePlan(updated)
+      api.showError(new Error(updated.replanNotice || '项目尚未开始，请重试完成导航'))
+      return
+    }
+    this._leaving = true
+    clearTimeout(this._refreshTimer)
     backToRoute('pages/plan/plan', `/pages/plan/plan?planID=${this.data.planID}`)
   },
   goOverview() { wx.navigateTo({ url: `/pages/plan-overview/plan-overview?planID=${this.data.planID}` }) },

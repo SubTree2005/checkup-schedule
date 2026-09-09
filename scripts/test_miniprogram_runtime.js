@@ -393,6 +393,41 @@ async function main() {
   assert.strictEqual(oversizedNavigationPage.data.hasMap, false, 'oversized or deeply nested maps must not be drawn')
   assert.match(oversizedNavigationPage.data.location, /地图数据过大/)
 
+  const canvasCalls = []
+  const savedNextTick = wx.nextTick
+  const savedCanvasContext = wx.createCanvasContext
+  wx.nextTick = callback => callback()
+  wx.createCanvasContext = id => new Proxy({}, { get: (_target, method) => (...args) => {
+    canvasCalls.push([id, method, ...args])
+    if (method === 'measureText') return { width: 60 }
+  } })
+  const multiFloorPage = {
+    ...oversizedNavigationPage,
+    data: { ...navigationDefinition.data },
+    setData(patch, callback) { Object.assign(this.data, patch); if (callback) callback() }
+  }
+  const segments = ['1F', '2F', '3F'].map((floorKey, index) => ({
+    floorKey, geojson: { features: [] }, routeCoordinates: [[0, 0], [10, 10]],
+    fromPoint: { name: index ? '到达楼梯' : '起点', coordinates: [0, 0] },
+    toPoint: { name: index < 2 ? '换层楼梯' : '终点', coordinates: [10, 10] },
+    instruction: '沿走廊前进', transition: index < 2 ? '经楼梯上楼' : ''
+  }))
+  multiFloorPage.applyNavigation({ map: { ...segments[2], segments }, distanceMeters: 30, durationMinutes: 3 })
+  assert.deepStrictEqual(multiFloorPage.data.mapSegments.map(s => s.floorKey), ['1F', '2F', '3F'])
+  for (let index = 0; index < 3; index += 1) {
+    const calls = canvasCalls.filter(call => call[0] === `indoorMap-${index}`)
+    assert(calls.some(call => call[1] === 'setStrokeStyle' && call[2] === '#1350BE'), 'every floor must paint its own blue path')
+    assert(calls.some(call => call[1] === 'lineTo'), 'route coordinates must be drawn')
+    assert(calls.some(call => call[1] === 'draw'), 'each canvas must flush independently')
+  }
+  multiFloorPage.applyNavigation({ map: segments[0], distanceMeters: null, durationMinutes: null })
+  assert.strictEqual(multiFloorPage.data.mapSegments.length, 1, 'legacy single-floor responses remain supported')
+  multiFloorPage.applyNavigation({ map: null, distanceMeters: null, durationMinutes: null })
+  assert.strictEqual(multiFloorPage.data.hasMap, false)
+  assert.deepStrictEqual(multiFloorPage.data.mapSegments, [], 'missing routes must clear stale floors')
+  wx.nextTick = savedNextTick
+  wx.createCanvasContext = savedCanvasContext
+
   // Preparation must survive a failed plan; near-term bookings ask before side effects.
   const savedGlobalData = appMock.globalData
   const savedSaveProfile = appMock.saveProfile

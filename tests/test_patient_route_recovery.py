@@ -75,6 +75,19 @@ class PatientRouteRecoveryTest(unittest.TestCase):
         self.assertEqual(ended["unfinishedItemIDs"], [first["itemID"]])
         self.assertIsNone(self.patient.get("/api/patient/plans/current").json())
 
+    def test_navigation_starts_from_last_completed_not_skipped_department(self):
+        plan = self.plan([self.exam("起始检查"), self.exam("中间检查"), self.exam("最后检查")])
+        first, second, third = plan["steps"]
+        url = f"/api/patient/plans/{plan['planID']}/navigation"
+        initial = self.patient.get(url, params={"detailID": first["detailID"]})
+        self.assertEqual(initial.status_code, 200, initial.text)
+        self.assertEqual(initial.json()["fromName"], "医院入口")
+        self.action(plan, first, "complete")
+        self.action(plan, second, "skip")
+        navigation = self.patient.get(url, params={"detailID": third["detailID"]})
+        self.assertEqual(navigation.status_code, 200, navigation.text)
+        self.assertEqual(navigation.json()["fromName"], first["department"])
+
     def test_complete_preserves_completion_when_a_later_department_closes(self):
         exams = [self.exam("甲"), self.exam("乙"), self.exam("丙")]
         plan = self.plan(exams)

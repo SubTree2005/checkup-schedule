@@ -13,9 +13,16 @@
       <button wx:if="{{canSkip}}" class="route-pill" size="mini" style="width:auto;min-width:0;margin:0;padding:14rpx 24rpx;font-size:25rpx;font-weight:400;line-height:1.4;" disabled="{{operating}}" bindtap="skipCurrent">跳过此项</button>
     </view>
 
-    <view class="map-card">
-      <canvas wx:if="{{hasMap}}" id="indoorMap" canvas-id="indoorMap" class="nav-map-canvas"></canvas>
-      <view wx:else class="nav-map-placeholder">{{location || '暂未提供楼层简图，请以现场标识为准'}}</view>
+    <block wx:if="{{hasMap}}">
+      <view class="map-card" wx:for="{{mapSegments}}" wx:key="id">
+        <view class="map-heading">{{item.title}}</view>
+        <view wx:if="{{item.instruction}}" class="map-instruction">{{item.instruction}}</view>
+        <canvas id="{{item.id}}" canvas-id="{{item.id}}" class="nav-map-canvas"></canvas>
+        <view wx:if="{{item.transition}}" class="map-transition">{{item.transition}}</view>
+      </view>
+    </block>
+    <view wx:else class="map-card">
+      <view class="nav-map-placeholder">{{location || '暂未提供楼层简图，请以现场标识为准'}}</view>
     </view>
 
     <view class="direction-card">

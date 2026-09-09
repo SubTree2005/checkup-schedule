@@ -436,6 +436,19 @@ async function main() {
   multiFloorPage.startFloorSwipe({ touches: [{ clientX: 30, clientY: 30 }] })
   multiFloorPage.endFloorSwipe({ changedTouches: [{ clientX: 90, clientY: 200 }] })
   assert.strictEqual(multiFloorPage.data.activeFloorIndex, 2, 'vertical scroll must not switch floors')
+  const straight = segments.map(s => ({ ...s }))
+  straight[1] = { ...straight[1], routeCoordinates: [[0, 0]], fromPoint: { name: '同一楼梯', coordinates: [0, 0] }, toPoint: { name: '同一楼梯', coordinates: [0, 0] } }
+  multiFloorPage.applyNavigation({ map: { segments: straight }, distanceMeters: 30, durationMinutes: 3 })
+  assert.deepStrictEqual(multiFloorPage.data.mapSegments.map(s => s.floorKey), ['1F', '3F'], 'same-stair intermediate floors are hidden')
+  assert.match(multiFloorPage.data.mapSegments[0].transition, /直达 3F/)
+  straight[1].waypoints = [{ name: '导诊台', coordinates: [0, 0] }]
+  multiFloorPage.applyNavigation({ map: { segments: straight }, distanceMeters: 30, durationMinutes: 3 })
+  assert.strictEqual(multiFloorPage.data.mapSegments.length, 3, 'mandatory intermediate stops remain visible')
+  canvasCalls.length = 0
+  multiFloorPage.applyNavigation({ map: { ...segments[0], waypoints: [], fromPoint: { name: '检验科', coordinates: [5, 5] }, toPoint: { name: '楼梯1#', coordinates: [5.3, 5] } }, distanceMeters: 5, durationMinutes: 1 })
+  const labels = canvasCalls.filter(call => call[1] === 'fillText')
+  assert.strictEqual(labels.length, 2)
+  assert(Math.abs(labels[0][4] - labels[1][4]) >= 17 || Math.abs(labels[0][3] - labels[1][3]) >= 64, 'nearby endpoint labels must not overlap')
   multiFloorPage.applyNavigation({ map: segments[0], distanceMeters: null, durationMinutes: null })
   assert.strictEqual(multiFloorPage.data.mapSegments.length, 1, 'legacy single-floor responses remain supported')
   multiFloorPage.setFloor(1)

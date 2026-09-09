@@ -43,6 +43,25 @@ function polygonRings(geometry) {
   return []
 }
 
+function displaySegments(segments) {
+  const result = []
+  let skipped = false
+  segments.forEach((segment, index) => {
+    const passThrough = index > 0 && index < segments.length - 1 &&
+      !(segment.waypoints || []).length && (segment.routeCoordinates || []).length === 1 &&
+      segment.fromPoint && segment.toPoint && segment.fromPoint.name === segment.toPoint.name &&
+      JSON.stringify(segment.fromPoint.coordinates) === JSON.stringify(segment.toPoint.coordinates)
+    if (passThrough) { skipped = true; return }
+    if (skipped && result.length) {
+      const previous = result[result.length - 1]
+      previous.transition = `经${previous.toPoint.name}直达 ${segment.floorKey}，从${segment.fromPoint.name}继续`
+    }
+    skipped = false
+    result.push({ ...segment })
+  })
+  return result
+}
+
 Page({
   data: {
     ...navigationMetrics(),
@@ -156,7 +175,7 @@ Page({
   applyNavigation(data) {
     const previous = this._maps && this._maps[this.data.activeFloorIndex]
     this._map = data.map || null
-    this._maps = data.map ? (data.map.segments && data.map.segments.length ? data.map.segments : [data.map]) : []
+    this._maps = data.map ? displaySegments(data.map.segments && data.map.segments.length ? data.map.segments : [data.map]) : []
     const selected = previous ? this._maps.findIndex(map => map.floorKey === previous.floorKey && map.segmentID === previous.segmentID) : 0
     const activeFloorIndex = Math.max(0, selected)
     const mapSegments = this._maps.map((map, index) => ({
@@ -304,6 +323,7 @@ Page({
         context.stroke()
       }
 
+      const labelBoxes = []
       const drawMarker = (point, color, label) => {
         if (!point || !validPoint(point.coordinates)) return
         if (point.floorKey && map.floorKey && point.floorKey !== map.floorKey) return
@@ -317,13 +337,31 @@ Page({
         context.stroke()
         context.setFillStyle('#0F172A')
         context.setFontSize(11)
-        const measured = typeof context.measureText === 'function' ? context.measureText(label) : null
-        const labelWidth = measured && measured.width ? measured.width : label.length * 11
-        const preferredX = projected[0] + 10
-        const labelX = preferredX + labelWidth > rect.width - 8
-          ? Math.max(8, projected[0] - labelWidth - 10)
-          : preferredX
-        context.fillText(label, labelX, Math.max(14, projected[1] - 8))
+        const measure = text => {
+          const measured = typeof context.measureText === 'function' ? context.measureText(text) : null
+          return measured && measured.width ? measured.width : text.length * 11
+        }
+        const original = label
+        while (label.length > 1 && measure(label) > rect.width - 16) label = label.slice(0, -1)
+        if (label !== original) {
+          while (label.length > 1 && measure(label + '…') > rect.width - 16) label = label.slice(0, -1)
+          label += '…'
+        }
+        const width = measure(label)
+        const clampX = x => Math.max(8, Math.min(rect.width - width - 8, x))
+        const candidates = []
+        for (let offset = 0; offset < rect.height; offset += 18) {
+          for (const y of [projected[1] - 8 - offset, projected[1] + 22 + offset]) {
+            if (y < 14 || y > rect.height - 6) continue
+            for (const x of [clampX(projected[0] + 10), clampX(projected[0] - width - 10)]) candidates.push({ x, y })
+          }
+        }
+        const position = candidates.find(p => !labelBoxes.some(b =>
+          p.x < b.x + b.width + 4 && p.x + width + 4 > b.x && p.y - 13 < b.y + 4 && p.y + 4 > b.y - 13))
+        if (position) {
+          labelBoxes.push({ ...position, width })
+          context.fillText(label, position.x, position.y)
+        }
       }
       const samePoint = map.fromPoint && map.toPoint &&
         JSON.stringify(map.fromPoint.coordinates) === JSON.stringify(map.toPoint.coordinates)

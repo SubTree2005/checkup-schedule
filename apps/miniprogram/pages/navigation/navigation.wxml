@@ -10,7 +10,7 @@
     <view class="destination-card">
       <image class="destination-pin" src="../../addpicture/icons/iconfont/location.svg" mode="aspectFit"></image>
       <view class="destination-copy">当前目的地：<text>{{toName}}</text></view>
-      <button wx:if="{{canSkip}}" class="route-pill" disabled="{{operating}}" bindtap="skipCurrent">跳过此项</button>
+      <button wx:if="{{canSkip}}" class="route-pill navigation-skip" disabled="{{operating}}" bindtap="skipCurrent"><text>跳过此项</text></button>
     </view>
 
     <view class="map-card" wx:if="{{hasMap}}">

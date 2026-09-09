@@ -441,6 +441,9 @@ async function main() {
   multiFloorPage.applyNavigation({ map: { segments: straight }, distanceMeters: 30, durationMinutes: 3 })
   assert.deepStrictEqual(multiFloorPage.data.mapSegments.map(s => s.floorKey), ['1F', '3F'], 'same-stair intermediate floors are hidden')
   assert.match(multiFloorPage.data.mapSegments[0].transition, /直达 3F/)
+  straight[1].routeCoordinates = [[0, 0], [0, 0]]
+  multiFloorPage.applyNavigation({ map: { segments: straight }, distanceMeters: 30, durationMinutes: 3 })
+  assert.deepStrictEqual(multiFloorPage.data.mapSegments.map(s => s.floorKey), ['1F', '3F'], 'duplicate GIS coordinates do not create a walking segment')
   straight[1].waypoints = [{ name: '导诊台', coordinates: [0, 0] }]
   multiFloorPage.applyNavigation({ map: { segments: straight }, distanceMeters: 30, durationMinutes: 3 })
   assert.strictEqual(multiFloorPage.data.mapSegments.length, 3, 'mandatory intermediate stops remain visible')

@@ -43,11 +43,44 @@ class PatientImportTest(unittest.TestCase):
             plan = plans.json()[0]
             self.assertEqual(plan['planStatus'], '已完成')
             self.assertTrue(plan['isDemo'])
-            self.assertIn('[演示]', plan['packageName'])
+            self.assertEqual(plan['packageName'], payload['bundle']['visits'][0]['title'])
             self.assertTrue(plan['steps'][0]['reportAvailable'])
-            self.assertIn('模拟体检报告', plan['steps'][0]['report']['conclusion'])
+            self.assertEqual(plan['steps'][0]['report']['conclusion'], payload['bundle']['visits'][0]['steps'][0]['report']['conclusion'])
+            self.assertTrue(plan['steps'][0]['report']['simulated'])
             fetched = patient.get('/api/patient/plans/' + plan['planID'])
             self.assertEqual(fetched.json()['steps'][0]['report'], plan['steps'][0]['report'])
+
+    def test_reimport_refreshes_existing_copy_without_duplicate_visits(self):
+        self.register()
+        payload = self.payload()
+        result = self.client.post('/api/demo-patients/import', json=payload).json()
+        with self.app.state.session_factory() as db:
+            detail = db.scalar(select(PlanExecutionDetail).where(PlanExecutionDetail.plan_id == result['planIDs'][0]))
+            detail.exam_report = {**detail.exam_report, 'conclusion': '模拟体检报告，仅供系统演示。\n旧内容'}
+            original_id, original_start = detail.detail_id, detail.actual_start
+            db.commit()
+        visit = payload['bundle']['visits'][0]
+        visit['title'] = '年度健康体检'
+        visit['steps'][0]['report']['conclusion'] = '未见明显异常。'
+        updated = self.client.post('/api/demo-patients/import', json=payload)
+        self.assertEqual(updated.status_code, 200, updated.text)
+        self.assertEqual(updated.json()['updatedVisits'], 1)
+        self.assertEqual(updated.json()['importedVisits'], 0)
+        with self.app.state.session_factory() as db:
+            self.assertEqual(db.scalar(select(func.count()).select_from(ExamPlan)), 1)
+            detail = db.get(PlanExecutionDetail, original_id)
+            self.assertEqual(detail.actual_start, original_start)
+            self.assertEqual(detail.exam_report['conclusion'], '未见明显异常。')
+            self.assertTrue(detail.exam_report['simulated'])
+        again = self.client.post('/api/demo-patients/import', json=payload).json()
+        self.assertEqual(again['updatedVisits'], 0)
+        self.assertEqual(again['skippedVisits'], 1)
+        # Import updates must never overwrite a subsequently issued clinical report.
+        with self.app.state.session_factory() as db:
+            detail = db.get(PlanExecutionDetail, original_id)
+            detail.exam_report = {**detail.exam_report, 'simulated': False}
+            db.commit()
+        self.assertEqual(self.client.post('/api/demo-patients/import', json=payload).status_code, 409)
 
     def test_invalid_items_are_atomic_and_existing_account_requires_password(self):
         self.register()

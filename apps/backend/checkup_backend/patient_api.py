@@ -952,7 +952,7 @@ def _serialize_plan_payload(
         "demoUnrestricted": unrestricted,
         "demoUnrestrictedUntil": iso(hospital_settings.demo_unrestricted_until) if unrestricted else None,
         "packageId": package.package_id if package else None,
-        "packageName": ("[演示] " + str(profile_snapshot.get("demoVisitTitle") or "历史体检")) if profile_snapshot.get("demoImport") else (package.package_name if package else "自选项目"),
+        "packageName": str(profile_snapshot.get("demoVisitTitle") or "历史体检") if profile_snapshot.get("demoImport") else (package.package_name if package else "自选项目"),
         "isDemo": bool(profile_snapshot.get("demoImport")),
         "packagePrice": package.price if package else 0,
         "hospitalName": hospital.hospital_name if hospital else "",

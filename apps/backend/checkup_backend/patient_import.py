@@ -19,7 +19,6 @@ from .security import AdminContext, get_current_admin, hash_password, verify_log
 from .serializers import iso
 
 router = APIRouter(prefix="/api/demo-patients", tags=["demo-patients"])
-DEMO_NOTICE = "模拟体检报告，仅供系统演示，不代表真实检查结果。"
 
 
 class ImportModel(BaseModel):
@@ -172,13 +171,39 @@ def import_patient_bundle(db: Session, hospital_id: str, payload: DemoImportRequ
     user.name = bundle.patient.name
     user.gender = bundle.patient.gender
     user.birth_date = f"{utcnow().year - bundle.patient.age}-01-01"
-    imported = skipped = reports = 0
+    imported = skipped = reports = updated = 0
     plan_ids = []
     for visit, package, visit_exams in resolved:
         plan_id = stable_id(hospital_id, user.user_id, "plan", visit.recordKey)
         plan_ids.append(plan_id)
-        if db.get(ExamPlan, plan_id):
-            skipped += 1
+        existing = db.get(ExamPlan, plan_id)
+        if existing:
+            # Only refresh records created by this importer, after account verification.
+            profile = db.get(UserStatusInfo, existing.record_id)
+            details = db.scalars(select(PlanExecutionDetail).where(
+                PlanExecutionDetail.plan_id == plan_id).order_by(PlanExecutionDetail.step_order)).all()
+            if (existing.user_id != user.user_id or existing.hospital_id != hospital_id or
+                    not profile or not (profile.profile_data or {}).get('demoImport') or
+                    existing.plan_status != '已完成' or
+                    any(d.exam_report and not d.exam_report.get('simulated') for d in details) or
+                    [d.item_id for d in details] != [e.item_id for e in visit_exams]):
+                raise HTTPException(409, "该历史记录的项目结构已变化，请使用新的 recordKey")
+            changed = False
+            snapshot = {**profile.profile_data, "medicalHistory": bundle.patient.medicalHistory,
+                        "allergens": bundle.patient.allergens, "demoVisitTitle": visit.title}
+            if snapshot != profile.profile_data:
+                profile.profile_data = snapshot
+                changed = True
+            for detail, step in zip(details, visit.steps):
+                report = imported_report(step.report)
+                if detail.exam_report != report:
+                    detail.exam_report = report
+                    changed = True
+                    reports += bool(report)
+            if changed:
+                updated += 1
+            else:
+                skipped += 1
             continue
         start, end = visit.steps[0].startedAt, visit.steps[-1].completedAt
         record_id = stable_id(hospital_id, user.user_id, "profile", visit.recordKey)
@@ -192,12 +217,8 @@ def import_patient_bundle(db: Session, hospital_id: str, payload: DemoImportRequ
             appointment_at=start, total_duration=int((end - start).total_seconds() / 60), plan_status="已完成"))
         db.flush()
         for index, (step, exam) in enumerate(zip(visit.steps, visit_exams), 1):
-            report = None
-            if step.report:
-                report = step.report.model_dump(exclude={"reportedAt"})
-                report.update({"reportedAt": iso(step.report.reportedAt), "simulated": True,
-                               "status": "published", "conclusion": DEMO_NOTICE + "\n" + report["conclusion"]})
-                reports += 1
+            report = imported_report(step.report)
+            reports += bool(report)
             db.add(PlanExecutionDetail(detail_id=stable_id(hospital_id, user.user_id, f"step-{visit.recordKey}", str(index)),
                 plan_id=plan_id, item_id=exam.item_id, step_order=index, estimated_start=step.startedAt,
                 estimated_end=step.completedAt, actual_start=step.startedAt, actual_end=step.completedAt,
@@ -214,7 +235,14 @@ def import_patient_bundle(db: Session, hospital_id: str, payload: DemoImportRequ
                            "simulated": True, "fasting": "no", "bladder": "recentUrination"}
     db.flush()
     return {"phone": user.phone, "userID": user.user_id, "createdPatient": created_user,
-            "importedVisits": imported, "skippedVisits": skipped, "importedReports": reports, "planIDs": plan_ids}
+            "importedVisits": imported, "updatedVisits": updated, "skippedVisits": skipped, "importedReports": reports, "planIDs": plan_ids}
+
+
+def imported_report(report: DemoReport | None) -> dict | None:
+    if report is None:
+        return None
+    return {**report.model_dump(exclude={"reportedAt"}), "reportedAt": iso(report.reportedAt),
+            "simulated": True, "status": "published"}
 
 
 @router.post("/import")

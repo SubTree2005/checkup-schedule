@@ -14,6 +14,9 @@ page { background: linear-gradient(180deg, #F7FAFF 0%, #FFFFFF 100%); }
 .destination-copy { flex: 1; min-width: 0; color: #263248; font-size: 27rpx; font-weight: 600; line-height: 1.45; }
 .destination-copy text { margin-left: 10rpx; color: #2F69EC; font-size: 29rpx; }
 .map-card { margin-top: 18rpx; padding: 14rpx; }
+.map-heading { padding: 10rpx 12rpx; color: #172033; font-size: 28rpx; font-weight: 650; }
+.map-instruction { padding: 0 12rpx 14rpx; color: #52617A; font-size: 23rpx; line-height: 1.5; }
+.map-transition { margin-top: 12rpx; padding: 18rpx; border-radius: 14rpx; color: #1350BE; background: #EDF4FF; font-size: 24rpx; line-height: 1.5; }
 .nav-map-canvas, .nav-map-placeholder { width: 100%; height: 490rpx; border-radius: 22rpx; background: #F8FAFC; }
 .nav-map-placeholder { padding: 36rpx; display: flex; align-items: center; justify-content: center; color: #7B8798; text-align: center; font-size: 24rpx; }
 .direction-card { min-height: 126rpx; margin-top: 18rpx; padding: 24rpx; display: flex; align-items: center; gap: 22rpx; }

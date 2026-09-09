@@ -123,3 +123,7 @@ OpenAPI 交互文档在服务启动后的 `/docs`。
 ```
 
 地图坐标既可使用真实投影坐标，也可使用院内平面图坐标；同一楼层必须保持同一坐标系。人流量由系统内当前候检人数与正在检查人数相加得到。
+
+导航的 `map.segments` 按实际行走顺序返回每个楼层路段（同一楼层可能多次出现），每段包含 `floorKey`、`geojson`、`fromPoint`、`toPoint`、`routeCoordinates`、`instruction` 和离开本层的 `transition`。起点取最近已完成项目；首项使用唯一入口。路径经过声明的门口节点、走廊和楼梯，中间换楼梯的水平路段完整保留。`walkSeconds` 包含楼梯耗时，`horizontalDistanceMeters` 为水平路程。旧版 `map` 字段保留最后一段供旧客户端显示；多楼层显示需更新小程序。
+
+新版 GIS 导出在 FeatureCollection 中携带 `verticalConnections`。原始 GIS-only 包的缺失连接由后端兼容清单补充，仅在两端节点 ID 和坐标均匹配时启用；显式空连接列表会禁用此兼容回退。断路、缺少门口节点或楼梯连接时不生成虚构路线。地图和楼梯对应关系仍为导航草案，须结合现场标识。

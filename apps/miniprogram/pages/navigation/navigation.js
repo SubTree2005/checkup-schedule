@@ -55,6 +55,7 @@ Page({
     location: '',
     floorInstruction: '请根据院内指引前往目标科室。',
     hasMap: false,
+    mapSegments: [],
     canSkip: false,
     replanNotice: '',
     operating: false
@@ -119,6 +120,7 @@ Page({
     if (!step) { this.setData({ canSkip: false }); return false }
     if (step.detailID !== this.data.detailID) {
       this._map = null
+      this._maps = []
       this.setData({ hasMap: false, toName: step.department || step.title, location: '正在更新下一检查点的路线', distance: '暂无路线数据', duration: '', floorInstruction: '正在更新导航' })
     }
     this.setData({ detailID: step.detailID, canSkip: plan.planStatus === '进行中', replanNotice: plan.replanNotice || this.data.replanNotice })
@@ -150,6 +152,7 @@ Page({
   },
   applyNavigation(data) {
     this._map = data.map || null
+    this._maps = data.map ? (data.map.segments && data.map.segments.length ? data.map.segments : [data.map]) : []
     this.setData({
       fromName: data.fromName,
       toName: data.toName,
@@ -157,15 +160,20 @@ Page({
       duration: data.durationMinutes === null ? '' : `约 ${data.durationMinutes} 分钟`,
       location: data.location || '',
       floorInstruction: data.floorInstruction || '请根据院内指引前往目标科室。',
-      hasMap: !!data.map
+      hasMap: !!this._maps.length,
+      mapSegments: this._maps.map((map, index) => ({
+        id: `indoorMap-${index}`, floorKey: map.floorKey,
+        title: `${index + 1}. ${map.floorKey || '楼层图'}`,
+        instruction: map.instruction || '', transition: map.transition || ''
+      }))
     }, () => {
-      if (data.map) wx.nextTick(() => this.drawIndoorMap())
+      if (data.map) wx.nextTick(() => this._maps.forEach((map, index) => this.drawIndoorMap(map, `indoorMap-${index}`)))
     })
   },
-  drawIndoorMap() {
-    const map = this._map
+  drawIndoorMap(map = this._map, canvasID = 'indoorMap') {
     if (!map || !map.geojson) return
-    this.createSelectorQuery().select('#indoorMap').boundingClientRect(rect => {
+    this.createSelectorQuery().select(`#${canvasID}`).boundingClientRect(rect => {
+      if (this._maps && !this._maps.includes(map)) return
       if (!rect || !rect.width || !rect.height) return
       const features = map.geojson.features || []
       const allPoints = []
@@ -196,7 +204,7 @@ Page({
       const xOffset = (rect.width - xRange * scale) / 2
       const yOffset = (rect.height - yRange * scale) / 2
       const project = point => [xOffset + (point[0] - minX) * scale, rect.height - yOffset - (point[1] - minY) * scale]
-      const context = wx.createCanvasContext('indoorMap', this)
+      const context = wx.createCanvasContext(canvasID, this)
       context.setFillStyle('#F8FAFC')
       context.fillRect(0, 0, rect.width, rect.height)
 
@@ -264,8 +272,10 @@ Page({
           : preferredX
         context.fillText(label, labelX, Math.max(14, projected[1] - 8))
       }
-      drawMarker(map.fromPoint, '#F59E0B', map.fromPoint ? `起：${map.fromPoint.name}` : '')
-      drawMarker(map.toPoint, '#16A34A', `终：${map.toPoint.name}`)
+      const samePoint = map.fromPoint && map.toPoint &&
+        JSON.stringify(map.fromPoint.coordinates) === JSON.stringify(map.toPoint.coordinates)
+      if (!samePoint) drawMarker(map.fromPoint, '#F59E0B', map.fromPoint ? `起：${map.fromPoint.name}` : '')
+      drawMarker(map.toPoint, '#16A34A', map.toPoint ? `${samePoint ? '' : '终：'}${map.toPoint.name}` : '')
       context.draw()
     }).exec()
   },

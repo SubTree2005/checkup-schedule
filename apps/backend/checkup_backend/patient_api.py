@@ -26,6 +26,7 @@ from checkup_scheduler import (
 
 from .api import client_ip, get_hospital_settings
 from .database import get_db
+from .navigation_routes import route_segments
 from .demo_restrictions import demo_unrestricted
 from .exam_constraints import prerequisite_item_ids, validate_exam_selection
 from .hospital_time import (
@@ -1623,8 +1624,9 @@ def patient_navigation(
         .where(
             PlanExecutionDetail.plan_id == plan.plan_id,
             PlanExecutionDetail.step_order < detail.step_order,
+            PlanExecutionDetail.exec_status == "已完成",
         )
-        .order_by(PlanExecutionDetail.step_order.desc())
+        .order_by(PlanExecutionDetail.actual_end.desc(), PlanExecutionDetail.step_order.desc())
     ).first()
     from_department = previous.DepartmentInfo if previous else None
     distance = None
@@ -1647,7 +1649,10 @@ def patient_navigation(
     )
     speed = max(db.get(UserInfo, patient.user_id).walk_speed, 0.2)
     floor_instruction = "请根据院内标识或咨询工作人员前往目标科室。"
-    if map_data:
+    if map_data and map_data.get("segments"):
+        floor_instruction = "按下方顺序沿各层蓝线行走，在标注的楼梯处换层。" if len(map_data["segments"]) > 1 else "请沿图中蓝色路线前往绿色终点。"
+        distance = map_data["horizontalDistanceMeters"]
+    elif map_data:
         from_floor = map_data.get("fromPoint", {}).get("floorKey") if map_data.get("fromPoint") else None
         target_floor = map_data["toPoint"]["floorKey"]
         if from_floor and from_floor != target_floor:
@@ -1656,12 +1661,15 @@ def patient_navigation(
             floor_instruction = "请沿图中蓝色路线前往绿色终点。"
         else:
             floor_instruction = f"请前往 {target_floor}，并按楼层图中的绿色终点寻找科室。"
+    duration = max(1, math.ceil(distance / speed / 60)) if distance is not None else None
+    if map_data and "walkSeconds" in map_data:
+        duration = max(1, math.ceil(map_data["walkSeconds"] / 60))
     return {
         "fromName": from_department.dept_name if from_department else "医院入口",
         "toName": target.DepartmentInfo.dept_name,
         "location": target.DepartmentInfo.location,
         "distanceMeters": round(distance) if distance is not None else None,
-        "durationMinutes": max(1, math.ceil(distance / speed / 60)) if distance is not None else None,
+        "durationMinutes": duration,
         "floorInstruction": floor_instruction,
         "map": map_data,
     }
@@ -1680,12 +1688,13 @@ def _navigation_map(
         .where(HospitalGIS.hospital_id == hospital_id)
         .order_by(HospitalGIS.floor_key)
     ).all()
-    locations: dict[str, tuple[HospitalGIS, list[float]]] = {}
+    locations = {}
     departments = db.scalars(
         select(DepartmentInfo).where(DepartmentInfo.hospital_id == hospital_id)
     ).all()
     department_ids = {department.dept_id for department in departments}
-    candidates: dict[str, list[tuple[HospitalGIS, list[float]]]] = {}
+    candidates = {}
+    entrances = []
     for floor in floors:
         for feature in floor.geojson.get("features", []):
             properties = feature.get("properties") or {}
@@ -1693,14 +1702,16 @@ def _navigation_map(
             point = _coordinate_pair(geometry.get("coordinates"))
             if geometry.get("type") != "Point" or point is None:
                 continue
+            if properties.get("category") == "entrance":
+                entrances.append((floor, point, properties, properties.get("name") or "医院入口"))
             explicit_id = properties.get("deptID")
             if explicit_id:
                 if explicit_id in department_ids:
-                    locations[explicit_id] = (floor, point)
+                    locations[explicit_id] = (floor, point, properties)
                 continue
             # GIS-only uploads identify physical rooms without business deptIDs.
-            # Match explicit addresses uniquely; do not invent a walking route
-            # from a room centre to the nearest corridor through possible walls.
+            # Match explicit addresses uniquely. Routing uses their declared
+            # door nodes rather than snapping room centres through walls.
             room = str(properties.get("room_ref") or "").strip().upper()
             matches = []
             for department in departments:
@@ -1714,7 +1725,7 @@ def _navigation_map(
                 if matched:
                     matches.append(department.dept_id)
             if len(matches) == 1:
-                candidates.setdefault(matches[0], []).append((floor, point))
+                candidates.setdefault(matches[0], []).append((floor, point, properties))
 
     explicit_locations = set(locations)
     for department_id, points in candidates.items():
@@ -1724,12 +1735,20 @@ def _navigation_map(
     target_location = locations.get(to_department_id)
     if target_location is None:
         return None
-    target_floor, target_point = target_location
+    target_floor, target_point, target_props = target_location
     from_location = locations.get(from_department_id) if from_department_id else None
+    source = (*from_location, from_name) if from_location else (entrances[0] if from_department_id is None and len(entrances) == 1 else None)
+    if source:
+        routed = route_segments(floors, source, (*target_location, to_name))
+        if routed:
+            routed["segments"][0]["fromPoint"]["departmentID"] = from_department_id
+            routed["segments"][-1]["toPoint"]["departmentID"] = to_department_id
+            # Keep the last-floor legacy map shape for older mini-programs.
+            return {**routed["segments"][-1], **routed}
     route_coordinates: list[list[float]] = []
     from_point = None
     if from_location:
-        source_floor, source_coordinates = from_location
+        source_floor, source_coordinates, _source_props = from_location
         from_point = {
             "departmentID": from_department_id,
             "name": from_name,
@@ -1737,7 +1756,8 @@ def _navigation_map(
             "coordinates": source_coordinates,
         }
         if (source_floor.floor_key == target_floor.floor_key
-                and from_department_id in explicit_locations and to_department_id in explicit_locations):
+                and from_department_id in explicit_locations and to_department_id in explicit_locations
+                and not any(p.get("route_node_id") or p.get("routeNodeId") for p in (_source_props, target_props))):
             route_coordinates = _shortest_geojson_route(
                 target_floor.geojson,
                 source_coordinates,

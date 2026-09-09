@@ -540,7 +540,8 @@ def build(source=SOURCE, output=ROOT/'gis/generated', *, previews=True):
                 if name=='pois' and p['scheduler_location_id']: p['evidencedDepartmentKey']=p['scheduler_location_id']
                 if name=='route_edges': p['distanceMeters']=p['length_m']
                 features.append({**feat,'properties':p})
-        workspace.append(dict(floorKey=f,geojson=dict(type='FeatureCollection',features=features)))
+        connections = [c for c in vertical if nodes[c['from_node_id']]['properties']['floor'] == f]
+        workspace.append(dict(floorKey=f,geojson=dict(type='FeatureCollection',features=features,verticalConnections=connections)))
     # Safe standalone display import has no operational department mutations.
     write_json(output/'workspace_gis_only.json',dict(formatVersion='1.0',mode='upsert',gis=workspace))
     if previews: preview_index(output)
